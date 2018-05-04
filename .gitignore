@@ -4,3 +4,9 @@
 
 /.vs/RayEngine/v15/ipch/AutoPCH/89c641f96ce31d97/WINDOW.ipch
 *.ipch
+.vs/RayEngine/v15/.suo
+*.db
+*.db-shm
+.vs/RayEngine/v15/Solution.VC.db-wal
+.vs/RayEngine/v15/.suo
+*.db
