@@ -1,0 +1,6 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/RayEngine/v15/ipch/AutoPCH/89c641f96ce31d97/WINDOW.ipch
+*.ipch
