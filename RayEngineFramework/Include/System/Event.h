@@ -2,39 +2,68 @@
 
 #include "..\Defines.h"
 #include "..\Types.h"
-
-#define GET_EVENT_WIDTH(ev) (uint16)(ev.value >> 16)
-#define GET_EVENT_HEIGHT(ev) (uint16)((ev.value << 16) >> 16)
-#define SET_EVENT_WIDTH(ev, width) ev.value = ((ev.value << 16) >> 16) | (width << 16)
-#define SET_EVENT_HEIGHT(ev, height) ev.value = ((ev.value >> 16) << 16) | height
-#define GET_EVENT_KEY(ev) (KEY)((ev.value << 1) >> 1)
-#define SET_EVENT_KEY(ev, key) ev.value = (uint32)key
+#include "..\System\KeyCodes.h"
 
 namespace RayEngine
 {
 	namespace System
 	{
-		enum EVENT_TYPE : uint8
+		enum EVENT_TYPE : int8
 		{
 			EVENT_TYPE_UNKNOWN = 0,
 			EVENT_TYPE_QUIT = 1,
 			EVENT_TYPE_RESIZE = 2,
 			EVENT_TYPE_KEYPRESSED = 3,
 			EVENT_TYPE_KEYRELEASED = 4,
+			EVENT_TYPE_DESTROYED = 5,
+		};
+
+		enum EVENT_RESIZE : int8
+		{
+			EVENT_RESIZE_UNKNOWN = 0,
+			EVENT_RESIZE_NEW_SIZE = 1,
+			EVENT_RESIZE_MAXIMIZED = 2,
+			EVENT_RESIZE_MINIMIZED = 3,
 		};
 
 		struct Event
 		{
 		public:
-			Event();
-			Event(EVENT type, uint32 value);
+			Event(EVENT_TYPE type = EVENT_TYPE_UNKNOWN, int64 value = 0);
 
 			bool operator==(const Event& other) const;
 			bool operator!=(const Event& other) const;
 
 		public:
-			EVENT type = EVENT_UNKNOWN;
-			uint32 value = 0;
+			EVENT_TYPE type;
+			
+			union 
+			{
+				//Value to set everything to zero
+				int64 value;
+
+				//Struct that contains different parameters
+				struct
+				{
+					union 
+					{
+						EVENT_RESIZE resizeType;
+						KEY keyCode;
+					};
+
+					union
+					{
+						int16 height;
+						int16 keyRepeatCount;
+					};
+
+					union
+					{
+						int16 width;
+						bool keyExtended;
+					};
+				};
+			};
 		};
 	}
 }

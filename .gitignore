@@ -1,1 +1,5 @@
 ﻿*.ipch
+/.vs/RayEngine/v15
+/RayEngineFramework/x64/Debug
+/RayEngineMath/x64/Debug
+/Samples/WindowSample/x64/Debug

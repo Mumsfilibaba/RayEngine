@@ -14,8 +14,16 @@ namespace RayEngine
 
 	//define if we are using ascii or unicode
 #ifdef UNICODE
-	typedef wchar_t TChar;
+	typedef wchar_t Tchar;
 #else
-	typedef char TChar;
+	typedef char Tchar;
 #endif
+
+	//Defines formats for buffers
+	enum FORMAT
+	{
+		FORMAT_UNKNOWN = 0,
+		FORMAT_R8G8B8A8_UINT = 1,
+		FORMAT_R32G32B32A32_FLOAT = 2,
+	};
 }
