@@ -133,6 +133,7 @@
     <ClInclude Include="Dependencies\stb_image_write.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
+    <ClInclude Include="Include\Network\Socket.h" />
     <ClInclude Include="Include\System\Cursor.h" />
     <ClInclude Include="Include\System\Event.h" />
     <ClInclude Include="Include\System\Icon.h" />
@@ -141,11 +142,13 @@
     <ClInclude Include="Include\System\Window.h" />
     <ClInclude Include="Include\Win32\Win32CursorImpl.h" />
     <ClInclude Include="Include\Win32\Win32IconImpl.h" />
+    <ClInclude Include="Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="Source\Win32\Win32Bitmap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />
+    <ClCompile Include="Source\Network\Socket.cpp" />
     <ClCompile Include="Source\System\Cursor.cpp" />
     <ClCompile Include="Source\System\Event.cpp" />
     <ClCompile Include="Source\System\Icon.cpp" />
@@ -153,6 +156,7 @@
     <ClCompile Include="Source\Win32\Win32Bitmap.cpp" />
     <ClCompile Include="Source\Win32\Win32CursorImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32IconImpl.cpp" />
+    <ClCompile Include="Source\Win32\Win32SocketImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32WindowImpl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
