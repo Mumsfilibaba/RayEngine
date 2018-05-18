@@ -3,6 +3,8 @@
 //Define platform
 #if defined(_WIN32) || defined(_WIN64)
 #define RE_PLATFORM_WINDOWS
+#elif defined(_ANDROID)
+#define RE_PLATFORM_ANDROID
 #else
 #error RayEngine needs to have a platform defined
 #endif

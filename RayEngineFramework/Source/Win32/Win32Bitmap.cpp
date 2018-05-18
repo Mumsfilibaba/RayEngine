@@ -1,6 +1,7 @@
 #include "..\..\Include\Graphics\TextureLoader.h"
 #include "Win32Bitmap.h"
 
+#if defined (RE_PLATFORM_WINDOWS)
 namespace RayEngine
 {
 	Win32Bitmap::Win32Bitmap(int32 width, int32 height, const uint8* pixels)
@@ -113,3 +114,4 @@ namespace RayEngine
 		m_Hmask = CreateBitmap(width, height, 1, 1, 0);
 	}
 }
+#endif

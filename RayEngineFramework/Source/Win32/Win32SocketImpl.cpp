@@ -1,5 +1,7 @@
 #include "..\..\Include\Win32\Win32SocketImpl.h"
 
+#if defined (RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Network
@@ -22,10 +24,10 @@ namespace RayEngine
 			else if (sock == SOCK_DGRAM)
 				type = SOCK_DGRAM;
 
-			m_Socket = socket(AF_INET, type, );
+			//m_Socket = socket(AF_INET, type, );
 			return false;
 		}
-
-
 	}
 }
+
+#endif

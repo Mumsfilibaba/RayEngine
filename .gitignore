@@ -3,3 +3,14 @@
 /RayEngineFramework/x64/Debug
 /RayEngineMath/x64/Debug
 /Samples/WindowSample/x64/Debug
+*.o
+*.tlog
+*.log
+*.so
+*.a
+*.recipe
+*.cache
+TestApp/TestApp.Packaging/x86/Debug/Package/bin/TestApp.Packaging.ap_
+*.d
+TestApp/TestApp.Packaging/x86/Debug/Package/build.xml
+TestApp/TestApp.Packaging/x86/Debug/Package/libs/x86/gdbserver

@@ -1,8 +1,9 @@
 #include "..\..\Include\System\Window.h"
 #include <cassert>
 
-#ifdef RE_PLATFORM_WINDOWS
+#if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\Win32\Win32WindowImpl.h"
+#elif defined(RE_PLATFORM_ANDROID)
 #else
 #error RayEngine needs to have a platform defined
 #endif

@@ -83,6 +83,7 @@ namespace RayEngine
 
 		bool SocketIPv4::RecvFrom() const
 		{
+			return false;
 		}
 
 		bool SocketIPv4::IsValid() const

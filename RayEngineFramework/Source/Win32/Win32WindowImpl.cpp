@@ -2,6 +2,8 @@
 #include "..\..\Include\Win32\Win32IconImpl.h"
 #include "..\..\Include\Win32\Win32CursorImpl.h"
 
+#if defined (RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace System
@@ -335,3 +337,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

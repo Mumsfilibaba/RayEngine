@@ -34,6 +34,39 @@
       <Platform>x86</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image.h" />
+    <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image_resize.h" />
+    <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image_write.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Defines.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Graphics\TextureLoader.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Network\Socket.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\System\Cursor.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\System\Event.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\System\Icon.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\System\KeyCodes.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\System\Window.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Types.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32CursorImpl.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32IconImpl.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32SocketImpl.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32WindowImpl.h" />
+    <ClInclude Include="..\RayEngineFramework\Source\Win32\Win32Bitmap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\RayEngineFramework\Source\Android\AndroidAppState.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Graphics\TextureLoader.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Network\Socket.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\System\Cursor.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\System\Event.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\System\Icon.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\System\Window.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32Bitmap.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32CursorImpl.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32IconImpl.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32SocketImpl.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32WindowImpl.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{341103c7-6f3e-4f16-b3be-21c88b51a7e5}</ProjectGuid>
     <Keyword>Android</Keyword>
@@ -47,6 +80,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+    <AndroidAPILevel>android-24</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>

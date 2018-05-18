@@ -1,6 +1,9 @@
 #pragma once
-#include "..\..\Include\Types.h"
+
 #include "..\..\Include\Defines.h"
+#if defined (RE_PLATFORM_WINDOWS)
+
+#include "..\..\Include\Types.h"
 #define WIN32_LEAN_AND_MEAN 1
 #include <Windows.h>
 
@@ -34,3 +37,4 @@ namespace RayEngine
 		HBITMAP m_Hbitmap;
 	};
 }
+#endif

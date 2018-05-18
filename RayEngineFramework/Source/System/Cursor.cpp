@@ -3,6 +3,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\Win32\Win32CursorImpl.h"
+#elif defined(RE_PLATFORM_ANDROID)
 #else
 #error RayEngine needs a platform to be defined
 #endif

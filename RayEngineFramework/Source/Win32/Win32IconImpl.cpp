@@ -1,6 +1,7 @@
 #include "..\..\Include\Win32\Win32IconImpl.h"
 #include "Win32Bitmap.h"
 
+#if defined (RE_PLATFORM_WINDOWS)
 namespace RayEngine
 {
 	namespace System
@@ -103,3 +104,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

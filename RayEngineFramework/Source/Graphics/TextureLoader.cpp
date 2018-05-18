@@ -3,7 +3,11 @@
 #define STBI_NO_GIF
 #define STBI_NO_PIC
 #define STBI_NO_PNM
+#if !defined(RE_PLATFORM_ANDROID)
 #define STBI_MSC_SECURE_CRT
+#else
+#define STBI_NO_SIMD
+#endif
 #define STB_IMAGE_IMPLEMENTATION
 #include "..\..\Dependencies\stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -61,8 +65,6 @@ namespace RayEngine
 
 		//Full path to file
 		Tstring fullpath = filepath + Tstring(filename);
-		//void ptr to loaded memory
-		const void* data = nullptr;
 		//dimensions of image
 		int32 wi = 0;
 		int32 he = 0;
@@ -71,7 +73,7 @@ namespace RayEngine
 		//Load based on format
 		if (format == FORMAT_R8G8B8A8_UINT)
 		{
-			data = static_cast<const void*>(stbi_load(fullpath.c_str(), &wi, &he, &components, 4));
+			const uint8* data = static_cast<const uint8*>(stbi_load(fullpath.c_str(), &wi, &he, &components, 4));
 			//if succeeded set data
 			if (data != nullptr)
 			{
@@ -83,7 +85,7 @@ namespace RayEngine
 					uint8* output = new uint8[outWi * outHe * 4];
 
 					//Resize image
-					int32 res = stbir_resize_uint8(reinterpret_cast<const uint8*>(data), wi, he, 0, output, outWi, outHe, 0, 4);
+					int32 res = stbir_resize_uint8(data, wi, he, 0, output, outWi, outHe, 0, 4);
 					
 					//delete old data no matter what
 					delete[] data;
@@ -110,7 +112,7 @@ namespace RayEngine
 		}
 		else if (format == FORMAT_R32G32B32A32_FLOAT)
 		{
-			data = static_cast<const void*>(stbi_loadf(fullpath.c_str(), &wi, &he, &components, 4));
+			const float* data = stbi_loadf(fullpath.c_str(), &wi, &he, &components, 4);
 			//if succeeded set data
 			if (data != nullptr)
 			{

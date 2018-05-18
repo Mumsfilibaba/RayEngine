@@ -1,4 +1,8 @@
 #pragma once
+
+#include "..\..\Include\Defines.h"
+#if defined (RE_PLATFORM_WINDOWS)
+
 #include "..\System\Cursor.h"
 #define WIN32_LEAN_AND_MEAN 1
 #include <Windows.h>
@@ -34,3 +38,4 @@ namespace RayEngine
 		};
 	}
 }
+#endif
