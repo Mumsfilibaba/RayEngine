@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowSample", "Samples\Win
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayEngineMathAndroid", "RayEngineMathAndroid\RayEngineMathAndroid.vcxproj", "{E6216AB3-C9E8-458C-B0B2-0960D58AD61C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayEngineFrameworkAndroid", "RayEngineFrameworkAndroid\RayEngineFrameworkAndroid.vcxproj", "{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -77,6 +79,22 @@ Global
 		{E6216AB3-C9E8-458C-B0B2-0960D58AD61C}.Release|x64.Build.0 = Release|x64
 		{E6216AB3-C9E8-458C-B0B2-0960D58AD61C}.Release|x86.ActiveCfg = Release|x86
 		{E6216AB3-C9E8-458C-B0B2-0960D58AD61C}.Release|x86.Build.0 = Release|x86
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|ARM.ActiveCfg = Debug|ARM
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|ARM.Build.0 = Debug|ARM
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|ARM64.Build.0 = Debug|ARM64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|x64.ActiveCfg = Debug|x64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|x64.Build.0 = Debug|x64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|x86.ActiveCfg = Debug|x86
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Debug|x86.Build.0 = Debug|x86
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|ARM.ActiveCfg = Release|ARM
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|ARM.Build.0 = Release|ARM
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|ARM64.ActiveCfg = Release|ARM64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|ARM64.Build.0 = Release|ARM64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|x64.ActiveCfg = Release|x64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|x64.Build.0 = Release|x64
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|x86.ActiveCfg = Release|x86
+		{341103C7-6F3E-4F16-B3BE-21C88B51A7E5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
