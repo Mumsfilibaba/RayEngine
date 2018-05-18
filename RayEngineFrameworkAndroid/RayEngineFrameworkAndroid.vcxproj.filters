@@ -18,6 +18,7 @@
     <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="..\RayEngineFramework\Source\Win32\Win32Bitmap.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Android\AndroidAppState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RayEngineFramework\Source\Android\AndroidAppState.cpp" />

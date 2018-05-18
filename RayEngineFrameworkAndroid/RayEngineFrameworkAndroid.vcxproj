@@ -38,6 +38,7 @@
     <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image.h" />
     <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image_resize.h" />
     <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image_write.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Android\AndroidAppState.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Defines.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Graphics\TextureLoader.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Network\Socket.h" />
