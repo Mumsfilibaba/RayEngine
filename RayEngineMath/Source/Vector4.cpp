@@ -1,4 +1,7 @@
 #include "..\Include\Math\Vector4.h"
+#if defined(_ANDROID)
+#include <sstream>
+#endif
 #include <cassert>
 
 namespace Math
@@ -172,8 +175,14 @@ namespace Math
 
 	std::string Vector4::ToString() const
 	{
+#if defined(_ANDROID)
+		std::stringstream stream;
+		stream << '[' << x << ", " << y << ", " << z << ", " << w << ']';
+		return stream.str();
+#else
 		using namespace std;
 		return string('[' + to_string(x) + ", " + to_string(y) + ", " + to_string(z) + ", " + to_string(w) + ']');
+#endif
 	}
 
 

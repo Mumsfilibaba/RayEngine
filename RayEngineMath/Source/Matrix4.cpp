@@ -81,7 +81,7 @@ namespace Math
 
 	Matrix4& Matrix4::Multiply(float scalar)
 	{
-		for (char i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++)
 			m[i] *= scalar;
 
 		return *this;
@@ -89,7 +89,7 @@ namespace Math
 
 	Matrix4& Matrix4::Add(const Matrix4& other)
 	{
-		for (char i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++)
 			m[i] += other.m[i];
 
 		return *this;
@@ -97,7 +97,7 @@ namespace Math
 
 	Matrix4& Matrix4::Add(float scalar)
 	{
-		for (char i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++)
 			m[i] += scalar;
 
 		return *this;
@@ -105,7 +105,7 @@ namespace Math
 
 	Matrix4& Matrix4::Subtract(const Matrix4& other)
 	{
-		for (char i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++)
 			m[i] -= other.m[i];
 
 		return *this;
@@ -113,7 +113,7 @@ namespace Math
 
 	Matrix4& Matrix4::Subtract(float scalar)
 	{
-		for (char i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++)
 			m[i] -= scalar;
 
 		return *this;
@@ -121,7 +121,7 @@ namespace Math
 
 	Matrix4& Matrix4::Divide(float scalar)
 	{
-		for (char i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++)
 			m[i] /= scalar;
 
 		return *this;
@@ -131,7 +131,7 @@ namespace Math
 
 	bool Matrix4::Equals(const Matrix4& other) const
 	{
-		for (char i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++)
 		{
 			if (m[i] != other.m[i])
 				return false;

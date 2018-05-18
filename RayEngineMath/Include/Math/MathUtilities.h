@@ -9,6 +9,12 @@
 
 #include <cmath>
 
+#if defined(_ANDROID)
+#define forceinline
+#elif defined(_WIN32) || defined(_WIN64)
+#define forceinline __forceinline
+#endif
+
 namespace Math
 {
 	double to_degrees(double degrees);

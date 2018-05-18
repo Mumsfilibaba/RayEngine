@@ -1,4 +1,5 @@
 #include "..\Include\Math\Matrix3.h"
+
 #include <cassert>
 
 namespace Math
@@ -68,7 +69,7 @@ namespace Math
 
 	Matrix3& Matrix3::Multiply(float scalar)
 	{
-		for (char i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 			m[i] *= scalar;
 
 		return *this;
@@ -78,7 +79,7 @@ namespace Math
 
 	Matrix3& Matrix3::Add(const Matrix3& other)
 	{
-		for (char i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 			m[i] += other.m[i];
 
 		return *this;
@@ -86,7 +87,7 @@ namespace Math
 
 	Matrix3& Matrix3::Add(float scalar)
 	{
-		for (char i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 			m[i] += scalar;
 
 		return *this;
@@ -96,7 +97,7 @@ namespace Math
 
 	Matrix3& Matrix3::Subtract(const Matrix3& other)
 	{
-		for (char i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 			m[i] -= other.m[i];
 
 		return *this;
@@ -104,7 +105,7 @@ namespace Math
 
 	Matrix3& Matrix3::Subtract(float scalar)
 	{
-		for (char i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 			m[i] -= scalar;
 
 		return *this;
@@ -114,7 +115,7 @@ namespace Math
 
 	Matrix3& Matrix3::Divide(float scalar)
 	{
-		for (char i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 			m[i] /= scalar;
 
 		return *this;
@@ -124,7 +125,7 @@ namespace Math
 
 	bool Matrix3::Equals(const Matrix3& other) const
 	{
-		for (char i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 		{
 			if (m[i] != other.m[i])
 				return false;

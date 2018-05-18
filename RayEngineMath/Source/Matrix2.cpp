@@ -57,7 +57,7 @@ namespace Math
 
 	Matrix2& Matrix2::Multiply(float scalar)
 	{
-		for (char i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			m[i] *= scalar;
 
 		return *this;
@@ -67,7 +67,7 @@ namespace Math
 
 	Matrix2& Matrix2::Add(const Matrix2& other)
 	{
-		for (char i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			m[i] += other.m[i];
 
 		return *this;
@@ -75,7 +75,7 @@ namespace Math
 
 	Matrix2& Matrix2::Add(float scalar)
 	{
-		for (char i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			m[i] += scalar;
 
 		return *this;
@@ -85,7 +85,7 @@ namespace Math
 
 	Matrix2& Matrix2::Subtract(const Matrix2& other)
 	{
-		for (char i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			m[i] -= other.m[i];
 
 		return *this;
@@ -93,7 +93,7 @@ namespace Math
 
 	Matrix2& Matrix2::Subtract(float scalar)
 	{
-		for (char i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			m[i] -= scalar;
 
 		return *this;
@@ -103,7 +103,7 @@ namespace Math
 
 	Matrix2& Matrix2::Divide(float scalar)
 	{
-		for (char i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			m[i] /= scalar;
 
 		return *this;
@@ -113,7 +113,7 @@ namespace Math
 
 	bool Matrix2::Equals(const Matrix2& other) const
 	{
-		for (char i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			if (m[i] != other.m[i])
 				return false;

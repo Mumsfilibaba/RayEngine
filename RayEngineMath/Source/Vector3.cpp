@@ -1,4 +1,7 @@
 #include "..\Include\Math\Vector3.h"
+#if defined(_ANDROID)
+#include <sstream>
+#endif
 #include <cassert>
 
 namespace Math
@@ -168,8 +171,14 @@ namespace Math
 
 	std::string Vector3::ToString() const
 	{
+#if defined(_ANDROID)
+		std::stringstream stream;
+		stream << '[' << x << ", " << y << ", " << z << ']';
+		return stream.str();
+#else
 		using namespace std;
 		return string('[' + to_string(x) + ", " + to_string(y) + ", " + to_string(z) + ']');
+#endif
 	}
 
 

@@ -71,13 +71,8 @@ namespace Math
 				float w;
 			};
 
-			struct
-			{
-				Vector3 xyz;
-				float w;
-			};
-
 			float v[4];
+			Vector3 xyz;
 		};
 	};
 }
