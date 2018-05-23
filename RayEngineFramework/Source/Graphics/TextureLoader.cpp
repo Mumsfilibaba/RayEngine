@@ -1,4 +1,5 @@
 #include "..\..\Include\Graphics\TextureLoader.h"
+
 #define STBI_NO_PSD
 #define STBI_NO_GIF
 #define STBI_NO_PIC

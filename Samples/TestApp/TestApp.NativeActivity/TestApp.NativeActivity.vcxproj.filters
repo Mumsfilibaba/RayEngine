@@ -5,6 +5,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
 </Project>

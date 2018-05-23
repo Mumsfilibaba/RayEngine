@@ -38,7 +38,7 @@
     <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image.h" />
     <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image_resize.h" />
     <ClInclude Include="..\RayEngineFramework\Dependencies\stb_image_write.h" />
-    <ClInclude Include="..\RayEngineFramework\Include\Android\AndroidAppState.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Android\Android.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Defines.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Graphics\TextureLoader.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Network\Socket.h" />
@@ -55,8 +55,9 @@
     <ClInclude Include="..\RayEngineFramework\Source\Win32\Win32Bitmap.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\RayEngineFramework\Source\Android\AndroidAppState.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Graphics\TextureLoader.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Main\MainAndroid.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Main\MainWin32.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Network\Socket.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\System\Cursor.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\System\Event.cpp" />
@@ -91,8 +92,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
     <AndroidAPILevel>android-24</AndroidAPILevel>
+    <UseOfStl>gnustl_static</UseOfStl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -129,6 +131,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <TargetExt>.a</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
   </PropertyGroup>
@@ -159,7 +162,13 @@
       </PrecompiledHeaderFile>
       <PreprocessorDefinitions>_ANDROID</PreprocessorDefinitions>
       <CppLanguageStandard>c++11</CppLanguageStandard>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
+    <Lib>
+      <CreateIndex>true</CreateIndex>
+      <AdditionalOptions>-lm</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>

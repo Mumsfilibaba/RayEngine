@@ -391,7 +391,7 @@ STBIRDEF int stbir_resize_region(  const void *input_pixels , int input_w , int 
 // For memset
 #include <string.h>
 
-#include <math.h>
+#include <cmath>
 
 #ifndef STBIR_MALLOC
 #include <stdlib.h>

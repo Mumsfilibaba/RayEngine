@@ -18,10 +18,9 @@
     <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="..\RayEngineFramework\Source\Win32\Win32Bitmap.h" />
-    <ClInclude Include="..\RayEngineFramework\Include\Android\AndroidAppState.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Android\Android.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\RayEngineFramework\Source\Android\AndroidAppState.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Graphics\TextureLoader.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Network\Socket.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\System\Cursor.cpp" />
@@ -33,5 +32,7 @@
     <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32IconImpl.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32SocketImpl.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32WindowImpl.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Main\MainAndroid.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Main\MainWin32.cpp" />
   </ItemGroup>
 </Project>
