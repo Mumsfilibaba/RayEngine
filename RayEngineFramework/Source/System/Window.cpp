@@ -4,6 +4,7 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\Win32\Win32WindowImpl.h"
 #elif defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\Android\AndroidWindowImpl.h"
 #else
 #error RayEngine needs to have a platform defined
 #endif
@@ -15,8 +16,10 @@ namespace RayEngine
 		Window::Window(const WindowDesc& desc)
 			: m_Impl(nullptr)
 		{
-#ifdef RE_PLATFORM_WINDOWS
+#if defined(RE_PLATFORM_WINDOWS)
 			m_Impl = new Win32WindowImpl();
+#elif defined(RE_PLATFORM_ANDROID)
+			m_Impl = new AndroidWindowImpl();
 #endif
 			if (m_Impl != nullptr)
 				m_Impl->Create(desc);

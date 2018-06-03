@@ -9,6 +9,10 @@
 #error RayEngine needs to have a platform defined
 #endif
 
+#if defined(_DEBUG)
+#define RE_DEBUG
+#endif
+
 //define if we are using ascii or unicode
 #if defined(UNICODE)
 #define RE_T(x) Lx

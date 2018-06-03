@@ -132,6 +132,7 @@
     <ClInclude Include="Dependencies\stb_image_resize.h" />
     <ClInclude Include="Dependencies\stb_image_write.h" />
     <ClInclude Include="Include\Android\Android.h" />
+    <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
     <ClInclude Include="Include\Network\Socket.h" />
@@ -148,6 +149,8 @@
     <ClInclude Include="Source\Win32\Win32Bitmap.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Android\Android.cpp" />
+    <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />
     <ClCompile Include="Source\Main\MainAndroid.cpp" />
     <ClCompile Include="Source\Main\MainWin32.cpp" />

@@ -19,6 +19,7 @@
     <ClInclude Include="..\RayEngineFramework\Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="..\RayEngineFramework\Source\Win32\Win32Bitmap.h" />
     <ClInclude Include="..\RayEngineFramework\Include\Android\Android.h" />
+    <ClInclude Include="..\RayEngineFramework\Include\Android\AndroidWindowImpl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RayEngineFramework\Source\Graphics\TextureLoader.cpp" />
@@ -34,5 +35,7 @@
     <ClCompile Include="..\RayEngineFramework\Source\Win32\Win32WindowImpl.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Main\MainAndroid.cpp" />
     <ClCompile Include="..\RayEngineFramework\Source\Main\MainWin32.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Android\Android.cpp" />
+    <ClCompile Include="..\RayEngineFramework\Source\Android\AndroidWindowImpl.cpp" />
   </ItemGroup>
 </Project>

@@ -8,13 +8,25 @@ namespace RayEngine
 {
 	namespace System
 	{
+		enum WINDOWSTYLE
+		{
+			WINDOWSTYLE_UNKNOWN = 0,
+			WINDOWSTYLE_BORDERLESS = 1,
+			WINDOWSTYLE_FULLSCREEN = 2,
+			WINDOWSTYLE_WINDOW = 3,
+		};
+
 		//Struct to decribe a window
 		struct WindowDesc
 		{
-			const Tchar* title = RE_T("Window");
-			int32 width = 800;
-			int32 height = 600;
+			const Tchar* Title = RE_T("Window");
+			int32 Width = 800;
+			int32 Height = 600;
+			int32 Style = WINDOWSTYLE_BORDERLESS;
 			//Position - '-1' indicates in the middle
+
+			//TODO: Create Application class to retrive desktop size so that 
+			//user can use that to retrive sixe and position were he wants
 			int32 x = -1;
 			int32 y = -1;
 			//Color
@@ -23,7 +35,9 @@ namespace RayEngine
 				uint8 r = 0;
 				uint8 g = 0;
 				uint8 b = 0;
-			} color;
+			} Color;
+
+			//TODO: Have Bitmap class for both cursor and icon
 			Icon icon;
 			Cursor cursor;
 		};

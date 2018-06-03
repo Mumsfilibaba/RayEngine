@@ -53,8 +53,8 @@ namespace RayEngine
 				if (msg.message == WM_QUIT)
 				{
 					Event ev;
-					ev.type = EVENT_TYPE_QUIT;
-					ev.value = static_cast<int64>(msg.wParam);
+					ev.Type = EVENT_TYPE_QUIT;
+					ev.Value = static_cast<int64>(msg.wParam);
 
 					PushEvent(ev);
 				}
@@ -94,8 +94,8 @@ namespace RayEngine
 			else
 			{
 				//If the message is a quit message
-				pEvent.type = EVENT_TYPE_QUIT;
-				pEvent.value = static_cast<int64>(msg.wParam);
+				pEvent.Type = EVENT_TYPE_QUIT;
+				pEvent.Value = static_cast<int64>(msg.wParam);
 			}
 		}
 
@@ -191,7 +191,7 @@ namespace RayEngine
 			int32 err = 0;
 
 			//Create background brush
-			m_BgBrush = CreateSolidBrush(RGB(desc.color.r, desc.color.g, desc.color.b));
+			m_BgBrush = CreateSolidBrush(RGB(desc.Color.r, desc.Color.g, desc.Color.b));
 			
 			//Register the windowclass
 			if (registerWindow)
@@ -220,7 +220,7 @@ namespace RayEngine
 			//TODO: Custom style
 			int32 windowStyle = WS_OVERLAPPEDWINDOW;
 
-			RECT client = { 0, 0, static_cast<LONG>(desc.width), static_cast<LONG>(desc.height) };
+			RECT client = { 0, 0, static_cast<LONG>(desc.Width), static_cast<LONG>(desc.Height) };
 			AdjustWindowRect(&client, windowStyle, false);
 
 			int32 posX = (desc.x >= 0) ? desc.x : (GetSystemMetrics(SM_CXSCREEN) - (client.right - client.left)) / 2;
@@ -228,7 +228,7 @@ namespace RayEngine
 
 			//TODO: Custom style
 			SetLastError(0);
-			m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, desc.title, windowStyle, posX, posY, client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
+			m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, desc.Title, windowStyle, posX, posY, client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
 			if (m_Hwnd == 0)
 			{
 				err = GetLastError();
@@ -290,32 +290,32 @@ namespace RayEngine
 				return static_cast<LRESULT>(1);
 			}
 			case WM_KEYDOWN:
-				ev.type = EVENT_TYPE_KEYPRESSED;
-				ev.keyCode = static_cast<KEY>(wParam);
-				ev.keyRepeatCount = LOWORD(lParam);
-				ev.keyExtended = lParam & (1 << 24);
+				ev.Type = EVENT_TYPE_KEYPRESSED;
+				ev.KeyCode = static_cast<KEY>(wParam);
+				ev.KeyRepeatCount = LOWORD(lParam);
+				ev.KeyExtended = lParam & (1 << 24);
 				break;
 			case WM_KEYUP:
-				ev.type = EVENT_TYPE_KEYRELEASED;
-				ev.keyCode = static_cast<KEY>(wParam);
-				ev.keyRepeatCount = 1;
-				ev.keyExtended = lParam & (1 << 24);
+				ev.Type = EVENT_TYPE_KEYRELEASED;
+				ev.KeyCode = static_cast<KEY>(wParam);
+				ev.KeyRepeatCount = 1;
+				ev.KeyExtended = lParam & (1 << 24);
 				break;
 			case WM_SIZE:
-				ev.type = EVENT_TYPE_RESIZE;
+				ev.Type = EVENT_TYPE_RESIZE;
 				//New size
-				ev.width = LOWORD(lParam);
-				ev.height = HIWORD(lParam);
+				ev.Width = LOWORD(lParam);
+				ev.Height = HIWORD(lParam);
 				//If it was maximized, minimized or normal resize
 				if (wParam == SIZE_MAXIMIZED)
-					ev.resizeType = EVENT_RESIZE_MAXIMIZED;
+					ev.ResizeType = EVENT_RESIZE_MAXIMIZED;
 				else if (wParam == SIZE_MINIMIZED)
-					ev.resizeType = EVENT_RESIZE_MINIMIZED;
+					ev.ResizeType = EVENT_RESIZE_MINIMIZED;
 				else
-					ev.resizeType = EVENT_RESIZE_NEW_SIZE;
+					ev.ResizeType = EVENT_RESIZE_NEW_SIZE;
 				break;
 			case WM_DESTROY:
-				ev.type = EVENT_TYPE_DESTROYED;
+				ev.Type = EVENT_TYPE_DESTROYED;
 				break;
 			default: 
 				return DefWindowProc(hWnd, msg, wParam, lParam);

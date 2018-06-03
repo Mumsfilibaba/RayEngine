@@ -39,22 +39,29 @@ namespace RayEngine
 		}
 
 		Icon::Icon(Icon&& other)
-			: m_Impl(nullptr)
+			: m_Impl(other.m_Impl)
 		{
-			m_Impl = other.m_Impl;
 			other.m_Impl = nullptr;
 		}
 
 		bool Icon::LoadFromFile(const Tchar* const filename, const Tchar* const filepath)
 		{
+#if !defined(RE_PLATFORM_ANDROID)
 			assert(m_Impl != nullptr);
 			return m_Impl->LoadFromFile(filename, filepath);
+#else
+			return false;
+#endif
 		}
 
 		bool Icon::LoadFromOS(STANDARD_ICON icon)
 		{
+#if !defined(RE_PLATFORM_ANDROID)
 			assert(m_Impl != nullptr);
 			return m_Impl->LoadFromOS(icon);
+#else
+			return false;
+#endif
 		}
 
 		const IconImpl* Icon::GetImplementation() const

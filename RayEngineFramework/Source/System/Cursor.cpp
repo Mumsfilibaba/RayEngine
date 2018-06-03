@@ -44,14 +44,22 @@ namespace RayEngine
 
 		bool Cursor::LoadFromFile(const Tchar* filename, const Tchar* filepath, int32 x, int32 y)
 		{
+#if !defined(RE_PLATFORM_ANDROID)
 			assert(m_Impl != nullptr);
 			return m_Impl->LoadFromFile(filename, filepath, x, y);
+#else
+			return false;
+#endif
 		}
 
 		bool Cursor::LoadFromOS(STANDARD_CURSOR cursor)
 		{
+#if !defined(RE_PLATFORM_ANDROID)
 			assert(m_Impl != nullptr);
 			return m_Impl->LoadFromOS(cursor);
+#else
+			return false;
+#endif
 		}
 
 		const CursorImpl* Cursor::GetImplementation() const

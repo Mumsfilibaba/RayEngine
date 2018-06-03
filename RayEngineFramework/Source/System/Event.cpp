@@ -5,14 +5,14 @@ namespace RayEngine
 	namespace System
 	{
 		Event::Event(EVENT_TYPE type, int64 value)
-			: type(type),
-			value(value)
+			: Type(type),
+			Value(value)
 		{
 		}
 
 		bool Event::operator==(const Event& other) const
 		{
-			return (type == other.type) && (value == other.value);
+			return (Type == other.Type) && (Value == other.Value);
 		}
 
 		bool Event::operator!=(const Event& other) const

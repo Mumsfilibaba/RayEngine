@@ -8,7 +8,7 @@ namespace RayEngine
 {
 	namespace System
 	{
-		enum EVENT_TYPE : int8
+		enum EVENT_TYPE
 		{
 			EVENT_TYPE_UNKNOWN = 0,
 			EVENT_TYPE_QUIT = 1,
@@ -16,9 +16,11 @@ namespace RayEngine
 			EVENT_TYPE_KEYPRESSED = 3,
 			EVENT_TYPE_KEYRELEASED = 4,
 			EVENT_TYPE_DESTROYED = 5,
+			EVENT_TYPE_APP_PAUSED = 6,
+			EVENT_TYPE_APP_RESUMED = 7,
 		};
 
-		enum EVENT_RESIZE : int8
+		enum EVENT_RESIZE
 		{
 			EVENT_RESIZE_UNKNOWN = 0,
 			EVENT_RESIZE_NEW_SIZE = 1,
@@ -35,32 +37,32 @@ namespace RayEngine
 			bool operator!=(const Event& other) const;
 
 		public:
-			EVENT_TYPE type;
+			EVENT_TYPE Type;
 			
 			union 
 			{
 				//Value to set everything to zero
-				int64 value;
+				int64 Value;
 
 				//Struct that contains different parameters
 				struct
 				{
 					union 
 					{
-						EVENT_RESIZE resizeType;
-						KEY keyCode;
+						EVENT_RESIZE ResizeType;
+						KEY KeyCode;
 					};
 
 					union
 					{
-						int16 height;
-						int16 keyRepeatCount;
+						int16 Height;
+						int16 KeyRepeatCount;
 					};
 
 					union
 					{
-						int16 width;
-						bool keyExtended;
+						int16 Width;
+						bool KeyExtended;
 					};
 				};
 			};

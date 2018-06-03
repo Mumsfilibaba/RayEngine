@@ -26,4 +26,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 
 #endif //UNICODE or ASCII
 
-#endif //PLATFORM WINDOWS?
+#endif //PLATFORM WINDOWS
