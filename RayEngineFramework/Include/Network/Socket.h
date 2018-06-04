@@ -7,7 +7,7 @@ namespace RayEngine
 {
 	namespace Network
 	{
-		enum SOCK
+		enum RE_API SOCK
 		{
 			SOCK_UNKNOWN = 0,
 			SOCK_DGRAM = 1,
@@ -15,7 +15,7 @@ namespace RayEngine
 		};
 
 		//Implements an OS-Specific IPv4-Socket
-		class SocketIPv4Impl
+		class RE_API SocketIPv4Impl
 		{
 		public:
 			SocketIPv4Impl(SocketIPv4Impl&& other) = delete;
@@ -52,7 +52,7 @@ namespace RayEngine
 		};
 
 		//Wrapper for SocketIPv4Impl
-		class SocketIPv4
+		class RE_API SocketIPv4
 		{
 		private:
 			//Private default constructor

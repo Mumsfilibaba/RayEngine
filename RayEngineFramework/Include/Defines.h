@@ -9,6 +9,7 @@
 #error RayEngine needs to have a platform defined
 #endif
 
+//Define debugbuild
 #if defined(_DEBUG)
 #define RE_DEBUG
 #endif
@@ -18,4 +19,13 @@
 #define RE_T(x) Lx
 #else
 #define RE_T(x) x
+#endif
+
+//Define DLL-Export
+#if defined(RE_PLATFORM_WINDOWS)
+#if defined(RE_STATIC)
+#define RE_API
+#else
+#define RE_API __declspec(dllexport)
+#endif
 #endif
