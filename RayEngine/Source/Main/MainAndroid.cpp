@@ -37,9 +37,6 @@ extern int main(int args, char* argsv[]);
 //Struct for keeping global app variables
 struct App
 {
-	//App instance mutex
-	std::mutex Mutex;
-
 	//The activity pointer
 	ANativeActivity* Activity = nullptr;
 
@@ -58,6 +55,8 @@ struct App
 	std::queue<ANDROID_EVENT> Events;
 } app;
 
+//App instance mutex
+std::mutex mutex;
 
 
 /////////////////////////////////////////////////////////////
@@ -66,17 +65,11 @@ struct App
 
 bool AndroidAppHasFocus()
 {
-	//Lock app instance
-	app.Mutex.lock();
-
-	//Get focus
-	bool result = app.HasFocus;
-
-	//Unlock app instance
-	app.Mutex.unlock();
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
 	//Return local variable
-	return result;
+	return app.HasFocus;
 }
 
 
@@ -89,8 +82,8 @@ void AndroidSetNativeWindowColor(RayEngine::int32 color)
 {
 	using namespace RayEngine;
 
-	//Lock app instance
-	app.Mutex.lock();
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
 	if (app.WinWidth == 0 || app.WinHeight == 0)
 		return;
@@ -116,20 +109,17 @@ void AndroidSetNativeWindowColor(RayEngine::int32 color)
 			ANativeWindow_unlockAndPost(app.CurrentWindow);
 		}
 	}
-
-	//Unlock app instance
-	app.Mutex.unlock();
 }
 
 void AndroidSetNativeWindowSize(RayEngine::int32 width, RayEngine::int32 height)
 {
 	using namespace RayEngine;
 
-	//Lock app instance
-	app.Mutex.lock();
-
 	if (width == 0 || height == 0)
 		return;
+
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
 	app.WinWidth = width;
 	app.WinHeight = height;
@@ -142,28 +132,22 @@ void AndroidSetNativeWindowSize(RayEngine::int32 width, RayEngine::int32 height)
 		if (w != width && h != height)
 			ANativeWindow_setBuffersGeometry(app.CurrentWindow, app.WinWidth, app.WinHeight, 0);
 	}
-
-	//Unlock app instance
-	app.Mutex.unlock();
 }
 
 void AndroidSetNativeWindowFlags(RayEngine::uint32 addFlags, RayEngine::uint32 removeFlags)
 {
 	using namespace RayEngine;
 
-	//Lock app instance
-	app.Mutex.lock();
-
 	if (addFlags == 0 && removeFlags)
 		return;
+
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
 	if (app.Activity != nullptr)
 	{
 		ANativeActivity_setWindowFlags(app.Activity, addFlags, removeFlags);
 	}
-
-	//Unlock app instance
-	app.Mutex.unlock();
 }
 
 
@@ -174,12 +158,12 @@ void AndroidSetNativeWindowFlags(RayEngine::uint32 addFlags, RayEngine::uint32 r
 
 //recive_event
 ANDROID_EVENT AndroidReciveEvent()
-{
-	//Get first event and pop
-	ANDROID_EVENT event = ANDROID_EVENT_UNKNOWN;
+{	
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
-	//Lock eventqueue
-	app.Mutex.lock();
+	//Get first event and pop threadsafe
+	ANDROID_EVENT event = ANDROID_EVENT_UNKNOWN;
 
 	if (!app.Events.empty())
 	{
@@ -187,23 +171,17 @@ ANDROID_EVENT AndroidReciveEvent()
 		app.Events.pop();
 	}
 
-	//unlock eventqueue
-	app.Mutex.unlock();
-
 	//Return event
 	return event;
 }
 
 void AndroidSendEvent(ANDROID_EVENT event)
 {
-	//Lock app instance
-	app.Mutex.lock();
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
 	//Push event threadsafe
 	app.Events.push(event);
-
-	//Unlock app instance
-	app.Mutex.unlock();
 }
 
 
@@ -222,29 +200,23 @@ void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 {
 	LOGI("onInputQueueCreated");
 
-	//Lock app instance
-	app.Mutex.lock();
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
 	//Set app's inputqueue
 	app.InputQueue = queue;
-
-	//Unlock app instance
-	app.Mutex.unlock();
 }
 
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
 	LOGI("onInputQueueDestroyed");
 
-	//Lock app instance
-	app.Mutex.lock();
+	//Lock
+	std::lock_guard<std::mutex> lock(mutex);
 
 	//Set inputqueue to nullptr;
 	if (queue == app.InputQueue)
 		app.InputQueue = nullptr;
-
-	//Unlock app instance
-	app.Mutex.unlock();
 }
 
 void onLowMemory(ANativeActivity* activity)
@@ -258,14 +230,14 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
 	LOGI("onNativeWindowCreated");
 
-	//Lock app instance
-	app.Mutex.lock();
+	//Lock mutex
+	mutex.lock();
 
 	//Set window
 	app.CurrentWindow = window;
 
-	//Unlock app instance
-	app.Mutex.unlock();
+	//Unlock mutex
+	mutex.unlock();
 
 	//Change color and size
 	AndroidSetNativeWindowSize(app.WinWidth, app.WinHeight);
@@ -279,15 +251,15 @@ void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 {
 	LOGI("onNativeWindowDestroyed");
 
-	//Lock app instance
-	app.Mutex.lock();
+	//Lock mutex
+	mutex.lock();
 
 	//Set window to nullptr
 	if (window == app.CurrentWindow)
 		app.CurrentWindow = nullptr;
 
-	//Unlock app instance
-	app.Mutex.unlock();
+	//Unlock mutex
+	mutex.unlock();
 
 	AndroidSendEvent(ANDROID_EVENT_WINDOW_DESTROYED);
 }
@@ -352,13 +324,14 @@ void onWindowFocusChanged(ANativeActivity* activity, int hasFocus)
 {
 	LOGI("onWindowFocusChanged");
 
-	//Lock app instance
-	app.Mutex.lock();
+	//Lock mutex
+	mutex.lock();
 
+	//Set if the app has focus
 	app.HasFocus = (hasFocus) ? true : false;
-
-	//Unlock app instance
-	app.Mutex.unlock();
+	
+	//Lock mutex
+	mutex.unlock();
 
 	AndroidSendEvent(ANDROID_EVENT_FOCUS_CHANGED);
 }
@@ -402,6 +375,7 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 	//Start main in a seperate detached thread 
 	std::thread mainThread(main, 0, nullptr);
 	mainThread.detach();
+	
 	return;
 }
 

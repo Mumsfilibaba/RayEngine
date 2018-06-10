@@ -2,7 +2,7 @@
 #include <assert.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-//#include "..\..\Include\Win32\Win32WindowImpl.h"
+#include "..\..\Include\Win32\Win32LogImpl.h"
 #elif defined(RE_PLATFORM_ANDROID)
 #include "..\..\Include\Android\AndroidLogImpl.h"
 #else
@@ -17,7 +17,7 @@ namespace RayEngine
 			: m_Impl(nullptr)
 		{
 #if defined(RE_PLATFORM_WINDOWS)
-			m_Impl = new Win32WindowImpl();
+			m_Impl = new Win32LogImpl();
 #elif defined(RE_PLATFORM_ANDROID)
 			m_Impl = new AndroidLogImpl();
 #endif
@@ -25,6 +25,11 @@ namespace RayEngine
 
 		Log::~Log()
 		{
+			if (m_Impl != nullptr)
+			{
+				delete m_Impl;
+				m_Impl = nullptr;
+			}
 		}
 
 		void Log::Write(LOG_SEVERITY severity, const Tchar* message, ...) const

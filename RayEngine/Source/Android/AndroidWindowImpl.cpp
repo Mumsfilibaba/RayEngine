@@ -25,20 +25,22 @@ namespace RayEngine
 		{
 		}
 
-		bool AndroidWindowImpl::Create(const WindowDesc& desc)
+		bool AndroidWindowImpl::Create(const WindowInfo& info)
 		{
 			//Set height and width
-			m_Width = desc.Width;
-			m_Height = desc.Height;
+			m_Width = info.Width;
+			m_Height = info.Height;
 
 			//Set color
-			m_Color = AndroidGetIntColor(desc.Color.r, desc.Color.g, desc.Color.b, 255);
+			m_Color = AndroidGetIntColor(info.Color.r, info.Color.g, info.Color.b, 255);
 
 			//Set window flags
-			//if (desc.Style == WINDOWSTYLE_FULLSCREEN)
-			//	m_Flags |= AWINDOW_FLAG_FULLSCREEN;
+			if (info.Flags & WINDOW_FLAG_APP_FULLSCREEN)
+				m_Flags |= AWINDOW_FLAG_FULLSCREEN;
+			if (info.Flags & WINDOW_FLAG_APP_NO_SLEEP)
+				m_Flags |= AWINDOW_FLAG_KEEP_SCREEN_ON;
 
-			return false;
+			return true;
 		}
 
 		void AndroidWindowImpl::Show() const
@@ -144,19 +146,19 @@ namespace RayEngine
 			return m_Height;
 		}
 
-		void AndroidWindowImpl::GetDesc(WindowDesc& desc) const
+		void AndroidWindowImpl::GetDesc(WindowInfo& info) const
 		{
-			desc.Width = m_Width;
-			desc.Height = m_Height;
+			info.Width = m_Width;
+			info.Height = m_Height;
 
-			desc.Color.r = (m_Color << 24) >> 24;
-			desc.Color.g = (m_Color << 16) >> 24;
-			desc.Color.b = (m_Color << 8) >> 24;
+			info.Color.r = (m_Color << 24) >> 24;
+			info.Color.g = (m_Color << 16) >> 24;
+			info.Color.b = (m_Color << 8) >> 24;
 
-			desc.Title = nullptr;
+			info.Title = nullptr;
 
-			desc.x = 0;
-			desc.y = 0;
+			info.x = 0;
+			info.y = 0;
 
 			return;
 		}

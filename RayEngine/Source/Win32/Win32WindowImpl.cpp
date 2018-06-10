@@ -135,7 +135,7 @@ namespace RayEngine
 		IWindowImpl* Win32WindowImpl::Copy() const
 		{
 			//Get desc
-			WindowDesc desc;
+			WindowInfo desc;
 			GetDesc(desc);
 
 			//Create new instance and create a copy of window
@@ -181,7 +181,7 @@ namespace RayEngine
 			return rect.bottom - rect.top;
 		}
 
-		void Win32WindowImpl::GetDesc(WindowDesc& desc) const
+		void Win32WindowImpl::GetDesc(WindowInfo& desc) const
 		{
 			GetWindowText(m_Hwnd, m_Title, 256);
 		}
@@ -196,7 +196,7 @@ namespace RayEngine
 			return m_Hinstance;
 		}
 
-		bool Win32WindowImpl::Create(const WindowDesc& desc)
+		bool Win32WindowImpl::Create(const WindowInfo& desc)
 		{
 			static bool registerWindow = true;
 

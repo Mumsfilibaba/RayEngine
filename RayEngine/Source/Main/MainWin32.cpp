@@ -6,6 +6,7 @@
 #endif
 
 #include <Windows.h>
+#include <crtdbg.h>
 
 extern int main(int args, char* argsv[]);
 
@@ -13,6 +14,8 @@ extern int main(int args, char* argsv[]);
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
+
 	return main(0, nullptr);
 }
 
@@ -20,6 +23,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
+
 	return main(0, nullptr);
 }
 

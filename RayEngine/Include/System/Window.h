@@ -15,8 +15,15 @@ namespace RayEngine
 			WINDOWSTYLE_WINDOW = 2,
 		};
 
+		enum WINDOW_FLAG
+		{
+			WINDOW_FLAG_NONE = 0,
+			WINDOW_FLAG_APP_FULLSCREEN = (1 << 0),
+			WINDOW_FLAG_APP_NO_SLEEP = (1 << 1),
+		};
+
 		//Struct to decribe a window
-		struct RE_API WindowDesc
+		struct RE_API WindowInfo
 		{
 			//TODO: Title does not seem to work properly on win32
 
@@ -26,10 +33,12 @@ namespace RayEngine
 			
 			//TODO: Fix styles on win32
 			int32 Style = WINDOWSTYLE_WINDOW;
-			//Position - '-1' indicates in the middle
+			int32 Flags = WINDOW_FLAG_NONE;
 
 			//TODO: Create Application class to retrive desktop size so that 
 			//user can use that to retrive sixe and position were he wants
+			
+			//Position - '-1' indicates in the middle
 
 			int32 x = -1;
 			int32 y = -1;
@@ -59,7 +68,7 @@ namespace RayEngine
 			virtual ~IWindowImpl() {}
 
 			//Create platform handles for a window
-			virtual bool Create(const WindowDesc& desc) = 0;
+			virtual bool Create(const WindowInfo& desc) = 0;
 			//Show window
 			virtual void Show() const = 0;
 			//Peeks all the events of the OS and pushes them onto the eventqueue
@@ -90,14 +99,14 @@ namespace RayEngine
 			virtual int32 GetWidth() const = 0;
 			virtual int32 GetHeight() const = 0;
 			//Get struct that describes the window
-			virtual void GetDesc(WindowDesc& desc) const = 0;
+			virtual void GetDesc(WindowInfo& desc) const = 0;
 		};
 
 		//Class for to represent a main window - Can be seen as a wrapper for IWindowImpl
 		class RE_API Window
 		{
 		public:
-			Window(const WindowDesc& desc);
+			Window(const WindowInfo& desc);
 			Window(const Window& other);
 			Window(Window&& other);
 			~Window();
@@ -127,7 +136,7 @@ namespace RayEngine
 			//Get implementation
 			const IWindowImpl* GetImplementation() const;
 			//Get struct that describes the window
-			void GetDesc(WindowDesc& desc) const;
+			void GetDesc(WindowInfo& desc) const;
 			//Operators for assignment
 			Window& operator=(const Window& other);
 			Window& operator=(Window&& other);

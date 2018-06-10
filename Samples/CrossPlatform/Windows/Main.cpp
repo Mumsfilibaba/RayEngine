@@ -7,10 +7,11 @@ int main(int args, char* argsv[])
 	using namespace RayEngine;
 	using namespace RayEngine::System;
 
-	WindowDesc windowInfo = {};
+	WindowInfo windowInfo = {};
 	windowInfo.Color.r = 0;
 	windowInfo.Color.g = 0;
 	windowInfo.Color.b = 0;
+	windowInfo.Flags = WINDOW_FLAG_APP_FULLSCREEN;
 #if defined(RE_PLATFORM_ANDROID)
 	windowInfo.Width = 1080;
 	windowInfo.Height = 1920;
@@ -28,13 +29,11 @@ int main(int args, char* argsv[])
 	Clock clock;
 	uint8 red = 0;
 
-	Clock clock2;
 	Log log;
 
 	while (event.Type != EVENT_TYPE_QUIT)
 	{
 		clock.Tick();
-		clock2.Tick();
 
 		//Change color
 		if (clock.GetTotalTime().GetAsSeconds() > 0.01)
@@ -45,17 +44,6 @@ int main(int args, char* argsv[])
 
 			window.SetBackground(red, 0, 0);
 			clock.Reset();
-		}
-
-		//Log
-		if (clock2.GetTotalTime().GetAsSeconds() > 1.0)
-		{
-			int i = 5;
-			log.Write(LOG_SEVERITY_INFO, "Test Info %d", i);
-			log.Write(LOG_SEVERITY_WARNING, "Test Warning %d", i);
-			log.Write(LOG_SEVERITY_ERROR, "Test Error %d", i);
-
-			clock2.Reset();
 		}
 
 		//Check events

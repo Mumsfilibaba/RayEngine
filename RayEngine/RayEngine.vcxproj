@@ -102,7 +102,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -178,6 +178,7 @@
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Include\Win32\Win32CursorImpl.h" />
     <ClInclude Include="Include\Win32\Win32IconImpl.h" />
+    <ClInclude Include="Include\Win32\Win32LogImpl.h" />
     <ClInclude Include="Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="Source\Win32\Win32Bitmap.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="Source\Win32\Win32Bitmap.cpp" />
     <ClCompile Include="Source\Win32\Win32CursorImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32IconImpl.cpp" />
+    <ClCompile Include="Source\Win32\Win32LogImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32SocketImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32WindowImpl.cpp" />
   </ItemGroup>

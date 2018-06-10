@@ -33,7 +33,7 @@ namespace RayEngine
 			LogImpl& operator=(LogImpl&& other) = delete;
 			LogImpl& operator=(const LogImpl& other) = delete;
 
-			LogImpl() {};
+			LogImpl() {}
 			virtual ~LogImpl() {}
 
 			//Log something to the platforms log (Console - Win32, LogCat - Android) - Also saves the log in a buffer

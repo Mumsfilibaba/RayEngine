@@ -35,6 +35,7 @@
     <ClInclude Include="..\RayEngine\Include\System\TimeStamp.h" />
     <ClInclude Include="..\RayEngine\Include\System\Log.h" />
     <ClInclude Include="..\RayEngine\Include\Android\AndroidLogImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32LogImpl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RayEngine\Source\Android\Android.cpp" />
@@ -66,5 +67,6 @@
     <ClCompile Include="..\RayEngine\Source\System\TimeStamp.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Log.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32LogImpl.cpp" />
   </ItemGroup>
 </Project>

@@ -49,6 +49,7 @@
     <ClInclude Include="..\RayEngine\Include\Types.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32CursorImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32IconImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32LogImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="..\RayEngine\Source\Win32\Win32Bitmap.h" />
@@ -81,6 +82,7 @@
     <ClCompile Include="..\RayEngine\Source\Win32\Win32Bitmap.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32CursorImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32IconImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32LogImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32SocketImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32WindowImpl.cpp" />
   </ItemGroup>
