@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="NsightTegraProject">
+    <NsightTegraProjectRevisionNumber>11</NsightTegraProjectRevisionNumber>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Tegra-Android">
+      <Configuration>Debug</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Tegra-Android">
+      <Configuration>Release</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Shipping|Tegra-Android">
+      <Configuration>Shipping</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\RayEngine\Dependencies\stb_image.h" />
+    <ClInclude Include="..\RayEngine\Dependencies\stb_image_resize.h" />
+    <ClInclude Include="..\RayEngine\Dependencies\stb_image_write.h" />
+    <ClInclude Include="..\RayEngine\Include\Android\Android.h" />
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidLogImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidWindowImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Defines.h" />
+    <ClInclude Include="..\RayEngine\Include\Graphics\TextureLoader.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Math.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\MathUtilities.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Matrix2.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Matrix3.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Matrix4.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Point.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Ray.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Rectangle.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Vector2.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Vector3.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Vector4.h" />
+    <ClInclude Include="..\RayEngine\Include\Network\Socket.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Clock.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Cursor.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Event.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Icon.h" />
+    <ClInclude Include="..\RayEngine\Include\System\KeyCodes.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Log.h" />
+    <ClInclude Include="..\RayEngine\Include\System\TimeStamp.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Window.h" />
+    <ClInclude Include="..\RayEngine\Include\Types.h" />
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32CursorImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32IconImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32SocketImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32WindowImpl.h" />
+    <ClInclude Include="..\RayEngine\Source\Win32\Win32Bitmap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\RayEngine\Source\Android\Android.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Graphics\TextureLoader.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Main\MainAndroid.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Main\MainWin32.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\MathUtilities.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Matrix2.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Matrix3.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Matrix4.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Point.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Ray.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Rectangle.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Vector2.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Vector3.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Vector4.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Network\Socket.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Clock.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Cursor.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Event.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Icon.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Log.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\TimeStamp.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Window.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32Bitmap.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32CursorImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32IconImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32SocketImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32WindowImpl.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2AC0ACC0-CD4C-44E3-9FEB-10878FC6D903}</ProjectGuid>
+    <RootNamespace>RayEngineAndroid</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <AndroidBuildSystem>GradleBuild</AndroidBuildSystem>
+    <AndroidTargetAPI>android-24</AndroidTargetAPI>
+    <AndroidStlType>llvm-libc++_static</AndroidStlType>
+    <AndroidNativeAPI>UseMin</AndroidNativeAPI>
+    <NdkToolchainVersion>DefaultClang</NdkToolchainVersion>
+    <AndroidStripLibrary>false</AndroidStripLibrary>
+    <AndroidArch>armv7-a</AndroidArch>
+    <AndroidMinAPI>android-9</AndroidMinAPI>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <AndroidBuildSystem>GradleBuild</AndroidBuildSystem>
+    <AndroidTargetAPI>android-19</AndroidTargetAPI>
+    <AndroidStlType>llvm-libc++_shared</AndroidStlType>
+    <AndroidNativeAPI>UseTarget</AndroidNativeAPI>
+    <NdkToolchainVersion>DefaultClang</NdkToolchainVersion>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <AndroidBuildSystem>GradleBuild</AndroidBuildSystem>
+    <AndroidTargetAPI>android-19</AndroidTargetAPI>
+    <AndroidStlType>llvm-libc++_shared</AndroidStlType>
+    <AndroidNativeAPI>UseTarget</AndroidNativeAPI>
+    <NdkToolchainVersion>DefaultClang</NdkToolchainVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <TargetExt>.a</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <PreprocessorDefinitions>_ANDROID; _DEBUG</PreprocessorDefinitions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <ThinArchive>false</ThinArchive>
+    </Lib>
+    <Link>
+      <AndroidSystemLibs>android;c;m;log;gcc</AndroidSystemLibs>
+      <UnresolvedSymbolsHandling>ignore-in-object-files</UnresolvedSymbolsHandling>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

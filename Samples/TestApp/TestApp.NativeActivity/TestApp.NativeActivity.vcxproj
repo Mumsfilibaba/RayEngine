@@ -229,11 +229,6 @@
     </ClCompile>
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\RayEngineFrameworkAndroid\RayEngineFrameworkAndroid.vcxproj">
-      <Project>{341103c7-6f3e-4f16-b3be-21c88b51a7e5}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
