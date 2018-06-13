@@ -120,6 +120,15 @@
     <ClInclude Include="Include\Win32\Win32LogImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Android\AndroidWindowManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Android\AndroidEventManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Android\AndroidAppState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -210,6 +219,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Win32\Win32LogImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Android\AndroidWindowManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Android\AndroidEventManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Android\AndroidAppState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

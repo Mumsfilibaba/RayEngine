@@ -10,7 +10,6 @@ namespace Math
 	public:
 		Point(int x = 0, int y = 0);
 		Point(const Point& other);
-		~Point() {}
 
 		Point& Add(const Point& other);
 		Point& Add(int scalar);

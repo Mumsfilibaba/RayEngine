@@ -20,7 +20,6 @@ namespace Math
 	}
 
 
-
 	Vector2& Vector2::Add(const Vector2& other)
 	{
 		x += other.x;

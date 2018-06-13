@@ -35,7 +35,6 @@ namespace Math
 	}
 
 
-
 	Vector4& Vector4::Add(const Vector4& other)
 	{
 		x += other.x;

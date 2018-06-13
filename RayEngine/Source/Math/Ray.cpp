@@ -14,10 +14,6 @@ namespace Math
 	{
 	}
 
-	Ray::~Ray()
-	{
-	}
-
 	Vector3 Ray::GetPoint(float rayLength) const
 	{
 		return m_Origin + (rayLength * m_Direction);

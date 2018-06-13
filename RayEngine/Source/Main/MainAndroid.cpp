@@ -3,316 +3,246 @@
 #if defined(RE_PLATFORM_ANDROID)
 
 /////////////////////////////////////////////////////////////
-
-
-
 //"Main thread" entrypoint - For multiplatform
 extern int main(int args, char* argsv[]);
 
 
 
 /////////////////////////////////////////////////////////////
-
-
-
 #include <thread>
-#include <mutex>
-#include <queue>
-
-#include <android\log.h>
-#include <android\native_activity.h>
-#include <android\native_window.h>
-#include <android\window.h>
-#include <android\input.h>
-#include <android\looper.h>
-
-#include "..\..\Include\Android\Android.h"
+#include "..\Android\AndroidAppState.h"
+#include "..\Android\AndroidWindowManager.h"
+#include "..\Android\AndroidEventManager.h"
 
 
 
 /////////////////////////////////////////////////////////////
+//Callbacks
+void onConfigurationChanged(ANativeActivity* activity);
+void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue);
+void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue);
+void onLowMemory(ANativeActivity* activity);
+void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window);
+void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window);
+void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow* window);
+void onNativeWindowResized(ANativeActivity* activity, ANativeWindow* window);
+void onStart(ANativeActivity* activity);
+void onPause(ANativeActivity* activity);
+void onResume(ANativeActivity* activity);
+void onStop(ANativeActivity* activity);
+void onDestroy(ANativeActivity* activity);
+void* onSaveInstanceState(ANativeActivity* activity, size_t* outSize);
+void onWindowFocusChanged(ANativeActivity* activity, int hasFocus);
+void onContentRectChanged(ANativeActivity* activity, const ARect* rect);
 
 
 
+/////////////////////////////////////////////////////////////
 //Struct for keeping global app variables
-struct App
-{
-	//The activity pointer
-	ANativeActivity* Activity = nullptr;
+RayEngine::AndroidAppState appState;
 
-	//The current window
-	ANativeWindow* CurrentWindow = nullptr;
-	RayEngine::int32 WinWidth = 0;
-	RayEngine::int32 WinHeight = 0;
-	RayEngine::int32 WinColor = 0;
-	bool HasFocus = false;
-	
-	//Input queue
-	AInputQueue* InputQueue = nullptr;
-	ALooper* Looper = nullptr;
-	
-	//Handle events
-	std::queue<ANDROID_EVENT> Events;
-} app;
 
-//App instance mutex
-std::mutex mutex;
 
 
 /////////////////////////////////////////////////////////////
-
-
-
 bool AndroidAppHasFocus()
 {
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	//Return local variable
-	return app.HasFocus;
+	return appState.HasFocus();
 }
 
 
 
 /////////////////////////////////////////////////////////////
-
-
-
 void AndroidSetNativeWindowColor(RayEngine::int32 color)
 {
-	using namespace RayEngine;
-
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	if (app.WinWidth == 0 || app.WinHeight == 0)
-		return;
-
-	app.WinColor = color;
-
-	if (app.CurrentWindow != nullptr)
-	{
-		ARect rect = {};
-		ANativeWindow_Buffer buffer = {};
-
-		rect.bottom = app.WinHeight;
-		rect.right = app.WinWidth;
-
-		if (ANativeWindow_lock(app.CurrentWindow, &buffer, &rect) == 0)
-		{
-			if (ANativeWindow_getFormat(app.CurrentWindow) == WINDOW_FORMAT_RGBA_8888)
-			{
-				for (int32 i = (app.WinWidth * app.WinHeight) - 1; i >= 0; i--)
-					static_cast<int32*>(buffer.bits)[i] = app.WinColor;
-			}
-
-			ANativeWindow_unlockAndPost(app.CurrentWindow);
-		}
-	}
+	appState.GetWindow().SetColor(color);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void AndroidSetNativeWindowSize(RayEngine::int32 width, RayEngine::int32 height)
 {
-	using namespace RayEngine;
-
-	if (width == 0 || height == 0)
-		return;
-
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	app.WinWidth = width;
-	app.WinHeight = height;
-
-	if (app.CurrentWindow != nullptr)
-	{
-		int32 w = ANativeWindow_getWidth(app.CurrentWindow);
-		int32 h = ANativeWindow_getHeight(app.CurrentWindow);
-
-		if (w != width && h != height)
-			ANativeWindow_setBuffersGeometry(app.CurrentWindow, app.WinWidth, app.WinHeight, 0);
-	}
-}
-
-void AndroidSetNativeWindowFlags(RayEngine::uint32 addFlags, RayEngine::uint32 removeFlags)
-{
-	using namespace RayEngine;
-
-	if (addFlags == 0 && removeFlags)
-		return;
-
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	if (app.Activity != nullptr)
-	{
-		ANativeActivity_setWindowFlags(app.Activity, addFlags, removeFlags);
-	}
+	appState.GetWindow().SetSize(width, height);
 }
 
 
 
 /////////////////////////////////////////////////////////////
+void AndroidSetNativeWindowFlags(RayEngine::uint32 flags)
+{
+	using namespace RayEngine;
+
+	appState.GetWindow().SetFlags(appState.GetActivity(), flags);
+}
 
 
 
-//recive_event
-ANDROID_EVENT AndroidReciveEvent()
+/////////////////////////////////////////////////////////////
+RayEngine::System::Event AndroidReciveEvent()
 {	
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	//Get first event and pop threadsafe
-	ANDROID_EVENT event = ANDROID_EVENT_UNKNOWN;
-
-	if (!app.Events.empty())
-	{
-		event = app.Events.front();
-		app.Events.pop();
-	}
-
-	//Return event
-	return event;
-}
-
-void AndroidSendEvent(ANDROID_EVENT event)
-{
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	//Push event threadsafe
-	app.Events.push(event);
+	return appState.GetEvents().PopEvent();
 }
 
 
 
 /////////////////////////////////////////////////////////////
+void AndroidSendEvent(const RayEngine::System::Event& pEvent)
+{
+	appState.GetEvents().PushEvent(pEvent);
+}
 
 
-
-//Callbacks
+//////CALLBACKS//////
+/////////////////////////////////////////////////////////////
 void onConfigurationChanged(ANativeActivity* activity)
 {
 	LOGI("onConfigurationChanged");
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 {
 	LOGI("onInputQueueCreated");
 
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	//Set app's inputqueue
-	app.InputQueue = queue;
+	appState.GetEvents().OnInputQueueChanged(queue, false);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
 	LOGI("onInputQueueDestroyed");
 
-	//Lock
-	std::lock_guard<std::mutex> lock(mutex);
-
-	//Set inputqueue to nullptr;
-	if (queue == app.InputQueue)
-		app.InputQueue = nullptr;
+	appState.GetEvents().OnInputQueueChanged(queue, true);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onLowMemory(ANativeActivity* activity)
 {
 	LOGI("onLowMemory");
-
-	AndroidSendEvent(ANDROID_EVENT_LOW_MEMORY);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
 	LOGI("onNativeWindowCreated");
 
-	//Lock mutex
-	mutex.lock();
-
-	//Set window
-	app.CurrentWindow = window;
-
-	//Unlock mutex
-	mutex.unlock();
-
-	//Change color and size
-	AndroidSetNativeWindowSize(app.WinWidth, app.WinHeight);
-	AndroidSetNativeWindowColor(app.WinColor);
-
-	//Push event to mainthread
-	AndroidSendEvent(ANDROID_EVENT_WINDOW_CREATE);
+	//Call callback
+	appState.GetWindow().OnNativeWindowChanged(activity, window, false);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 {
 	LOGI("onNativeWindowDestroyed");
 
-	//Lock mutex
-	mutex.lock();
-
-	//Set window to nullptr
-	if (window == app.CurrentWindow)
-		app.CurrentWindow = nullptr;
-
-	//Unlock mutex
-	mutex.unlock();
-
-	AndroidSendEvent(ANDROID_EVENT_WINDOW_DESTROYED);
+	//Call callback
+	appState.GetWindow().OnNativeWindowChanged(activity, window, true);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow* window)
 {
 	LOGI("onNativeWindowRedrawNeeded");
-
-	AndroidSendEvent(ANDROID_EVENT_WINDOW_REPAINT);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onNativeWindowResized(ANativeActivity* activity, ANativeWindow* window)
 {
+	using namespace RayEngine::System;
+
 	LOGI("onNativeWindowResized");
 
-	AndroidSendEvent(ANDROID_EVENT_WINDOW_RESIZE);
+	//TODO: Get the real size
+
+	//Push resized event
+	Event event;
+	event.Type = EVENT_TYPE_RESIZE;
+	event.Width = 100;
+	event.Height = 100;
+
+	appState.GetEvents().PushEvent(event);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onStart(ANativeActivity* activity)
 {
 	LOGI("onStart");
-
-	AndroidSendEvent(ANDROID_EVENT_APP_START);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onPause(ANativeActivity* activity)
 {
+	using namespace RayEngine::System;
+
 	LOGI("onPause");
 
-	AndroidSendEvent(ANDROID_EVENT_APP_PAUSE);
+	Event event;
+	event.Type = EVENT_TYPE_APP_PAUSED;
+
+	appState.GetEvents().PushEvent(event);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onResume(ANativeActivity* activity)
 {
+	using namespace RayEngine::System;
+
 	LOGI("onResume");
 
-	AndroidSendEvent(ANDROID_EVENT_APP_RESUME);
+	Event event;
+	event.Type = EVENT_TYPE_APP_RESUMED;
+
+	appState.GetEvents().PushEvent(event);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onStop(ANativeActivity* activity)
 {
 	LOGI("onStop");
-
-	AndroidSendEvent(ANDROID_EVENT_APP_STOP);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onDestroy(ANativeActivity* activity)
 {
+	using namespace RayEngine::System;
+
 	LOGI("onDestroy");
-	
-	AndroidSendEvent(ANDROID_EVENT_DESTROY);
+
+	Event event;
+	event.Type = EVENT_TYPE_QUIT;
+	event.QuitCode = 0;
+
+	appState.GetEvents().PushEvent(event);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void* onSaveInstanceState(ANativeActivity* activity, size_t* outSize)
 {
 	LOGI("onSaveInstanceState");
@@ -320,22 +250,19 @@ void* onSaveInstanceState(ANativeActivity* activity, size_t* outSize)
 	return nullptr;
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onWindowFocusChanged(ANativeActivity* activity, int hasFocus)
 {
 	LOGI("onWindowFocusChanged");
 
-	//Lock mutex
-	mutex.lock();
-
-	//Set if the app has focus
-	app.HasFocus = (hasFocus) ? true : false;
-	
-	//Lock mutex
-	mutex.unlock();
-
-	AndroidSendEvent(ANDROID_EVENT_FOCUS_CHANGED);
+	appState.OnFocusChanged(hasFocus);
 }
 
+
+
+/////////////////////////////////////////////////////////////
 void onContentRectChanged(ANativeActivity* activity, const ARect* rect)
 {
 	LOGI("onContentRectChanged");
@@ -344,33 +271,33 @@ void onContentRectChanged(ANativeActivity* activity, const ARect* rect)
 
 
 /////////////////////////////////////////////////////////////
-
-
-
 void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_t savedStateSize)
 {
 	LOGI("ANativeActivity_onCreate");
 
-	//Set appinstance's activity
-	app.Activity = activity;
-	
 	//Setup callbacks
-	app.Activity->callbacks->onConfigurationChanged = onConfigurationChanged;
-	app.Activity->callbacks->onInputQueueCreated = onInputQueueCreated;
-	app.Activity->callbacks->onInputQueueDestroyed = onInputQueueDestroyed;
-	app.Activity->callbacks->onLowMemory = onLowMemory;
-	app.Activity->callbacks->onNativeWindowCreated = onNativeWindowCreated;
-	app.Activity->callbacks->onNativeWindowDestroyed = onNativeWindowDestroyed;
-	app.Activity->callbacks->onNativeWindowRedrawNeeded = onNativeWindowRedrawNeeded;
-	app.Activity->callbacks->onNativeWindowResized = onNativeWindowResized;
-	app.Activity->callbacks->onStart = onStart;
-	app.Activity->callbacks->onPause = onPause;
-	app.Activity->callbacks->onResume = onResume;
-	app.Activity->callbacks->onDestroy = onDestroy;
-	app.Activity->callbacks->onStop = onStop;
-	app.Activity->callbacks->onSaveInstanceState = onSaveInstanceState;
-	app.Activity->callbacks->onWindowFocusChanged = onWindowFocusChanged;
-	app.Activity->callbacks->onContentRectChanged = onContentRectChanged;
+	activity->callbacks->onConfigurationChanged = onConfigurationChanged;
+	activity->callbacks->onInputQueueCreated = onInputQueueCreated;
+	activity->callbacks->onInputQueueDestroyed = onInputQueueDestroyed;
+	activity->callbacks->onLowMemory = onLowMemory;
+	activity->callbacks->onNativeWindowCreated = onNativeWindowCreated;
+	activity->callbacks->onNativeWindowDestroyed = onNativeWindowDestroyed;
+	activity->callbacks->onNativeWindowRedrawNeeded = onNativeWindowRedrawNeeded;
+	activity->callbacks->onNativeWindowResized = onNativeWindowResized;
+	activity->callbacks->onStart = onStart;
+	activity->callbacks->onPause = onPause;
+	activity->callbacks->onResume = onResume;
+	activity->callbacks->onDestroy = onDestroy;
+	activity->callbacks->onStop = onStop;
+	activity->callbacks->onSaveInstanceState = onSaveInstanceState;
+	activity->callbacks->onWindowFocusChanged = onWindowFocusChanged;
+	activity->callbacks->onContentRectChanged = onContentRectChanged;
+
+	//Set appinstance's activity
+	appState.SetActivity(activity);
+
+	//Create looper for this thread
+	appState.GetEvents().CreateLooper();
 
 	//Start main in a seperate detached thread 
 	std::thread mainThread(main, 0, nullptr);
@@ -378,7 +305,4 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 	
 	return;
 }
-
-/////////////////////////////////////////////////////////////
-
 #endif

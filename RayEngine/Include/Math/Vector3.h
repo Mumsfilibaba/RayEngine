@@ -10,7 +10,6 @@ namespace Math
 	public:
 		Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f);
 		Vector3(const Vector3& other);
-		~Vector3() {}
 
 		Vector3& Add(const Vector3& other);
 		Vector3& Add(float scalar);

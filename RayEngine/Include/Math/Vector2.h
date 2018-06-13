@@ -10,7 +10,6 @@ namespace Math
 	public:
 		Vector2(float x = 0.0f, float y = 0.0f);
 		Vector2(const Vector2& other);
-		~Vector2() {}
 
 		Vector2& Add(const Vector2& other);
 		Vector2& Add(float scalar);

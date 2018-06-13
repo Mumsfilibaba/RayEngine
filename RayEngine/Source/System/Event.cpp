@@ -4,15 +4,19 @@ namespace RayEngine
 {
 	namespace System
 	{
-		Event::Event(EVENT_TYPE type, int64 value)
-			: Type(type),
-			Value(value)
+		Event::Event()
+			: Type()
 		{
+			TouchSize = 0.0f;
+			QuitCode = 0;
+			TouchPressure = 0.0;
 		}
 
 		bool Event::operator==(const Event& other) const
 		{
-			return (Type == other.Type) && (Value == other.Value);
+			return (Type == other.Type) && (TouchSize == other.TouchSize) &&
+				(TouchFingerID == other.TouchFingerID) && (TouchPressure == other.TouchPressure) &&
+				(TouchX == other.TouchX) && (TouchY == other.TouchY);
 		}
 
 		bool Event::operator!=(const Event& other) const

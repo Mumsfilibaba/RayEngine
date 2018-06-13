@@ -52,12 +52,18 @@
     <ClInclude Include="..\RayEngine\Include\Win32\Win32LogImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32WindowImpl.h" />
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidAppState.h" />
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidEventManager.h" />
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidWindowManager.h" />
     <ClInclude Include="..\RayEngine\Source\Win32\Win32Bitmap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RayEngine\Source\Android\Android.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidAppState.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidEventManager.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowManager.cpp" />
     <ClCompile Include="..\RayEngine\Source\Graphics\TextureLoader.cpp" />
     <ClCompile Include="..\RayEngine\Source\Main\MainAndroid.cpp" />
     <ClCompile Include="..\RayEngine\Source\Main\MainWin32.cpp" />

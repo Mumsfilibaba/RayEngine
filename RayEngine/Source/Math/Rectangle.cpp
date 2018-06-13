@@ -13,8 +13,4 @@ namespace Math
 		bottomRight(bottomRight)
 	{
 	}
-
-	Rectangle::~Rectangle()
-	{
-	}
 }

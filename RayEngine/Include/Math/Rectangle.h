@@ -9,7 +9,6 @@ namespace Math
 	public:
 		Rectangle();
 		Rectangle(const Math::Vector2& topLeft, const Math::Vector2& bottomRight);
-		~Rectangle();
 
 	public:
 		Math::Vector2 topLeft;

@@ -10,7 +10,6 @@ namespace Math
 		Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);
 		Vector4(const Vector4& other);
 		explicit Vector4(const Vector3& other);
-		~Vector4() {}
 
 		Vector4& Add(const Vector4& other);
 		Vector4& Add(float scalar);

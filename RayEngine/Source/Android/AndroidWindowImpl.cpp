@@ -55,22 +55,16 @@ namespace RayEngine
 
 			//Set flags if there are any
 			if (m_Flags != 0)
-				AndroidSetNativeWindowFlags(m_Flags, 0);
+				AndroidSetNativeWindowFlags(m_Flags);
 		}
 
 		void AndroidWindowImpl::PeekEvents()
 		{
-			ANDROID_EVENT osEvent = AndroidReciveEvent();
-			if (osEvent == ANDROID_EVENT_DESTROY)
-				PushEvent(Event(EVENT_TYPE_QUIT, 0));
-			else if (osEvent == ANDROID_EVENT_APP_PAUSE)
-				PushEvent(Event(EVENT_TYPE_APP_PAUSED, 0));
-			else if (osEvent == ANDROID_EVENT_APP_RESUME)
-				PushEvent(Event(EVENT_TYPE_APP_RESUMED, 0));
-
-			//TODO: Send events for on pause etc.
-
-			//TODO: Get Android events
+			Event event = AndroidReciveEvent();
+			if (event.Type != EVENT_TYPE_UNKNOWN)
+			{
+				m_Events.push(event);
+			}
 		}
 		
 		void AndroidWindowImpl::PushEvent(const Event& pEvent)
@@ -81,7 +75,9 @@ namespace RayEngine
 		bool AndroidWindowImpl::PopEvent(Event& pEvent)
 		{
 			if (m_Events.empty())
+			{
 				return false;
+			}
 
 			pEvent = m_Events.front();
 			m_Events.pop();
@@ -101,7 +97,11 @@ namespace RayEngine
 		
 		void AndroidWindowImpl::SendQuitEvent(int32 exitCode) const
 		{
-			AndroidSendEvent(ANDROID_EVENT_DESTROY);
+			Event event;
+			event.Type = EVENT_TYPE_QUIT;
+			event.QuitCode = exitCode;
+
+			AndroidSendEvent(event);
 		}
 
 		void AndroidWindowImpl::SetCursor(const Cursor& cursor)
@@ -166,9 +166,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-
-
-
 		//Global variable for keeping count of windows and its mutex
 		int32 g_WindowCount = 0;
 		std::mutex g_CountMutex;
@@ -187,10 +184,6 @@ namespace RayEngine
 
 			return res;
 		}
-
-
-
-		/////////////////////////////////////////////////////////////
 	}
 }
 

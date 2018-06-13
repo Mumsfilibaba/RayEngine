@@ -88,7 +88,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -102,7 +102,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -181,12 +181,18 @@
     <ClInclude Include="Include\Win32\Win32LogImpl.h" />
     <ClInclude Include="Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="Include\Win32\Win32WindowImpl.h" />
+    <ClInclude Include="Source\Android\AndroidAppState.h" />
+    <ClInclude Include="Source\Android\AndroidEventManager.h" />
+    <ClInclude Include="Source\Android\AndroidWindowManager.h" />
     <ClInclude Include="Source\Win32\Win32Bitmap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp" />
+    <ClCompile Include="Source\Android\AndroidAppState.cpp" />
+    <ClCompile Include="Source\Android\AndroidEventManager.cpp" />
     <ClCompile Include="Source\Android\AndroidLogImpl.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
+    <ClCompile Include="Source\Android\AndroidWindowManager.cpp" />
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />
     <ClCompile Include="Source\Main\MainAndroid.cpp" />
     <ClCompile Include="Source\Main\MainWin32.cpp" />

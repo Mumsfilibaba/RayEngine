@@ -12,7 +12,6 @@ namespace Math
 		Matrix3(float value);
 		Matrix3(const Vector3& r1, const Vector3& r2, const Vector3& r3);
 		Matrix3(const Matrix3& other);
-		~Matrix3() {}
 
 		Vector3 Multiply(const Vector3& vector) const;
 

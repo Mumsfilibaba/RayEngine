@@ -9,7 +9,6 @@ namespace Math
 	public:
 		Ray(const Vector3& origin = Vector3(), const Vector3& direction = Vector3());
 		Ray(const Ray& other);
-		~Ray();
 
 		Vector3 GetPoint(float rayLength) const;
 		bool Equals(const Ray& other) const;

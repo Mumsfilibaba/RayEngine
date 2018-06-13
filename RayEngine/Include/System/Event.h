@@ -3,12 +3,13 @@
 #include "..\Defines.h"
 #include "..\Types.h"
 #include "..\System\KeyCodes.h"
+#include "..\Math\Vector2.h"
 
 namespace RayEngine
 {
 	namespace System
 	{
-		enum EVENT_TYPE
+		enum EVENT_TYPE : int32
 		{
 			EVENT_TYPE_UNKNOWN = 0,
 			EVENT_TYPE_QUIT = 1,
@@ -18,9 +19,10 @@ namespace RayEngine
 			EVENT_TYPE_DESTROYED = 5,
 			EVENT_TYPE_APP_PAUSED = 6,
 			EVENT_TYPE_APP_RESUMED = 7,
+			EVENT_TYPE_TOUCH = 8,
 		};
 
-		enum EVENT_RESIZE
+		enum EVENT_RESIZE : int32
 		{
 			EVENT_RESIZE_UNKNOWN = 0,
 			EVENT_RESIZE_NEW_SIZE = 1,
@@ -31,39 +33,41 @@ namespace RayEngine
 		struct RE_API Event
 		{
 		public:
-			Event(EVENT_TYPE type = EVENT_TYPE_UNKNOWN, int64 value = 0);
+			Event();
+			Event(const Event& other) = default;
 
 			bool operator==(const Event& other) const;
 			bool operator!=(const Event& other) const;
 
 		public:
 			EVENT_TYPE Type;
-			
-			union 
+
+			//Struct that contains different parameters
+			struct
 			{
-				//Value to set everything to zero
-				int64 Value;
+				float TouchX;
+				float TouchY;
 
-				//Struct that contains different parameters
-				struct
+				union
 				{
-					union 
-					{
-						EVENT_RESIZE ResizeType;
-						KEY KeyCode;
-					};
+					float TouchSize;
+					EVENT_RESIZE ResizeType;
+					KEY KeyCode;
+				};
 
-					union
-					{
-						int16 Height;
-						int16 KeyRepeatCount;
-					};
+				union
+				{
+					int32 QuitCode;
+					int32 TouchFingerID;
+					int16 Height;
+					int16 KeyRepeatCount;
+				};
 
-					union
-					{
-						int16 Width;
-						bool KeyExtended;
-					};
+				union
+				{
+					float TouchPressure;
+					int16 Width;
+					bool KeyExtended;
 				};
 			};
 		};

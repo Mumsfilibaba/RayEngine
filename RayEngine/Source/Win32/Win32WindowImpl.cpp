@@ -54,7 +54,7 @@ namespace RayEngine
 				{
 					Event ev;
 					ev.Type = EVENT_TYPE_QUIT;
-					ev.Value = static_cast<int64>(msg.wParam);
+					ev.QuitCode = static_cast<int32>(msg.wParam);
 
 					PushEvent(ev);
 				}
@@ -95,7 +95,7 @@ namespace RayEngine
 			{
 				//If the message is a quit message
 				pEvent.Type = EVENT_TYPE_QUIT;
-				pEvent.Value = static_cast<int64>(msg.wParam);
+				pEvent.QuitCode = static_cast<int32>(msg.wParam);
 			}
 		}
 
