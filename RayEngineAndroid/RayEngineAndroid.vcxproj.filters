@@ -1,78 +1,270 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\RayEngine\Dependencies\stb_image.h" />
-    <ClInclude Include="..\RayEngine\Dependencies\stb_image_resize.h" />
-    <ClInclude Include="..\RayEngine\Dependencies\stb_image_write.h" />
-    <ClInclude Include="..\RayEngine\Include\Android\Android.h" />
-    <ClInclude Include="..\RayEngine\Include\Android\AndroidWindowImpl.h" />
-    <ClInclude Include="..\RayEngine\Include\Graphics\TextureLoader.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Math.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\MathUtilities.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Matrix2.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Matrix3.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Matrix4.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Point.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Ray.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Rectangle.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Vector2.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Vector3.h" />
-    <ClInclude Include="..\RayEngine\Include\Math\Vector4.h" />
-    <ClInclude Include="..\RayEngine\Include\Network\Socket.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Cursor.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Event.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Icon.h" />
-    <ClInclude Include="..\RayEngine\Include\System\KeyCodes.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Window.h" />
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32CursorImpl.h" />
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32IconImpl.h" />
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32SocketImpl.h" />
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32WindowImpl.h" />
-    <ClInclude Include="..\RayEngine\Include\Defines.h" />
-    <ClInclude Include="..\RayEngine\Include\Types.h" />
-    <ClInclude Include="..\RayEngine\Source\Win32\Win32Bitmap.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Clock.h" />
-    <ClInclude Include="..\RayEngine\Include\System\TimeStamp.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Log.h" />
-    <ClInclude Include="..\RayEngine\Include\Android\AndroidLogImpl.h" />
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32LogImpl.h" />
-    <ClInclude Include="..\RayEngine\Source\Android\AndroidWindowManager.h" />
-    <ClInclude Include="..\RayEngine\Source\Android\AndroidEventManager.h" />
-    <ClInclude Include="..\RayEngine\Source\Android\AndroidAppState.h" />
+    <ClInclude Include="..\RayEngine\Dependencies\stb_image.h">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Dependencies\stb_image_resize.h">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Dependencies\stb_image_write.h">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Types.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Defines.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Android\Android.h">
+      <Filter>Include\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidLogImpl.h">
+      <Filter>Include\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidWindowImpl.h">
+      <Filter>Include\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Graphics\TextureLoader.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Matrix2.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Matrix3.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Matrix4.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Point.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Ray.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Rectangle.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Vector2.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Vector3.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Vector4.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\MathUtilities.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Math.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Network\Socket.h">
+      <Filter>Include\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Clock.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Cursor.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Event.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Icon.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Log.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Window.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\TimeStamp.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32WindowImpl.h">
+      <Filter>Include\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32SocketImpl.h">
+      <Filter>Include\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32LogImpl.h">
+      <Filter>Include\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32IconImpl.h">
+      <Filter>Include\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32CursorImpl.h">
+      <Filter>Include\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidAppState.h">
+      <Filter>Source\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidEventManager.h">
+      <Filter>Source\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidWindowManager.h">
+      <Filter>Source\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Win32\Win32Bitmap.h">
+      <Filter>Source\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\KeyCodes.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\RayEngine\Source\Android\Android.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Graphics\TextureLoader.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Main\MainAndroid.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Main\MainWin32.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\MathUtilities.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Matrix2.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Matrix3.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Matrix4.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Point.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Ray.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Rectangle.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Vector2.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Vector3.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Math\Vector4.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Network\Socket.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Cursor.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Event.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Icon.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Window.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32Bitmap.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32CursorImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32IconImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32SocketImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32WindowImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Clock.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\TimeStamp.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Log.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32LogImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowManager.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidEventManager.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidAppState.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\Android.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidAppState.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidEventManager.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowImpl.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowManager.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Main\MainAndroid.cpp">
+      <Filter>Source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Main\MainWin32.cpp">
+      <Filter>Source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Graphics\TextureLoader.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\MathUtilities.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Matrix2.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Matrix3.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Matrix4.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Point.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Ray.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Rectangle.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Vector2.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Vector4.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Vector3.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Network\Socket.cpp">
+      <Filter>Source\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32Bitmap.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32CursorImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32IconImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32LogImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32SocketImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32WindowImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Clock.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Cursor.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Event.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Icon.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Log.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\TimeStamp.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Window.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{588eee5a-b892-4a6d-a750-f2dd1e10624a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{65bd24dc-3ab3-4627-80a6-2b07dabd989c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Main">
+      <UniqueIdentifier>{8a7baebc-1273-4d6d-a464-f4e0500fd871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Graphics">
+      <UniqueIdentifier>{c4d91e2c-2faf-4e2c-8cf0-feb85dcac5f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Math">
+      <UniqueIdentifier>{9133777d-431e-42d3-9d0f-f7d1494c72f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Network">
+      <UniqueIdentifier>{cfe14c83-f0ce-4627-97d4-241a25fa3e53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\System">
+      <UniqueIdentifier>{2dd36a7b-c5d8-407c-9201-b183dd8f94c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Win32">
+      <UniqueIdentifier>{40597552-2615-4a0b-a304-2fc52aabb6c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Android">
+      <UniqueIdentifier>{eddcd22b-4714-45e9-bbc1-b4296d2d9b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{8ba48a66-8bdb-4912-8003-8de667321fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Android">
+      <UniqueIdentifier>{4a4c8a82-fd45-411a-b176-593bab26f20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Math">
+      <UniqueIdentifier>{0fefa239-81f4-4dad-a930-20beeb59bb3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\System">
+      <UniqueIdentifier>{553e94f2-fd5f-4fa3-8ca6-c9ad11c49096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Win32">
+      <UniqueIdentifier>{18a70775-fc4b-4410-87d1-5ac2c2ecd3e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Network">
+      <UniqueIdentifier>{14bb2714-a9ae-4c31-89f6-18c9703267cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Graphics">
+      <UniqueIdentifier>{e6bff092-d879-45e5-ad31-9f2672e7f099}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

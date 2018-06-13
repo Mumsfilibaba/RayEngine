@@ -231,4 +231,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Source\TODO.txt" />
+  </ItemGroup>
 </Project>

@@ -221,6 +221,9 @@
     <ClCompile Include="Source\Win32\Win32SocketImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32WindowImpl.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Source\TODO.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

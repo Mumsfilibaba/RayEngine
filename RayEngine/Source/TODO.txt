@@ -1,0 +1,13 @@
+TODO:
+-NativeActivity-Class instead of many?
+
+-Android SensorEvents (Continue on events for android, all touch events, Keyboard?)
+-Add following events - MouseEnter, FocusChanged (Instead of App paused and Resumed), 
+-Event-Class - Fix asignment operator and constructor, use vector instead of two floats
+-Color-Class
+-ColorF-Class
+-RandomNumber generator - Support random vector and random color
+-Bitmap-Class
+-Finish socketimpl Win32, start on android
+-Android Socket Impl
+-Win32 window styles
