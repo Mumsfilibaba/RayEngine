@@ -46,11 +46,10 @@ namespace RayEngine
 		public:
 			EVENT_TYPE Type;
 
-			//Struct that contains different parameters
+	
 			struct
 			{
-				float TouchX;
-				float TouchY;
+				 Vector2 Position;
 
 				union
 				{
