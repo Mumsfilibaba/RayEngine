@@ -34,7 +34,11 @@ namespace RayEngine
 		{
 		public:
 			Event();
-			Event(const Event& other) = default;
+			Event(const Event& other); 
+			~Event(); 
+			
+			Event& operator=(const Event& other);
+			
 
 			bool operator==(const Event& other) const;
 			bool operator!=(const Event& other) const;
