@@ -102,8 +102,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,8 +137,14 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MinimalRebuild>true</MinimalRebuild>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,6 +161,8 @@
     <ClInclude Include="Include\Android\AndroidLogImpl.h" />
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
     <ClInclude Include="Include\Defines.h" />
+    <ClInclude Include="Include\Math\Color.h" />
+    <ClInclude Include="Include\Math\ColorF.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
     <ClInclude Include="Include\Math\Math.h" />
     <ClInclude Include="Include\Math\MathUtilities.h" />
@@ -161,6 +170,7 @@
     <ClInclude Include="Include\Math\Matrix3.h" />
     <ClInclude Include="Include\Math\Matrix4.h" />
     <ClInclude Include="Include\Math\Point.h" />
+    <ClInclude Include="Include\Math\RandomGenerator.h" />
     <ClInclude Include="Include\Math\Ray.h" />
     <ClInclude Include="Include\Math\Rectangle.h" />
     <ClInclude Include="Include\Math\Vector2.h" />
@@ -173,6 +183,7 @@
     <ClInclude Include="Include\System\Icon.h" />
     <ClInclude Include="Include\System\KeyCodes.h" />
     <ClInclude Include="Include\System\Log.h" />
+    <ClInclude Include="Include\System\System.h" />
     <ClInclude Include="Include\System\TimeStamp.h" />
     <ClInclude Include="Include\System\Window.h" />
     <ClInclude Include="Include\Types.h" />
@@ -191,8 +202,11 @@
     <ClCompile Include="Source\Android\AndroidAppState.cpp" />
     <ClCompile Include="Source\Android\AndroidEventManager.cpp" />
     <ClCompile Include="Source\Android\AndroidLogImpl.cpp" />
+    <ClCompile Include="Source\Android\AndroidSystemInfo.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowManager.cpp" />
+    <ClCompile Include="Source\Math\Color.cpp" />
+    <ClCompile Include="Source\Math\ColorF.cpp" />
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />
     <ClCompile Include="Source\Main\MainAndroid.cpp" />
     <ClCompile Include="Source\Main\MainWin32.cpp" />
@@ -207,6 +221,7 @@
     <ClCompile Include="Source\Math\Vector3.cpp" />
     <ClCompile Include="Source\Math\Vector4.cpp" />
     <ClCompile Include="Source\Network\Socket.cpp" />
+    <ClCompile Include="Source\Math\RandomGenerator.cpp" />
     <ClCompile Include="Source\System\Clock.cpp" />
     <ClCompile Include="Source\System\Cursor.cpp" />
     <ClCompile Include="Source\System\Event.cpp" />
@@ -219,6 +234,7 @@
     <ClCompile Include="Source\Win32\Win32IconImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32LogImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32SocketImpl.cpp" />
+    <ClCompile Include="Source\Win32\Win32SystemInfo.cpp" />
     <ClCompile Include="Source\Win32\Win32WindowImpl.cpp" />
   </ItemGroup>
   <ItemGroup>

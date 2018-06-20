@@ -25,6 +25,7 @@ typedef std::basic_string<char> Tstring;
 
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
 	void TextureLoader::ReverseRB(void* pixels, int32 width, int32 height, FORMAT format)
 	{
 		if (format == FORMAT_R8G8B8A8_UINT)
@@ -33,7 +34,6 @@ namespace RayEngine
 
 			//TODO: Different loops based on components
 
-			//Change the RGB to BGR
 			uint8 temp = 0;
 			for (int32 i = (width * height * 4) - 1; i >= 0; i -= 4)
 			{
@@ -48,7 +48,6 @@ namespace RayEngine
 
 			//TODO: Different loops based on components
 
-			//Change the RGB to BGR
 			float temp = 0;
 			for (int32 i = (width * height * 4) - 1; i >= 0; i -= 4)
 			{
@@ -59,6 +58,9 @@ namespace RayEngine
 		}
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool TextureLoader::LoadFromFile(const Tchar* const filename, const Tchar* const filepath, const void** pixels, int32& width, int32& height, FORMAT format)
 	{
 		if (pixels == nullptr || format == FORMAT_UNKNOWN)
@@ -158,6 +160,9 @@ namespace RayEngine
 		return false;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool TextureLoader::SaveToFile(const Tchar* const filename, const Tchar* const filepath, const void* const pixels, int32 width, int32 height, FORMAT format, TEX_EXTENSION extension)
 	{
 		if (pixels == nullptr || width == 0 || height == 0 || format == FORMAT_UNKNOWN || extension == TEX_EXTENSION_UNKNOWN)

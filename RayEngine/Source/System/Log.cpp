@@ -13,6 +13,7 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		Log::Log()
 			: m_Impl(nullptr)
 		{
@@ -23,6 +24,9 @@ namespace RayEngine
 #endif
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Log::~Log()
 		{
 			if (m_Impl != nullptr)
@@ -32,6 +36,9 @@ namespace RayEngine
 			}
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Log::Write(LOG_SEVERITY severity, const Tchar* message, ...) const
 		{
 			assert(m_Impl != nullptr);
@@ -42,6 +49,9 @@ namespace RayEngine
 			va_end(args);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Log::Write(LOG_SEVERITY severity, const Tchar* message, va_list args) const
 		{
 			assert(m_Impl != nullptr);

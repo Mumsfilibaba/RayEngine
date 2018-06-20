@@ -25,16 +25,21 @@ namespace RayEngine
 {
 	namespace System
 	{
-		//Reference counting for logs
-		//Used to determine if the console should be freed or not
+		/////////////////////////////////////////////////////////////
 		int32 g_ConsoleRef = 0;
 
+
+
+		/////////////////////////////////////////////////////////////
 		Win32LogImpl::Win32LogImpl()
 		{
 			//Increse ref
 			g_ConsoleRef++;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Win32LogImpl::~Win32LogImpl()
 		{
 			//Decrease ref
@@ -44,20 +49,20 @@ namespace RayEngine
 
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32LogImpl::Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const
 		{
-			//If there are no console window - Create one
 			if (GetConsoleWindow() == 0)
 			{
 				AllocConsole();
 
 				freopen("CONOUT$", "w", stdout);
 
-				//Set the title
 				SetConsoleTitle(RE_T("RayEngine Log"));
 			}
 
-			//Set textcolor based on severity
 			WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
 			const Tchar* sText = nullptr;
 			
@@ -79,9 +84,9 @@ namespace RayEngine
 
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 
-			//Print
 			print(sText);
 			vprint(text, args);
+			print(RE_T("\n"));
 		}
 	}
 }

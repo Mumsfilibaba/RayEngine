@@ -9,7 +9,6 @@ namespace RayEngine
 	{
 	public:
 		TimeStamp(int64 nanoseconds = 0);
-		~TimeStamp();
 
 		void AddSeconds(double seconds);
 		void AddMilliSeconds(double milliseconds);

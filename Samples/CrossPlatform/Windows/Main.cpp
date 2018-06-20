@@ -1,23 +1,32 @@
 #include <System/Window.h>
 #include <System/Clock.h>
 #include <System/Log.h>
+#include <System/System.h>
+#include <Math/RandomGenerator.h>
+#include <Math/Matrix4.h>
+
+#include <chrono>
 
 int main(int args, char* argsv[])
 {
 	using namespace RayEngine;
 	using namespace RayEngine::System;
 
+	SystemInfo info;
+	QuerySystemInfo(info);
+
 	WindowInfo windowInfo = {};
 	windowInfo.Color.r = 0;
 	windowInfo.Color.g = 0;
 	windowInfo.Color.b = 0;
 	windowInfo.Flags = WINDOW_FLAG_APP_FULLSCREEN | WINDOW_FLAG_APP_NO_SLEEP;
+	windowInfo.Style = WINDOWSTYLE_STANDARD_WINDOW;
 #if defined(RE_PLATFORM_ANDROID)
 	windowInfo.Width = 1080;
 	windowInfo.Height = 1920;
 #else
-	windowInfo.Width = 432;
-	windowInfo.Height = 768;
+	windowInfo.Width = 1280;
+	windowInfo.Height = 720;
 #endif
 
 	Window window(windowInfo);
@@ -26,9 +35,37 @@ int main(int args, char* argsv[])
 
 	window.Show();
 
+	Log log;
 	Clock clock;
 
-	Log log;
+	Math::Matrix4 v1(5);
+	Math::Matrix4 v2(2);
+	Math::Matrix4 v3;
+
+	constexpr int32 tests = 1000;
+	double total = 0.0;
+	for (int i = 0; i < tests; i++)
+	{
+		clock.Tick();
+		
+		for (int x = 0; x < 2000000; x++)
+		{
+			v3 = v2 * v1;
+		}
+
+		clock.Tick();
+
+		double delta = clock.GetDeltaTime().GetAsMilliSeconds();
+		total += delta;
+
+		log.Write(LOG_SEVERITY_INFO, v2.ToString().c_str());
+		log.Write(LOG_SEVERITY_INFO, v3.ToString().c_str());
+		log.Write(LOG_SEVERITY_INFO, (const Tchar*)(std::to_string(delta) + "ms").c_str());
+	}
+
+	log.Write(LOG_SEVERITY_INFO, (const Tchar*)("Average: " + std::to_string(total / double(tests)) + "ms").c_str());
+
+	RandomGenerator ran;
 	
 	int32 color = 0;
 	uint8 strength = 0;
@@ -65,7 +102,7 @@ int main(int args, char* argsv[])
 
 			if (event.Type == EVENT_TYPE_TOUCH)
 			{
-				if (event.TouchX < (1080 / 2))
+				if (event.TouchPosition.x < (1080 / 2))
 					color--;
 				else
 					color++;

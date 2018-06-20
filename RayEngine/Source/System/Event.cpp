@@ -4,21 +4,42 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		Event::Event()
-			: Type()
 		{
-			TouchSize = 0.0f;
-			QuitCode = 0;
-			TouchPressure = 0.0;
+			memset(this, 0, sizeof(Event));
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
+		Event::Event(const Event& other)
+		{
+			memcpy(this, &other, sizeof(Event));
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		Event& Event::operator=(const Event& other)
+		{
+			memcpy(this, &other, sizeof(Event));
+			return *this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		bool Event::operator==(const Event& other) const
 		{
 			return (Type == other.Type) && (TouchSize == other.TouchSize) &&
 				(TouchFingerID == other.TouchFingerID) && (TouchPressure == other.TouchPressure) &&
-				(TouchX == other.TouchX) && (TouchY == other.TouchY);
+				(TouchPosition == other.TouchPosition);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		bool Event::operator!=(const Event& other) const
 		{
 			return !(*this == other);

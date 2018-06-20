@@ -3,11 +3,15 @@
 
 namespace Math
 {
+	/////////////////////////////////////////////////////////////
 	Matrix3::Matrix3()
 	{
 		memset(m, 0, sizeof(float) * 9);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3::Matrix3(float diagonal)
 	{
 		memset(m, 0, sizeof(float) * 9);
@@ -17,6 +21,9 @@ namespace Math
 		rows[2].v[2] = diagonal;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3::Matrix3(const Vector3& r1, const Vector3& r2, const Vector3& r3)
 	{
 		rows[0] = r1;
@@ -24,6 +31,9 @@ namespace Math
 		rows[2] = r3;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3::Matrix3(const Matrix3& other)
 	{
 		memcpy(m, other.m, sizeof(float) * 9);
@@ -31,6 +41,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3 Matrix3::Multiply(const Vector3& vector) const
 	{
 		float t[3];
@@ -44,6 +55,9 @@ namespace Math
 		return Vector3(t[0], t[1], t[2]);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Multiply(const Matrix3& other)
 	{
 		float t[9];
@@ -66,6 +80,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Multiply(float scalar)
 	{
 		for (int i = 0; i < 9; i++)
@@ -76,6 +93,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Add(const Matrix3& other)
 	{
 		for (int i = 0; i < 9; i++)
@@ -84,6 +102,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Add(float scalar)
 	{
 		for (int i = 0; i < 9; i++)
@@ -94,6 +115,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Subtract(const Matrix3& other)
 	{
 		for (int i = 0; i < 9; i++)
@@ -102,6 +124,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Subtract(float scalar)
 	{
 		for (int i = 0; i < 9; i++)
@@ -112,6 +137,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Divide(float scalar)
 	{
 		for (int i = 0; i < 9; i++)
@@ -122,6 +148,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Matrix3::Equals(const Matrix3& other) const
 	{
 		for (int i = 0; i < 9; i++)
@@ -135,16 +162,23 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float* Matrix3::GetArray()
 	{
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	const float* Matrix3::GetArray() const
 	{
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float Matrix3::GetElement(unsigned char r, unsigned char c) const
 	{
 		assert(r < 3);
@@ -153,6 +187,9 @@ namespace Math
 		return rows[r].v[c];
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float& Matrix3::GetElement(unsigned char r, unsigned char c)
 	{
 		assert(r < 3);
@@ -163,6 +200,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3 Matrix3::GetRow(unsigned char r) const
 	{
 		assert(r < 3);
@@ -170,6 +208,9 @@ namespace Math
 		return rows[r];
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Matrix3::GetRow(unsigned char  r)
 	{
 		assert(r < 3);
@@ -179,6 +220,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Transpose()
 	{
 		float temp[9];
@@ -200,6 +242,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::TransposeOf() const
 	{
 		return Matrix3(*this).Transpose();
@@ -207,6 +252,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::Invert()
 	{
 		float det = Determinant();
@@ -219,6 +265,9 @@ namespace Math
 		return*this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::InverseOf() const
 	{
 		return Matrix3(*this).Invert();
@@ -226,11 +275,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Cofactor() const
 	{
 		return Adjugate().Transpose();
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Adjugate() const
 	{
 		Matrix3 adj;
@@ -255,6 +308,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Matrix3::Determinant() const
 	{
 		float det = 0;
@@ -268,6 +322,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	std::string Matrix3::ToString() const
 	{
 		return std::string(rows[0].ToString() + '\n' + rows[1].ToString() + '\n' + rows[2].ToString());
@@ -275,11 +330,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Matrix3::operator==(const Matrix3& other) const
 	{
 		return Equals(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Matrix3::operator!=(const Matrix3& other) const
 	{
 		return !Equals(other);
@@ -287,21 +346,31 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Matrix3::operator()(unsigned int r, unsigned int c) const
 	{
 		return GetElement(r, c);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float& Matrix3::operator()(unsigned int r, unsigned int c)
 	{
 		return GetElement(r, c);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 Matrix3::operator()(unsigned int r) const
 	{
 		return GetRow(r);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Matrix3::operator()(unsigned int r)
 	{
 		return GetRow(r);
@@ -309,11 +378,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3& operator*=(Vector3& left, const Matrix3& right)
 	{
 		return left = right.Multiply(left);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 operator*(Vector3 left, const Matrix3& right)
 	{
 		return right.Multiply(left);
@@ -321,16 +394,23 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator+(Matrix3 left, const Matrix3& right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator-(Matrix3 left, const Matrix3& right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator*(Matrix3 left, const Matrix3& right)
 	{
 		return left.Multiply(right);
@@ -338,31 +418,47 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator+(Matrix3 left, float right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator-(Matrix3 left, float right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator*(Matrix3 left, float right)
 	{
 		return left.Multiply(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator/(Matrix3 left, float right)
 	{
 		return left.Divide(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator*(float left, Matrix3 right)
 	{
 		return right.Multiply(left);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 operator/(float left, Matrix3 right)
 	{
 		return right.Divide(left);
@@ -370,6 +466,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator=(const Matrix3& other)
 	{
 		if (this != &other)
@@ -378,16 +475,25 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator+=(const Matrix3& right)
 	{
 		return Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator-=(const Matrix3& right)
 	{
 		return Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator*=(const Matrix3& right)
 	{
 		return Multiply(right);
@@ -395,21 +501,31 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator+=(float right)
 	{
 		return Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator-=(float right)
 	{
 		return Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator*=(float right)
 	{
 		return Multiply(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3& Matrix3::operator/=(float right)
 	{
 		return Divide(right);
@@ -417,11 +533,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Nan()
 	{
 		return Matrix3(Vector3::Nan(), Vector3::Nan(), Vector3::Nan());
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Identity()
 	{
 		return Matrix3(1.0f);
@@ -429,6 +549,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Translation(const Vector2& translation)
 	{
 		Matrix3 t(1.0f);
@@ -439,6 +560,9 @@ namespace Math
 		return t;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Rotation(const Vector3& axis, float angleRad)
 	{
 		Matrix3 r(1.0f);
@@ -463,6 +587,9 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::RotationX(float angleRad)
 	{
 		Matrix3 r(1.0f);
@@ -479,6 +606,9 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::RotationY(float angleRad)
 	{
 		Matrix3 r(1.0f);
@@ -494,6 +624,9 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::RotationZ(float angleRad)
 	{
 		Matrix3 r(1.0f);
@@ -509,11 +642,17 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Rotation(float angleRadZ, float angleRadX, float angleRadY)
 	{
 		return (RotationZ(angleRadZ) * RotationX(angleRadX)) * RotationY(angleRadY);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Scale(const Vector3& scale)
 	{
 		Matrix3 s(1.0f);
@@ -525,6 +664,9 @@ namespace Math
 		return s;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Scale(float scale)
 	{
 		return Matrix3(scale);

@@ -8,8 +8,12 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		int32 Win32WindowImpl::s_WindowCount = 0;
 
+
+
+		/////////////////////////////////////////////////////////////
 		Win32WindowImpl::Win32WindowImpl()
 			: IWindowImpl(),
 			m_Hwnd(0),
@@ -22,20 +26,21 @@ namespace RayEngine
 			memset(m_Title, 0, sizeof(m_Title));
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Win32WindowImpl::~Win32WindowImpl()
 		{
-			//Destroy window handle
 			if (IsWindow(m_Hwnd))
 			{
 				DestroyWindow(m_Hwnd);
 				m_Hwnd = 0;
 			}
 
-			//Destroy the background
 			if (m_BgBrush != 0)
 				DeleteObject(m_BgBrush);
 
-			//Decrease windowcount and unregisterclass when last window is done
+
 			//TODO: Have a classmanager if we get more classes
 
 			s_WindowCount--;
@@ -45,6 +50,9 @@ namespace RayEngine
 			m_Hinstance = 0;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::PeekEvents()
 		{
 			MSG msg = {};
@@ -64,11 +72,17 @@ namespace RayEngine
 			}
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::PushEvent(const Event& pEvent)
 		{
 			m_Events.push(pEvent);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		bool Win32WindowImpl::PopEvent(Event& pEvent)
 		{
 			if (m_Events.empty())
@@ -80,6 +94,9 @@ namespace RayEngine
 			return true;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::GetEvent(Event& pEvent)
 		{
 			MSG msg = {};
@@ -99,16 +116,25 @@ namespace RayEngine
 			}
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::SendQuitEvent(int32 exitCode) const
 		{
 			PostQuitMessage(exitCode);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::SetCursor(const Cursor& cursor)
 		{
 			m_Cursor = cursor;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::SetIcon(const Icon& icon)
 		{
 			const Win32IconImpl* impl = static_cast<const Win32IconImpl*>(icon.GetImplementation());
@@ -119,6 +145,9 @@ namespace RayEngine
 			}
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::SetBackground(uint8 r, uint8 g, uint8 b)
 		{
 			//Delete old brush
@@ -132,18 +161,24 @@ namespace RayEngine
 			m_BgBrush = CreateSolidBrush(RGB(r, g, b));
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		IWindowImpl* Win32WindowImpl::Copy() const
 		{
 			//Get desc
-			WindowInfo desc;
-			GetDesc(desc);
+			WindowInfo info;
+			GetDesc(info);
 
 			//Create new instance and create a copy of window
 			Win32WindowImpl* instance = new Win32WindowImpl();
-			instance->Create(desc);
+			instance->Create(info);
 			return instance;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		IWindowImpl* Win32WindowImpl::Move()
 		{
 			Win32WindowImpl* instance = new Win32WindowImpl();
@@ -159,12 +194,18 @@ namespace RayEngine
 			return nullptr;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		const Tchar* Win32WindowImpl::GetTitle() const
 		{
 			GetWindowText(m_Hwnd, m_Title, 256);
 			return m_Title;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		int32 Win32WindowImpl::GetWidth() const
 		{
 			RECT rect = {};
@@ -173,6 +214,9 @@ namespace RayEngine
 			return rect.right - rect.left;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		int32 Win32WindowImpl::GetHeight() const
 		{
 			RECT rect = {};
@@ -181,32 +225,44 @@ namespace RayEngine
 			return rect.bottom - rect.top;
 		}
 
-		void Win32WindowImpl::GetDesc(WindowInfo& desc) const
+
+
+		/////////////////////////////////////////////////////////////
+		void Win32WindowImpl::GetDesc(WindowInfo& info) const
 		{
 			GetWindowText(m_Hwnd, m_Title, 256);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		HWND Win32WindowImpl::GetHWND() const
 		{
 			return m_Hwnd;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		HINSTANCE Win32WindowImpl::GetHINSTANCE() const
 		{
 			return m_Hinstance;
 		}
 
-		bool Win32WindowImpl::Create(const WindowInfo& desc)
+
+
+		/////////////////////////////////////////////////////////////
+		bool Win32WindowImpl::Create(const WindowInfo& info)
 		{
 			static bool registerWindow = true;
 
-			//System error code
 			int32 err = 0;
 
-			//Create background brush
-			m_BgBrush = CreateSolidBrush(RGB(desc.Color.r, desc.Color.g, desc.Color.b));
+			m_BgBrush = CreateSolidBrush(RGB(info.Color.r, info.Color.g, info.Color.b));
 			
-			//Register the windowclass
+
+
+
 			if (registerWindow)
 			{
 				WNDCLASSEX wndClass = {};
@@ -230,62 +286,88 @@ namespace RayEngine
 				registerWindow = false;
 			}
 
-			//TODO: Custom style
-			int32 windowStyle = WS_OVERLAPPEDWINDOW;
 
-			RECT client = { 0, 0, static_cast<LONG>(desc.Width), static_cast<LONG>(desc.Height) };
+
+
+			int32 windowStyle = 0;
+			if (info.Style == WINDOWSTYLE_BORDERLESS)
+			{
+				windowStyle = WS_POPUP;
+			}
+			else
+			{
+				windowStyle = WS_OVERLAPPED;
+				if (info.Style & WINDOWSTYLE_TITLEBAR)
+					windowStyle |= WS_CAPTION;
+				if (info.Style & WINDOWSTYLE_SYSTEMMENU)
+					windowStyle |= WS_SYSMENU;
+				if (info.Style & WINDOWSTYLE_RESIZEABLE)
+					windowStyle |= WS_THICKFRAME;
+				if (info.Style & WINDOWSTYLE_MINIMIZABLE)
+					windowStyle |= WS_MINIMIZEBOX;
+				if (info.Style & WINDOWSTYLE_MAXIMIZABLE)
+					windowStyle |= WS_MAXIMIZEBOX;
+			}
+
+			
+
+			RECT client = { 0, 0, static_cast<LONG>(info.Width), static_cast<LONG>(info.Height) };
 			AdjustWindowRect(&client, windowStyle, false);
 
-			int32 posX = (desc.x >= 0) ? desc.x : (GetSystemMetrics(SM_CXSCREEN) - (client.right - client.left)) / 2;
-			int32 posY = (desc.y >= 0) ? desc.y : (GetSystemMetrics(SM_CYSCREEN) - (client.bottom - client.top)) / 2;
+			int32 posX = (info.x >= 0) ? info.x : (GetSystemMetrics(SM_CXSCREEN) - (client.right - client.left)) / 2;
+			int32 posY = (info.y >= 0) ? info.y : (GetSystemMetrics(SM_CYSCREEN) - (client.bottom - client.top)) / 2;
 
-			//TODO: Custom style
+			
+
+
 			SetLastError(0);
-			m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, desc.Title, windowStyle, posX, posY, client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
+			m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, info.Title, windowStyle, posX, posY, client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
 			if (m_Hwnd == 0)
 			{
 				err = GetLastError();
 				return false;
 			}
 
-			//Set userdata to be a pointer to the implementation
 			SetWindowLongPtr(m_Hwnd, GWLP_USERDATA, reinterpret_cast<uintptr_t>(this));
 			
-			//Set the icon
-			const Win32IconImpl* icon = static_cast<const Win32IconImpl*>(desc.icon.GetImplementation());
+			
+
+			const Win32IconImpl* icon = static_cast<const Win32IconImpl*>(info.icon.GetImplementation());
 			SendMessage(m_Hwnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon->GetHICON()));
 			SendMessage(m_Hwnd, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon->GetHICON()));
 
-			//Copy cursor
-			m_Cursor = desc.cursor;
+			
 
-			//Increase windowcount
+			m_Cursor = info.cursor;
+
 			s_WindowCount++;
 			return true;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::Show() const
 		{
 			if (IsWindow(m_Hwnd))
 				ShowWindow(m_Hwnd, SW_NORMAL);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		LRESULT Win32WindowImpl::MsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
-			//System event
 			Event ev;
 			LRESULT ret = 0;
 
-			//Check messages
 			switch (msg)
 			{
 			case WM_SETCURSOR:
-				//Set cursor when is enters the clientarea
 				if (reinterpret_cast<HWND>(wParam) == m_Hwnd)
 				{
 					if (LOWORD(lParam) == HTCLIENT)
 					{
-						//Not this->SetCursor();
 						::SetCursor((static_cast<const Win32CursorImpl*>(m_Cursor.GetImplementation())->GetHCURSOR()));
 						return TRUE;
 					}
@@ -316,10 +398,8 @@ namespace RayEngine
 				break;
 			case WM_SIZE:
 				ev.Type = EVENT_TYPE_RESIZE;
-				//New size
 				ev.Width = LOWORD(lParam);
 				ev.Height = HIWORD(lParam);
-				//If it was maximized, minimized or normal resize
 				if (wParam == SIZE_MAXIMIZED)
 					ev.ResizeType = EVENT_RESIZE_MAXIMIZED;
 				else if (wParam == SIZE_MINIMIZED)
@@ -334,12 +414,13 @@ namespace RayEngine
 				return DefWindowProc(hWnd, msg, wParam, lParam);
 			}
 
-			//Push to eventqueue and return proper returnvalue
 			PushEvent(ev);
 			return ret;
 		}
 
-		//Static callback
+
+
+		/////////////////////////////////////////////////////////////
 		LRESULT Win32WindowImpl::MainMsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			Win32WindowImpl* window = reinterpret_cast<Win32WindowImpl*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));

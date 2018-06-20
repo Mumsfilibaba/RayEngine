@@ -11,6 +11,7 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		AndroidWindowImpl::AndroidWindowImpl()
 			: m_Events(),
 			m_Width(0),
@@ -21,10 +22,16 @@ namespace RayEngine
 		{
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		AndroidWindowImpl::~AndroidWindowImpl()
 		{
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		bool AndroidWindowImpl::Create(const WindowInfo& info)
 		{
 			//Set height and width
@@ -43,6 +50,9 @@ namespace RayEngine
 			return true;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::Show() const
 		{
 			//Set the current window size so that when we get a new window we set it
@@ -58,6 +68,9 @@ namespace RayEngine
 				AndroidSetNativeWindowFlags(m_Flags);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::PeekEvents()
 		{
 			Event event = AndroidReciveEvent();
@@ -66,12 +79,18 @@ namespace RayEngine
 				m_Events.push(event);
 			}
 		}
-		
+
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::PushEvent(const Event& pEvent)
 		{
 			m_Events.push(pEvent);
 		}
-		
+
+
+
+		/////////////////////////////////////////////////////////////
 		bool AndroidWindowImpl::PopEvent(Event& pEvent)
 		{
 			if (m_Events.empty())
@@ -84,7 +103,10 @@ namespace RayEngine
 
 			return true;
 		}
-		
+
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::GetEvent(Event& pEvent)
 		{
 			do
@@ -94,7 +116,10 @@ namespace RayEngine
 
 			PopEvent(pEvent);
 		}
-		
+
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::SendQuitEvent(int32 exitCode) const
 		{
 			Event event;
@@ -104,48 +129,75 @@ namespace RayEngine
 			AndroidSendEvent(event);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::SetCursor(const Cursor& cursor)
 		{
 			//Not relevant
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::SetIcon(const Icon& icon)
 		{
 			//Not relevant
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::SetBackground(uint8 r, uint8 g, uint8 b)
 		{
 			m_Color = AndroidGetIntColor(r, g, b, 255);
 			AndroidSetNativeWindowColor(m_Color);
 		}
-		
+
+
+
+		/////////////////////////////////////////////////////////////
 		IWindowImpl* AndroidWindowImpl::Copy() const
 		{
 			return nullptr;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		IWindowImpl* AndroidWindowImpl::Move()
 		{
 			return nullptr;
 		}
-		
+
+
+
+		/////////////////////////////////////////////////////////////
 		const Tchar* AndroidWindowImpl::GetTitle() const
 		{
 			//Not relevant
 			return nullptr;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		int32 AndroidWindowImpl::GetWidth() const
 		{
 			return m_Width;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		int32 AndroidWindowImpl::GetHeight() const
 		{
 			return m_Height;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::GetDesc(WindowInfo& info) const
 		{
 			info.Width = m_Width;

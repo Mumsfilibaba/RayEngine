@@ -1,14 +1,22 @@
 #include "..\..\Include\Math\Matrix4.h"
 
+#if defined(_WIN32) && !defined(RE_MATH_NO_SIMD)
+#include <xmmintrin.h>
+#endif
+
 #include <cassert>
 
 namespace Math
 {
+	/////////////////////////////////////////////////////////////
 	Matrix4::Matrix4()
 	{
 		memset(m, 0, sizeof(float) * 16);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4::Matrix4(float diagonal)
 	{
 		memset(m, 0, sizeof(float) * 16);
@@ -19,6 +27,9 @@ namespace Math
 		rows[3].v[3] = diagonal;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4::Matrix4(const Vector4& r1, const Vector4& r2, const Vector4& r3, const Vector4& r4)
 	{
 		rows[0] = r1;
@@ -27,6 +38,9 @@ namespace Math
 		rows[3] = r4;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4::Matrix4(const Matrix4& other)
 	{
 		*this = other;
@@ -34,6 +48,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4 Matrix4::Multiply(const Vector4& vector) const
 	{
 		float t[4];
@@ -51,6 +66,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Multiply(const Matrix4& other)
 	{
 		float t[16];
@@ -80,46 +96,106 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Multiply(float scalar)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128 scalars = _mm_set_ps1(scalar);
+		_mm_store_ps(reinterpret_cast<float*>(m), _mm_mul_ps(*reinterpret_cast<__m128*>(&m), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_mul_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[8]), _mm_mul_ps(*reinterpret_cast<__m128*>(&m[8]), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[12]), _mm_mul_ps(*reinterpret_cast<__m128*>(&m[12]), scalars));
+#else
 		for (int i = 0; i < 16; i++)
 			m[i] *= scalar;
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Add(const Matrix4& other)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		_mm_store_ps(reinterpret_cast<float*>(m),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m), *reinterpret_cast<const __m128*>(&other.m)));
+		_mm_store_ps(reinterpret_cast<float*>(&m[4]),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m[4]), *reinterpret_cast<const __m128*>(&other.m[4])));
+		_mm_store_ps(reinterpret_cast<float*>(&m[8]),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m[8]), *reinterpret_cast<const __m128*>(&other.m[8])));
+		_mm_store_ps(reinterpret_cast<float*>(&m[12]),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m[12]), *reinterpret_cast<const __m128*>(&other.m[12])));
+#else
 		for (int i = 0; i < 16; i++)
 			m[i] += other.m[i];
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Add(float scalar)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128 scalars = _mm_set_ps1(scalar);
+		_mm_store_ps(reinterpret_cast<float*>(m), _mm_add_ps(*reinterpret_cast<__m128*>(&m), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_add_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[8]), _mm_add_ps(*reinterpret_cast<__m128*>(&m[8]), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[12]), _mm_add_ps(*reinterpret_cast<__m128*>(&m[12]), scalars));
+#else
 		for (int i = 0; i < 16; i++)
 			m[i] += scalar;
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Subtract(const Matrix4& other)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		_mm_store_ps(reinterpret_cast<float*>(m),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m), *reinterpret_cast<const __m128*>(&other.m)));
+		_mm_store_ps(reinterpret_cast<float*>(&m[4]),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m[4]), *reinterpret_cast<const __m128*>(&other.m[4])));
+		_mm_store_ps(reinterpret_cast<float*>(&m[8]),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m[8]), *reinterpret_cast<const __m128*>(&other.m[8])));
+		_mm_store_ps(reinterpret_cast<float*>(&m[12]),
+			_mm_add_ps(*reinterpret_cast<__m128*>(&m[12]), *reinterpret_cast<const __m128*>(&other.m[12])));
+#else
 		for (int i = 0; i < 16; i++)
 			m[i] -= other.m[i];
+#endif
 
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Subtract(float scalar)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128 scalars = _mm_set_ps1(scalar);
+		_mm_store_ps(reinterpret_cast<float*>(m), _mm_sub_ps(*reinterpret_cast<__m128*>(&m), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_sub_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[8]), _mm_sub_ps(*reinterpret_cast<__m128*>(&m[8]), scalars));
+		_mm_store_ps(reinterpret_cast<float*>(&m[12]), _mm_sub_ps(*reinterpret_cast<__m128*>(&m[12]), scalars));
+#else
 		for (int i = 0; i < 16; i++)
 			m[i] -= scalar;
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Divide(float scalar)
 	{
 		for (int i = 0; i < 16; i++)
@@ -130,6 +206,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Matrix4::Equals(const Matrix4& other) const
 	{
 		for (int i = 0; i < 16; i++)
@@ -143,16 +220,23 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float* Matrix4::GetArray()
 	{
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	const float* Matrix4::GetArray() const
 	{
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float Matrix4::GetElement(unsigned char r, unsigned char c) const
 	{
 		assert(r < 4);
@@ -161,6 +245,9 @@ namespace Math
 		return rows[r].v[c];
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float& Matrix4::GetElement(unsigned char r, unsigned char c)
 	{
 		assert(r < 4);
@@ -169,6 +256,9 @@ namespace Math
 		return rows[r].v[c];
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 Matrix4::GetRow(unsigned char r) const
 	{
 		assert(r < 4);
@@ -176,6 +266,9 @@ namespace Math
 		return rows[r];
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Matrix4::GetRow(unsigned char r)
 	{
 		assert(r < 4);
@@ -185,6 +278,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Transpose()
 	{
 		float temp[16];
@@ -214,6 +308,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::TransposeOf() const
 	{
 		return Matrix4(*this).Transpose();
@@ -221,6 +318,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Invert()
 	{
 		float det = Determinant();
@@ -233,6 +331,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::InverseOf() const
 	{
 		return Matrix4(*this).Invert();
@@ -240,11 +341,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Cofactor() const
 	{
 		return Adjugate().Transpose();
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Adjugate() const
 	{
 		Matrix4 adj;
@@ -332,6 +437,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Matrix4::Determinant() const
 	{
 		float det = 0.0f;
@@ -362,6 +468,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	std::string Matrix4::ToString() const
 	{
 		return std::string(rows[0].ToString() + '\n' + rows[1].ToString() + '\n' + rows[2].ToString() + '\n' + rows[3].ToString());
@@ -369,11 +476,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Matrix4::operator==(const Matrix4& other) const
 	{
 		return Equals(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Matrix4::operator!=(const Matrix4& other) const
 	{
 		return !Equals(other);
@@ -381,21 +492,31 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Matrix4::operator()(unsigned int r, unsigned int c) const
 	{
 		return GetElement(r, c);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float& Matrix4::operator()(unsigned int r, unsigned int c)
 	{
 		return GetElement(r, c);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 Matrix4::operator()(unsigned int r) const
 	{
 		return GetRow(r);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Matrix4::operator()(unsigned int r)
 	{
 		return GetRow(r);
@@ -403,11 +524,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4 operator*(const Vector4& left, const Matrix4& right)
 	{
 		return right.Multiply(left);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& operator*=(Vector4& left, const Matrix4& right)
 	{
 		return left = right.Multiply(left);
@@ -415,16 +540,23 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator+(Matrix4 left, const Matrix4& right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator-(Matrix4 left, const Matrix4& right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator*(Matrix4 left, const Matrix4& right)
 	{
 		return left.Multiply(right);
@@ -432,26 +564,39 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator+(Matrix4 left, float right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator-(Matrix4 left, float right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator*(Matrix4 left, float right)
 	{
 		return left.Multiply(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator/(Matrix4 left, float right)
 	{
 		return left.Divide(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 operator*(float left, Matrix4 right)
 	{
 		return right.Multiply(left);
@@ -459,6 +604,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator=(const Matrix4& other)
 	{
 		if (this != &other)
@@ -467,16 +613,25 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator+=(const Matrix4& right)
 	{
 		return Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator-=(const Matrix4& right)
 	{
 		return Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator*=(const Matrix4& right)
 	{
 		return Multiply(right);
@@ -484,21 +639,31 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator+=(float right)
 	{
 		return Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator-=(float right)
 	{
 		return Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator*=(float right)
 	{
 		return Multiply(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::operator/=(float right)
 	{
 		return Divide(right);
@@ -506,11 +671,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Nan()
 	{
 		return Matrix4(Vector4::Nan(), Vector4::Nan(), Vector4::Nan(), Vector4::Nan());
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Identity()
 	{
 		return Matrix4(1.0f);
@@ -518,6 +687,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Perspective(float fovRad, float aspectWiHe, float farZ, float nearZ)
 	{
 		if (fovRad < (PI / 180.0) || fovRad >(PI - (PI / 180.0)))
@@ -537,6 +707,9 @@ namespace Math
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Orthographic(float width, float height, float farZ, float nearZ)
 	{
 		Matrix4 m(1.0f);
@@ -550,6 +723,9 @@ namespace Math
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Orthographic(float left, float right, float top, float bottom, float farZ, float nearZ)
 	{
 		Matrix4 m(1.0f);
@@ -565,6 +741,9 @@ namespace Math
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Orthographic(float aspectWiHe, float farZ, float nearZ)
 	{
 		Matrix4 m(1.0f);
@@ -578,6 +757,9 @@ namespace Math
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::LookAt(const Vector3& up, const Vector3& at, const Vector3& position)
 	{
 		Matrix4 m(1.0f);
@@ -607,6 +789,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Translation(const Vector3& translation)
 	{
 		Matrix4 m(1.0f);
@@ -618,6 +801,9 @@ namespace Math
 		return m;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Rotation(const Vector3& axis, float angleRad)
 	{
 		Matrix4 r(1.0f);
@@ -644,6 +830,9 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::RotationX(float angleRad)
 	{
 		Matrix4 r(1.0f);
@@ -659,6 +848,9 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::RotationY(float angleRad)
 	{
 		Matrix4 r(1.0f);
@@ -674,6 +866,9 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::RotationZ(float angleRad)
 	{
 		Matrix4 r(1.0f);
@@ -689,6 +884,9 @@ namespace Math
 		return r;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Rotation(float angleRadX, float angleRadY, float angleRadZ)
 	{
 		return (RotationZ(angleRadZ) * RotationX(angleRadX)) * RotationY(angleRadY);
@@ -696,6 +894,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Scale(const Vector3& scale)
 	{
 		Matrix4 s(1.0f);
@@ -707,6 +906,9 @@ namespace Math
 		return s;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Scale(float scale)
 	{
 		Matrix4 s(scale);

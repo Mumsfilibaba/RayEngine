@@ -6,16 +6,23 @@ namespace RayEngine
 {
 	namespace Network
 	{
+		/////////////////////////////////////////////////////////////
 		Win32SocketIPv4Impl::Win32SocketIPv4Impl()
 			: m_Socket(INVALID_SOCKET)
 		{
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Win32SocketIPv4Impl::~Win32SocketIPv4Impl()
 		{
 			Close();
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		bool Win32SocketIPv4Impl::Create(SOCK sock)
 		{
 			int type = 0;

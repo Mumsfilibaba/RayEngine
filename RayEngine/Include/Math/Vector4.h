@@ -2,9 +2,15 @@
 
 #include "Vector3.h"
 
+#if defined(_WIN32)
+#define MATH __declspec(align(16))
+#else
+#define MATH
+#endif
+
 namespace Math
 {
-	class Vector4
+	MATH class Vector4
 	{
 	public:
 		Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);
@@ -47,7 +53,6 @@ namespace Math
 		explicit operator Vector3&();
 		explicit operator const Vector3&() const;
 
-
 		friend Vector4 operator-(Vector4 left, const Vector4& right);
 		friend Vector4 operator+(Vector4 left, const Vector4& right);
 		friend Vector4 operator-(Vector4 left, float right);
@@ -71,7 +76,6 @@ namespace Math
 			};
 
 			float v[4];
-			Vector3 xyz;
 		};
 	};
 }

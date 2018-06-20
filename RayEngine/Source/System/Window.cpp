@@ -13,6 +13,7 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		Window::Window(const WindowInfo& desc)
 			: m_Impl(nullptr)
 		{
@@ -25,6 +26,9 @@ namespace RayEngine
 				m_Impl->Create(desc);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Window::Window(const Window& other)
 			: m_Impl(nullptr)
 		{
@@ -32,6 +36,9 @@ namespace RayEngine
 			m_Impl = other.m_Impl->Copy();
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Window::Window(Window&& other)
 			: m_Impl(other.m_Impl)
 		{
@@ -39,18 +46,27 @@ namespace RayEngine
 			other.m_Impl = nullptr;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Window::~Window()
 		{
 			delete m_Impl;
 			m_Impl = nullptr;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Window::Show() const
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->Show();
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		bool Window::PeekEvent(Event& pEvent) const
 		{
 			assert(m_Impl != nullptr);
@@ -59,65 +75,98 @@ namespace RayEngine
 			return m_Impl->PopEvent(pEvent);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Window::GetEvent(Event& pEvent) const
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->GetEvent(pEvent);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Window::SendQuitEvent(int32 exitCode) const
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->SendQuitEvent(exitCode);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Window::SetCursor(const Cursor& cursor)
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->SetCursor(cursor);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Window::SetIcon(const Icon& icon)
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->SetIcon(icon);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Window::SetBackground(uint8 r, uint8 g, uint8 b)
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->SetBackground(r, g, b);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		int32 Window::GetWidth() const
 		{
 			assert(m_Impl != nullptr);
 			return m_Impl->GetWidth();
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		int32 Window::GetHeight() const
 		{
 			assert(m_Impl != nullptr);
 			return m_Impl->GetHeight();
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		const Tchar* Window::GetTitle() const
 		{
 			assert(m_Impl != nullptr);
 			return m_Impl->GetTitle();
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		const IWindowImpl* Window::GetImplementation() const
 		{
 			return m_Impl;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		void Window::GetDesc(WindowInfo& desc) const
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->GetDesc(desc);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Window& Window::operator=(const Window& other)
 		{
 			if (this != &other)
@@ -129,6 +178,9 @@ namespace RayEngine
 			return *this;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		Window& Window::operator=(Window&& other)
 		{
 			if (this != &other)

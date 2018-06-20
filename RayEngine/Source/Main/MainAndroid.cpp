@@ -3,7 +3,6 @@
 #if defined(RE_PLATFORM_ANDROID)
 
 /////////////////////////////////////////////////////////////
-//"Main thread" entrypoint - For multiplatform
 extern int main(int args, char* argsv[]);
 
 
@@ -93,7 +92,7 @@ void AndroidSendEvent(const RayEngine::System::Event& pEvent)
 }
 
 
-//////CALLBACKS//////
+
 /////////////////////////////////////////////////////////////
 void onConfigurationChanged(ANativeActivity* activity)
 {
@@ -275,7 +274,6 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 {
 	LOGI("ANativeActivity_onCreate");
 
-	//Setup callbacks
 	activity->callbacks->onConfigurationChanged = onConfigurationChanged;
 	activity->callbacks->onInputQueueCreated = onInputQueueCreated;
 	activity->callbacks->onInputQueueDestroyed = onInputQueueDestroyed;
@@ -293,13 +291,10 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 	activity->callbacks->onWindowFocusChanged = onWindowFocusChanged;
 	activity->callbacks->onContentRectChanged = onContentRectChanged;
 
-	//Set appinstance's activity
 	appState.SetActivity(activity);
 
-	//Create looper for this thread
 	appState.GetEvents().CreateLooper();
 
-	//Start main in a seperate detached thread 
 	std::thread mainThread(main, 0, nullptr);
 	mainThread.detach();
 	

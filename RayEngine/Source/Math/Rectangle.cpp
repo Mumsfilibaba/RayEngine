@@ -2,12 +2,16 @@
 
 namespace Math
 {
+	/////////////////////////////////////////////////////////////
 	Rectangle::Rectangle()
 		: topLeft(),
 		bottomRight()
 	{
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Rectangle::Rectangle(const Math::Vector2& topLeft, const Math::Vector2& bottomRight)
 		: topLeft(topLeft),
 		bottomRight(bottomRight)

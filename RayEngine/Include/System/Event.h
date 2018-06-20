@@ -34,22 +34,19 @@ namespace RayEngine
 		{
 		public:
 			Event();
-			Event(const Event& other); 
-			~Event(); 
+			Event(const Event& other);
 			
 			Event& operator=(const Event& other);
-			
 
 			bool operator==(const Event& other) const;
 			bool operator!=(const Event& other) const;
 
 		public:
 			EVENT_TYPE Type;
-
 	
 			struct
 			{
-				 Vector2 Position;
+				Math::Vector2 TouchPosition;
 
 				union
 				{

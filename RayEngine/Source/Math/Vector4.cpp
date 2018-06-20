@@ -1,13 +1,18 @@
 #include "..\..\Include\Math\Vector4.h"
 
+//#define RE_MATH_NO_SIMD
+
 #if defined(_ANDROID)
 #include <sstream>
+#elif defined(_WIN32) && !defined(RE_MATH_NO_SIMD)
+#include <xmmintrin.h>
 #endif
 
 #include <cassert>
 
 namespace Math
 {
+	/////////////////////////////////////////////////////////////
 	Vector4::Vector4(float x, float y, float z, float w)
 		: x(x),
 		y(y),
@@ -16,75 +21,114 @@ namespace Math
 	{
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4::Vector4(const Vector4& other)
-		: x(0.0f),
-		y(0.0f),
-		z(0.0f),
-		w(0.0f)
 	{
 		*this = other;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4::Vector4(const Vector3& vector3)
-		: x(0.0f),
-		y(0.0f),
-		z(0.0f),
-		w(0.0f)
 	{
 		*this = vector3;
 	}
 
 
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Add(const Vector4& other)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128* left = reinterpret_cast<__m128*>(&x);
+		const __m128* right = reinterpret_cast<const __m128*>(&other.x);
+		_mm_store_ps(reinterpret_cast<float*>(left), _mm_add_ps(*left, *right));
+#else
 		x += other.x;
 		y += other.y;
 		z += other.z;
 		w += other.w;
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Add(float scalar)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128* left = reinterpret_cast<__m128*>(&x);
+		_mm_store_ps(reinterpret_cast<float*>(left), _mm_add_ps(*left, _mm_set_ps1(scalar)));
+#else
 		x += scalar;
 		y += scalar;
 		z += scalar;
 		w += scalar;
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Subtract(const Vector4& other)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128* left = reinterpret_cast<__m128*>(&x);
+		const __m128* right = reinterpret_cast<const __m128*>(&other.x);
+
+		_mm_store_ps(reinterpret_cast<float*>(left), _mm_sub_ps(*left, *right));
+#else
 		x -= other.x;
 		y -= other.y;
 		z -= other.z;
 		w -= other.w;
+#endif
 
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Subtract(float scalar)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128* left = reinterpret_cast<__m128*>(&x);
+		_mm_store_ps(reinterpret_cast<float*>(left), _mm_sub_ps(*left, _mm_set_ps1(scalar)));
+#else
 		x -= scalar;
 		y -= scalar;
 		z -= scalar;
 		w -= scalar;
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Multiply(float scalar)
 	{
+#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+		__m128* left = reinterpret_cast<__m128*>(&x);
+		_mm_store_ps(reinterpret_cast<float*>(left), _mm_mul_ps(*left, _mm_set_ps1(scalar)));
+#else
 		x *= scalar;
 		y *= scalar;
 		z *= scalar;
 		w *= scalar;
-
+#endif
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Divide(float scalar)
 	{
 		x /= scalar;
@@ -97,6 +141,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Vector4::IsUnitVector() const
 	{
 		float length = Length();
@@ -104,6 +149,9 @@ namespace Math
 		return length > 0.999999f && length < 1.000001;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Vector4::Equals(const Vector4& other) const
 	{
 		return (x == other.x && y == other.y && z == other.z && w == other.w);
@@ -111,6 +159,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Vector4::Dot(const Vector4& other) const
 	{
 		return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
@@ -118,11 +167,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Vector4::LengthSqrd() const
 	{
 		return (x * x) + (y * y) + (z * z) + (w * w);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float Vector4::Length() const
 	{
 		return sqrt(LengthSqrd());
@@ -130,28 +183,22 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Normalize()
 	{
 		float length = Length();
 
 		if (length > 0)
-		{
-			x /= length;
-			y /= length;
-			z /= length;
-			w /= length;
-		}
+			Divide(length);
 		else
-		{
-			x = 0.0f;
-			y = 0.0f;
-			z = 0.0f;
-			w = 0.0f;
-		}
+			memset(this, 0, sizeof(Vector4));
 
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::UnitVector() const
 	{
 		return Vector4(*this).Normalize();
@@ -159,6 +206,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::Project(const Vector4& other) const
 	{
 		Vector4 n(other);
@@ -167,6 +215,9 @@ namespace Math
 		return Dot(n) * n;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::Reflect(const Vector4& normal) const
 	{
 		return *this - ((2 * Dot(normal)) * normal);
@@ -174,6 +225,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	std::string Vector4::ToString() const
 	{
 #if defined(_ANDROID)
@@ -188,11 +240,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Vector4::operator==(const Vector4& other) const
 	{
 		return Equals(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Vector4::operator!=(const Vector4& other) const
 	{
 		return !Equals(other);
@@ -200,36 +256,55 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4 operator-(Vector4 left, const Vector4& right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 operator+(Vector4 left, const Vector4& right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 operator-(Vector4 left, float right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 operator+(Vector4 left, float right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 operator*(Vector4 left, float right)
 	{
 		return left.Multiply(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 operator/(Vector4 left, float right)
 	{
 		return left.Divide(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 operator*(float left, Vector4 right)
 	{
 		return right.Multiply(left);
@@ -237,19 +312,26 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator=(const Vector3& vector3)
 	{
-		xyz = vector3;
+		*reinterpret_cast<Vector3*>(&x) = vector3;
 		w = 1.0f;
 
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::operator-() const
 	{
 		return Vector4(-x, -y, -z, -w);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator=(const Vector4& other)
 	{
 		if (this != &other)
@@ -263,31 +345,49 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator-=(const Vector4& other)
 	{
 		return Subtract(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator+=(const Vector4& other)
 	{
 		return Add(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator-=(float scalar)
 	{
 		return Subtract(scalar);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator+=(float scalar)
 	{
 		return Add(scalar);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator*=(float scalar)
 	{
 		return Multiply(scalar);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::operator/=(float scalar)
 	{
 		return Divide(scalar);
@@ -295,18 +395,23 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4::operator Vector3&()
 	{
-		return xyz;
+		return *reinterpret_cast<Vector3*>(&x);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector4::operator const Vector3&() const
 	{
-		return xyz;
+		return *reinterpret_cast<const Vector3*>(&x);
 	}
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::Nan()
 	{
 		return Vector4(NAN, NAN, NAN, NAN);

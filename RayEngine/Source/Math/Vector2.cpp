@@ -6,12 +6,16 @@
 
 namespace Math
 {
+	/////////////////////////////////////////////////////////////
 	Vector2::Vector2(float x, float y)
 		: x(x),
 		y(y)
 	{
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2::Vector2(const Vector2& other)
 		: x(0.0f),
 		y(0.0f)
@@ -20,6 +24,8 @@ namespace Math
 	}
 
 
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::Add(const Vector2& other)
 	{
 		x += other.x;
@@ -28,6 +34,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::Add(float scalar)
 	{
 		x += scalar;
@@ -36,6 +45,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::Subtract(const Vector2& other)
 	{
 		x -= other.x;
@@ -44,6 +56,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::Subtract(float scalar)
 	{
 		x -= scalar;
@@ -52,6 +67,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::Multiply(float scalar)
 	{
 		x *= scalar;
@@ -60,6 +78,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::Divide(float scalar)
 	{
 		x /= scalar;
@@ -70,13 +91,16 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Vector2::IsUnitVector() const
 	{
 		float length = Length();
-		//Solves minimal rounding errors (Common floats has 6 decimals)
 		return (length > 0.999999f && length < 1.000001);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Vector2::Equals(const Vector2& other) const
 	{
 		return (x == other.x) && (y == other.y);
@@ -84,6 +108,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Vector2::Dot(const Vector2& other) const
 	{
 		return (x * other.x) + (y * other.y);
@@ -91,11 +116,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Vector2::LengthSqrd() const
 	{
 		return (x * x) + (y * y);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float Vector2::Length() const
 	{
 		return sqrt(LengthSqrd());
@@ -103,6 +132,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::Normalize()
 	{
 		float length = Length();
@@ -121,6 +151,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 Vector2::UnitVector() const
 	{
 		return Vector2(*this).Normalize();
@@ -128,11 +161,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector2 Vector2::Normal() const
 	{
 		return Vector2(-y, x);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 Vector2::Project(const Vector2& other) const
 	{
 		Vector2 n(other);
@@ -143,6 +180,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector2 Vector2::Reflect(const Vector2& normal) const
 	{
 		return *this - ((2 * Dot(normal)) * normal);
@@ -150,6 +188,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	std::string Vector2::ToString() const
 	{
 #if defined(_ANDROID)
@@ -164,11 +203,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Vector2::operator==(const Vector2& other) const
 	{
 		return Equals(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Vector2::operator!=(const Vector2& other) const
 	{
 		return !Equals(other);
@@ -176,11 +219,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector2 Vector2::operator-() const
 	{
 		return Vector2(-x, -y);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::operator=(const Vector2& other)
 	{
 		if (this != &other)
@@ -194,36 +241,55 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector2 operator-(Vector2 left, const Vector2& right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 operator+(Vector2 left, const Vector2& right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 operator-(Vector2 left, float right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 operator+(Vector2 left, float right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 operator*(Vector2 left, float right)
 	{
 		return left.Multiply(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 operator/(Vector2 left, float right)
 	{
 		return left.Divide(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2 operator*(float left, Vector2 right)
 	{
 		return right.Multiply(left);
@@ -231,31 +297,47 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::operator-=(const Vector2& other)
 	{
 		return Subtract(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::operator+=(const Vector2& other)
 	{
 		return Add(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::operator-=(float scalar)
 	{
 		return Subtract(scalar);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::operator+=(float scalar)
 	{
 		return Add(scalar);;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::operator*=(float scalar)
 	{
 		return Multiply(scalar);;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector2& Vector2::operator/=(float scalar)
 	{
 		return Divide(scalar);
@@ -263,6 +345,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector2 Vector2::Nan()
 	{
 		return Vector2(NAN, NAN);

@@ -8,12 +8,14 @@
 
 namespace Math
 {
+	/////////////////////////////////////////////////////////////
 	const Vector3 Vector3::FORWARD(0.0f, 0.0f, 1.0f);
 	const Vector3 Vector3::UP(0.0f, 1.0f, 0.0f);
 	const Vector3 Vector3::RIGHT(1.0f, 0.0f, 0.0f);
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3::Vector3(float x, float y, float z)
 		: x(x),
 		y(y),
@@ -21,6 +23,9 @@ namespace Math
 	{
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3::Vector3(const Vector3& other)
 		: x(0.0f),
 		y(0.0f),
@@ -31,6 +36,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::Add(const Vector3& other)
 	{
 		x += other.x;
@@ -40,6 +46,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::Add(float scalar)
 	{
 		x += scalar;
@@ -49,6 +58,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::Subtract(const Vector3& other)
 	{
 		x -= other.x;
@@ -58,6 +70,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::Subtract(float scalar)
 	{
 		x -= scalar;
@@ -67,6 +82,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::Multiply(float scalar)
 	{
 		x *= scalar;
@@ -76,6 +94,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::Divide(float scalar)
 	{
 		x /= scalar;
@@ -87,6 +108,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Vector3::IsUnitVector() const
 	{
 		float length = Length();
@@ -94,6 +116,9 @@ namespace Math
 		return (length > 0.999999f && length < 1.000001);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Vector3::Equals(const Vector3& other) const
 	{
 		return (x == other.x && y == other.y && z == other.z);
@@ -101,6 +126,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Vector3::Dot(const Vector3& other) const
 	{
 		return (x * other.x) + (y * other.y) + (z * other.z);
@@ -108,11 +134,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	float Vector3::LengthSqrd() const
 	{
 		return (x * x) + (y * y) + (z * z);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	float Vector3::Length() const
 	{
 		return sqrt(LengthSqrd());
@@ -120,6 +150,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::Normalize()
 	{
 		float length = Length();
@@ -139,6 +170,9 @@ namespace Math
 		return *this;
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 Vector3::UnitVector() const
 	{
 		return Vector3(*this).Normalize();
@@ -146,6 +180,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3 Vector3::Cross(const Vector3& other) const
 	{
 		return Vector3(
@@ -154,6 +189,9 @@ namespace Math
 			(x * other.y) - (other.x * y));
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 Vector3::Project(const Vector3& other) const
 	{
 		Vector3 n(other);
@@ -164,6 +202,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3 Vector3::Reflect(const Vector3& normal) const
 	{
 		return *this - ((2 * Dot(normal)) * normal);;
@@ -171,6 +210,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	std::string Vector3::ToString() const
 	{
 #if defined(_ANDROID)
@@ -185,36 +225,55 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3 operator-(Vector3 left, const Vector3& right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 operator+(Vector3 left, const Vector3& right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 operator-(Vector3 left, float right)
 	{
 		return left.Subtract(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 operator+(Vector3 left, float right)
 	{
 		return left.Add(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 operator*(Vector3 left, float right)
 	{
 		return left.Multiply(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 operator/(Vector3 left, float right)
 	{
 		return left.Divide(right);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3 operator*(float left, Vector3 right)
 	{
 		return right.Multiply(left);
@@ -222,11 +281,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3 Vector3::operator-() const
 	{
 		return Vector3(-x, -y, -z);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::operator=(const Vector3& other)
 	{
 		if (this != &other)
@@ -241,31 +304,47 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::operator-=(const Vector3& other)
 	{
 		return Subtract(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::operator+=(const Vector3& other)
 	{
 		return Add(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::operator-=(float scalar)
 	{
 		return Subtract(scalar);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::operator+=(float scalar)
 	{
 		return Add(scalar);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::operator*=(float scalar)
 	{
 		return Multiply(scalar);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	Vector3& Vector3::operator/=(float scalar)
 	{
 		return Divide(scalar);
@@ -273,11 +352,15 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	bool Vector3::operator==(const Vector3& other) const
 	{
 		return Equals(other);
 	}
 
+
+
+	/////////////////////////////////////////////////////////////
 	bool Vector3::operator!=(const Vector3& other) const
 	{
 		return !Equals(other);
@@ -285,6 +368,7 @@ namespace Math
 
 
 
+	/////////////////////////////////////////////////////////////
 	Vector3 Vector3::Nan()
 	{
 		return Vector3(NAN, NAN, NAN);

@@ -17,12 +17,15 @@
 
 namespace Math
 {
-	double to_degrees(double degrees);
-	double to_radians(double radians);
+	double ToDegrees(double degrees);
+	double ToRadians(double radians);
 
-	float to_degrees_f(float degrees);
-	float to_radians_f(float radians);
+	float ToDegreesF(float degrees);
+	float ToRadiansF(float radians);
 
-	float maxf(float f1, float f2);
-	float minf(float f1, float f2);
+	double Max(double d1, double d2);
+	float MaxF(float f1, float f2);
+	
+	double Min(double d1, double d2);
+	float MinF(float f1, float f2);
 }

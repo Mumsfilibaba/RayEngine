@@ -2,33 +2,66 @@
 
 namespace Math
 {
-	double to_degrees(double radians)
+	/////////////////////////////////////////////////////////////
+	double ToDegrees(double radians)
 	{
 		return (180.0 * radians) / PI;
 	}
 
-	double to_radians(double degrees)
+
+
+	/////////////////////////////////////////////////////////////
+	double ToRadians(double degrees)
 	{
 		return (PI * degrees) / 180.0;
 	}
 
-	float to_degrees_f(float radians)
+
+
+	/////////////////////////////////////////////////////////////
+	float ToDegreesF(float radians)
 	{
 		return (180.0f * radians) / PI_F;
 	}
 
-	float to_radians_f(float degrees)
+
+
+	/////////////////////////////////////////////////////////////
+	float ToRadiansF(float degrees)
 	{
 		return (PI_F * degrees) / 180.0f;
 	}
 
-	float maxf(float f1, float f2)
+
+
+	/////////////////////////////////////////////////////////////
+	float MaxF(float f1, float f2)
 	{
 		return (f1 > f2) ? f1 : f2;
 	}
 
-	float minf(float f1, float f2)
+
+
+	/////////////////////////////////////////////////////////////
+	float MinF(float f1, float f2)
 	{
 		return (f1 < f2) ? f1 : f2;
+	}
+
+
+
+
+	/////////////////////////////////////////////////////////////
+	double Max(double d1, double d2)
+	{
+		return (d1 > d2) ? d1 : d2;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	double Min(double d1, double d2)
+	{
+		return (d1 < d2) ? d1 : d2;
 	}
 }
