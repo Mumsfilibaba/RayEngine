@@ -11,6 +11,7 @@ int main(int args, char* argsv[])
 {
 	using namespace RayEngine;
 	using namespace RayEngine::System;
+	using namespace Math;
 
 	SystemInfo info;
 	QuerySystemInfo(info);

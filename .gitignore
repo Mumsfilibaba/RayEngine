@@ -26,3 +26,4 @@ TestApp/TestApp.Packaging/x86/Debug/Package/libs/x86/gdbserver
 Samples/CrossPlatform/AndroidApp/Tegra-Android/Debug/build/nsight_tegra_manifest.xml
 .vs/RayEngine/DesignTimeBuild/.dtbcache
 *.gradle
+*.exe

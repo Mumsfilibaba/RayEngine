@@ -1,13 +1,9 @@
-//#define RE_MATH_NO_SIMD
+//#define NO_SIMD
 
 #include "..\..\Include\Math\Vector4.h"
 
 #if defined(_ANDROID)
 #include <sstream>
-#endif
-
-#if defined(SSE_INTRINSICS)
-#include <xmmintrin.h>
 #endif
 
 #include <cassert>
@@ -44,10 +40,8 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Add(const Vector4& other)
 	{
-#if defined(SSE_INTRINSICS)
-		__m128* left = reinterpret_cast<__m128*>(&x);
-		const __m128* right = reinterpret_cast<const __m128*>(&other.x);
-		_mm_store_ps(reinterpret_cast<float*>(left), _mm_add_ps(*left, *right));
+#if defined(SSE_INTRIN)
+		sse128 = _mm_add_ps(sse128, other.sse128);
 #else
 		x += other.x;
 		y += other.y;
@@ -62,9 +56,8 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Add(float scalar)
 	{
-#if defined(SSE_INTRINSICS)
-		__m128* left = reinterpret_cast<__m128*>(&x);
-		_mm_store_ps(reinterpret_cast<float*>(left), _mm_add_ps(*left, _mm_set_ps1(scalar)));
+#if defined(SSE_INTRIN)
+		sse128 = _mm_add_ps(sse128, _mm_set_ps1(scalar));
 #else
 		x += scalar;
 		y += scalar;
@@ -79,11 +72,8 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Subtract(const Vector4& other)
 	{
-#if defined(SSE_INTRINSICS)
-		__m128* left = reinterpret_cast<__m128*>(&x);
-		const __m128* right = reinterpret_cast<const __m128*>(&other.x);
-
-		_mm_store_ps(reinterpret_cast<float*>(left), _mm_sub_ps(*left, *right));
+#if defined(SSE_INTRIN)
+		sse128 = _mm_sub_ps(sse128, other.sse128);
 #else
 		x -= other.x;
 		y -= other.y;
@@ -99,9 +89,8 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Subtract(float scalar)
 	{
-#if defined(SSE_INTRINSICS)
-		__m128* left = reinterpret_cast<__m128*>(&x);
-		_mm_store_ps(reinterpret_cast<float*>(left), _mm_sub_ps(*left, _mm_set_ps1(scalar)));
+#if defined(SSE_INTRIN)
+		sse128 = _mm_sub_ps(sse128, _mm_set_ps1(scalar));
 #else
 		x -= scalar;
 		y -= scalar;
@@ -116,9 +105,8 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Multiply(float scalar)
 	{
-#if defined(SSE_INTRINSICS)
-		__m128* left = reinterpret_cast<__m128*>(&x);
-		_mm_store_ps(reinterpret_cast<float*>(left), _mm_mul_ps(*left, _mm_set_ps1(scalar)));
+#if defined(SSE_INTRIN)
+		sse128 = _mm_mul_ps(sse128, _mm_set_ps1(scalar));
 #else
 		x *= scalar;
 		y *= scalar;
@@ -133,11 +121,14 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Divide(float scalar)
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_div_ps(sse128, _mm_set_ps1(scalar));
+#else
 		x /= scalar;
 		y /= scalar;
 		z /= scalar;
 		w /= scalar;
-
+#endif
 		return *this;
 	}
 
@@ -164,7 +155,16 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	float Vector4::Dot(const Vector4& other) const
 	{
+#if defined(SSE_INTRIN)
+		__m128 summed = _mm_mul_ps(sse128, other.sse128);
+		__m128 shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		summed = _mm_add_ss(summed, shuffled);
+		return _mm_cvtss_f32(summed);
+#else
 		return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
+#endif
 	}
 
 
@@ -172,7 +172,15 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	float Vector4::LengthSqrd() const
 	{
+#if defined(SSE_INTRIN)
+		__m128 summed = _mm_mul_ps(sse128, sse128);
+		__m128 shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		return _mm_cvtss_f32(_mm_add_ss(summed, shuffled));
+#else
 		return (x * x) + (y * y) + (z * z) + (w * w);
+#endif
 	}
 
 
@@ -180,7 +188,15 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	float Vector4::Length() const
 	{
+#if defined(SSE_INTRIN)
+		__m128 summed = _mm_mul_ps(sse128, sse128);
+		__m128 shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		return _mm_cvtss_f32(_mm_sqrt_ss(_mm_add_ss(summed, shuffled)));
+#else
 		return sqrt(LengthSqrd());
+#endif
 	}
 
 
@@ -188,13 +204,21 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Normalize()
 	{
+#if defined(SSE_INTRIN)
+		__m128 summed = _mm_mul_ps(sse128, sse128);
+		__m128 shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		summed = _mm_add_ss(summed, shuffled);
+		sse128 = _mm_mul_ps(sse128, _mm_rsqrt_ps(_mm_shuffle_ps(summed, summed, 0)));
+#else
 		float length = Length();
 
 		if (length > 0)
 			Divide(length);
 		else
 			memset(this, 0, sizeof(Vector4));
-
+#endif
 		return *this;
 	}
 
@@ -203,7 +227,16 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::UnitVector() const
 	{
+#if defined(SSE_INTRIN)
+		__m128 summed = _mm_mul_ps(sse128, sse128);
+		__m128 shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		summed = _mm_add_ss(summed, shuffled);
+		return _mm_mul_ps(sse128, _mm_rsqrt_ps(_mm_shuffle_ps(summed, summed, 0)));
+#else
 		return Vector4(*this).Normalize();
+#endif
 	}
 
 
@@ -211,10 +244,24 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::Project(const Vector4& other) const
 	{
+#if defined(SSE_INTRIN)
+		__m128 summed = _mm_mul_ps(other.sse128, other.sse128);
+		__m128 shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		summed = _mm_add_ss(summed, shuffled);
+		__m128 norm = _mm_mul_ps(other.sse128, _mm_rsqrt_ps(_mm_shuffle_ps(summed, summed, 0)));
+		summed = _mm_mul_ps(sse128, norm);
+		shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		summed = _mm_add_ss(summed, shuffled);
+		return _mm_mul_ps(norm, _mm_shuffle_ps(summed, summed, 0));
+#else
 		Vector4 n(other);
 		n.Normalize();
-
 		return Dot(n) * n;
+#endif
 	}
 
 
@@ -222,7 +269,17 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4 Vector4::Reflect(const Vector4& normal) const
 	{
+#if defined(SSE_INTRIN)
+		__m128 summed = _mm_mul_ps(sse128, normal.sse128);
+		__m128 shuffled = _mm_shuffle_ps(summed, summed, _MM_SHUFFLE(2, 3, 0, 1));
+		summed = _mm_add_ps(summed, shuffled);
+		shuffled = _mm_movehl_ps(shuffled, summed);
+		summed = _mm_add_ss(summed, shuffled);
+		summed = _mm_mul_ps(normal.sse128, _mm_mul_ps(_mm_shuffle_ps(summed, summed, 0), _mm_set_ps1(2.0f)));
+		return _mm_sub_ps(sse128, summed);
+#else
 		return *this - ((2 * Dot(normal)) * normal);
+#endif
 	}
 
 

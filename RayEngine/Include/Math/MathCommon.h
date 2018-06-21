@@ -15,7 +15,7 @@
 #endif
 
 #if defined(_WIN32) && !defined(NO_SIMD)
-#define SSE_INTRINSICS
+#define SSE_INTRIN
 #endif
 
 namespace Math

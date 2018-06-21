@@ -3,6 +3,10 @@
 #include "MathCommon.h"
 #include "Vector3.h"
 
+#if defined(SSE_INTRIN)
+#include <xmmintrin.h>
+#endif
+
 namespace Math
 {
 	VECTORALIGN class Vector4
@@ -11,6 +15,9 @@ namespace Math
 		Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);
 		Vector4(const Vector4& other);
 		explicit Vector4(const Vector3& other);
+#if defined(SSE_INTRIN)
+		Vector4(__m128 sse128) : sse128(sse128) {}
+#endif
 
 		Vector4& Add(const Vector4& other);
 		Vector4& Add(float scalar);
@@ -71,6 +78,10 @@ namespace Math
 			};
 
 			float v[4];
+
+#if defined(SSE_INTRIN)
+			__m128 sse128;
+#endif
 		};
 	};
 }
