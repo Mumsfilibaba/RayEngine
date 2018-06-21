@@ -1,6 +1,6 @@
 #include "..\..\Include\Math\Color.h"
 
-namespace RayEngine
+namespace Math
 {
 	/////////////////////////////////////////////////////////////
 	const Color Color::BLACK(ColorF::BLACK);
@@ -41,7 +41,6 @@ namespace RayEngine
 
 	/////////////////////////////////////////////////////////////
 	Color::Color(const Color& other)
-		: color(0)
 	{
 		*this = other;
 	}
@@ -50,7 +49,6 @@ namespace RayEngine
 
 	/////////////////////////////////////////////////////////////
 	Color::Color(const ColorF& colorf)
-		: color(0)
 	{
 		*this = colorf;
 	}
@@ -58,8 +56,7 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	Color::Color(const Math::Vector4& vector4)
-		: color(0)
+	Color::Color(const Vector4& vector4)
 	{
 		*this = vector4;
 	}

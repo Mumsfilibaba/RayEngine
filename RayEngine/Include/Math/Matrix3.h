@@ -15,7 +15,7 @@ namespace Math
 
 		Vector3 Multiply(const Vector3& vector) const;
 
-		forceinline Matrix3& Multiply(const Matrix3& other);
+		Matrix3& Multiply(const Matrix3& other);
 		Matrix3& Multiply(float scalar);
 		Matrix3& Add(const Matrix3& other);
 		Matrix3& Add(float scalar);
@@ -64,12 +64,11 @@ namespace Math
 		Matrix3& operator*=(float right);
 		Matrix3& operator/=(float right);
 
-
 		friend Matrix3 operator+(Matrix3 left, const Matrix3& right);
 		friend Matrix3 operator-(Matrix3 left, const Matrix3& right);
-		forceinline friend Matrix3 operator*(Matrix3 left, const Matrix3& right);
-		forceinline friend Matrix3 operator*(Matrix3 left, float right);
-		forceinline friend Matrix3 operator*(float left, Matrix3 right);
+		friend Matrix3 operator*(Matrix3 left, const Matrix3& right);
+		friend Matrix3 operator*(Matrix3 left, float right);
+		friend Matrix3 operator*(float left, Matrix3 right);
 		friend Matrix3 operator+(Matrix3 left, float right);
 		friend Matrix3 operator-(Matrix3 left, float right);
 		friend Matrix3 operator/(Matrix3 left, float right);

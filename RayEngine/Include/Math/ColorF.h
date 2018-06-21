@@ -1,17 +1,16 @@
 #pragma once
 
 #include "..\Defines.h"
-#include "..\Types.h"
 #include "..\Math\Vector4.h"
 
-namespace RayEngine
+namespace Math
 {
 	class ColorF
 	{
 	public:
 		ColorF(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f);
 		ColorF(const ColorF& other);
-		explicit ColorF(const Math::Vector4& vector4);
+		explicit ColorF(const Vector4& vector4);
 
 		ColorF& Add(const ColorF& other);
 		ColorF& Add(float scalar);
@@ -32,7 +31,7 @@ namespace RayEngine
 		bool operator==(const ColorF& other) const;
 		bool operator!=(const ColorF& other) const;
 
-		ColorF& operator=(const Math::Vector4& other);
+		ColorF& operator=(const Vector4& other);
 		ColorF& operator=(const ColorF& other);
 		ColorF& operator+=(const ColorF& other);
 		ColorF& operator-=(const ColorF& other);
@@ -43,11 +42,10 @@ namespace RayEngine
 		ColorF& operator*=(float scalar);
 		ColorF& operator/=(float scalar);
 
-		operator const float*() const;
 		operator float*();
-		explicit operator Math::Vector4&();
-		explicit operator const Math::Vector4&() const;
-
+		operator const float*() const;
+		explicit operator Vector4&();
+		explicit operator const Vector4&() const;
 
 		friend ColorF operator-(ColorF left, const ColorF& right);
 		friend ColorF operator+(ColorF left, const ColorF& right);
@@ -74,7 +72,7 @@ namespace RayEngine
 			};
 
 			float rgba[4];
-			Math::Vector4 vector;
+			Vector4 vector;
 		};
 
 	public:

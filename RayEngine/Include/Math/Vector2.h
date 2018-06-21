@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "MathUtilities.h"
+#include "MathCommon.h"
 
 namespace Math
 {

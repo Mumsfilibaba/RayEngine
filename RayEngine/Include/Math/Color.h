@@ -1,10 +1,9 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "MathCommon.h"
 #include "ColorF.h"
 
-namespace RayEngine
+namespace Math
 {
 	class Color
 	{
@@ -12,7 +11,7 @@ namespace RayEngine
 		Color(uint8 r = 0, uint8 g = 0, uint8 b = 0, uint8 a = 0);
 		Color(const Color& other);
 		explicit Color(const ColorF& colorf);
-		explicit Color(const Math::Vector4& vector4);
+		explicit Color(const Vector4& vector4);
 
 		Color& Add(const Color& other);
 		Color& Add(uint8 scalar);
@@ -30,7 +29,7 @@ namespace RayEngine
 		bool operator==(const Color& other) const;
 		bool operator!=(const Color& other) const;
 
-		Color& operator=(const Math::Vector4& other);
+		Color& operator=(const Vector4& other);
 		Color& operator=(const ColorF& other);
 		Color& operator=(const Color& other);
 		Color& operator+=(const Color& other);
@@ -43,7 +42,6 @@ namespace RayEngine
 		Color& operator/=(uint8 scalar);
 
 		explicit operator ColorF();
-
 
 		friend Color operator-(Color left, const Color& right);
 		friend Color operator+(Color left, const Color& right);

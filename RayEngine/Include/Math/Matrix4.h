@@ -5,7 +5,7 @@
 
 namespace Math
 {
-	class Matrix4
+	VECTORALIGN class Matrix4
 	{
 	public:
 		Matrix4();

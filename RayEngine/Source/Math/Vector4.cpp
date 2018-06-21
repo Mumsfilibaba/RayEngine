@@ -1,10 +1,12 @@
-#include "..\..\Include\Math\Vector4.h"
-
 //#define RE_MATH_NO_SIMD
+
+#include "..\..\Include\Math\Vector4.h"
 
 #if defined(_ANDROID)
 #include <sstream>
-#elif defined(_WIN32) && !defined(RE_MATH_NO_SIMD)
+#endif
+
+#if defined(SSE_INTRINSICS)
 #include <xmmintrin.h>
 #endif
 
@@ -42,7 +44,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Add(const Vector4& other)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		__m128* left = reinterpret_cast<__m128*>(&x);
 		const __m128* right = reinterpret_cast<const __m128*>(&other.x);
 		_mm_store_ps(reinterpret_cast<float*>(left), _mm_add_ps(*left, *right));
@@ -60,7 +62,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Add(float scalar)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		__m128* left = reinterpret_cast<__m128*>(&x);
 		_mm_store_ps(reinterpret_cast<float*>(left), _mm_add_ps(*left, _mm_set_ps1(scalar)));
 #else
@@ -77,7 +79,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Subtract(const Vector4& other)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		__m128* left = reinterpret_cast<__m128*>(&x);
 		const __m128* right = reinterpret_cast<const __m128*>(&other.x);
 
@@ -97,7 +99,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Subtract(float scalar)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		__m128* left = reinterpret_cast<__m128*>(&x);
 		_mm_store_ps(reinterpret_cast<float*>(left), _mm_sub_ps(*left, _mm_set_ps1(scalar)));
 #else
@@ -114,7 +116,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4& Vector4::Multiply(float scalar)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		__m128* left = reinterpret_cast<__m128*>(&x);
 		_mm_store_ps(reinterpret_cast<float*>(left), _mm_mul_ps(*left, _mm_set_ps1(scalar)));
 #else

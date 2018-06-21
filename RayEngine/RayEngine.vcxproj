@@ -165,6 +165,7 @@
     <ClInclude Include="Include\Math\ColorF.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
     <ClInclude Include="Include\Math\Math.h" />
+    <ClInclude Include="Include\Math\MathCommon.h" />
     <ClInclude Include="Include\Math\MathUtilities.h" />
     <ClInclude Include="Include\Math\Matrix2.h" />
     <ClInclude Include="Include\Math\Matrix3.h" />

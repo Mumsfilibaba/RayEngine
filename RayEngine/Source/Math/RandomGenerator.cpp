@@ -2,7 +2,7 @@
 #include <ctime>
 #include <cstdlib>
 
-namespace RayEngine
+namespace Math
 {
 	/////////////////////////////////////////////////////////////
 	int32 RandomGenerator::s_CurrentSeed = 0;

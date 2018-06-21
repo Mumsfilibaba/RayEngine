@@ -1,6 +1,6 @@
 #include "..\..\Include\Math\Matrix4.h"
 
-#if defined(_WIN32) && !defined(RE_MATH_NO_SIMD)
+#if defined(SSE_INTRINSICS)
 #include <xmmintrin.h>
 #endif
 
@@ -101,7 +101,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Multiply(float scalar)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		__m128 scalars = _mm_set_ps1(scalar);
 		_mm_store_ps(reinterpret_cast<float*>(m), _mm_mul_ps(*reinterpret_cast<__m128*>(&m), scalars));
 		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_mul_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
@@ -119,7 +119,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Add(const Matrix4& other)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		_mm_store_ps(reinterpret_cast<float*>(m),
 			_mm_add_ps(*reinterpret_cast<__m128*>(&m), *reinterpret_cast<const __m128*>(&other.m)));
 		_mm_store_ps(reinterpret_cast<float*>(&m[4]),
@@ -140,7 +140,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Add(float scalar)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		__m128 scalars = _mm_set_ps1(scalar);
 		_mm_store_ps(reinterpret_cast<float*>(m), _mm_add_ps(*reinterpret_cast<__m128*>(&m), scalars));
 		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_add_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
@@ -158,7 +158,7 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Subtract(const Matrix4& other)
 	{
-#if !defined(RE_MATH_NO_SIMD) && defined(_WIN32)
+#if defined(SSE_INTRINSICS)
 		_mm_store_ps(reinterpret_cast<float*>(m),
 			_mm_add_ps(*reinterpret_cast<__m128*>(&m), *reinterpret_cast<const __m128*>(&other.m)));
 		_mm_store_ps(reinterpret_cast<float*>(&m[4]),

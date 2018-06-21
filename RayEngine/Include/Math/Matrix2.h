@@ -60,7 +60,6 @@ namespace Math
 		Matrix2& operator*=(float right);
 		Matrix2& operator/=(float right);
 
-
 		friend Vector2& operator*=(Vector2& left, const Matrix2& right);
 		friend Vector2 operator*(Vector2 left, const Matrix2& right);
 

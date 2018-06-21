@@ -1,16 +1,11 @@
 #pragma once
 
+#include "MathCommon.h"
 #include "Vector3.h"
-
-#if defined(_WIN32)
-#define MATH __declspec(align(16))
-#else
-#define MATH
-#endif
 
 namespace Math
 {
-	MATH class Vector4
+	VECTORALIGN class Vector4
 	{
 	public:
 		Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);

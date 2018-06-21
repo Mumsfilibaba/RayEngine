@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Vector2.h"
-#include "..\Graphics\Color.h"
+#include "Color.h"
 
-namespace RayEngine
+namespace Math
 {
 	class RandomGenerator
 	{
@@ -20,9 +20,9 @@ namespace RayEngine
 		float GenerateFloat(float min, float max) const;
 		double GenerateDouble() const;
 		double GenerateDouble(double min, double max) const;
-		Math::Vector2 GenerateVector2() const;
-		Math::Vector3 GenerateVector3() const;
-		Math::Vector4 GenerateVector4() const;
+		Vector2 GenerateVector2() const;
+		Vector3 GenerateVector3() const;
+		Vector4 GenerateVector4() const;
 		Color GenerateColor() const;
 		ColorF GenerateColorF() const;
 
