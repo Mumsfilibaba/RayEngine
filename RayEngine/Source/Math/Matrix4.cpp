@@ -1,9 +1,6 @@
+//#define NO_SIMD
+
 #include "..\..\Include\Math\Matrix4.h"
-
-#if defined(SSE_INTRINSICS)
-#include <xmmintrin.h>
-#endif
-
 #include <cassert>
 
 namespace Math
@@ -51,6 +48,13 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Vector4 Matrix4::Multiply(const Vector4& vector) const
 	{
+#if defined(SSE_INTRIN)
+		__m128 r1 = _mm_mul_ps(_mm_shuffle_ps(vector.sse128, vector.sse128, 0), sse128[0]);
+		r1 = _mm_add_ps(r1, _mm_mul_ps(_mm_shuffle_ps(vector.sse128, vector.sse128, 0x55), sse128[1]));
+		r1 = _mm_add_ps(r1, _mm_mul_ps(_mm_shuffle_ps(vector.sse128, vector.sse128, 0xaa), sse128[2]));
+		r1 = _mm_add_ps(r1, _mm_mul_ps(_mm_shuffle_ps(vector.sse128, vector.sse128, 0xff), sse128[3]));
+		return r1;
+#else
 		float t[4];
 
 		t[0] = (vector.v[0] * rows[0].v[0]) + (vector.v[1] * rows[1].v[0]) + (vector.v[2] * rows[2].v[0]) + (vector.v[3] * rows[3].v[0]);
@@ -62,6 +66,7 @@ namespace Math
 		t[3] = (vector.v[0] * rows[0].v[3]) + (vector.v[1] * rows[1].v[3]) + (vector.v[2] * rows[2].v[3]) + (vector.v[3] * rows[3].v[3]);
 
 		return Vector4(t[0], t[1], t[2], t[3]);
+#endif
 	}
 
 
@@ -69,6 +74,32 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Multiply(const Matrix4& other)
 	{
+#if defined(SSE_INTRIN)
+		__m128 r1 = _mm_mul_ps(_mm_shuffle_ps(sse128[0], sse128[0], 0), other.sse128[0]);
+		r1 = _mm_add_ps(r1, _mm_mul_ps(_mm_shuffle_ps(sse128[0], sse128[0], 0x55), other.sse128[1]));
+		r1 = _mm_add_ps(r1, _mm_mul_ps(_mm_shuffle_ps(sse128[0], sse128[0], 0xaa), other.sse128[2]));
+		r1 = _mm_add_ps(r1, _mm_mul_ps(_mm_shuffle_ps(sse128[0], sse128[0], 0xff), other.sse128[3]));
+
+		__m128 r2 = _mm_mul_ps(_mm_shuffle_ps(sse128[1], sse128[1], 0), other.sse128[0]);
+		r2 = _mm_add_ps(r2, _mm_mul_ps(_mm_shuffle_ps(sse128[1], sse128[1], 0x55), other.sse128[1]));
+		r2 = _mm_add_ps(r2, _mm_mul_ps(_mm_shuffle_ps(sse128[1], sse128[1], 0xaa), other.sse128[2]));
+		r2 = _mm_add_ps(r2, _mm_mul_ps(_mm_shuffle_ps(sse128[1], sse128[1], 0xff), other.sse128[3]));
+
+		__m128 r3 = _mm_mul_ps(_mm_shuffle_ps(sse128[2], sse128[2], 0), other.sse128[0]);
+		r3 = _mm_add_ps(r3, _mm_mul_ps(_mm_shuffle_ps(sse128[2], sse128[2], 0x55), other.sse128[1]));
+		r3 = _mm_add_ps(r3, _mm_mul_ps(_mm_shuffle_ps(sse128[2], sse128[2], 0xaa), other.sse128[2]));
+		r3 = _mm_add_ps(r3, _mm_mul_ps(_mm_shuffle_ps(sse128[2], sse128[2], 0xff), other.sse128[3]));
+
+		__m128 r4 = _mm_mul_ps(_mm_shuffle_ps(sse128[3], sse128[3], 0), other.sse128[0]);
+		r4 = _mm_add_ps(r4, _mm_mul_ps(_mm_shuffle_ps(sse128[3], sse128[3], 0x55), other.sse128[1]));
+		r4 = _mm_add_ps(r4, _mm_mul_ps(_mm_shuffle_ps(sse128[3], sse128[3], 0xaa), other.sse128[2]));
+		r4 = _mm_add_ps(r4, _mm_mul_ps(_mm_shuffle_ps(sse128[3], sse128[3], 0xff), other.sse128[3]));
+
+		sse128[0] = r1;
+		sse128[1] = r2;
+		sse128[2] = r3;
+		sse128[3] = r4;
+#else
 		float t[16];
 
 		t[0] = (rows[0].v[0] * other.rows[0].v[0]) + (rows[0].v[1] * other.rows[1].v[0]) + (rows[0].v[2] * other.rows[2].v[0]) + (rows[0].v[3] * other.rows[3].v[0]);
@@ -92,7 +123,7 @@ namespace Math
 		t[15] = (rows[3].v[0] * other.rows[0].v[3]) + (rows[3].v[1] * other.rows[1].v[3]) + (rows[3].v[2] * other.rows[2].v[3]) + (rows[3].v[3] * other.rows[3].v[3]);
 
 		memcpy(m, t, sizeof(float) * 16);
-
+#endif
 		return *this;
 	}
 
@@ -103,10 +134,10 @@ namespace Math
 	{
 #if defined(SSE_INTRIN)
 		__m128 scalars = _mm_set_ps1(scalar);
-		_mm_store_ps(reinterpret_cast<float*>(m), _mm_mul_ps(*reinterpret_cast<__m128*>(&m), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_mul_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[8]), _mm_mul_ps(*reinterpret_cast<__m128*>(&m[8]), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[12]), _mm_mul_ps(*reinterpret_cast<__m128*>(&m[12]), scalars));
+		sse128[0] = _mm_mul_ps(sse128[0], scalars);
+		sse128[1] = _mm_mul_ps(sse128[1], scalars);
+		sse128[2] = _mm_mul_ps(sse128[2], scalars);
+		sse128[3] = _mm_mul_ps(sse128[3], scalars);
 #else
 		for (int i = 0; i < 16; i++)
 			m[i] *= scalar;
@@ -120,14 +151,10 @@ namespace Math
 	Matrix4& Matrix4::Add(const Matrix4& other)
 	{
 #if defined(SSE_INTRIN)
-		_mm_store_ps(reinterpret_cast<float*>(m),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m), *reinterpret_cast<const __m128*>(&other.m)));
-		_mm_store_ps(reinterpret_cast<float*>(&m[4]),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m[4]), *reinterpret_cast<const __m128*>(&other.m[4])));
-		_mm_store_ps(reinterpret_cast<float*>(&m[8]),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m[8]), *reinterpret_cast<const __m128*>(&other.m[8])));
-		_mm_store_ps(reinterpret_cast<float*>(&m[12]),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m[12]), *reinterpret_cast<const __m128*>(&other.m[12])));
+		sse128[0] = _mm_add_ps(sse128[0], other.sse128[0]);
+		sse128[1] = _mm_add_ps(sse128[1], other.sse128[1]);
+		sse128[2] = _mm_add_ps(sse128[2], other.sse128[2]);
+		sse128[3] = _mm_add_ps(sse128[3], other.sse128[3]);
 #else
 		for (int i = 0; i < 16; i++)
 			m[i] += other.m[i];
@@ -142,10 +169,10 @@ namespace Math
 	{
 #if defined(SSE_INTRIN)
 		__m128 scalars = _mm_set_ps1(scalar);
-		_mm_store_ps(reinterpret_cast<float*>(m), _mm_add_ps(*reinterpret_cast<__m128*>(&m), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_add_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[8]), _mm_add_ps(*reinterpret_cast<__m128*>(&m[8]), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[12]), _mm_add_ps(*reinterpret_cast<__m128*>(&m[12]), scalars));
+		sse128[0] = _mm_add_ps(sse128[0], scalars);
+		sse128[1] = _mm_add_ps(sse128[1], scalars);
+		sse128[2] = _mm_add_ps(sse128[2], scalars);
+		sse128[3] = _mm_add_ps(sse128[3], scalars);
 #else
 		for (int i = 0; i < 16; i++)
 			m[i] += scalar;
@@ -159,14 +186,10 @@ namespace Math
 	Matrix4& Matrix4::Subtract(const Matrix4& other)
 	{
 #if defined(SSE_INTRIN)
-		_mm_store_ps(reinterpret_cast<float*>(m),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m), *reinterpret_cast<const __m128*>(&other.m)));
-		_mm_store_ps(reinterpret_cast<float*>(&m[4]),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m[4]), *reinterpret_cast<const __m128*>(&other.m[4])));
-		_mm_store_ps(reinterpret_cast<float*>(&m[8]),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m[8]), *reinterpret_cast<const __m128*>(&other.m[8])));
-		_mm_store_ps(reinterpret_cast<float*>(&m[12]),
-			_mm_add_ps(*reinterpret_cast<__m128*>(&m[12]), *reinterpret_cast<const __m128*>(&other.m[12])));
+		sse128[0] = _mm_sub_ps(sse128[0], other.sse128[0]);
+		sse128[1] = _mm_sub_ps(sse128[1], other.sse128[1]);
+		sse128[2] = _mm_sub_ps(sse128[2], other.sse128[2]);
+		sse128[3] = _mm_sub_ps(sse128[3], other.sse128[3]);
 #else
 		for (int i = 0; i < 16; i++)
 			m[i] -= other.m[i];
@@ -182,10 +205,10 @@ namespace Math
 	{
 #if defined(SSE_INTRIN)
 		__m128 scalars = _mm_set_ps1(scalar);
-		_mm_store_ps(reinterpret_cast<float*>(m), _mm_sub_ps(*reinterpret_cast<__m128*>(&m), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[4]), _mm_sub_ps(*reinterpret_cast<__m128*>(&m[4]), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[8]), _mm_sub_ps(*reinterpret_cast<__m128*>(&m[8]), scalars));
-		_mm_store_ps(reinterpret_cast<float*>(&m[12]), _mm_sub_ps(*reinterpret_cast<__m128*>(&m[12]), scalars));
+		sse128[0] = _mm_sub_ps(sse128[0], scalars);
+		sse128[1] = _mm_sub_ps(sse128[1], scalars);
+		sse128[2] = _mm_sub_ps(sse128[2], scalars);
+		sse128[3] = _mm_sub_ps(sse128[3], scalars);
 #else
 		for (int i = 0; i < 16; i++)
 			m[i] -= scalar;
@@ -198,9 +221,16 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Divide(float scalar)
 	{
+#if defined(SSE_INTRIN)
+		__m128 scalars = _mm_set_ps1(1.0f / scalar);
+		sse128[0] = _mm_mul_ps(sse128[0], scalars);
+		sse128[1] = _mm_mul_ps(sse128[1], scalars);
+		sse128[2] = _mm_mul_ps(sse128[2], scalars);
+		sse128[3] = _mm_mul_ps(sse128[3], scalars);
+#else
 		for (int i = 0; i < 16; i++)
 			m[i] /= scalar;
-
+#endif
 		return *this;
 	}
 
@@ -281,6 +311,9 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Transpose()
 	{
+#if defined(SSE_INTRIN)
+		_MM_TRANSPOSE4_PS(sse128[0], sse128[1], sse128[2], sse128[3]);
+#else
 		float temp[16];
 
 		temp[0] = rows[0].v[0];
@@ -304,7 +337,7 @@ namespace Math
 		temp[15] = rows[3].v[3];
 
 		memcpy(m, temp, sizeof(float) * 16);
-
+#endif
 		return *this;
 	}
 
@@ -321,13 +354,16 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4& Matrix4::Invert()
 	{
+#if defined(SSE_INTRIN)
+
+#else
 		float det = Determinant();
 
 		if (det == 0.0f)
 			*this = Matrix4::Nan();
 		else
 			*this = (Adjugate() / det);
-
+#endif
 		return *this;
 	}
 

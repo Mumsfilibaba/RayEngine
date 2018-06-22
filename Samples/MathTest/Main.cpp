@@ -1,4 +1,5 @@
 #include <Math/Vector4.h>
+#include <Math/Matrix4.h>
 #include <System/Clock.h>
 
 #include <iostream>
@@ -29,7 +30,10 @@ int main(int args, char** argsv)
 		Vector4 v2(2.0f, 2.0f, 2.0f, 2.0f);
 		Vector4 v3(3.0f, 3.0f, 3.0f, 3.0f);
 
-		std::cout << "dot:" << v3.Length() << '\n';
+		Matrix4 m1(2.0f);
+		Matrix4 m2(1000.1f);
+
+		std::cout << m1.InverseOf().ToString() << "\n\n";
 
 		float len = 0.0f;
 		clock.Reset();
@@ -37,14 +41,13 @@ int main(int args, char** argsv)
 		clock.Tick();
 		for (int32 i = 0; i < iterations; i++)
 		{
-			v1 += i;
-			v1.Normalize();
-			v3 = v2.Reflect(v1);
+			m1 *= 1.1f;
+			m2 = m1.Invert();
 		}
 		clock.Tick();
 
-		output += "Result: " + v3.ToString() + "Total length: " + std::to_string(len);
-		output += " - Time: " + std::to_string(clock.GetDeltaTime().GetAsNanoSeconds()) + "ns\n";
+		output += "Result:\n" + m2.ToString();
+		output += "\nTime: " + std::to_string(clock.GetDeltaTime().GetAsNanoSeconds()) + "ns\n";
 	}
 
 	std::cout << output;

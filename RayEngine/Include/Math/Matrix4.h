@@ -100,6 +100,9 @@ namespace Math
 		{
 			float m[16];
 			Vector4 rows[4];
+#if defined(SSE_INTRIN)
+			__m128 sse128[4];
+#endif
 		};
 	};
 }
