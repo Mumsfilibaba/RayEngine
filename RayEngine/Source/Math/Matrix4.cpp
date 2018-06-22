@@ -222,11 +222,11 @@ namespace Math
 	Matrix4& Matrix4::Divide(float scalar)
 	{
 #if defined(SSE_INTRIN)
-		__m128 scalars = _mm_set_ps1(1.0f / scalar);
-		sse128[0] = _mm_mul_ps(sse128[0], scalars);
-		sse128[1] = _mm_mul_ps(sse128[1], scalars);
-		sse128[2] = _mm_mul_ps(sse128[2], scalars);
-		sse128[3] = _mm_mul_ps(sse128[3], scalars);
+		__m128 scalars = _mm_set_ps1(scalar);
+		sse128[0] = _mm_div_ps(sse128[0], scalars);
+		sse128[1] = _mm_div_ps(sse128[1], scalars);
+		sse128[2] = _mm_div_ps(sse128[2], scalars);
+		sse128[3] = _mm_div_ps(sse128[3], scalars);
 #else
 		for (int i = 0; i < 16; i++)
 			m[i] /= scalar;
