@@ -31,18 +31,31 @@ int main(int args, char** argsv)
 		Vector4 v3(3.0f, 3.0f, 3.0f, 3.0f);
 
 		Matrix4 m1(2.0f);
-		Matrix4 m2(1000.1f);
+		for (int x = 0; x < 4; x++)
+		{
+			for (int y = 0; y < 4; y++)
+				m1.GetElement(x, y) = (x * 4) + y + 1;
+		}
 
-		std::cout << m1.InverseOf().ToString() << "\n\n";
+		Matrix4 m2(3.0f);
+		for (int x = 0; x < 4; x++)
+		{
+			for (int y = 0; y < 4; y++)
+				m2.GetElement(x, y) = (x * 4) + y + 16;
+		}
 
-		float len = 0.0f;
+
+		std::cout << "Mat 1:\n" << (m1 * m2).ToString() << '\n';
+		std::cout << "Mat 1:\n" << (Matrix4::RotationZ(5) * Matrix4::RotationX(5) * Matrix4::RotationY(5)).ToString() << '\n';
+		std::cout << "Mat 2:\n" << (Matrix4::Rotation(5, 5, 5)).ToString() << '\n';
+
 		clock.Reset();
 		
 		clock.Tick();
 		for (int32 i = 0; i < iterations; i++)
 		{
-			m1 *= 1.1f;
-			m2 = m1.Invert();
+			float angle = ToRadiansF(i);
+			m2 = Matrix4::Rotation(angle, angle, angle);
 		}
 		clock.Tick();
 

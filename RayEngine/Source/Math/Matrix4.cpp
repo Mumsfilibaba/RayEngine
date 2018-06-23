@@ -58,11 +58,8 @@ namespace Math
 		float t[4];
 
 		t[0] = (vector.v[0] * rows[0].v[0]) + (vector.v[1] * rows[1].v[0]) + (vector.v[2] * rows[2].v[0]) + (vector.v[3] * rows[3].v[0]);
-
 		t[1] = (vector.v[0] * rows[0].v[1]) + (vector.v[1] * rows[1].v[1]) + (vector.v[2] * rows[2].v[1]) + (vector.v[3] * rows[3].v[1]);
-
 		t[2] = (vector.v[0] * rows[0].v[2]) + (vector.v[1] * rows[1].v[2]) + (vector.v[2] * rows[2].v[2]) + (vector.v[3] * rows[3].v[2]);
-
 		t[3] = (vector.v[0] * rows[0].v[3]) + (vector.v[1] * rows[1].v[3]) + (vector.v[2] * rows[2].v[3]) + (vector.v[3] * rows[3].v[3]);
 
 		return Vector4(t[0], t[1], t[2], t[3]);
@@ -355,7 +352,42 @@ namespace Math
 	Matrix4& Matrix4::Invert()
 	{
 #if defined(SSE_INTRIN)
+		__m128 detA = _mm_set_ps1((m[0] * m[5]) - (m[1] * m[4]));
+		__m128 detB = _mm_set_ps1((m[2] * m[7]) - (m[3] * m[6]));
+		__m128 detD = _mm_set_ps1((m[10] * m[15]) - (m[11] * m[14]));
+		__m128 detC = _mm_set_ps1((m[8] * m[13]) - (m[9] * m[12]));
 
+		__m128 a = _mm_movelh_ps(sse128[0], sse128[1]);
+		__m128 b = _mm_movehl_ps(sse128[1], sse128[0]);
+		__m128 c = _mm_movelh_ps(sse128[2], sse128[3]);
+		__m128 d = _mm_movehl_ps(sse128[3], sse128[2]);
+		
+		__m128 ab = Matrix2AdjMul(a, b);
+		__m128 dc = Matrix2AdjMul(d, c);
+		
+		__m128 w = _mm_sub_ps(_mm_mul_ps(detA, d), Matrix2Mul(c, ab));
+		__m128 x = _mm_sub_ps(_mm_mul_ps(detD, a), Matrix2Mul(b, dc));
+		
+		__m128 detM = _mm_mul_ps(detA, detD);
+
+		__m128 y = _mm_sub_ps(_mm_mul_ps(detB, c), Matrix2MulAdj(d, ab));
+		__m128 z = _mm_sub_ps(_mm_mul_ps(detC, b), Matrix2MulAdj(a, dc));
+
+		detM = _mm_add_ps(detM, _mm_mul_ps(detB, detC));
+
+		__m128 trace = _mm_mul_ps(ab, Swizzle128(dc, 0, 2, 1, 3));
+		detM = _mm_sub_ps(detM, HorizonatalSum(trace));
+		detM = _mm_div_ps(_mm_setr_ps(1.0f, -1.0f, -1.0f, 1.0f), detM);
+		
+		x = _mm_mul_ps(x, detM);
+		y = _mm_mul_ps(y, detM);
+		z = _mm_mul_ps(z, detM);
+		w = _mm_mul_ps(w, detM);
+		
+		sse128[0] = _mm_shuffle_ps(x, y, _MM_SHUFFLE(1, 3, 1, 3));
+		sse128[1] = _mm_shuffle_ps(x, y, _MM_SHUFFLE(0, 2, 0, 2));
+		sse128[2] = _mm_shuffle_ps(z, w, _MM_SHUFFLE(1, 3, 1, 3));
+		sse128[3] = _mm_shuffle_ps(z, w, _MM_SHUFFLE(0, 2, 0, 2));
 #else
 		float det = Determinant();
 
@@ -390,6 +422,36 @@ namespace Math
 	{
 		Matrix4 adj;
 
+#if defined(SSE_INTRIN)
+		__m128 detA = _mm_set_ps1((m[0] * m[5]) - (m[1] * m[4]));
+		__m128 detB = _mm_set_ps1((m[2] * m[7]) - (m[3] * m[6]));
+		__m128 detD = _mm_set_ps1((m[10] * m[15]) - (m[11] * m[14]));
+		__m128 detC = _mm_set_ps1((m[8] * m[13]) - (m[9] * m[12]));
+
+		__m128 a = _mm_movelh_ps(sse128[0], sse128[1]);
+		__m128 b = _mm_movehl_ps(sse128[1], sse128[0]);
+		__m128 c = _mm_movelh_ps(sse128[2], sse128[3]);
+		__m128 d = _mm_movehl_ps(sse128[3], sse128[2]);
+
+		__m128 ab = Matrix2AdjMul(a, b);
+		__m128 dc = Matrix2AdjMul(d, c);
+		__m128 w = _mm_sub_ps(_mm_mul_ps(detA, d), Matrix2Mul(c, ab));
+		__m128 y = _mm_sub_ps(_mm_mul_ps(detB, c), Matrix2MulAdj(d, ab));
+		
+		__m128 x = _mm_sub_ps(_mm_mul_ps(detD, a), Matrix2Mul(b, dc));
+		__m128 z = _mm_sub_ps(_mm_mul_ps(detC, b), Matrix2MulAdj(a, dc));
+
+		__m128 mask = _mm_setr_ps(1.0f, -1.0f, -1.0f, 1.0f);
+		x = _mm_mul_ps(x, mask);
+		y = _mm_mul_ps(y, mask);
+		z = _mm_mul_ps(z, mask);
+		w = _mm_mul_ps(w, mask);
+
+		adj.sse128[0] = _mm_shuffle_ps(x, y, _MM_SHUFFLE(1, 3, 1, 3));
+		adj.sse128[1] = _mm_shuffle_ps(x, y, _MM_SHUFFLE(0, 2, 0, 2));
+		adj.sse128[2] = _mm_shuffle_ps(z, w, _MM_SHUFFLE(1, 3, 1, 3));
+		adj.sse128[3] = _mm_shuffle_ps(z, w, _MM_SHUFFLE(0, 2, 0, 2));
+#else
 		//d11
 		adj.rows[0].v[0] = (rows[1].v[1] * ((rows[2].v[2] * rows[3].v[3]) - (rows[2].v[3] * rows[3].v[2])));
 		adj.rows[0].v[0] -= (rows[1].v[2] * ((rows[2].v[1] * rows[3].v[3]) - (rows[2].v[3] * rows[3].v[1])));
@@ -408,7 +470,6 @@ namespace Math
 		adj.rows[3].v[0] -= (rows[1].v[1] * ((rows[2].v[0] * rows[3].v[2]) - (rows[2].v[2] * rows[3].v[0])));
 		adj.rows[3].v[0] += (rows[1].v[2] * ((rows[2].v[0] * rows[3].v[1]) - (rows[2].v[1] * rows[3].v[0])));
 		adj.rows[3].v[0] *= -1.0f;
-
 
 		//d21
 		adj.rows[0].v[1] = (rows[0].v[1] * ((rows[2].v[2] * rows[3].v[3]) - (rows[2].v[3] * rows[3].v[2])));
@@ -466,8 +527,7 @@ namespace Math
 		adj.rows[3].v[3] = (rows[0].v[0] * ((rows[1].v[1] * rows[2].v[2]) - (rows[1].v[2] * rows[2].v[1])));
 		adj.rows[3].v[3] -= (rows[0].v[1] * ((rows[1].v[0] * rows[2].v[2]) - (rows[1].v[2] * rows[2].v[0])));
 		adj.rows[3].v[3] += (rows[0].v[2] * ((rows[1].v[0] * rows[2].v[1]) - (rows[1].v[1] * rows[2].v[0])));
-
-
+#endif
 		return adj;
 	}
 
@@ -476,6 +536,21 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	float Matrix4::Determinant() const
 	{
+#if defined(SSE_INTRIN)
+		__m128 ab = _mm_mul_ps(_mm_movelh_ps(sse128[0], sse128[1]), _mm_movehl_ps(sse128[1], sse128[0]));
+		__m128 dc = _mm_mul_ps(_mm_movelh_ps(sse128[2], sse128[3]), _mm_movehl_ps(sse128[3], sse128[2]));
+
+		__m128 detA = _mm_set_ps1((m[0] * m[5]) - (m[1] * m[4]));
+		__m128 detB = _mm_set_ps1((m[2] * m[7]) - (m[3] * m[6]));
+		__m128 detC = _mm_set_ps1((m[8] * m[13]) - (m[9] * m[12]));
+		__m128 detD = _mm_set_ps1((m[10] * m[15]) - (m[11] * m[14]));
+
+		__m128 detM = _mm_mul_ps(detA, detD);
+		detM = _mm_add_ps(detM, _mm_mul_ps(detB, detC));
+		detM = _mm_sub_ps(detM, HorizonatalSum(_mm_mul_ps(ab, Swizzle128(dc, 0, 2, 1, 3))));
+
+		return _mm_cvtss_f32(detM);
+#else
 		float det = 0.0f;
 
 		//d11
@@ -500,6 +575,7 @@ namespace Math
 			(rows[1].v[2] * ((rows[2].v[0] * rows[3].v[1]) - (rows[2].v[1] * rows[3].v[0]))));
 
 		return det;
+#endif
 	}
 
 
@@ -925,7 +1001,29 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix4 Matrix4::Rotation(float angleRadX, float angleRadY, float angleRadZ)
 	{
-		return (RotationZ(angleRadZ) * RotationX(angleRadX)) * RotationY(angleRadY);
+		Matrix4 rot(1.0f);
+
+		float sinX = sinf(angleRadX);
+		float sinY = sinf(angleRadY);
+		float sinZ = sinf(angleRadZ);
+		
+		float cosX = cosf(angleRadX);
+		float cosY = cosf(angleRadY);
+		float cosZ = cosf(angleRadZ);
+
+		rot.rows[0].v[0] = (cosY * cosZ) - (sinX * sinY * sinZ);
+		rot.rows[0].v[1] = -(cosX * sinZ);
+		rot.rows[0].v[2] = (cosZ * sinY) + (sinX * sinY * sinZ);
+
+		rot.rows[1].v[0] = (cosZ * sinX * sinY) + (cosY * sinZ);
+		rot.rows[1].v[1] = cosX * cosZ;
+		rot.rows[1].v[2] = (sinY * sinZ) -(cosY * cosZ * sinX);
+
+		rot.rows[2].v[0] = -(cosX * sinY);
+		rot.rows[2].v[1] = sinX;
+		rot.rows[2].v[2] = cosX * cosY;
+
+		return rot;// (RotationZ(angleRadZ) * RotationX(angleRadX)) * RotationY(angleRadY);
 	}
 
 

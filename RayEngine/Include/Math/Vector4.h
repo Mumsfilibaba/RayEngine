@@ -3,10 +3,6 @@
 #include "MathCommon.h"
 #include "Vector3.h"
 
-#if defined(SSE_INTRIN)
-#include <xmmintrin.h>
-#endif
-
 namespace Math
 {
 	VECTORALIGN class Vector4
