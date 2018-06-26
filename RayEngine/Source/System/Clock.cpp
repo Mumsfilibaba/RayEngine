@@ -1,5 +1,6 @@
 #include "..\..\Include\System\Clock.h"
 #include <chrono>
+#include <ctime>
 
 namespace RayEngine
 {
@@ -14,22 +15,16 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	Clock::~Clock()
-	{
-	}
-
-
-
-	/////////////////////////////////////////////////////////////
 	void Clock::Tick()
 	{
-		auto now = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
-		auto value = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch());
-		
-		m_Delta = TimeStamp(value.count() - m_LastTime);
-		m_Total += m_Delta;
+		auto highResNow = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now());
+		auto value = std::chrono::duration_cast<std::chrono::nanoseconds>(highResNow.time_since_epoch());
 
-		m_LastTime = value.count();
+		TimeStamp now = TimeStamp(value.count());
+		m_Delta = now - m_LastTime;
+
+		m_LastTime = now;
+		m_Total += m_Delta;
 	}
 
 
@@ -37,8 +32,8 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	void Clock::Reset()
 	{
-		m_Delta = TimeStamp(0);
-		m_Total = TimeStamp(0);
+		m_Delta = TimeStamp();
+		m_Total = TimeStamp();
 	}
 
 
@@ -52,8 +47,36 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	const TimeStamp& Clock::GetTotalTime() const
+	const TimeStamp& Clock::GetTotalTickTime() const
 	{
 		return m_Total;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	std::string Clock::ClockString()
+	{
+		using namespace std;
+
+		time_t now = time(0);
+		tm* localNow = localtime(&now);
+
+		return string(to_string(localNow->tm_hour) + ":" +
+			to_string(localNow->tm_min) + ":" + to_string(localNow->tm_sec));
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	std::string Clock::DateString()
+	{
+		using namespace std;
+
+		time_t now = time(0);
+		tm* localNow = localtime(&now);
+
+		return string(to_string(localNow->tm_mon + 1) + '-' + to_string(localNow->tm_mday) + ' ' +
+			to_string(localNow->tm_hour) + ":" + to_string(localNow->tm_min) + ':' + to_string(localNow->tm_sec));
 	}
 }

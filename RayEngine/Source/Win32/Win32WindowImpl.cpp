@@ -1,27 +1,26 @@
 #include "..\..\Include\Win32\Win32WindowImpl.h"
-#include "..\..\Include\Win32\Win32IconImpl.h"
-#include "..\..\Include\Win32\Win32CursorImpl.h"
 
 #if defined (RE_PLATFORM_WINDOWS)
+
+#include "..\..\Include\Win32\Win32BitmapImpl.h"
+#include "WndclassCache.h"
+#include <windowsx.h>
 
 namespace RayEngine
 {
 	namespace System
 	{
 		/////////////////////////////////////////////////////////////
-		int32 Win32WindowImpl::s_WindowCount = 0;
-
-
-
-		/////////////////////////////////////////////////////////////
 		Win32WindowImpl::Win32WindowImpl()
 			: IWindowImpl(),
 			m_Hwnd(0),
 			m_Hinstance(0),
 			m_BgBrush(0),
-			m_Cursor(),
+			m_Cursor(0),
+			m_Icon(0),
 			m_Title(),
-			m_Events()
+			m_Events(),
+			m_TrackingMouse(false)
 		{
 			memset(m_Title, 0, sizeof(m_Title));
 		}
@@ -37,16 +36,25 @@ namespace RayEngine
 				m_Hwnd = 0;
 			}
 
+			if (m_Cursor != 0)
+			{
+				DestroyCursor(m_Cursor);
+				m_Cursor = 0;
+			}
+
+			if (m_Icon != 0)
+			{
+				DestroyIcon(m_Icon);
+				m_Icon = 0;
+			}
+
 			if (m_BgBrush != 0)
+			{
 				DeleteObject(m_BgBrush);
+				m_BgBrush = 0;
+			}
 
-
-			//TODO: Have a classmanager if we get more classes
-
-			s_WindowCount--;
-			if (s_WindowCount < 1)
-				UnregisterClass(WNDCLASS_NAME, m_Hinstance);
-
+			WndclassCache::Unregister(WNDCLASS_NAME, m_Hinstance);
 			m_Hinstance = 0;
 		}
 
@@ -60,11 +68,11 @@ namespace RayEngine
 			{
 				if (msg.message == WM_QUIT)
 				{
-					Event ev;
-					ev.Type = EVENT_TYPE_QUIT;
-					ev.QuitCode = static_cast<int32>(msg.wParam);
+					Event event;
+					event.Type = EVENT_TYPE_QUIT;
+					event.Quit.ExitCode = static_cast<int32>(msg.wParam);
 
-					PushEvent(ev);
+					PushEvent(event);
 				}
 
 				TranslateMessage(&msg);
@@ -102,7 +110,6 @@ namespace RayEngine
 			MSG msg = {};
 			if (GetMessage(&msg, 0, 0, 0) != 0)
 			{
-				//All other messages
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 
@@ -110,9 +117,8 @@ namespace RayEngine
 			}
 			else
 			{
-				//If the message is a quit message
 				pEvent.Type = EVENT_TYPE_QUIT;
-				pEvent.QuitCode = static_cast<int32>(msg.wParam);
+				pEvent.Quit.ExitCode = static_cast<int32>(msg.wParam);
 			}
 		}
 
@@ -127,22 +133,30 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void Win32WindowImpl::SetCursor(const Cursor& cursor)
+		void Win32WindowImpl::SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY)
 		{
-			m_Cursor = cursor;
+			if (m_Cursor != 0)
+				DestroyCursor(m_Cursor);
+
+			m_Cursor = CreateCursor(reinterpret_cast<const Win32BitmapImpl*>(cursor.GetImplementation()), hotspotX, hotspotY);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void Win32WindowImpl::SetIcon(const Icon& icon)
+		void Win32WindowImpl::SetIcon(const Bitmap& icon)
 		{
-			const Win32IconImpl* impl = static_cast<const Win32IconImpl*>(icon.GetImplementation());
-			if (impl != nullptr)
+			if (m_Icon != 0)
 			{
-				SendMessage(m_Hwnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(impl->GetHICON()));
-				SendMessage(m_Hwnd, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(impl->GetHICON()));
+				DestroyIcon(m_Icon);
+				m_Icon = 0;
 			}
+
+			const Win32BitmapImpl* iconImpl = reinterpret_cast<const Win32BitmapImpl*>(icon.GetImplementation());
+			m_Icon = CreateIcon(iconImpl);
+
+			SendMessage(m_Hwnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_Icon));
+			SendMessage(m_Hwnd, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(m_Icon));
 		}
 
 
@@ -150,15 +164,24 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::SetBackground(uint8 r, uint8 g, uint8 b)
 		{
-			//Delete old brush
 			if (m_BgBrush != 0)
+			{
 				DeleteObject(m_BgBrush);
+				m_BgBrush = 0;
+			}
 
-			//Make window redraw
-			InvalidateRect(m_Hwnd, nullptr, TRUE);
-
-			//Create new background brush
 			m_BgBrush = CreateSolidBrush(RGB(r, g, b));
+
+			InvalidateRect(m_Hwnd, nullptr, TRUE);
+			return;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void Win32WindowImpl::SetBackground(const Math::Color& color)
+		{	
+			SetBackground(color.r, color.g, color.b);
 		}
 
 
@@ -166,32 +189,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IWindowImpl* Win32WindowImpl::Copy() const
 		{
-			//Get desc
 			WindowInfo info;
 			GetDesc(info);
 
-			//Create new instance and create a copy of window
 			Win32WindowImpl* instance = new Win32WindowImpl();
 			instance->Create(info);
 			return instance;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IWindowImpl* Win32WindowImpl::Move()
-		{
-			Win32WindowImpl* instance = new Win32WindowImpl();
-			//Set handles
-			instance->m_Hwnd = m_Hwnd;
-			instance->m_Hinstance = m_Hinstance;
-			//Swap eventqueue
-			instance->m_Events.swap(m_Events);
-
-			//Invalidate handles
-			m_Hwnd = 0;
-			m_Hinstance = 0;
-			return nullptr;
 		}
 
 
@@ -254,40 +257,28 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool Win32WindowImpl::Create(const WindowInfo& info)
 		{
-			static bool registerWindow = true;
-
-			int32 err = 0;
-
-			m_BgBrush = CreateSolidBrush(RGB(info.Color.r, info.Color.g, info.Color.b));
-			
-
-
-
-			if (registerWindow)
+			if (IsWindow(m_Hwnd))
 			{
-				WNDCLASSEX wndClass = {};
-				wndClass.hInstance = m_Hinstance = static_cast<HINSTANCE>(GetModuleHandle(nullptr));
-				wndClass.lpfnWndProc = Win32WindowImpl::MainMsgCallback;
-				wndClass.hbrBackground = 0;
-				wndClass.hCursor = 0;
-				wndClass.hIcon = 0;
-				wndClass.hIconSm = wndClass.hIcon;
-				wndClass.cbSize = sizeof(WNDCLASSEX);
-				wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-				wndClass.lpszClassName = WNDCLASS_NAME;
+				DestroyWindow(m_Hwnd);
+				m_Hwnd = 0;
 
-				SetLastError(0);
-				if (RegisterClassEx(&wndClass) == 0)
-				{
-					err = GetLastError();
-					return false;
-				}
-
-				registerWindow = false;
+				WndclassCache::Unregister(WNDCLASS_NAME, m_Hinstance);
 			}
 
+			int32 error = 0;
 
+			WNDCLASSEX wndClass = {};
+			wndClass.hInstance = m_Hinstance = static_cast<HINSTANCE>(GetModuleHandle(nullptr));
+			wndClass.lpfnWndProc = Win32WindowImpl::MainMsgCallback;
+			wndClass.hbrBackground = 0;
+			wndClass.hCursor = 0;
+			wndClass.hIcon = 0;
+			wndClass.hIconSm = 0;
+			wndClass.cbSize = sizeof(WNDCLASSEX);
+			wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+			wndClass.lpszClassName = WNDCLASS_NAME;
 
+			WndclassCache::Register(wndClass);
 
 			int32 windowStyle = 0;
 			if (info.Style == WINDOWSTYLE_BORDERLESS)
@@ -309,38 +300,29 @@ namespace RayEngine
 					windowStyle |= WS_MAXIMIZEBOX;
 			}
 
-			
-
 			RECT client = { 0, 0, static_cast<LONG>(info.Width), static_cast<LONG>(info.Height) };
 			AdjustWindowRect(&client, windowStyle, false);
 
 			int32 posX = (info.x >= 0) ? info.x : (GetSystemMetrics(SM_CXSCREEN) - (client.right - client.left)) / 2;
 			int32 posY = (info.y >= 0) ? info.y : (GetSystemMetrics(SM_CYSCREEN) - (client.bottom - client.top)) / 2;
 
-			
-
-
 			SetLastError(0);
-			m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, info.Title, windowStyle, posX, posY, client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
+			m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, info.Title, windowStyle, posX, posY,
+				client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
 			if (m_Hwnd == 0)
 			{
-				err = GetLastError();
+				error = GetLastError();
 				return false;
 			}
+			else
+			{
+				SetWindowLongPtr(m_Hwnd, GWLP_USERDATA, reinterpret_cast<uintptr_t>(this));
+				
+				SetCursor(info.Cursor, info.CursorHotspotX, info.CursorHotspotY);
+				SetBackground(info.BackgroundColor);
+				SetIcon(info.Icon);
+			}
 
-			SetWindowLongPtr(m_Hwnd, GWLP_USERDATA, reinterpret_cast<uintptr_t>(this));
-			
-			
-
-			const Win32IconImpl* icon = static_cast<const Win32IconImpl*>(info.icon.GetImplementation());
-			SendMessage(m_Hwnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon->GetHICON()));
-			SendMessage(m_Hwnd, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon->GetHICON()));
-
-			
-
-			m_Cursor = info.cursor;
-
-			s_WindowCount++;
 			return true;
 		}
 
@@ -349,8 +331,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::Show() const
 		{
-			if (IsWindow(m_Hwnd))
-				ShowWindow(m_Hwnd, SW_NORMAL);
+			ShowWindow(m_Hwnd, SW_NORMAL);
 		}
 
 
@@ -358,64 +339,211 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		LRESULT Win32WindowImpl::MsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
-			Event ev;
+			Event event;
 			LRESULT ret = 0;
 
 			switch (msg)
 			{
 			case WM_SETCURSOR:
-				if (reinterpret_cast<HWND>(wParam) == m_Hwnd)
+				if (LOWORD(lParam) == HTCLIENT)
 				{
-					if (LOWORD(lParam) == HTCLIENT)
+					if (m_Cursor != 0)
 					{
-						::SetCursor((static_cast<const Win32CursorImpl*>(m_Cursor.GetImplementation())->GetHCURSOR()));
+						::SetCursor(m_Cursor);
 						return TRUE;
 					}
 				}
 
 				return DefWindowProc(hWnd, msg, wParam, lParam);
+
+
 			case WM_ERASEBKGND:
 			{
-				//Paint the background with a custom color
 				HDC dc = reinterpret_cast<HDC>(wParam);
 				RECT rect = {};
+
+				SetLastError(0);
 				GetClientRect(hWnd, &rect);
+				int32 error = GetLastError();
+				
+				SetLastError(0);
 				FillRect(dc, &rect, m_BgBrush);
+				error = GetLastError();
 
 				return static_cast<LRESULT>(1);
 			}
+
+
 			case WM_KEYDOWN:
-				ev.Type = EVENT_TYPE_KEYPRESSED;
-				ev.KeyCode = static_cast<KEY>(wParam);
-				ev.KeyRepeatCount = LOWORD(lParam);
-				ev.KeyExtended = lParam & (1 << 24);
+				event.Type = EVENT_TYPE_KEYPRESSED;
+				event.Key.KeyCode = static_cast<KEY>(wParam);
+				event.Key.RepeatCount = LOWORD(lParam);
+				event.Key.Extended = lParam & (1 << 24);
 				break;
+
+
 			case WM_KEYUP:
-				ev.Type = EVENT_TYPE_KEYRELEASED;
-				ev.KeyCode = static_cast<KEY>(wParam);
-				ev.KeyRepeatCount = 1;
-				ev.KeyExtended = lParam & (1 << 24);
+				event.Type = EVENT_TYPE_KEYRELEASED;
+				event.Key.KeyCode = static_cast<KEY>(wParam);
+				event.Key.RepeatCount = 1;
+				event.Key.Extended = lParam & (1 << 24);
 				break;
+
+
+			case WM_UNICHAR:
+				if (wParam == UNICODE_NOCHAR)
+					return TRUE;
+			case WM_CHAR:
+				event.Type = EVENT_TYPE_KEYCHAR;
+				event.KeyChar.UnicodeChar = static_cast<uint32>(wParam);
+				break;
+
+
+			case WM_MOUSEMOVE:
+			case WM_LBUTTONUP:
+			case WM_LBUTTONDOWN:
+			case WM_RBUTTONUP:
+			case WM_RBUTTONDOWN:
+			case WM_MBUTTONUP:
+			case WM_MBUTTONDOWN:
+			case WM_XBUTTONUP:
+			case WM_XBUTTONDOWN:
+				ProcessMouseEvent(msg, wParam, lParam);
+				return static_cast<LRESULT>(0);
+
+
 			case WM_SIZE:
-				ev.Type = EVENT_TYPE_RESIZE;
-				ev.Width = LOWORD(lParam);
-				ev.Height = HIWORD(lParam);
+				event.Type = EVENT_TYPE_RESIZE;
+				event.Resize.Width = LOWORD(lParam);
+				event.Resize.Height = HIWORD(lParam);
 				if (wParam == SIZE_MAXIMIZED)
-					ev.ResizeType = EVENT_RESIZE_MAXIMIZED;
+					event.Resize.Type = EVENT_RESIZE_MAXIMIZED;
 				else if (wParam == SIZE_MINIMIZED)
-					ev.ResizeType = EVENT_RESIZE_MINIMIZED;
+					event.Resize.Type = EVENT_RESIZE_MINIMIZED;
 				else
-					ev.ResizeType = EVENT_RESIZE_NEW_SIZE;
+					event.Resize.Type = EVENT_RESIZE_NEW_SIZE;
 				break;
+
+
+			case WM_ACTIVATE:
+				event.Type = EVENT_TYPE_FOCUSCHANGED;
+				event.FocusChanged.HasFocus = !(LOWORD(wParam) == WA_INACTIVE);
+				break;
+
+
 			case WM_DESTROY:
-				ev.Type = EVENT_TYPE_DESTROYED;
+				event.Type = EVENT_TYPE_CLOSE;
 				break;
+
+
 			default: 
 				return DefWindowProc(hWnd, msg, wParam, lParam);
 			}
 
-			PushEvent(ev);
+			PushEvent(event);
 			return ret;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void Win32WindowImpl::ProcessMouseEvent(UINT msg, WPARAM wParam, LPARAM lParam)
+		{
+			Event event;
+
+			switch (msg)
+			{
+			case WM_MOUSELEAVE:
+				if (GetCapture() == m_Hwnd)
+					ReleaseCapture();
+				
+				m_TrackingMouse = false;
+				return;
+
+
+			case WM_MOUSEMOVE:
+				event.Type = EVENT_TYPE_MOUSEMOVE;
+				event.MouseMove.Position = Math::Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+				break;
+
+
+			case WM_LBUTTONDOWN:
+				SetCapture(m_Hwnd);
+				
+				event.Type = EVENT_TYPE_MOUSEPRESSED;
+				event.MouseButton.Button = MOUSEBUTTON_LEFT;
+				break;
+
+
+			case WM_MBUTTONDOWN:
+				SetCapture(m_Hwnd);
+				
+				event.Type = EVENT_TYPE_MOUSEPRESSED;
+				event.MouseButton.Button = MOUSEBUTTON_MIDDLE;
+				break;
+
+
+			case WM_RBUTTONDOWN:
+				SetCapture(m_Hwnd);
+				
+				event.Type = EVENT_TYPE_MOUSEPRESSED;
+				event.MouseButton.Button = MOUSEBUTTON_RIGHT;
+				break;
+
+
+			case WM_XBUTTONDOWN:
+				SetCapture(m_Hwnd);
+
+				event.Type = EVENT_TYPE_MOUSEPRESSED;
+				event.MouseButton.Button = (HIWORD(wParam) == XBUTTON1) ? MOUSEBUTTON_BACK : MOUSEBUTTON_FORWARD;
+				break;
+
+
+			case WM_LBUTTONUP:
+				ReleaseCapture();
+
+				event.Type = EVENT_TYPE_MOUSERELEASED;
+				event.MouseButton.Button = MOUSEBUTTON_LEFT;
+				break;
+
+
+			case WM_MBUTTONUP:
+				ReleaseCapture();
+
+				event.Type = EVENT_TYPE_MOUSERELEASED;
+				event.MouseButton.Button = MOUSEBUTTON_MIDDLE;
+				break;
+
+
+			case WM_RBUTTONUP:
+				ReleaseCapture();
+
+				event.Type = EVENT_TYPE_MOUSERELEASED;
+				event.MouseButton.Button = MOUSEBUTTON_RIGHT;
+				break;
+
+
+			case WM_XBUTTONUP:
+				ReleaseCapture();
+				
+				event.Type = EVENT_TYPE_MOUSERELEASED;
+				event.MouseButton.Button = (HIWORD(wParam) == XBUTTON1) ? MOUSEBUTTON_BACK : MOUSEBUTTON_FORWARD;
+				break;
+			}
+
+
+			if (!m_TrackingMouse)
+			{
+				TRACKMOUSEEVENT tm = {};
+				tm.cbSize = sizeof(TRACKMOUSEEVENT);
+				tm.dwFlags = TME_LEAVE;
+				tm.hwndTrack = m_Hwnd;
+				TrackMouseEvent(&tm);
+
+				m_TrackingMouse = true;
+			}
+
+			PushEvent(event);
 		}
 
 
@@ -424,9 +552,6 @@ namespace RayEngine
 		LRESULT Win32WindowImpl::MainMsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			Win32WindowImpl* window = reinterpret_cast<Win32WindowImpl*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-			if (window == nullptr)
-				return DefWindowProc(hWnd, msg, wParam, lParam);;
-
 			return window->MsgCallback(hWnd, msg, wParam, lParam);
 		}
 	}

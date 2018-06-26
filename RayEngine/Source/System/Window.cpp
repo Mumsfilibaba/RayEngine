@@ -96,16 +96,16 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void Window::SetCursor(const Cursor& cursor)
+		void Window::SetCursor(const Bitmap& cursor, RayEngine::int32 hotspotX, RayEngine::int32 hotspotY)
 		{
 			assert(m_Impl != nullptr);
-			m_Impl->SetCursor(cursor);
+			m_Impl->SetCursor(cursor, hotspotX, hotspotY);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void Window::SetIcon(const Icon& icon)
+		void Window::SetIcon(const Bitmap& icon)
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->SetIcon(icon);
@@ -118,6 +118,15 @@ namespace RayEngine
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->SetBackground(r, g, b);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void Window::SetBackground(const Math::Color& color)
+		{
+			assert(m_Impl != nullptr);
+			m_Impl->SetBackground(color);
 		}
 
 

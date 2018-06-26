@@ -5,10 +5,14 @@
 
 #include "..\System\Window.h"
 #include <queue>
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN 1
+#endif
+
 #include <Windows.h>
 
-#define WNDCLASS_NAME RE_T("Std_Window_Class")
+#define WNDCLASS_NAME RE_T("Win32WindowImpl")
 
 namespace RayEngine
 {
@@ -35,12 +39,12 @@ namespace RayEngine
 			void GetEvent(Event& pEvent) override final;
 			void SendQuitEvent(int32 exitCode) const override final;
 			
-			void SetCursor(const Cursor& cursor) override final;
-			void SetIcon(const Icon& icon) override final;
+			void SetIcon(const Bitmap& icon) override final;
+			void SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY) override final;
 			void SetBackground(uint8 r, uint8 g, uint8 b) override final;
+			void SetBackground(const Math::Color& color) override final;
 
 			IWindowImpl* Copy() const override final;
-			IWindowImpl* Move() override final;
 			
 			const Tchar* GetTitle() const override final;
 
@@ -55,18 +59,20 @@ namespace RayEngine
 			LRESULT MsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 		private:
+			void ProcessMouseEvent(UINT msg, WPARAM wParam, LPARAM lParam);
+
+		private:
 			mutable Tchar m_Title[256];
+			std::queue<Event> m_Events;
 			HWND m_Hwnd;
 			HINSTANCE m_Hinstance;
 			HBRUSH m_BgBrush;
-			Cursor m_Cursor;
-			std::queue<Event> m_Events;
+			HICON m_Icon;
+			HCURSOR m_Cursor;
+			bool m_TrackingMouse;
 
 		private:
 			static LRESULT CALLBACK MainMsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-		private:
-			static int32 s_WindowCount;
 		};
 	}
 }

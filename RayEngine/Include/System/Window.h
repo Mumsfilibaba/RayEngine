@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Event.h"
-#include "Icon.h"
-#include "Cursor.h"
+#include "Bitmap.h"
+#include "..\Math\Color.h"
 
 namespace RayEngine
 {
@@ -50,16 +50,13 @@ namespace RayEngine
 			int32 x = -1;
 			int32 y = -1;
 			//Color
-			struct
-			{
-				uint8 r = 0;
-				uint8 g = 0;
-				uint8 b = 0;
-			} Color;
+			Math::Color BackgroundColor;
 
-			//TODO: Have Bitmap class for both cursor and icon
-			Icon icon;
-			Cursor cursor;
+			Bitmap Icon;
+			Bitmap Cursor;
+
+			int32 CursorHotspotX = 0;
+			int32 CursorHotspotY = 0;
 		};
 
 		//Class for platform implementation of a window
@@ -89,17 +86,15 @@ namespace RayEngine
 			//Sends a quit message to the operatingsystem via the window
 			virtual void SendQuitEvent(int32 exitCode) const = 0;
 			//Set Cursor for the window
-			virtual void SetCursor(const Cursor& cursor) = 0;
+			virtual void SetCursor(const Bitmap& cursor, RayEngine::int32 hotspotX, RayEngine::int32 hotspotY) = 0;
 			//Set Icon for the window
-			virtual void SetIcon(const Icon& icon) = 0;
+			virtual void SetIcon(const Bitmap& icon) = 0;
 			//Set color for the background
 			virtual void SetBackground(uint8 r, uint8 g, uint8 b) = 0;
+			virtual void SetBackground(const Math::Color& color) = 0;
 			//Returns a new instance of IWindowImple that is equal to to the current one. If called a new 
 			//window instance will be created on the OS
 			virtual IWindowImpl* Copy() const = 0;
-			//Returns a new instacne of a IWindowImple that has the ownership of all native handles of 'this'.
-			//If called on an instance the instance will be invalid
-			virtual IWindowImpl* Move() = 0;
 			//Get titlebar text
 			virtual const Tchar* GetTitle() const = 0;
 			//Get size
@@ -114,8 +109,8 @@ namespace RayEngine
 		{
 		public:
 			Window(const WindowInfo& desc);
-			Window(const Window& other);
 			Window(Window&& other);
+			Window(const Window& other);
 			~Window();
 
 			//Show window
@@ -131,11 +126,12 @@ namespace RayEngine
 			//Send Quit even
 			void SendQuitEvent(int32 exitCode) const;
 			//Set Cursor for the window
-			void SetCursor(const Cursor& cursor);
+			void SetCursor(const Bitmap& cursor, RayEngine::int32 hotspotX, RayEngine::int32 hotspotY);
 			//Set Icon for the window
-			void SetIcon(const Icon& icon);
+			void SetIcon(const Bitmap& icon);
 			//Set background color
 			void SetBackground(uint8 r, uint8 g, uint8 b);
+			void SetBackground(const Math::Color& color);
 			//Get clientsize
 			int32 GetWidth() const;
 			int32 GetHeight() const;
@@ -144,6 +140,7 @@ namespace RayEngine
 			const IWindowImpl* GetImplementation() const;
 			//Get struct that describes the window
 			void GetDesc(WindowInfo& desc) const;
+
 			//Operators for assignment
 			Window& operator=(const Window& other);
 			Window& operator=(Window&& other);

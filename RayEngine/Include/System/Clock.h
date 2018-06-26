@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TimeStamp.h"
+#include <string>
 
 namespace RayEngine
 {
@@ -9,7 +10,6 @@ namespace RayEngine
 	{
 	public:
 		Clock();
-		~Clock();
 
 		//Makes a tick, delta is the time between ticks
 		void Tick();
@@ -19,11 +19,17 @@ namespace RayEngine
 		//Gets delta timestamp
 		const TimeStamp& GetDeltaTime() const;
 		//Gets total timestamp
-		const TimeStamp& GetTotalTime() const;
+		const TimeStamp& GetTotalTickTime() const;
 
 	private:
-		int64 m_LastTime;
+		TimeStamp m_LastTime;
 		TimeStamp m_Delta;
 		TimeStamp m_Total;
+
+	public:
+		//Returns current systemclock timestamp as a string
+		static std::string ClockString();
+		//Returns current systemclock date as a string
+		static std::string DateString();
 	};
 }

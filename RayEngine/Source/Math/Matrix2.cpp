@@ -56,6 +56,15 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Multiply(const Matrix2& other)
 	{
+#if defined(SSE_INTRIN)
+		__m128 m1 = _mm_shuffle_ps(sse128, sse128, _MM_SHUFFLE(2, 2, 0, 0));
+		m1 = _mm_mul_ps(m1, _mm_shuffle_ps(other.sse128, other.sse128, _MM_SHUFFLE(1, 0, 1, 0)));
+
+		__m128 m2 = _mm_shuffle_ps(sse128, sse128, _MM_SHUFFLE(3, 3, 1, 1));
+		m2 = _mm_mul_ps(m2, _mm_shuffle_ps(other.sse128, other.sse128, _MM_SHUFFLE(3, 2, 3, 2)));
+
+		sse128 = _mm_add_ps(m1, m2);
+#else
 		float t[4];
 
 		t[0] = (rows[0].v[0] * other.rows[0].v[0]) + (rows[0].v[1] * other.rows[1].v[0]);
@@ -65,7 +74,7 @@ namespace Math
 		t[3] = (rows[1].v[0] * other.rows[0].v[1]) + (rows[1].v[1] * other.rows[1].v[1]);
 
 		memcpy(m, t, sizeof(float) * 4);
-
+#endif
 		return *this;
 	}
 
@@ -74,9 +83,12 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Multiply(float scalar)
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_mul_ps(sse128, _mm_set_ps1(scalar));
+#else
 		for (int i = 0; i < 4; i++)
 			m[i] *= scalar;
-
+#endif
 		return *this;
 	}
 
@@ -85,9 +97,12 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Add(const Matrix2& other)
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_add_ps(sse128, other.sse128);
+#else
 		for (int i = 0; i < 4; i++)
 			m[i] += other.m[i];
-
+#endif
 		return *this;
 	}
 
@@ -96,9 +111,12 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Add(float scalar)
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_add_ps(sse128, _mm_set_ps1(scalar));
+#else
 		for (int i = 0; i < 4; i++)
 			m[i] += scalar;
-
+#endif
 		return *this;
 	}
 
@@ -107,9 +125,12 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Subtract(const Matrix2& other)
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_sub_ps(sse128, other.sse128);
+#else
 		for (int i = 0; i < 4; i++)
 			m[i] -= other.m[i];
-
+#endif
 		return *this;
 	}
 
@@ -118,9 +139,12 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Subtract(float scalar)
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_sub_ps(sse128, _mm_set_ps1(scalar));
+#else
 		for (int i = 0; i < 4; i++)
 			m[i] -= scalar;
-
+#endif
 		return *this;
 	}
 
@@ -129,9 +153,12 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Divide(float scalar)
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_div_ps(sse128, _mm_set_ps1(scalar));
+#else
 		for (int i = 0; i < 4; i++)
 			m[i] /= scalar;
-
+#endif
 		return *this;
 	}
 
@@ -154,6 +181,9 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Transpose()
 	{
+#if defined(SSE_INTRIN)
+		sse128 = _mm_shuffle_ps(sse128, sse128, _MM_SHUFFLE(3, 1, 2, 0));
+#else
 		float temp[4];
 	
 		temp[0] = rows[0].v[0];
@@ -163,7 +193,7 @@ namespace Math
 		temp[3] = rows[1].v[1];
 
 		memcpy(m, temp, sizeof(float) * 4);
-	
+#endif
 		return *this;
 	}
 
@@ -180,13 +210,20 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix2& Matrix2::Invert()
 	{
+#if defined(SSE_INTRIN)
+		__m128 det = _mm_set_ps1((rows[0].v[0] * rows[1].v[1]) - (rows[0].v[1] * rows[1].v[0]));
+		det = _mm_div_ps(_mm_set_ps(1.0f, -1.0f, -1.0f, 1.0f), det);
+
+		sse128 = _mm_shuffle_ps(sse128, sse128, _MM_SHUFFLE(0, 2, 1, 3));
+		sse128 = _mm_mul_ps(sse128, det);
+#else
 		float det = Determinant();
 	
 		if (det == 0)
 			*this = Matrix2::Nan();
 		else
 			*this = Adjugate().Divide(det);
-
+#endif
 		return *this;
 	}
 
@@ -212,12 +249,15 @@ namespace Math
 	Matrix2 Matrix2::Adjugate() const
 	{
 		Matrix2 a;
-
+#if defined(SSE_INTRIN)
+		a.sse128 = _mm_shuffle_ps(sse128, sse128, _MM_SHUFFLE(0, 2, 1, 3));
+		a.sse128 = _mm_mul_ps(a.sse128, _mm_set_ps(1.0f, -1.0f, -1.0f, 1.0f));
+#else
 		a.rows[0].v[0] = rows[1].v[1];
 		a.rows[1].v[0] = -rows[1].v[0];
 		a.rows[0].v[1] = -rows[0].v[1];
 		a.rows[1].v[1] = rows[0].v[0];
-
+#endif
 		return a;
 	}
 

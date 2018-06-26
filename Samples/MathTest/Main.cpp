@@ -1,5 +1,6 @@
 #include <Math/Vector4.h>
 #include <Math/Matrix4.h>
+#include <Math/Matrix2.h>
 #include <System/Clock.h>
 
 #include <iostream>
@@ -45,21 +46,23 @@ int main(int args, char** argsv)
 		}
 
 
-		std::cout << "Mat 1:\n" << (m1 * m2).ToString() << '\n';
-		std::cout << "Mat 1:\n" << (Matrix4::RotationZ(5) * Matrix4::RotationX(5) * Matrix4::RotationY(5)).ToString() << '\n';
-		std::cout << "Mat 2:\n" << (Matrix4::Rotation(5, 5, 5)).ToString() << '\n';
+		Matrix2 m(Vector2(1, 2), Vector2(3, 4));
+		Matrix2 mm(Vector2(5, 6), Vector2(7, 8));
+
+		mm *= m;
+
+		output += "mm:\n" + mm.ToString() + '\n';
 
 		clock.Reset();
 		
 		clock.Tick();
 		for (int32 i = 0; i < iterations; i++)
 		{
-			float angle = ToRadiansF(i);
-			m2 = Matrix4::Rotation(angle, angle, angle);
+			mm *= m;
 		}
 		clock.Tick();
 
-		output += "Result:\n" + m2.ToString();
+		output += "Result:\n" + mm.ToString();
 		output += "\nTime: " + std::to_string(clock.GetDeltaTime().GetAsNanoSeconds()) + "ns\n";
 	}
 

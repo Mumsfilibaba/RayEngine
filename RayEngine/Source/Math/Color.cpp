@@ -3,28 +3,28 @@
 namespace Math
 {
 	/////////////////////////////////////////////////////////////
-	const Color Color::BLACK(ColorF::BLACK);
-	const Color Color::WHITE(ColorF::WHITE);
-	const Color Color::WARMWHITE(ColorF::WARMWHITE);
-	const Color Color::GRAY(ColorF::GRAY);
-	const Color Color::DARKGRAY(ColorF::DARKGRAY);
-	const Color Color::SOFTGRAY(ColorF::SOFTGREEN);
-	const Color Color::RED(ColorF::RED);
-	const Color Color::DARKRED(ColorF::DARKRED);
-	const Color Color::SOFTRED(ColorF::SOFTRED);
-	const Color Color::GREEN(ColorF::GREEN);
-	const Color Color::SOFTGREEN(ColorF::SOFTGREEN);
-	const Color Color::DARKGREEN(ColorF::DARKGREEN);
-	const Color Color::BLUE(ColorF::BLUE);
-	const Color Color::DARKBLUE(ColorF::DARKBLUE);
-	const Color Color::SOFTBLUE(ColorF::SOFTBLUE);
-	const Color Color::CORNFLOWERBLUE(ColorF::CORNFLOWERBLUE);
-	const Color Color::YELLOW(ColorF::YELLOW);
-	const Color Color::SOFTYELLOW(ColorF::SOFTYELLOW);
-	const Color Color::DARKYELLOW(ColorF::DARKYELLOW);
-	const Color Color::MAGENTA(ColorF::MAGENTA);
-	const Color Color::PURPLE(ColorF::PURPLE);
-	const Color Color::PINK(ColorF::PINK);
+	const Color Color::BLACK(0, 0, 0, 255);
+	const Color Color::WHITE(255, 255, 255, 255);
+	const Color Color::WARMWHITE(255, 240, 224, 255);
+	const Color Color::GRAY(128, 128, 128, 255);
+	const Color Color::DARKGRAY(64, 64, 64, 255);
+	const Color Color::SOFTGRAY(192, 192, 192, 255);
+	const Color Color::RED(255, 0, 0, 255);
+	const Color Color::DARKRED(128, 0, 0, 255);
+	const Color Color::SOFTRED(255, 64, 64, 255);
+	const Color Color::GREEN(0, 255, 0, 255);
+	const Color Color::SOFTGREEN(64, 255, 64, 255);
+	const Color Color::DARKGREEN(0, 128, 0, 255);
+	const Color Color::BLUE(0, 0, 255, 255);
+	const Color Color::DARKBLUE(0, 0, 128, 255);
+	const Color Color::SOFTBLUE(83, 83, 255, 255);
+	const Color Color::CORNFLOWERBLUE(100, 149, 237, 255);
+	const Color Color::YELLOW(255, 255, 0, 255);
+	const Color Color::SOFTYELLOW(255, 255, 64, 255);
+	const Color Color::DARKYELLOW(128, 128, 0, 255);
+	const Color Color::MAGENTA(255, 0, 255, 255);
+	const Color Color::PURPLE(128, 0, 128, 255);
+	const Color Color::PINK(255, 192, 203, 255);
 
 
 

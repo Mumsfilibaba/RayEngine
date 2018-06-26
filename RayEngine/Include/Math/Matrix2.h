@@ -85,6 +85,9 @@ namespace Math
 		{
 			float m[4];
 			Vector2 rows[2];
+#if defined(SSE_INTRIN)
+			__m128 sse128;
+#endif
 		};
 	};
 }

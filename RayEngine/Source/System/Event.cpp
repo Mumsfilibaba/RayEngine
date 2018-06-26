@@ -32,9 +32,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool Event::operator==(const Event& other) const
 		{
-			return (Type == other.Type) && (TouchSize == other.TouchSize) &&
-				(TouchFingerID == other.TouchFingerID) && (TouchPressure == other.TouchPressure) &&
-				(TouchPosition == other.TouchPosition);
+			return (Type == other.Type) && (Touch.Position == other.Touch.Position)
+				&& (Touch.FingerID == other.Touch.FingerID) && (Touch.Pressure == other.Touch.Pressure)
+				&& (Touch.Size == other.Touch.Size);
 		}
 
 

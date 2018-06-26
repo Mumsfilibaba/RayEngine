@@ -15,7 +15,7 @@ namespace RayEngine
 {
 	namespace Network
 	{
-		class Win32SocketIPv4Impl : public SocketIPv4Impl
+		class RE_API Win32SocketIPv4Impl : public SocketIPv4Impl
 		{
 		public:
 			Win32SocketIPv4Impl(Win32SocketIPv4Impl&& other) = delete;

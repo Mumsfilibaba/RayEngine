@@ -39,23 +39,49 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void Log::Write(LOG_SEVERITY severity, const Tchar* message, ...) const
+		void Log::Write(LOG_SEVERITY severity, const Tchar* message, ...)
 		{
 			assert(m_Impl != nullptr);
 
 			va_list args;
 			va_start(args, message);
-			m_Impl->Write(severity, message, args);
+			Write(severity, message, args);
 			va_end(args);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void Log::Write(LOG_SEVERITY severity, const Tchar* message, va_list args) const
+		void Log::Write(LOG_SEVERITY severity, const Tchar* message, va_list args)
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->Write(severity, message, args);
+
+			m_Messages.push_back({ severity, message });
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void Log::Flush()
+		{
+			m_Messages.clear();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		int32 Log::GetMessageCount() const
+		{
+			return static_cast<int32>(m_Messages.size());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const LogMessage& Log::GetMessage(int32 index) const
+		{
+			return m_Messages[index];
 		}
 	}
 }

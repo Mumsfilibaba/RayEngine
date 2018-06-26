@@ -81,10 +81,10 @@ namespace Math
 		static Matrix3 Translation(const Vector2& translation);
 
 		static Matrix3 Rotation(const Vector3& axis, float angleRad);
+		static Matrix3 Rotation(float angleRadZ, float angleRadX, float angleRadY);
 		static Matrix3 RotationX(float angleRad);
 		static Matrix3 RotationY(float  angleRad);
 		static Matrix3 RotationZ(float angleRad);
-		static Matrix3 Rotation(float angleRadZ, float angleRadX, float angleRadY);
 
 		static Matrix3 Scale(const Vector3& scale);
 		static Matrix3 Scale(float scale);

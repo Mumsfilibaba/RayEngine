@@ -4,6 +4,7 @@
 #include "..\Types.h"
 #include "..\System\KeyCodes.h"
 #include "..\Math\Vector2.h"
+#include "..\Math\Point.h"
 
 namespace RayEngine
 {
@@ -14,12 +15,19 @@ namespace RayEngine
 			EVENT_TYPE_UNKNOWN = 0,
 			EVENT_TYPE_QUIT = 1,
 			EVENT_TYPE_RESIZE = 2,
-			EVENT_TYPE_KEYPRESSED = 3,
-			EVENT_TYPE_KEYRELEASED = 4,
-			EVENT_TYPE_DESTROYED = 5,
-			EVENT_TYPE_APP_PAUSED = 6,
-			EVENT_TYPE_APP_RESUMED = 7,
-			EVENT_TYPE_TOUCH = 8,
+			EVENT_TYPE_KEYCHAR = 3,
+			EVENT_TYPE_KEYPRESSED = 4,
+			EVENT_TYPE_KEYRELEASED = 5,
+			EVENT_TYPE_CLOSE = 6,
+			EVENT_TYPE_FOCUSCHANGED = 7,
+			EVENT_TYPE_MOUSEMOVE = 8,
+			EVENT_TYPE_MOUSEPRESSED = 9,
+			EVENT_TYPE_MOUSERELEASED = 10,
+			EVENT_TYPE_MOUSESCROLL = 11,
+			EVENT_TYPE_TOUCHMOVE = 12,
+			EVENT_TYPE_TOUCHPRESSED = 13,
+			EVENT_TYPE_TOUCHRELEASED = 14,
+			EVENT_TYPE_SENSORCHANGED = 15,
 		};
 
 		enum EVENT_RESIZE : int32
@@ -44,31 +52,64 @@ namespace RayEngine
 		public:
 			EVENT_TYPE Type;
 	
-			struct
+			union
 			{
-				Math::Vector2 TouchPosition;
-
-				union
+				struct
 				{
-					float TouchSize;
-					EVENT_RESIZE ResizeType;
+					int32 ExitCode;
+				} Quit;
+
+				struct
+				{
+					int32 Width;
+					int32 Height;
+					EVENT_RESIZE Type;
+				} Resize;
+
+				struct
+				{
+					uint32 UnicodeChar;
+				} KeyChar;
+
+				struct
+				{
 					KEY KeyCode;
-				};
+					int32 RepeatCount;
+					bool Extended;
+				} Key;
 
-				union
+				struct
 				{
-					int32 QuitCode;
-					int32 TouchFingerID;
-					int16 Height;
-					int16 KeyRepeatCount;
-				};
+					bool HasFocus;
+				} FocusChanged;
 
-				union
+				struct
 				{
-					float TouchPressure;
-					int16 Width;
-					bool KeyExtended;
-				};
+					Math::Point Position;
+				} MouseMove;
+
+				struct
+				{
+					MOUSEBUTTON Button;
+				} MouseButton;
+
+				struct
+				{
+					float Delta;
+				} MouseScroll;
+
+				struct
+				{
+					Math::Vector2 Position;
+					float Size;
+					float Pressure;
+					int32 FingerID;
+				} Touch;
+
+				struct
+				{
+
+				} Sensor;
 			};
 		};
 	}

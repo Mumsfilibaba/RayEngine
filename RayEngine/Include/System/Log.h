@@ -3,7 +3,8 @@
 #include "..\Defines.h"
 #include "..\Types.h"
 
-#include <stdarg.h>
+#include <cstdarg>
+#include <vector>
 
 namespace RayEngine
 {
@@ -17,7 +18,6 @@ namespace RayEngine
 			LOG_SEVERITY_ERROR = 3
 		};
 
-		//Message
 		struct LogMessage
 		{
 			LOG_SEVERITY Severity;
@@ -40,7 +40,6 @@ namespace RayEngine
 			virtual void Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const = 0;
 		};
 
-		//Log-class
 		class Log
 		{
 		public:
@@ -53,11 +52,19 @@ namespace RayEngine
 			~Log();
 
 			//Log something to the platforms log (Console - Win32, LogCat - Android) - Also saves the log in a buffer
-			void Write(LOG_SEVERITY severity, const Tchar* text, ...) const;
-			void Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const;
+			void Write(LOG_SEVERITY severity, const Tchar* text, ...);
+			void Write(LOG_SEVERITY severity, const Tchar* text, va_list args);
+
+			//Flush - Removes all messages from the message buffer
+			void Flush();
+
+			//Retrive messages
+			int32 GetMessageCount() const;
+			const LogMessage& GetMessage(int32 index) const;
 
 		private:
-			LogImpl* m_Impl;
+			const LogImpl* m_Impl;
+			std::vector<LogMessage> m_Messages;
 		};
 	}
 }

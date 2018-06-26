@@ -65,7 +65,7 @@ namespace Math
 			};
 
 			uint8 rgba[4];
-			unsigned int color;
+			uint32 color;
 		};
 
 	public:

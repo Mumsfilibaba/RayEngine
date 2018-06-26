@@ -103,7 +103,7 @@ namespace RayEngine
 
 					//Push event
 					System::Event event;
-					event.Type = System::EVENT_TYPE_TOUCH;
+					event.Type = System::EVENT_TYPE_TOUCHMOVE;
 					event.TouchFingerID = id;
 					event.TouchPressure = pressure;
 					event.TouchSize = size;

@@ -1,5 +1,3 @@
-//#define NO_SIMD
-
 #include "..\..\Include\Math\Matrix4.h"
 #include <cassert>
 
@@ -1023,7 +1021,7 @@ namespace Math
 		rot.rows[2].v[1] = sinX;
 		rot.rows[2].v[2] = cosX * cosY;
 
-		return rot;// (RotationZ(angleRadZ) * RotationX(angleRadX)) * RotationY(angleRadY);
+		return rot;
 	}
 
 

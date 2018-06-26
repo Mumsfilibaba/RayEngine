@@ -61,99 +61,68 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	bool TextureLoader::LoadFromFile(const Tchar* const filename, const Tchar* const filepath, const void** pixels, int32& width, int32& height, FORMAT format)
+	bool TextureLoader::LoadFromFile(const Tchar* const filename, const Tchar* const filepath, 
+		const void** pixels, int32& width, int32& height, FORMAT format)
 	{
 		if (pixels == nullptr || format == FORMAT_UNKNOWN)
 			return false;
 
-		//Full path to file
 		Tstring fullpath = filepath + Tstring(filename);
-		//dimensions of image
 		int32 wi = 0;
 		int32 he = 0;
-		int32 components = 0;
+		int32 reqComponents = 0;
+		void* data = nullptr;
 
-		//Load based on format
 		if (format == FORMAT_R8G8B8A8_UINT)
-		{
-			const uint8* data = static_cast<const uint8*>(stbi_load(fullpath.c_str(), &wi, &he, &components, 4));
-			//if succeeded set data
-			if (data != nullptr)
-			{
-				//Resize image if wanted
-				if (width != 0 || height != 0)
-				{
-					int32 outWi = (width == 0) ? wi : width;
-					int32 outHe = (height == 0) ? he : height;
-					uint8* output = new uint8[outWi * outHe * 4];
-
-					//Resize image
-					int32 res = stbir_resize_uint8(data, wi, he, 0, output, outWi, outHe, 0, 4);
-					
-					//delete old data no matter what
-					delete[] data;
-					data = nullptr;
-					
-					if (res != 0)
-					{
-						//Set output
-						(*pixels) = static_cast<const void*>(output);
-						wi = outWi;
-						he = outHe;
-						return true;
-					}
-				}
-				else
-				{
-					//Return the loaded image
-					width = wi;
-					height = he;
-					(*pixels) = data;
-					return true;
-				}
-			}
-		}
+			data = static_cast<void*>(stbi_load(fullpath.c_str(), &wi, &he, &reqComponents, 4));
 		else if (format == FORMAT_R32G32B32A32_FLOAT)
+			data = stbi_loadf(fullpath.c_str(), &wi, &he, &reqComponents, 4);
+
+		if (data != nullptr)
 		{
-			const float* data = stbi_loadf(fullpath.c_str(), &wi, &he, &components, 4);
-			//if succeeded set data
-			if (data != nullptr)
+			//Resize image if wanted
+			if (width != 0 || height != 0)
 			{
-				//Resize image if wanted
-				if (width != 0 || height != 0)
+				int32 outWi = (width == 0) ? wi : width;
+				int32 outHe = (height == 0) ? he : height;
+				int32 res = 0;
+				void* output = nullptr;
+				
+				if (FORMAT_R8G8B8A8_UINT)
 				{
-					int32 outWi = (width == 0) ? wi : width;
-					int32 outHe = (height == 0) ? he : height;
-					float* output = new float[outWi * outHe * 4];
-
-					//Resize image
-					int32 res = stbir_resize_float(reinterpret_cast<const float*>(data), wi, he, 0, output, outWi, outHe, 0, 4);
-
-					//delete old data no matter what
-					delete[] data;
-					data = nullptr;
-
-					if (res != 0)
-					{
-						//Set output
-						(*pixels) = static_cast<const void*>(output);
-						wi = outWi;
-						he = outHe;
-						return true;
-					}
+					output = new uint8[outWi * outHe * 4];
+					res = stbir_resize_uint8(reinterpret_cast<const uint8*>(data), wi, he, 0,
+						reinterpret_cast<uint8*>(output), outWi, outHe, 0, 4);
 				}
-				else
+				else if (format == FORMAT_R32G32B32A32_FLOAT)
 				{
-					//Return the loaded image
-					width = wi;
-					height = he;
-					(*pixels) = data;
-					return true;
+					output = new float[outWi * outHe * 4];
+					stbir_resize_float(reinterpret_cast<const float*>(data), wi, he, 0,
+						reinterpret_cast<float*>(output), outWi, outHe, 0, 4);
+				}
+
+				delete[] data;
+				data = nullptr;
+
+				if (res != 0)
+				{
+					(*pixels) = static_cast<const void*>(output);
+					wi = outWi;
+					he = outHe;
 				}
 			}
+			else
+			{
+				width = wi;
+				height = he;
+				(*pixels) = data;
+			}
+			
+			return true;
 		}
 
-		//Return null data
+		const char* reason = stbi_failure_reason();
+
 		height = 0;
 		width = 0;
 		(*pixels) = nullptr;
@@ -163,7 +132,8 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	bool TextureLoader::SaveToFile(const Tchar* const filename, const Tchar* const filepath, const void* const pixels, int32 width, int32 height, FORMAT format, TEX_EXTENSION extension)
+	bool TextureLoader::SaveToFile(const Tchar* const filename, const Tchar* const filepath, 
+		const void* const pixels, int32 width, int32 height, FORMAT format, TEX_EXTENSION extension)
 	{
 		if (pixels == nullptr || width == 0 || height == 0 || format == FORMAT_UNKNOWN || extension == TEX_EXTENSION_UNKNOWN)
 			return false;

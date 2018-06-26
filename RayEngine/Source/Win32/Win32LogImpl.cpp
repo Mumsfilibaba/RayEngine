@@ -1,3 +1,4 @@
+#include "..\..\Include\System\Clock.h"
 #include "..\..\Include\Win32\Win32LogImpl.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -84,6 +85,8 @@ namespace RayEngine
 
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 
+			std::string date = (Clock::DateString() + ": ");
+			print(date.c_str());
 			print(sText);
 			vprint(text, args);
 			print(RE_T("\n"));

@@ -647,7 +647,29 @@ namespace Math
 	/////////////////////////////////////////////////////////////
 	Matrix3 Matrix3::Rotation(float angleRadZ, float angleRadX, float angleRadY)
 	{
-		return (RotationZ(angleRadZ) * RotationX(angleRadX)) * RotationY(angleRadY);
+		Matrix3 rot(1.0f);
+
+		float sinX = sinf(angleRadX);
+		float sinY = sinf(angleRadY);
+		float sinZ = sinf(angleRadZ);
+
+		float cosX = cosf(angleRadX);
+		float cosY = cosf(angleRadY);
+		float cosZ = cosf(angleRadZ);
+
+		rot.rows[0].v[0] = (cosY * cosZ) - (sinX * sinY * sinZ);
+		rot.rows[0].v[1] = -(cosX * sinZ);
+		rot.rows[0].v[2] = (cosZ * sinY) + (sinX * sinY * sinZ);
+
+		rot.rows[1].v[0] = (cosZ * sinX * sinY) + (cosY * sinZ);
+		rot.rows[1].v[1] = cosX * cosZ;
+		rot.rows[1].v[2] = (sinY * sinZ) - (cosY * cosZ * sinX);
+
+		rot.rows[2].v[0] = -(cosX * sinY);
+		rot.rows[2].v[1] = sinX;
+		rot.rows[2].v[2] = cosX * cosY;
+
+		return rot;
 	}
 
 

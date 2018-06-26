@@ -5,7 +5,7 @@
 namespace RayEngine
 {
 	//TODO: Engine specific keycodes
-	enum KEY : uint8
+	enum KEY : int32
 	{
 		//Arrowkeys
 		KEY_LEFT = 0x25,
@@ -138,5 +138,15 @@ namespace RayEngine
 		KEY_NUMLOCK = 0x90,
 		KEY_CAPSLOCK = 0x14,
 		KEY_SCROLLOCK = 0x91
+	};
+
+	enum MOUSEBUTTON : int32
+	{
+		MOUSEBUTTON_UNKNOWN = 0,
+		MOUSEBUTTON_LEFT = 1,
+		MOUSEBUTTON_MIDDLE = 2,
+		MOUSEBUTTON_RIGHT = 3,
+		MOUSEBUTTON_BACK = 4,
+		MOUSEBUTTON_FORWARD = 5,
 	};
 }

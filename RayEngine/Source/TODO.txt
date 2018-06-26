@@ -1,15 +1,37 @@
 TODO:
--Window - SetBackground(Color)
--Event-Class - Fix asignment operator and constructor, use vector instead of two floats
--Bitmap-Class
--Math library refactoring
--Easier more readable code, less comments
--Finish socketimpl Win32, start on android
+-Add following events
+Events:
+MouseScroll
+
+SensorChange
+TouchMove
+TouchPressed
+TouchReleased
+
+-Winkeys to ReKeys
+-Keyboard-class - IsKeyPressed();
+-Mouse-class - SetMousePosition(const Math::Point&)
+
+-TouchScreen-Class
+-Sensor-Class
+
+-Clipboard
+
+-Android - check screensize - Systeminfo
+-NativeActivity->C-style - Move more to the AndroidWindowImpl
+-Android SensorEvents - Activate sensor with windowflag
+
+-IFactory - Vulkan
+-IDevice - Vulkan
+-ICommandQueue - Vulkan
+-ISwapChain - Vulkan
+
+-This commit:
+
+
+For later:
+-Math SIMD (Vec3, Mat3, ColorF), Quaternion, ARM Neon support
 -Android Socket Impl
-
--NativeActivity -> C-style - Move more to the AndroidWindowImpl
-
--Android SensorEvents (Continue on events for android, all touch events, Keyboard?)
--Add following events - MouseEnter, FocusChanged (Instead of App paused and Resumed), 
-
--Math SIMD, Quaternion
+-Finish socketimpl Win32, start on android
+-Threadsafe logging
+-Log should contain a circulararray so that when maxcount is recived, the first message is replaced with the new one
