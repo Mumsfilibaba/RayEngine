@@ -4,7 +4,7 @@
 - Abstracting graphicsAPIs (D3D12 and Vulkan) and to make the use of these APIs simpler
 # RayEngineMath
 - A math library that supports SSE and uses mostly floats
-Contains:
+- Contains -
 Matrix2 - 2x2 matrix
 Matrix3 - 3x3 matrix
 Matrix4 - 4x4 matrix
