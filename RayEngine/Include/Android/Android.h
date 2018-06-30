@@ -7,8 +7,8 @@
 #include "..\Types.h"
 #include "..\System\Event.h"
 
-#include <android/native_activity.h>
-#include <android/log.h>
+#include <android\native_activity.h>
+#include <android\log.h>
 
 #if defined(RE_DEBUG)
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "RayEngine App", __VA_ARGS__);
@@ -18,17 +18,24 @@
 #define LOGE(...)
 #endif
 
-/////////////////////////////////////////////////////////////
-extern bool AndroidAppHasFocus();
+namespace RayEngine
+{
+	/////////////////////////////////////////////////////////////
+	extern void SetNativeActivity(ANativeActivity* activity);
+	extern ANativeActivity* GetNativeActivity();
+	extern void AndroidGetDisplaySize(int32& width, int32& height);
+	extern int32 AndroidGetSDKVersion();
+	extern bool AndroidAppHasFocus();
 
-extern void AndroidSetNativeWindowColor(RayEngine::int32 color);
-extern void AndroidSetNativeWindowSize(RayEngine::int32 width, RayEngine::int32 height);
-extern void AndroidSetNativeWindowFlags(RayEngine::uint32 flags);
+	extern void AndroidSetNativeWindowColor(int32 color);
+	extern void AndroidSetNativeWindowSize(int32 width, int32 height);
+	extern void AndroidSetNativeWindowFlags(uint32 flags);
 
-extern RayEngine::System::Event AndroidReciveEvent();
-extern void AndroidSendEvent(const RayEngine::System::Event& pEvent);
+	extern System::Event AndroidReciveEvent();
+	extern void AndroidSendEvent(const System::Event& pEvent);
 
-/////////////////////////////////////////////////////////////
-extern RayEngine::int32 AndroidGetIntColor(RayEngine::uint8 r, RayEngine::uint8 g, RayEngine::uint8 b, RayEngine::uint8 a);
+	/////////////////////////////////////////////////////////////
+	extern int32 GetAndroidColor(uint8 r, uint8 g, uint8 b, uint8 a);
+}
 
 #endif

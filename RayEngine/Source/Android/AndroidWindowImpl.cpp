@@ -17,8 +17,7 @@ namespace RayEngine
 			m_Width(0),
 			m_Height(0),
 			m_Color(0),
-			m_Flags(0),
-			m_WindowID(CreateWindowID())
+			m_Flags(0)
 		{
 		}
 
@@ -39,7 +38,7 @@ namespace RayEngine
 			m_Height = info.Height;
 
 			//Set color
-			m_Color = AndroidGetIntColor(info.Color.r, info.Color.g, info.Color.b, 255);
+			m_Color = GetAndroidColor(info.BackgroundColor.r, info.BackgroundColor.g, info.BackgroundColor.b, 255);
 
 			//Set window flags
 			if (info.Flags & WINDOW_FLAG_APP_FULLSCREEN)
@@ -124,7 +123,7 @@ namespace RayEngine
 		{
 			Event event;
 			event.Type = EVENT_TYPE_QUIT;
-			event.QuitCode = exitCode;
+			event.Quit.ExitCode = exitCode;
 
 			AndroidSendEvent(event);
 		}
@@ -132,7 +131,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void AndroidWindowImpl::SetCursor(const Cursor& cursor)
+		void AndroidWindowImpl::SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY)
 		{
 			//Not relevant
 		}
@@ -140,9 +139,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void AndroidWindowImpl::SetIcon(const Icon& icon)
+		void AndroidWindowImpl::SetIcon(const Bitmap& icon)
 		{
 			//Not relevant
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void AndroidWindowImpl::SetBackground(const Math::Color& color)
+		{
+			SetBackground(color.r, color.g, color.b);
 		}
 
 
@@ -150,7 +157,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void AndroidWindowImpl::SetBackground(uint8 r, uint8 g, uint8 b)
 		{
-			m_Color = AndroidGetIntColor(r, g, b, 255);
+			m_Color = GetAndroidColor(r, g, b, 255);
 			AndroidSetNativeWindowColor(m_Color);
 		}
 
@@ -158,14 +165,6 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		IWindowImpl* AndroidWindowImpl::Copy() const
-		{
-			return nullptr;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IWindowImpl* AndroidWindowImpl::Move()
 		{
 			return nullptr;
 		}
@@ -203,9 +202,9 @@ namespace RayEngine
 			info.Width = m_Width;
 			info.Height = m_Height;
 
-			info.Color.r = (m_Color << 24) >> 24;
-			info.Color.g = (m_Color << 16) >> 24;
-			info.Color.b = (m_Color << 8) >> 24;
+			info.BackgroundColor.r = (m_Color << 24) >> 24;
+			info.BackgroundColor.g = (m_Color << 16) >> 24;
+			info.BackgroundColor.b = (m_Color << 8) >> 24;
 
 			info.Title = nullptr;
 
@@ -213,28 +212,6 @@ namespace RayEngine
 			info.y = 0;
 
 			return;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		//Global variable for keeping count of windows and its mutex
-		int32 g_WindowCount = 0;
-		std::mutex g_CountMutex;
-
-		int32 AndroidWindowImpl::CreateWindowID()
-		{
-			//Lock g_WindowCount
-			g_CountMutex.lock();
-
-			//increase count
-			g_WindowCount++;
-			int32 res = g_WindowCount;
-
-			//Unlock g_WindowCount
-			g_CountMutex.unlock();
-
-			return res;
 		}
 	}
 }

@@ -3,7 +3,12 @@
 #include <System/Log.h>
 #include <System/System.h>
 #include <System/Bitmap.h>
+#include <System/Mouse.h>
+#include <System/Keyboard.h>
+#include <System/Clipboard.h>
 #include <Math/RandomGenerator.h>
+
+
 
 int main(int args, char* argsv[])
 {
@@ -24,8 +29,8 @@ int main(int args, char* argsv[])
 	windowInfo.Flags = WINDOW_FLAG_APP_FULLSCREEN | WINDOW_FLAG_APP_NO_SLEEP;
 	windowInfo.Style = WINDOWSTYLE_STANDARD_WINDOW;
 #if defined(RE_PLATFORM_ANDROID)
-	windowInfo.Width = 1080;
-	windowInfo.Height = 1920;
+	windowInfo.Width = info.ScreenWidth;
+	windowInfo.Height = info.ScreenHeight;
 #else
 	windowInfo.Width = 1280;
 	windowInfo.Height = 720;
@@ -43,6 +48,9 @@ int main(int args, char* argsv[])
 	Clock clock;
 	RandomGenerator ran;
 
+	log.Write(LOG_SEVERITY_INFO, Clipboard::GetString().c_str());
+	log.Write(LOG_SEVERITY_INFO, Clipboard::GetString().c_str());
+
 	int32 color = 0;
 	uint8 strength = 0;
 
@@ -59,7 +67,7 @@ int main(int args, char* argsv[])
 		Color::BLUE,
 		Color::WARMWHITE,
 	};
-
+	
 	while (event.Type != EVENT_TYPE_QUIT)
 	{
 		clock.Tick();
@@ -69,9 +77,15 @@ int main(int args, char* argsv[])
 			if (event.Type == EVENT_TYPE_CLOSE)
 				window.SendQuitEvent(0);
 
-			if (event.Type == EVENT_TYPE_TOUCHMOVE)
+			//if (event.Type == EVENT_TYPE_TOUCHPRESSED)
+			//	window.SetBackground(Color::RED);
+
+			//if (event.Type == EVENT_TYPE_TOUCHRELEASED)
+			//	window.SetBackground(Color::CORNFLOWERBLUE);
+
+			if (event.Type == EVENT_TYPE_TOUCHPRESSED)
 			{
-				if (event.Touch.Position.x < (1080 / 2))
+				if (event.Touch.Position.x < (info.ScreenWidth / 2))
 					color--;
 				else
 					color++;
@@ -90,15 +104,15 @@ int main(int args, char* argsv[])
 					window.SetBackground(Color::RED);
 			}
 
-			if (event.Type == EVENT_TYPE_MOUSEMOVE)
-				log.Write(LOG_SEVERITY_INFO, event.MouseMove.Position.ToString().c_str());
+			if (event.Type == EVENT_TYPE_KEYPRESSED)
+				log.Write(LOG_SEVERITY_INFO, std::to_string(event.Key.KeyCode).c_str());
 		}
 
-		//if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)
-		//{
-		//	window.SetBackground(colors[color]);
-		//	clock.Reset();
-		//}
+		if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)
+		{
+			window.SetBackground(colors[color]);
+			clock.Reset();
+		}
 	}
 
 	return 0;

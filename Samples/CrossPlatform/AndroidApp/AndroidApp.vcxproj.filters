@@ -7,15 +7,6 @@
     <Filter Include="res\values">
       <UniqueIdentifier>108ae0bd-bff0-46a5-84be-34e89da64da2</UniqueIdentifier>
     </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{2785daeb-e23e-447c-83c2-ecbdb88dfe10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\rayengine">
-      <UniqueIdentifier>{50995c5b-7cb8-4a45-a475-47fbeac143e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\rayengine\Crossplatform">
-      <UniqueIdentifier>{9074a301-523c-4a7f-9475-548c6fc10fb3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="jni">
       <UniqueIdentifier>{cdf8cb6c-9787-44a1-89ac-3869b499dba1}</UniqueIdentifier>
     </Filter>

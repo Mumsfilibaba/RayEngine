@@ -93,15 +93,18 @@ namespace RayEngine
 					output = new uint8[outWi * outHe * 4];
 					res = stbir_resize_uint8(reinterpret_cast<const uint8*>(data), wi, he, 0,
 						reinterpret_cast<uint8*>(output), outWi, outHe, 0, 4);
+
+					delete[] reinterpret_cast<uint8*>(data);
 				}
 				else if (format == FORMAT_R32G32B32A32_FLOAT)
 				{
 					output = new float[outWi * outHe * 4];
 					stbir_resize_float(reinterpret_cast<const float*>(data), wi, he, 0,
 						reinterpret_cast<float*>(output), outWi, outHe, 0, 4);
-				}
 
-				delete[] data;
+					delete[] reinterpret_cast<float*>(data);
+				}
+				
 				data = nullptr;
 
 				if (res != 0)

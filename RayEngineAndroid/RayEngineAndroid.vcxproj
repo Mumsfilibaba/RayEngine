@@ -22,75 +22,96 @@
     <ClInclude Include="..\RayEngine\Dependencies\stb_image_resize.h" />
     <ClInclude Include="..\RayEngine\Dependencies\stb_image_write.h" />
     <ClInclude Include="..\RayEngine\Include\Android\Android.h" />
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidBitmapImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Android\AndroidLogImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidVulkanWrapper.h" />
     <ClInclude Include="..\RayEngine\Include\Android\AndroidWindowImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Defines.h" />
+    <ClInclude Include="..\RayEngine\Include\Graphics\IFactory.h" />
     <ClInclude Include="..\RayEngine\Include\Graphics\TextureLoader.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\Color.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\ColorF.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Math.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\MathCommon.h" />
     <ClInclude Include="..\RayEngine\Include\Math\MathUtilities.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Matrix2.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Matrix3.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Matrix4.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Point.h" />
+    <ClInclude Include="..\RayEngine\Include\Math\RandomGenerator.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Ray.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Rectangle.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Vector2.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Vector3.h" />
     <ClInclude Include="..\RayEngine\Include\Math\Vector4.h" />
     <ClInclude Include="..\RayEngine\Include\Network\Socket.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Bitmap.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Clipboard.h" />
     <ClInclude Include="..\RayEngine\Include\System\Clock.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Cursor.h" />
     <ClInclude Include="..\RayEngine\Include\System\Event.h" />
-    <ClInclude Include="..\RayEngine\Include\System\Icon.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Keyboard.h" />
     <ClInclude Include="..\RayEngine\Include\System\KeyCodes.h" />
     <ClInclude Include="..\RayEngine\Include\System\Log.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Mouse.h" />
+    <ClInclude Include="..\RayEngine\Include\System\System.h" />
     <ClInclude Include="..\RayEngine\Include\System\TimeStamp.h" />
     <ClInclude Include="..\RayEngine\Include\System\Window.h" />
     <ClInclude Include="..\RayEngine\Include\Types.h" />
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32CursorImpl.h" />
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32IconImpl.h" />
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32BitmapImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32LogImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="..\RayEngine\Source\Android\AndroidAppState.h" />
-    <ClInclude Include="..\RayEngine\Source\Android\AndroidEventManager.h" />
-    <ClInclude Include="..\RayEngine\Source\Android\AndroidWindowManager.h" />
-    <ClInclude Include="..\RayEngine\Source\Win32\Win32Bitmap.h" />
+    <ClInclude Include="..\RayEngine\Source\Win32\Win32KeyCodes.h" />
+    <ClInclude Include="..\RayEngine\Source\Win32\WndclassCache.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RayEngine\Source\Android\Android.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidAppState.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidEventManager.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidBitmapImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidClipboardImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidKeyboardImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidMouseImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidSystemInfo.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowManager.cpp" />
     <ClCompile Include="..\RayEngine\Source\Graphics\TextureLoader.cpp" />
     <ClCompile Include="..\RayEngine\Source\Main\MainAndroid.cpp" />
     <ClCompile Include="..\RayEngine\Source\Main\MainWin32.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\Color.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\ColorF.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\MathUtilities.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Matrix2.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Matrix3.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Matrix4.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Point.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Math\RandomGenerator.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Ray.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Rectangle.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Vector2.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Vector3.cpp" />
     <ClCompile Include="..\RayEngine\Source\Math\Vector4.cpp" />
     <ClCompile Include="..\RayEngine\Source\Network\Socket.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Bitmap.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Clock.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Cursor.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Event.cpp" />
-    <ClCompile Include="..\RayEngine\Source\System\Icon.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Log.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\TimeStamp.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Window.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32Bitmap.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32CursorImpl.cpp" />
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32IconImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32BitmapImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\WIn32ClipboardImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32KeyboardImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32KeyCodes.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32LogImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32MouseImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32SocketImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32SystemInfo.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32WindowImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\WndclassCache.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\RayEngine\Source\TODO.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2AC0ACC0-CD4C-44E3-9FEB-10878FC6D903}</ProjectGuid>
@@ -135,7 +156,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
     <ClCompile>
       <CppLanguageStandard>gnu++11</CppLanguageStandard>
-      <PreprocessorDefinitions>_ANDROID; _DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG; __ANDROID__</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>

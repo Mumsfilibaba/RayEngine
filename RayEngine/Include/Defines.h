@@ -2,7 +2,7 @@
 
 #define RE_STATIC
 
-#if defined(_ANDROID)
+#if defined(__ANDROID__)
 #define RE_PLATFORM_ANDROID
 #elif defined(_WIN32) || defined(_WIN64)
 #define RE_PLATFORM_WINDOWS

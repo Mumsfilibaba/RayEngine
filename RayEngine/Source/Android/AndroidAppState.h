@@ -6,44 +6,48 @@
 
 #include "..\..\Include\Types.h"
 #include "..\..\Include\Android\Android.h"
-#include "..\Android\AndroidWindowManager.h"
-#include "..\Android\AndroidEventManager.h"
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <android\configuration.h>
 
-#include <android/configuration.h>
+#define RE_TOUCH_POINTS 10
 
 namespace RayEngine
 {
-	class AndroidAppState
+	struct AndroidAppState
 	{
-	public:
-		AndroidAppState(AndroidAppState&& other) = delete;
-		AndroidAppState(const AndroidAppState& other) = delete;
-		AndroidAppState& operator=(AndroidAppState&& other) = delete;
-		AndroidAppState& operator=(const AndroidAppState& other) = delete;
+		ANativeActivity* NativeActivity = nullptr;
+		AConfiguration* Configuration = nullptr;
+		
+		ANativeWindow* NativeWindow = nullptr;
+		int32 WindowWidth = 0;
+		int32 WindowHeight = 0;
+		int32 WindowFlags = 0;
+		int32 WindowColor = (255 << 24) | (255 << 16) | (255 << 8) | 255;
+		std::mutex WindowMutex;
 
-		AndroidAppState();
-		~AndroidAppState();
+		AInputQueue* InputQueue = nullptr;
+		ALooper* Looper = nullptr;
+		std::mutex EventMutex;
+		std::queue<System::Event> EventQueue;
 
-		void SetActivity(ANativeActivity* activity);
-		ANativeActivity* GetActivity() const;
+		AAssetManager* Assetmanager = nullptr;
 
-		AConfiguration* GetConfiguration() const;
+		Math::Vector2 ScreenPoints[RE_TOUCH_POINTS];
+		int32 DisplayWidth = 0;
+		int32 DisplayHeight = 0;
+		int32 VersionSDK = 0;
 
-		bool HasFocus() const;
-		void OnFocusChanged(RayEngine::int32 hasFocus);
-
-		AndroidEventManager& GetEvents();
-		AndroidWindowManager& GetWindow();
-
-	private:
-		ANativeActivity* m_Activity;
-		AConfiguration* m_Configuration;
-
-		AndroidWindowManager m_Window;
-		AndroidEventManager m_Events;
-
-		bool m_HasFocus;
+		std::thread::id ID;
+		bool HasFocus = false;
 	};
+
+	void AndroidAppState_SetWindowFlags(AndroidAppState* state, int32 flags);
+	void AndroidAppState_SetWindowColor(AndroidAppState* state, int32 color);
+	void AndroidAppState_SetWindowSize(AndroidAppState* state, int32 width, int32 height);
+	void AndroidAppState_ProcessInputEvent(AndroidAppState* state, AInputEvent* event);
+	int AndroidAppState_InputCallback(int fd, int events, void* data);
 }
 
 #endif

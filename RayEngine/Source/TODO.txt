@@ -1,25 +1,12 @@
 TODO:
 -Add following events
 Events:
-MouseScroll
-
 SensorChange
-TouchMove
-TouchPressed
-TouchReleased
-
--Winkeys to ReKeys
--Keyboard-class - IsKeyPressed();
--Mouse-class - SetMousePosition(const Math::Point&)
 
 -TouchScreen-Class
 -Sensor-Class
-
--Clipboard
-
--Android - check screensize - Systeminfo
--NativeActivity->C-style - Move more to the AndroidWindowImpl
 -Android SensorEvents - Activate sensor with windowflag
+-Fix deallocation of androidappstate in ondestroy
 
 -IFactory - Vulkan
 -IDevice - Vulkan
@@ -27,7 +14,14 @@ TouchReleased
 -ISwapChain - Vulkan
 
 -This commit:
-
+-Added Mouse-Class
+-Added Keyboard-Class
+-Added Clipboard-class
+-Fixed MouseScroll-Event
+-Keycodes are now platform independent
+-Refactored the androidstate
+-SystemInfo on android now returns correct screensize
+-Fixed Event TouchMove, TouchPressed and TouchReleased
 
 For later:
 -Math SIMD (Vec3, Mat3, ColorF), Quaternion, ARM Neon support

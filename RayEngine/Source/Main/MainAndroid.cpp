@@ -1,6 +1,9 @@
 #include "..\..\Include\Defines.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\Android\AndroidVulkanWrapper.h"
+#include "..\Android\AndroidAppState.h"
+#include <thread>
 
 /////////////////////////////////////////////////////////////
 extern int main(int args, char* argsv[]);
@@ -8,15 +11,6 @@ extern int main(int args, char* argsv[]);
 
 
 /////////////////////////////////////////////////////////////
-#include <thread>
-#include "..\Android\AndroidAppState.h"
-#include "..\Android\AndroidWindowManager.h"
-#include "..\Android\AndroidEventManager.h"
-
-
-
-/////////////////////////////////////////////////////////////
-//Callbacks
 void onConfigurationChanged(ANativeActivity* activity);
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue);
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue);
@@ -35,62 +29,27 @@ void onWindowFocusChanged(ANativeActivity* activity, int hasFocus);
 void onContentRectChanged(ANativeActivity* activity, const ARect* rect);
 
 
-
-/////////////////////////////////////////////////////////////
-//Struct for keeping global app variables
-RayEngine::AndroidAppState appState;
-
-
-
-
-/////////////////////////////////////////////////////////////
-bool AndroidAppHasFocus()
+namespace RayEngine
 {
-	return appState.HasFocus();
+	/////////////////////////////////////////////////////////////
+	ANativeActivity* NativeActivity = nullptr;
+
+
+
+	/////////////////////////////////////////////////////////////
+	void SetNativeActivity(ANativeActivity* activity)
+	{
+		NativeActivity = activity;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	ANativeActivity* GetNativeActivity()
+	{
+		return NativeActivity;
+	}
 }
-
-
-
-/////////////////////////////////////////////////////////////
-void AndroidSetNativeWindowColor(RayEngine::int32 color)
-{
-	appState.GetWindow().SetColor(color);
-}
-
-
-
-/////////////////////////////////////////////////////////////
-void AndroidSetNativeWindowSize(RayEngine::int32 width, RayEngine::int32 height)
-{
-	appState.GetWindow().SetSize(width, height);
-}
-
-
-
-/////////////////////////////////////////////////////////////
-void AndroidSetNativeWindowFlags(RayEngine::uint32 flags)
-{
-	using namespace RayEngine;
-
-	appState.GetWindow().SetFlags(appState.GetActivity(), flags);
-}
-
-
-
-/////////////////////////////////////////////////////////////
-RayEngine::System::Event AndroidReciveEvent()
-{	
-	return appState.GetEvents().PopEvent();
-}
-
-
-
-/////////////////////////////////////////////////////////////
-void AndroidSendEvent(const RayEngine::System::Event& pEvent)
-{
-	appState.GetEvents().PushEvent(pEvent);
-}
-
 
 
 /////////////////////////////////////////////////////////////
@@ -104,9 +63,14 @@ void onConfigurationChanged(ANativeActivity* activity)
 /////////////////////////////////////////////////////////////
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 {
+	using namespace RayEngine;
+
 	LOGI("onInputQueueCreated");
 
-	appState.GetEvents().OnInputQueueChanged(queue, false);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->InputQueue = queue;
+
+	AInputQueue_attachLooper(state->InputQueue, state->Looper, 1, AndroidAppState_InputCallback, state);
 }
 
 
@@ -114,9 +78,14 @@ void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 /////////////////////////////////////////////////////////////
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
+	using namespace RayEngine;
+
 	LOGI("onInputQueueDestroyed");
 
-	appState.GetEvents().OnInputQueueChanged(queue, true);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	
+	AInputQueue_detachLooper(state->InputQueue);
+	state->InputQueue = nullptr;
 }
 
 
@@ -132,10 +101,19 @@ void onLowMemory(ANativeActivity* activity)
 /////////////////////////////////////////////////////////////
 void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
+	using namespace RayEngine;
+
 	LOGI("onNativeWindowCreated");
 
-	//Call callback
-	appState.GetWindow().OnNativeWindowChanged(activity, window, false);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->WindowMutex.lock();
+	state->NativeWindow = window;
+
+	AndroidAppState_SetWindowFlags(state, state->WindowFlags);
+	AndroidAppState_SetWindowSize(state, state->WindowWidth, state->WindowHeight);
+	AndroidAppState_SetWindowColor(state, state->WindowColor);
+
+	state->WindowMutex.unlock();
 }
 
 
@@ -143,10 +121,14 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 /////////////////////////////////////////////////////////////
 void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 {
+	using namespace RayEngine;
+
 	LOGI("onNativeWindowDestroyed");
 
-	//Call callback
-	appState.GetWindow().OnNativeWindowChanged(activity, window, true);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->WindowMutex.lock();
+	state->NativeWindow = nullptr;
+	state->WindowMutex.unlock();
 }
 
 
@@ -162,19 +144,20 @@ void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow* window
 /////////////////////////////////////////////////////////////
 void onNativeWindowResized(ANativeActivity* activity, ANativeWindow* window)
 {
-	using namespace RayEngine::System;
+	using namespace RayEngine;
+	using namespace System;
 
 	LOGI("onNativeWindowResized");
 
-	//TODO: Get the real size
-
-	//Push resized event
 	Event event;
 	event.Type = EVENT_TYPE_RESIZE;
-	event.Width = 100;
-	event.Height = 100;
+	event.Resize.Width = ANativeWindow_getWidth(window);
+	event.Resize.Height = ANativeWindow_getHeight(window);
 
-	appState.GetEvents().PushEvent(event);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->EventMutex.lock();
+	state->EventQueue.push(event);
+	state->EventMutex.unlock();
 }
 
 
@@ -190,14 +173,19 @@ void onStart(ANativeActivity* activity)
 /////////////////////////////////////////////////////////////
 void onPause(ANativeActivity* activity)
 {
-	using namespace RayEngine::System;
+	using namespace RayEngine;
+	using namespace System;
 
 	LOGI("onPause");
 
 	Event event;
-	event.Type = EVENT_TYPE_APP_PAUSED;
+	event.Type = EVENT_TYPE_FOCUSCHANGED;
+	event.FocusChanged.HasFocus = false;
 
-	appState.GetEvents().PushEvent(event);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->EventMutex.lock();
+	state->EventQueue.push(event);
+	state->EventMutex.unlock();
 }
 
 
@@ -205,14 +193,19 @@ void onPause(ANativeActivity* activity)
 /////////////////////////////////////////////////////////////
 void onResume(ANativeActivity* activity)
 {
-	using namespace RayEngine::System;
+	using namespace RayEngine;
+	using namespace System;
 
 	LOGI("onResume");
 
 	Event event;
-	event.Type = EVENT_TYPE_APP_RESUMED;
+	event.Type = EVENT_TYPE_FOCUSCHANGED;
+	event.FocusChanged.HasFocus = true;
 
-	appState.GetEvents().PushEvent(event);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->EventMutex.lock();
+	state->EventQueue.push(event);
+	state->EventMutex.unlock();
 }
 
 
@@ -228,15 +221,19 @@ void onStop(ANativeActivity* activity)
 /////////////////////////////////////////////////////////////
 void onDestroy(ANativeActivity* activity)
 {
-	using namespace RayEngine::System;
+	using namespace RayEngine;
+	using namespace System;
 
 	LOGI("onDestroy");
 
 	Event event;
 	event.Type = EVENT_TYPE_QUIT;
-	event.QuitCode = 0;
+	event.Quit.ExitCode = 0;
 
-	appState.GetEvents().PushEvent(event);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->EventMutex.lock();
+	state->EventQueue.push(event);
+	state->EventMutex.unlock();
 }
 
 
@@ -254,9 +251,12 @@ void* onSaveInstanceState(ANativeActivity* activity, size_t* outSize)
 /////////////////////////////////////////////////////////////
 void onWindowFocusChanged(ANativeActivity* activity, int hasFocus)
 {
+	using namespace RayEngine;
+
 	LOGI("onWindowFocusChanged");
 
-	appState.OnFocusChanged(hasFocus);
+	AndroidAppState* state = reinterpret_cast<AndroidAppState*>(activity->instance);
+	state->HasFocus = (hasFocus != 0);
 }
 
 
@@ -272,7 +272,53 @@ void onContentRectChanged(ANativeActivity* activity, const ARect* rect)
 /////////////////////////////////////////////////////////////
 void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_t savedStateSize)
 {
+	using namespace RayEngine;
+
 	LOGI("ANativeActivity_onCreate");
+
+	AndroidAppState* state = new AndroidAppState();
+	state->NativeActivity = activity;
+	
+	
+	JavaVM* vm = activity->vm;
+	JNIEnv* env = nullptr;
+	vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6);
+
+	jclass jActivity = env->GetObjectClass(activity->clazz);
+	jmethodID jActivity_GetWindowManager = env->GetMethodID(jActivity, "getWindowManager", "()Landroid/view/WindowManager;");
+
+	jclass jDisplayMetrics = env->FindClass("android/util/DisplayMetrics");
+	jmethodID jDisplayMetrics_Init = env->GetMethodID(jDisplayMetrics, "<init>", "()V");
+	jfieldID jDisplayMetrics_mWidthPixels = env->GetFieldID(jDisplayMetrics, "widthPixels", "I");
+	jfieldID jDisplayMetrics_mHeightPixels = env->GetFieldID(jDisplayMetrics, "heightPixels", "I");
+
+	jclass jDisplay = env->FindClass("android/view/Display");
+	jmethodID jDisplay_GetMetrics = env->GetMethodID(jDisplay, "getMetrics", "(Landroid/util/DisplayMetrics;)V");
+
+	jclass jWindowManager = env->FindClass("android/view/WindowManager");
+	jmethodID jWindowManager_GetDefaultDisplay = env->GetMethodID(jWindowManager, "getDefaultDisplay", "()Landroid/view/Display;");
+
+	jobject dm = env->NewObject(jDisplayMetrics, jDisplayMetrics_Init);
+	jobject winM = env->CallObjectMethod(activity->clazz, jActivity_GetWindowManager);
+	jobject display = env->CallObjectMethod(winM, jWindowManager_GetDefaultDisplay);
+	env->CallVoidMethod(display, jDisplay_GetMetrics, dm);
+
+	state->DisplayWidth = env->GetIntField(dm, jDisplayMetrics_mWidthPixels);
+	state->DisplayHeight = env->GetIntField(dm, jDisplayMetrics_mHeightPixels);
+
+
+	state->Assetmanager = activity->assetManager;
+	AConfiguration* configuration = AConfiguration_new();
+	AConfiguration_fromAssetManager(configuration, activity->assetManager);
+
+	state->VersionSDK = AConfiguration_getSdkVersion(configuration);
+	state->Configuration = configuration;
+
+
+	state->Looper = ALooper_forThread();
+	if (state->Looper == nullptr)
+		state->Looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
+
 
 	activity->callbacks->onConfigurationChanged = onConfigurationChanged;
 	activity->callbacks->onInputQueueCreated = onInputQueueCreated;
@@ -291,9 +337,18 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 	activity->callbacks->onWindowFocusChanged = onWindowFocusChanged;
 	activity->callbacks->onContentRectChanged = onContentRectChanged;
 
-	appState.SetActivity(activity);
 
-	appState.GetEvents().CreateLooper();
+	activity->instance = reinterpret_cast<void*>(state);
+
+	SetNativeActivity(activity);
+
+
+	if (!InitializeVulkan())
+	{
+		LOGE("Could not initialize Vulkan API, maybe not supported");
+	}
+
+	state->ID = std::this_thread::get_id();
 
 	std::thread mainThread(main, 0, nullptr);
 	mainThread.detach();

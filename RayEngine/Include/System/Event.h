@@ -3,6 +3,7 @@
 #include "..\Defines.h"
 #include "..\Types.h"
 #include "..\System\KeyCodes.h"
+#include "..\System\TimeStamp.h"
 #include "..\Math\Vector2.h"
 #include "..\Math\Point.h"
 
@@ -104,6 +105,7 @@ namespace RayEngine
 					float Size;
 					float Pressure;
 					int32 FingerID;
+					TimeStamp Time;
 				} Touch;
 
 				struct

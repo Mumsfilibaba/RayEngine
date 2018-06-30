@@ -67,13 +67,7 @@
     <ClInclude Include="..\RayEngine\Include\System\Clock.h">
       <Filter>Include\System</Filter>
     </ClInclude>
-    <ClInclude Include="..\RayEngine\Include\System\Cursor.h">
-      <Filter>Include\System</Filter>
-    </ClInclude>
     <ClInclude Include="..\RayEngine\Include\System\Event.h">
-      <Filter>Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RayEngine\Include\System\Icon.h">
       <Filter>Include\System</Filter>
     </ClInclude>
     <ClInclude Include="..\RayEngine\Include\System\Log.h">
@@ -94,26 +88,56 @@
     <ClInclude Include="..\RayEngine\Include\Win32\Win32LogImpl.h">
       <Filter>Include\Win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32IconImpl.h">
-      <Filter>Include\Win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RayEngine\Include\Win32\Win32CursorImpl.h">
-      <Filter>Include\Win32</Filter>
-    </ClInclude>
     <ClInclude Include="..\RayEngine\Source\Android\AndroidAppState.h">
       <Filter>Source\Android</Filter>
     </ClInclude>
-    <ClInclude Include="..\RayEngine\Source\Android\AndroidEventManager.h">
-      <Filter>Source\Android</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RayEngine\Source\Android\AndroidWindowManager.h">
-      <Filter>Source\Android</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RayEngine\Source\Win32\Win32Bitmap.h">
-      <Filter>Source\Win32</Filter>
-    </ClInclude>
     <ClInclude Include="..\RayEngine\Include\System\KeyCodes.h">
       <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Graphics\IFactory.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\Color.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\ColorF.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\MathCommon.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Math\RandomGenerator.h">
+      <Filter>Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Bitmap.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Clipboard.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Keyboard.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Mouse.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\System.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Win32\Win32BitmapImpl.h">
+      <Filter>Include\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Win32\Win32KeyCodes.h">
+      <Filter>Source\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Win32\WndclassCache.h">
+      <Filter>Source\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidBitmapImpl.h">
+      <Filter>Include\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Android\AndroidVulkanWrapper.h">
+      <Filter>Include\Android</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -123,16 +147,10 @@
     <ClCompile Include="..\RayEngine\Source\Android\AndroidAppState.cpp">
       <Filter>Source\Android</Filter>
     </ClCompile>
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidEventManager.cpp">
-      <Filter>Source\Android</Filter>
-    </ClCompile>
     <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp">
       <Filter>Source\Android</Filter>
     </ClCompile>
     <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowImpl.cpp">
-      <Filter>Source\Android</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowManager.cpp">
       <Filter>Source\Android</Filter>
     </ClCompile>
     <ClCompile Include="..\RayEngine\Source\Main\MainAndroid.cpp">
@@ -177,15 +195,6 @@
     <ClCompile Include="..\RayEngine\Source\Network\Socket.cpp">
       <Filter>Source\Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32Bitmap.cpp">
-      <Filter>Source\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32CursorImpl.cpp">
-      <Filter>Source\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayEngine\Source\Win32\Win32IconImpl.cpp">
-      <Filter>Source\Win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\RayEngine\Source\Win32\Win32LogImpl.cpp">
       <Filter>Source\Win32</Filter>
     </ClCompile>
@@ -198,13 +207,7 @@
     <ClCompile Include="..\RayEngine\Source\System\Clock.cpp">
       <Filter>Source\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\RayEngine\Source\System\Cursor.cpp">
-      <Filter>Source\System</Filter>
-    </ClCompile>
     <ClCompile Include="..\RayEngine\Source\System\Event.cpp">
-      <Filter>Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RayEngine\Source\System\Icon.cpp">
       <Filter>Source\System</Filter>
     </ClCompile>
     <ClCompile Include="..\RayEngine\Source\System\Log.cpp">
@@ -215,6 +218,57 @@
     </ClCompile>
     <ClCompile Include="..\RayEngine\Source\System\Window.cpp">
       <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\Color.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\ColorF.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Math\RandomGenerator.cpp">
+      <Filter>Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Bitmap.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32BitmapImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\WIn32ClipboardImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32KeyboardImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32KeyCodes.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32MouseImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32SystemInfo.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\WndclassCache.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidSystemInfo.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidBitmapImpl.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidVulkanWrapper.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidMouseImpl.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidKeyboardImpl.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidClipboardImpl.cpp">
+      <Filter>Source\Android</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,5 +320,10 @@
     <Filter Include="Include\Graphics">
       <UniqueIdentifier>{e6bff092-d879-45e5-ad31-9f2672e7f099}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\RayEngine\Source\TODO.txt">
+      <Filter>Source</Filter>
+    </None>
   </ItemGroup>
 </Project>

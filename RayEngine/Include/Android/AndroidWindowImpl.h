@@ -32,12 +32,12 @@ namespace RayEngine
 			void GetEvent(Event& pEvent) override final;
 			void SendQuitEvent(int32 exitCode) const override final;
 
-			void SetCursor(const Cursor& cursor) override final;
-			void SetIcon(const Icon& icon) override final;
+			void SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY) override final;
+			void SetIcon(const Bitmap& icon) override final;
+			void SetBackground(const Math::Color& color) override final;
 			void SetBackground(uint8 r, uint8 g, uint8 b) override final;
 
 			IWindowImpl* Copy() const override final;
-			IWindowImpl* Move() override final;
 
 			const Tchar* GetTitle() const override final;
 
@@ -52,10 +52,6 @@ namespace RayEngine
 			int32 m_Height;
 			int32 m_Color;
 			int32 m_Flags;
-			int32 m_WindowID;
-
-		private:
-			static int32 CreateWindowID();
 		};
 	}
 }

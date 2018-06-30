@@ -3,6 +3,7 @@
 #if defined (RE_PLATFORM_WINDOWS)
 
 #include "..\..\Include\Win32\Win32BitmapImpl.h"
+#include "Win32KeyCodes.h"
 #include "WndclassCache.h"
 #include <windowsx.h>
 
@@ -374,9 +375,15 @@ namespace RayEngine
 			}
 
 
+			case WM_MOUSEWHEEL:
+				event.Type = EVENT_TYPE_MOUSESCROLL;
+				event.MouseScroll.Delta = static_cast<float>(GET_WHEEL_DELTA_WPARAM(wParam)) / static_cast<float>(WHEEL_DELTA);
+				break;
+
+
 			case WM_KEYDOWN:
 				event.Type = EVENT_TYPE_KEYPRESSED;
-				event.Key.KeyCode = static_cast<KEY>(wParam);
+				event.Key.KeyCode = Win32ToRe(static_cast<int32>(wParam));
 				event.Key.RepeatCount = LOWORD(lParam);
 				event.Key.Extended = lParam & (1 << 24);
 				break;
@@ -384,7 +391,7 @@ namespace RayEngine
 
 			case WM_KEYUP:
 				event.Type = EVENT_TYPE_KEYRELEASED;
-				event.Key.KeyCode = static_cast<KEY>(wParam);
+				event.Key.KeyCode = Win32ToRe(static_cast<int32>(wParam));
 				event.Key.RepeatCount = 1;
 				event.Key.Extended = lParam & (1 << 24);
 				break;

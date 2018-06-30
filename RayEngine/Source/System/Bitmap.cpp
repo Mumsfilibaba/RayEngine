@@ -4,6 +4,7 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\Win32\Win32BitmapImpl.h"
 #elif defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\Android\AndroidBitmapImpl.h"
 #else
 #error RayEngine needs a platform to be defined
 #endif
@@ -11,7 +12,7 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #define NewBitmapImpl(...) new Win32BitmapImpl(__VA_ARGS__)
 #elif defined(RE_PLATFORM_ANDROID)
-#define NewBitmapImpl(...)
+#define NewBitmapImpl(...) new AndroidBitmapImpl(__VA_ARGS__)
 #else
 #error RayEngine needs a platform to be defined
 #endif

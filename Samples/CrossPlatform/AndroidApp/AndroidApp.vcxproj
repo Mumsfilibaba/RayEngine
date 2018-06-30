@@ -34,6 +34,7 @@
     <AndroidTargetAPI>android-24</AndroidTargetAPI>
     <AndroidStlType>llvm-libc++_shared</AndroidStlType>
     <NdkToolchainVersion>DefaultClang</NdkToolchainVersion>
+    <AndroidStripLibrary>false</AndroidStripLibrary>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
     <AndroidBuildSystem>GradleBuild</AndroidBuildSystem>
@@ -51,7 +52,7 @@
     <ClCompile>
       <CppLanguageStandard>gnu++11</CppLanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)RayEngine\Include;%(ClCompile.AdditionalIncludeDirectories);$(PlatformIncludePath);$(StlIncludePath);$(ToolchainIncludePath)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG; _ANDROID</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG; __ANDROID__</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>RayEngineAndroid</AdditionalDependencies>
@@ -59,7 +60,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Tegra-Android\Debug;</AdditionalLibraryDirectories>
       <AndroidSystemLibs>c;m;log;gcc;android</AndroidSystemLibs>
-      <UseLinker>bfd</UseLinker>
+      <UseLinker>gold</UseLinker>
       <RPathLink>$(PlatformLibraryPath)</RPathLink>
     </Link>
     <AntBuild>
