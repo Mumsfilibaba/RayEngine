@@ -4,6 +4,7 @@
 #include "..\Types.h"
 #include "..\System\KeyCodes.h"
 #include "..\System\TimeStamp.h"
+#include "..\System\Sensors.h"
 #include "..\Math\Vector2.h"
 #include "..\Math\Point.h"
 
@@ -110,7 +111,8 @@ namespace RayEngine
 
 				struct
 				{
-
+					SENSOR_TYPE Type;
+					Math::Vector3 Data;
 				} Sensor;
 			};
 		};

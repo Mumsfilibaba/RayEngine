@@ -139,6 +139,18 @@
     <ClInclude Include="..\RayEngine\Include\Android\AndroidVulkanWrapper.h">
       <Filter>Include\Android</Filter>
     </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\TouchScreen.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidKeycodes.h">
+      <Filter>Source\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\System\Sensors.h">
+      <Filter>Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidSensor.h">
+      <Filter>Source\Android</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RayEngine\Source\Android\Android.cpp">
@@ -269,6 +281,21 @@
     </ClCompile>
     <ClCompile Include="..\RayEngine\Source\Android\AndroidClipboardImpl.cpp">
       <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidTouchScreenImpl.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32TouchScreenImpl.cpp">
+      <Filter>Source\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidKeycodes.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidSensorsImpl.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32SensorsImpl.cpp">
+      <Filter>Source\Win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,11 +6,14 @@
 
 #include "..\..\Include\Types.h"
 #include "..\..\Include\Android\Android.h"
+#include "AndroidSensor.h"
 #include <mutex>
 #include <queue>
 #include <thread>
 #include <android\configuration.h>
+#include <android\looper.h>
 
+#define RE_SENSOR_COUNT 3
 #define RE_TOUCH_POINTS 10
 
 namespace RayEngine
@@ -34,12 +37,15 @@ namespace RayEngine
 
 		AAssetManager* Assetmanager = nullptr;
 
+		ASensorManager* SensorManager = nullptr;
+		ASensorEventQueue* SensorEventQueue = nullptr;
+		AndroidSensor Sensors[RE_SENSOR_COUNT];
+
 		Math::Vector2 ScreenPoints[RE_TOUCH_POINTS];
 		int32 DisplayWidth = 0;
 		int32 DisplayHeight = 0;
 		int32 VersionSDK = 0;
-
-		std::thread::id ID;
+		bool FingerDown[RE_TOUCH_POINTS];
 		bool HasFocus = false;
 	};
 
@@ -48,6 +54,8 @@ namespace RayEngine
 	void AndroidAppState_SetWindowSize(AndroidAppState* state, int32 width, int32 height);
 	void AndroidAppState_ProcessInputEvent(AndroidAppState* state, AInputEvent* event);
 	int AndroidAppState_InputCallback(int fd, int events, void* data);
+	int AndroidAppState_SensorCallback(int fd, int events, void* data);
+	void AndroidAppState_InitializeSensors(AndroidAppState* state);
 }
 
 #endif

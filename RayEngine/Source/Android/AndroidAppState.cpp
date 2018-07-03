@@ -1,6 +1,7 @@
 #include "AndroidAppState.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "AndroidKeycodes.h"
 
 namespace RayEngine
 {
@@ -99,6 +100,87 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
+	int AndroidAppState_SensorCallback(int fd, int events, void * data)
+	{
+		AndroidAppState* state = reinterpret_cast<AndroidAppState*>(GetNativeActivity()->instance);
+		ASensorEvent event;
+		if (ASensorEventQueue_getEvents(state->SensorEventQueue, &event, 1) > 0)
+		{
+			SENSOR_TYPE type = SENSOR_TYPE_UNKNOWN;
+			Math::Vector3 data;
+
+			switch (event.type)
+			{
+			case ASENSOR_TYPE_ACCELEROMETER:
+				type = SENSOR_TYPE_ACCELEROMETER;
+
+				data.x = event.acceleration.x;
+				data.y = event.acceleration.y;
+				data.z = event.acceleration.z;
+				break;
+
+			case ASENSOR_TYPE_GYROSCOPE:
+				type = SENSOR_TYPE_GYROSCOPE;
+
+				data.x = event.vector.x;
+				data.y = event.vector.y;
+				data.z = event.vector.z;
+				break;
+
+			case ASENSOR_TYPE_MAGNETIC_FIELD:
+				type = SENSOR_TYPE_MAGNETIC_FIELD;
+
+				data.x = event.magnetic.x;
+				data.y = event.magnetic.y;
+				data.z = event.magnetic.z;
+				break;
+			}
+
+			if (type != SENSOR_TYPE_UNKNOWN)
+			{
+				if (data != state->Sensors[type].Value)
+				{
+					System::Event sensorEvent;
+					sensorEvent.Type = System::EVENT_TYPE_SENSORCHANGED;
+					sensorEvent.Sensor.Type = type;
+					sensorEvent.Sensor.Data = data;
+
+					state->EventMutex.lock();
+					state->EventQueue.push(sensorEvent);
+					state->EventMutex.unlock();
+				}
+			}
+		}
+
+		return 1;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	void AndroidAppState_InitializeSensors(AndroidAppState* state)
+	{
+		int32 type[] =
+		{
+			ASENSOR_TYPE_ACCELEROMETER,
+			ASENSOR_TYPE_GYROSCOPE,
+			ASENSOR_TYPE_MAGNETIC_FIELD,
+		};
+
+		ASensorManager* manager = ASensorManager_getInstance();
+		state->SensorManager = manager;
+		state->SensorEventQueue = ASensorManager_createEventQueue(manager, state->Looper, 1, AndroidAppState_SensorCallback, state);
+
+		for (int32 i = 0; i < RE_SENSOR_COUNT; i++)
+		{
+			state->Sensors[i].Sensor = ASensorManager_getDefaultSensor(manager, type[i]);
+			state->Sensors[i].Type = type[i];
+		}
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
 	void AndroidAppState_ProcessInputEvent(AndroidAppState* pState, AInputEvent* pEvent)
 	{
 		using namespace Math;
@@ -116,6 +198,7 @@ namespace RayEngine
 			int32 eventTime = AMotionEvent_getEventTime(pEvent);
 
 			TimeStamp eventLasted(eventTime - downTime);
+			Event event;
 
 			switch (actionMask)
 			{
@@ -137,15 +220,12 @@ namespace RayEngine
 							pState->ScreenPoints[id % RE_TOUCH_POINTS] = position;
 
 
-						Event event;
 						event.Type = EVENT_TYPE_TOUCHMOVE;
 						event.Touch.FingerID = id;
 						event.Touch.Pressure = pressure;
 						event.Touch.Size = size;
 						event.Touch.Position = position;
 						event.Touch.Time = eventLasted;
-
-						pState->EventQueue.push(event);
 					}
 				}
 
@@ -157,17 +237,15 @@ namespace RayEngine
 			case AMOTION_EVENT_ACTION_CANCEL:
 				if (source & AINPUT_SOURCE_TOUCHSCREEN)
 				{
-					int32 index = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-					
-					Math::Vector2 position(AMotionEvent_getX(pEvent, index), AMotionEvent_getY(pEvent, index));
-					float pressure = AMotionEvent_getPressure(pEvent, index);
-					float size = AMotionEvent_getSize(pEvent, index);
-					int32 id = AMotionEvent_getPointerId(pEvent, index);
-
 					EVENT_TYPE type = (action & (AMOTION_EVENT_ACTION_DOWN | AMOTION_EVENT_ACTION_POINTER_DOWN)) ? 
 						EVENT_TYPE_TOUCHPRESSED : EVENT_TYPE_TOUCHRELEASED;
+					int32 index = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+					int32 id = AMotionEvent_getPointerId(pEvent, index);					
+					float pressure = AMotionEvent_getPressure(pEvent, index);
+					float size = AMotionEvent_getSize(pEvent, index);
+					Math::Vector2 position(AMotionEvent_getX(pEvent, index), AMotionEvent_getY(pEvent, index));
 
-					Event event;
+
 					event.Type = type;
 					event.Touch.Pressure = pressure;
 					event.Touch.Size = size;
@@ -175,12 +253,32 @@ namespace RayEngine
 					event.Touch.FingerID = id;
 					event.Touch.Time = eventLasted;
 
+
+					pState->FingerDown[id % RE_TOUCH_POINTS] = (action & (AMOTION_EVENT_ACTION_DOWN | AMOTION_EVENT_ACTION_POINTER_DOWN));
 					pState->ScreenPoints[id % RE_TOUCH_POINTS] = position;
-					pState->EventQueue.push(event);
 				}
 
 				break;
 			}
+
+			pState->EventQueue.push(event);
+		}
+		else if (type == AINPUT_EVENT_TYPE_KEY)
+		{
+			int32 action = AKeyEvent_getAction(pEvent);
+			
+			Event event;
+			if (action == AKEY_EVENT_ACTION_DOWN)
+				event.Type = EVENT_TYPE_KEYPRESSED;
+			else if (action == AKEY_EVENT_ACTION_UP)
+				event.Type = EVENT_TYPE_KEYRELEASED;
+			else
+				return;
+
+			event.Key.KeyCode = AndroidToRe(AKeyEvent_getKeyCode(pEvent));
+			event.Key.RepeatCount = AKeyEvent_getRepeatCount(pEvent);
+
+			pState->EventQueue.push(event);
 		}
 	}
 }

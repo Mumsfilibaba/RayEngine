@@ -7,7 +7,8 @@
 #include <System/Keyboard.h>
 #include <System/Clipboard.h>
 #include <Math/RandomGenerator.h>
-
+#include <System/TouchScreen.h>
+#include <System/Sensors.h>
 
 
 int main(int args, char* argsv[])
@@ -48,7 +49,7 @@ int main(int args, char* argsv[])
 	Clock clock;
 	RandomGenerator ran;
 
-	log.Write(LOG_SEVERITY_INFO, Clipboard::GetString().c_str());
+	Clipboard::SetString("I can now set the clipboard string hehe");
 	log.Write(LOG_SEVERITY_INFO, Clipboard::GetString().c_str());
 
 	int32 color = 0;
@@ -67,7 +68,21 @@ int main(int args, char* argsv[])
 		Color::BLUE,
 		Color::WARMWHITE,
 	};
-	
+
+
+	if (Sensors::SensorSupported(SENSOR_TYPE_ACCELEROMETER))
+	{
+		log.Write(LOG_SEVERITY_INFO, "Accelerometer supported");
+		//Sensors::EnableSensor(SENSOR_TYPE_ACCELEROMETER);
+	}
+
+	if (Sensors::SensorSupported(SENSOR_TYPE_GYROSCOPE))
+		log.Write(LOG_SEVERITY_INFO, "Gyroscope supported");
+
+	if (Sensors::SensorSupported(SENSOR_TYPE_MAGNETIC_FIELD))
+		log.Write(LOG_SEVERITY_INFO, "Magnetic Filed Sensor supported");
+
+
 	while (event.Type != EVENT_TYPE_QUIT)
 	{
 		clock.Tick();
@@ -77,23 +92,12 @@ int main(int args, char* argsv[])
 			if (event.Type == EVENT_TYPE_CLOSE)
 				window.SendQuitEvent(0);
 
-			//if (event.Type == EVENT_TYPE_TOUCHPRESSED)
-			//	window.SetBackground(Color::RED);
-
-			//if (event.Type == EVENT_TYPE_TOUCHRELEASED)
-			//	window.SetBackground(Color::CORNFLOWERBLUE);
-
 			if (event.Type == EVENT_TYPE_TOUCHPRESSED)
 			{
 				if (event.Touch.Position.x < (info.ScreenWidth / 2))
-					color--;
+					Keyboard::HideVirtualKeyboardVisible();
 				else
-					color++;
-
-				if (color < 0)
-					color = 9;
-				else if (color > 9)
-					color = 0;
+					Keyboard::ShowVirtualKeyboardVisible();
 			}
 
 			if (event.Type == EVENT_TYPE_FOCUSCHANGED)
@@ -105,7 +109,33 @@ int main(int args, char* argsv[])
 			}
 
 			if (event.Type == EVENT_TYPE_KEYPRESSED)
-				log.Write(LOG_SEVERITY_INFO, std::to_string(event.Key.KeyCode).c_str());
+			{
+				if (event.Key.KeyCode == KEY_0)
+					color = 0;
+				else if (event.Key.KeyCode == KEY_1)
+					color = 1;
+				else if (event.Key.KeyCode == KEY_2)
+					color = 2;
+				else if (event.Key.KeyCode == KEY_3)
+					color = 3;
+				else if (event.Key.KeyCode == KEY_4)
+					color = 4;
+				else if (event.Key.KeyCode == KEY_5)
+					color = 5;
+				else if (event.Key.KeyCode == KEY_6)
+					color = 6;
+				else if (event.Key.KeyCode == KEY_7)
+					color = 7;
+				else if (event.Key.KeyCode == KEY_8)
+					color = 8;
+				else if (event.Key.KeyCode == KEY_9)
+					color = 9;
+			}
+
+			if (event.Type == EVENT_TYPE_SENSORCHANGED)
+			{
+				int i = 0;
+			}
 		}
 
 		if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)

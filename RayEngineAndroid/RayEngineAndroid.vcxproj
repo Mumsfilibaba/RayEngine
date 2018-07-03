@@ -53,8 +53,10 @@
     <ClInclude Include="..\RayEngine\Include\System\KeyCodes.h" />
     <ClInclude Include="..\RayEngine\Include\System\Log.h" />
     <ClInclude Include="..\RayEngine\Include\System\Mouse.h" />
+    <ClInclude Include="..\RayEngine\Include\System\Sensors.h" />
     <ClInclude Include="..\RayEngine\Include\System\System.h" />
     <ClInclude Include="..\RayEngine\Include\System\TimeStamp.h" />
+    <ClInclude Include="..\RayEngine\Include\System\TouchScreen.h" />
     <ClInclude Include="..\RayEngine\Include\System\Window.h" />
     <ClInclude Include="..\RayEngine\Include\Types.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32BitmapImpl.h" />
@@ -62,6 +64,8 @@
     <ClInclude Include="..\RayEngine\Include\Win32\Win32SocketImpl.h" />
     <ClInclude Include="..\RayEngine\Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="..\RayEngine\Source\Android\AndroidAppState.h" />
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidKeycodes.h" />
+    <ClInclude Include="..\RayEngine\Source\Android\AndroidSensor.h" />
     <ClInclude Include="..\RayEngine\Source\Win32\Win32KeyCodes.h" />
     <ClInclude Include="..\RayEngine\Source\Win32\WndclassCache.h" />
   </ItemGroup>
@@ -71,9 +75,12 @@
     <ClCompile Include="..\RayEngine\Source\Android\AndroidBitmapImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidClipboardImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidKeyboardImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidKeycodes.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidLogImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidMouseImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidSensorsImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidSystemInfo.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidTouchScreenImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="..\RayEngine\Source\Android\AndroidWindowImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Graphics\TextureLoader.cpp" />
@@ -105,8 +112,10 @@
     <ClCompile Include="..\RayEngine\Source\Win32\Win32KeyCodes.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32LogImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32MouseImpl.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32SensorsImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32SocketImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32SystemInfo.cpp" />
+    <ClCompile Include="..\RayEngine\Source\Win32\Win32TouchScreenImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32WindowImpl.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\WndclassCache.cpp" />
   </ItemGroup>

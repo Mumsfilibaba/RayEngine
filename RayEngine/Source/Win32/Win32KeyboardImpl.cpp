@@ -17,6 +17,14 @@ namespace RayEngine
 		int32 vk = ReToWin32(keyCode);
 		return GetAsyncKeyState(vk) & (1 << 16);
 	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	void Keyboard::SetScreenKeyboardVisible(bool visible)
+	{
+		//Not implemented on windows
+	}
 }
 
 #endif

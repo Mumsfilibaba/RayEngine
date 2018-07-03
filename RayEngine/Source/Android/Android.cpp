@@ -87,11 +87,14 @@ namespace RayEngine
 		AndroidAppState* state = reinterpret_cast<AndroidAppState*>(GetNativeActivity()->instance);
 
 		System::Event event;
+
+		state->EventMutex.lock();
 		if (!state->EventQueue.empty())
 		{
 			event = state->EventQueue.front();
 			state->EventQueue.pop();
 		}
+		state->EventMutex.unlock();
 
 		return event;
 	}

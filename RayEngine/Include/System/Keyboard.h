@@ -18,5 +18,7 @@ namespace RayEngine
 
 	public:
 		static bool IsPressed(KEY keyCode);
+		static bool ShowVirtualKeyboardVisible();
+		static bool HideVirtualKeyboardVisible();
 	};
 }

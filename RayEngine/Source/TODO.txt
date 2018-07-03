@@ -1,29 +1,17 @@
 TODO:
 -Add following events
 Events:
-SensorChange
-
--TouchScreen-Class
--Sensor-Class
--Android SensorEvents - Activate sensor with windowflag
--Fix deallocation of androidappstate in ondestroy
-
 -IFactory - Vulkan
 -IDevice - Vulkan
 -ICommandQueue - Vulkan
 -ISwapChain - Vulkan
 
+-Save current windowpointer so that we can send events directly to it
+
 -This commit:
--Added Mouse-Class
--Added Keyboard-Class
--Added Clipboard-class
--Fixed MouseScroll-Event
--Keycodes are now platform independent
--Refactored the androidstate
--SystemInfo on android now returns correct screensize
--Fixed Event TouchMove, TouchPressed and TouchReleased
 
 For later:
+-Fix deallocation of androidappstate in ondestroy
 -Math SIMD (Vec3, Mat3, ColorF), Quaternion, ARM Neon support
 -Android Socket Impl
 -Finish socketimpl Win32, start on android

@@ -234,6 +234,8 @@ void onDestroy(ANativeActivity* activity)
 	state->EventMutex.lock();
 	state->EventQueue.push(event);
 	state->EventMutex.unlock();
+
+	ASensorManager_destroyEventQueue(state->SensorManager, state->SensorEventQueue);
 }
 
 
@@ -320,6 +322,9 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 		state->Looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 
 
+	AndroidAppState_InitializeSensors(state);
+
+
 	activity->callbacks->onConfigurationChanged = onConfigurationChanged;
 	activity->callbacks->onInputQueueCreated = onInputQueueCreated;
 	activity->callbacks->onInputQueueDestroyed = onInputQueueDestroyed;
@@ -347,8 +352,6 @@ void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_
 	{
 		LOGE("Could not initialize Vulkan API, maybe not supported");
 	}
-
-	state->ID = std::this_thread::get_id();
 
 	std::thread mainThread(main, 0, nullptr);
 	mainThread.detach();
