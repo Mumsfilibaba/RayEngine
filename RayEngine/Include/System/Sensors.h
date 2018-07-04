@@ -2,6 +2,7 @@
 
 #include "..\Defines.h"
 #include "..\Types.h"
+#include "..\System\TimeStamp.h"
 #include "..\Math\Vector3.h"
 
 namespace RayEngine
@@ -12,6 +13,25 @@ namespace RayEngine
 		SENSOR_TYPE_ACCELEROMETER = 0,
 		SENSOR_TYPE_GYROSCOPE = 1,
 		SENSOR_TYPE_MAGNETIC_FIELD = 2,
+	};
+
+	struct SensorData
+	{
+	public:
+		SensorData();
+		SensorData(const SensorData& other);
+		SensorData& operator=(const SensorData& other);
+		
+		bool operator==(const SensorData& other) const;
+		bool operator!=(const SensorData& other) const;
+
+	public:
+		union
+		{
+			Math::Vector3 Accelerometer;
+			Math::Vector3 Gyroscope;
+			Math::Vector3 MagneticField;
+		};
 	};
 
 	class Sensors
@@ -30,7 +50,9 @@ namespace RayEngine
 		
 		static bool EnableSensor(SENSOR_TYPE sensor);
 		static bool DisableSensor(SENSOR_TYPE sensor);
+
+		static bool SetRefreshRate(SENSOR_TYPE sensor, const TimeStamp& time);
 		
-		static Math::Vector3 GetSensorValue(SENSOR_TYPE sensor);
+		static SensorData GetSensorValue(SENSOR_TYPE sensor);
 	};
 }

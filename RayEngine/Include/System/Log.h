@@ -2,8 +2,8 @@
 
 #include "..\Defines.h"
 #include "..\Types.h"
-
 #include <cstdarg>
+#include <string>
 #include <vector>
 
 namespace RayEngine
@@ -54,6 +54,7 @@ namespace RayEngine
 			//Log something to the platforms log (Console - Win32, LogCat - Android) - Also saves the log in a buffer
 			void Write(LOG_SEVERITY severity, const Tchar* text, ...);
 			void Write(LOG_SEVERITY severity, const Tchar* text, va_list args);
+			void Write(LOG_SEVERITY severity, const std::string& text);
 
 			//Flush - Removes all messages from the message buffer
 			void Flush();

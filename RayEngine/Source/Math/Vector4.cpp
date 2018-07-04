@@ -1,8 +1,6 @@
-//#define NO_SIMD
-
 #include "..\..\Include\Math\Vector4.h"
 
-#if defined(_ANDROID)
+#if defined(__ANDROID__)
 #include <sstream>
 #endif
 

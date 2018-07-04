@@ -112,7 +112,7 @@ namespace RayEngine
 				struct
 				{
 					SENSOR_TYPE Type;
-					Math::Vector3 Data;
+					SensorData Data;
 				} Sensor;
 			};
 		};

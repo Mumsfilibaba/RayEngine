@@ -2,6 +2,10 @@
 
 #include "MathUtilities.h"
 
+#if defined(_WIN32) && defined(__ANDROID__)
+#undef _WIN32
+#endif
+
 #if defined(_WIN32)
 #define forceinline _forceinline
 #else

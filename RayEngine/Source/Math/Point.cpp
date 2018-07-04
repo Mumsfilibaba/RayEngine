@@ -1,6 +1,6 @@
 #include "..\..\Include\Math\Point.h"
 
-#if defined(_ANDROID)
+#if defined(__ANDROID__)
 #include <sstream>
 #endif
 

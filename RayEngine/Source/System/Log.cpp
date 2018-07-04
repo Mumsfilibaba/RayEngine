@@ -63,6 +63,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void Log::Write(LOG_SEVERITY severity, const std::string& text)
+		{
+			assert(m_Impl != nullptr);
+
+			const Tchar* t = text.c_str();
+			Write(severity, t);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void Log::Flush()
 		{
 			m_Messages.clear();

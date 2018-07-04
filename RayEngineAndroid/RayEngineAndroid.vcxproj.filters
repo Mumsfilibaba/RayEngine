@@ -297,6 +297,9 @@
     <ClCompile Include="..\RayEngine\Source\Win32\Win32SensorsImpl.cpp">
       <Filter>Source\Win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\System\Sensors.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">

@@ -18,6 +18,11 @@ namespace RayEngine
 		void SubMilliSeconds(double milliseconds);
 		void SubMicroSeconds(double microseconds);
 
+		void SetAsSeconds(double seconds);
+		void SetAsMilliSeconds(double milliseconds);
+		void SetAsMicroSeconds(double microseconds);
+		void SetAsNanoSeconds(double nanoseconds);
+
 		double GetAsSeconds() const;
 		double GetAsMilliSeconds() const;
 		double GetAsMicroSeconds() const;
@@ -35,5 +40,10 @@ namespace RayEngine
 
 	private:
 		int64 m_Nanoseconds;
+
+	public:
+		static TimeStamp Seconds(double seconds);
+		static TimeStamp MilliSeconds(double milliseconds);
+		static TimeStamp MicroSeconds(double microseconds);
 	};
 }

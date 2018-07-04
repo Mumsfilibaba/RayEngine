@@ -104,6 +104,7 @@
     <ClCompile Include="..\RayEngine\Source\System\Clock.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Event.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Log.cpp" />
+    <ClCompile Include="..\RayEngine\Source\System\Sensors.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\TimeStamp.cpp" />
     <ClCompile Include="..\RayEngine\Source\System\Window.cpp" />
     <ClCompile Include="..\RayEngine\Source\Win32\Win32BitmapImpl.cpp" />

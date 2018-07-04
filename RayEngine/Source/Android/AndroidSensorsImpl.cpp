@@ -28,8 +28,18 @@ namespace RayEngine
 	bool Sensors::EnableSensor(SENSOR_TYPE sensor)
 	{
 		AndroidAppState* state = reinterpret_cast<AndroidAppState*>(GetNativeActivity()->instance);
-		if (ASensorEventQueue_enableSensor(state->SensorEventQueue, state->Sensors[sensor].Sensor) > 0)
+		
+		ASensorEventQueue* eventQueue = state->SensorEventQueue;
+		const ASensor* nativeSensor = state->Sensors[sensor].Sensor;
+
+		if (ASensorEventQueue_enableSensor(state->SensorEventQueue, nativeSensor) >= 0)
 		{
+			int32 delay = ASensor_getMinDelay(nativeSensor);
+			if (delay > 0)
+			{
+				ASensorEventQueue_setEventRate(eventQueue, nativeSensor, delay);
+			}
+
 			state->Sensors[sensor].Enabled = true;
 			return true;
 		}
@@ -55,15 +65,32 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	Math::Vector3 Sensors::GetSensorValue(SENSOR_TYPE sensor)
+	bool Sensors::SetRefreshRate(SENSOR_TYPE sensor, const TimeStamp& time)
 	{
 		AndroidAppState* state = reinterpret_cast<AndroidAppState*>(GetNativeActivity()->instance);
 		if (state->Sensors[sensor].Enabled)
-			return state->Sensors[sensor].Value;
+		{
+			int32 integerTime = static_cast<int32>(time.GetAsMicroSeconds());
+			int32 result = ASensorEventQueue_setEventRate(state->SensorEventQueue, state->Sensors[sensor].Sensor, integerTime);
+			if (result < 0)
+				return false;
+		}
+		else
+		{
+			return false;
+		}
 
-		return Math::Vector3();
+		return true;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	SensorData Sensors::GetSensorValue(SENSOR_TYPE sensor)
+	{
+		AndroidAppState* state = reinterpret_cast<AndroidAppState*>(GetNativeActivity()->instance);
+		return (state->Sensors[sensor].Enabled) ? state->Sensors[sensor].Value : SensorData();
 	}
 }
-
 
 #endif

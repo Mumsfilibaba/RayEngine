@@ -13,7 +13,7 @@ namespace RayEngine
 	{
 		const ASensor* Sensor = nullptr;
 		int32 Type = 0;
-		Math::Vector3 Value;
+		SensorData Value;
 		bool Enabled = false;
 	};
 }

@@ -41,10 +41,18 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	Math::Vector3 Sensors::GetSensorValue(SENSOR_TYPE)
+	bool Sensors::SetRefreshRate(SENSOR_TYPE sensor, const TimeStamp& time)
 	{
 		//Not implemented on windows
-		return Math::Vector3();
+		return false;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	SensorData Sensors::GetSensorValue(SENSOR_TYPE sensor)
+	{
+		return SensorData();
 	}
 }
 

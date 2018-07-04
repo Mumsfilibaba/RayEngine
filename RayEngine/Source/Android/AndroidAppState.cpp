@@ -100,50 +100,53 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	int AndroidAppState_SensorCallback(int fd, int events, void * data)
+	int AndroidAppState_SensorCallback(int fd, int events, void* data)
 	{
 		AndroidAppState* state = reinterpret_cast<AndroidAppState*>(GetNativeActivity()->instance);
 		ASensorEvent event;
 		if (ASensorEventQueue_getEvents(state->SensorEventQueue, &event, 1) > 0)
 		{
 			SENSOR_TYPE type = SENSOR_TYPE_UNKNOWN;
-			Math::Vector3 data;
+			SensorData sensorData;
+			float res = 0.0f;
 
 			switch (event.type)
 			{
 			case ASENSOR_TYPE_ACCELEROMETER:
 				type = SENSOR_TYPE_ACCELEROMETER;
 
-				data.x = event.acceleration.x;
-				data.y = event.acceleration.y;
-				data.z = event.acceleration.z;
+				sensorData.Accelerometer.x = event.acceleration.x;
+				sensorData.Accelerometer.y = event.acceleration.y;
+				sensorData.Accelerometer.z = event.acceleration.z;
 				break;
 
 			case ASENSOR_TYPE_GYROSCOPE:
 				type = SENSOR_TYPE_GYROSCOPE;
 
-				data.x = event.vector.x;
-				data.y = event.vector.y;
-				data.z = event.vector.z;
+				sensorData.Gyroscope.x = event.vector.x;
+				sensorData.Gyroscope.y = event.vector.y;
+				sensorData.Gyroscope.z = event.vector.z;
 				break;
 
 			case ASENSOR_TYPE_MAGNETIC_FIELD:
 				type = SENSOR_TYPE_MAGNETIC_FIELD;
 
-				data.x = event.magnetic.x;
-				data.y = event.magnetic.y;
-				data.z = event.magnetic.z;
+				sensorData.MagneticField.x = event.magnetic.x;
+				sensorData.MagneticField.y = event.magnetic.y;
+				sensorData.MagneticField.z = event.magnetic.z;
 				break;
 			}
 
 			if (type != SENSOR_TYPE_UNKNOWN)
 			{
-				if (data != state->Sensors[type].Value)
+				if (state->Sensors[type].Value != sensorData)
 				{
+					state->Sensors[type].Value = sensorData;
+
 					System::Event sensorEvent;
 					sensorEvent.Type = System::EVENT_TYPE_SENSORCHANGED;
 					sensorEvent.Sensor.Type = type;
-					sensorEvent.Sensor.Data = data;
+					sensorEvent.Sensor.Data = sensorData;
 
 					state->EventMutex.lock();
 					state->EventQueue.push(sensorEvent);

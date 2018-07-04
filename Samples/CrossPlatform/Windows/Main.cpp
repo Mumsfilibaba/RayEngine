@@ -10,7 +10,6 @@
 #include <System/TouchScreen.h>
 #include <System/Sensors.h>
 
-
 int main(int args, char* argsv[])
 {
 	using namespace RayEngine;
@@ -50,30 +49,35 @@ int main(int args, char* argsv[])
 	RandomGenerator ran;
 
 	Clipboard::SetString("I can now set the clipboard string hehe");
-	log.Write(LOG_SEVERITY_INFO, Clipboard::GetString().c_str());
+	log.Write(LOG_SEVERITY_INFO, Clipboard::GetString());
 
 	int32 color = 0;
-	uint8 strength = 0;
+	float strength = 0.0;
+	Math::Vector3 lastAccelerometer;
 
-	Color colors[10] = 
+	ColorF colors[10] = 
 	{
-		Color::CORNFLOWERBLUE,
-		Color::SOFTRED,
-		Color::SOFTGREEN,
-		Color::SOFTBLUE,
-		Color::SOFTYELLOW,
-		Color::SOFTGRAY,
-		Color::RED,
-		Color::GREEN,
-		Color::BLUE,
-		Color::WARMWHITE,
+		ColorF::CORNFLOWERBLUE,
+		ColorF::SOFTRED,
+		ColorF::SOFTGREEN,
+		ColorF::SOFTBLUE,
+		ColorF::SOFTYELLOW,
+		ColorF::SOFTGRAY,
+		ColorF::RED,
+		ColorF::GREEN,
+		ColorF::BLUE,
+		ColorF::WARMWHITE,
 	};
 
 
 	if (Sensors::SensorSupported(SENSOR_TYPE_ACCELEROMETER))
 	{
 		log.Write(LOG_SEVERITY_INFO, "Accelerometer supported");
-		//Sensors::EnableSensor(SENSOR_TYPE_ACCELEROMETER);
+
+		Sensors::EnableSensor(SENSOR_TYPE_ACCELEROMETER);
+		
+		if (!Sensors::SetRefreshRate(SENSOR_TYPE_ACCELEROMETER, TimeStamp::Seconds(0.5)))
+			log.Write(LOG_SEVERITY_WARNING, "Could not set Sensor refreshrate");
 	}
 
 	if (Sensors::SensorSupported(SENSOR_TYPE_GYROSCOPE))
@@ -134,13 +138,23 @@ int main(int args, char* argsv[])
 
 			if (event.Type == EVENT_TYPE_SENSORCHANGED)
 			{
-				int i = 0;
+				if (event.Sensor.Type == SENSOR_TYPE_ACCELEROMETER)
+				{
+					strength = (event.Sensor.Data.Accelerometer.x + 11.0f) / 22.0f;
+					lastAccelerometer = event.Sensor.Data.Accelerometer;
+
+					if (strength > 1.0f)
+						strength = 1.0f;
+					else if (strength < 0.0f)
+						strength = 0.0f;
+				}
 			}
 		}
 
 		if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)
 		{
-			window.SetBackground(colors[color]);
+			ColorF c = colors[color] * strength;
+			window.SetBackground((Color)c);
 			clock.Reset();
 		}
 	}
