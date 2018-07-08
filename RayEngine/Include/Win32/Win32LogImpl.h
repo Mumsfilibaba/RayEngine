@@ -8,7 +8,7 @@ namespace RayEngine
 {
 	namespace System
 	{
-		class RE_API Win32LogImpl : public LogImpl
+		class RE_API Win32LogImpl : public ILogImpl
 		{
 		public:
 			Win32LogImpl(Win32LogImpl&& other) = delete;

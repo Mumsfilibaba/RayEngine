@@ -8,7 +8,7 @@
 
 namespace RayEngine
 {
-	class RE_API Win32BitmapImpl : public BitmapImpl
+	class RE_API Win32BitmapImpl : public IBitmapImpl
 	{
 	public:
 		Win32BitmapImpl& operator=(Win32BitmapImpl&& other) = delete;
@@ -27,7 +27,7 @@ namespace RayEngine
 		int32 GetWidth() const override final;
 		int32 GetHeight() const override final;
 
-		BitmapImpl* Copy() const override final;
+		IBitmapImpl* Copy() const override final;
 
 		HBITMAP GetMask() const;
 		HBITMAP GetBitmap() const;

@@ -15,16 +15,16 @@ namespace RayEngine
 		};
 
 		//Implements an OS-Specific IPv4-Socket
-		class RE_API SocketIPv4Impl
+		class RE_API ISocketIPv4Impl
 		{
 		public:
-			SocketIPv4Impl(SocketIPv4Impl&& other) = delete;
-			SocketIPv4Impl(const SocketIPv4Impl& other) = delete;
-			SocketIPv4Impl& operator=(SocketIPv4Impl&& other) = delete;
-			SocketIPv4Impl& operator=(const SocketIPv4Impl& other) = delete;
+			ISocketIPv4Impl(ISocketIPv4Impl&& other) = delete;
+			ISocketIPv4Impl(const ISocketIPv4Impl& other) = delete;
+			ISocketIPv4Impl& operator=(ISocketIPv4Impl&& other) = delete;
+			ISocketIPv4Impl& operator=(const ISocketIPv4Impl& other) = delete;
 			
-			SocketIPv4Impl() {}
-			virtual ~SocketIPv4Impl() {}
+			ISocketIPv4Impl() {}
+			virtual ~ISocketIPv4Impl() {}
 
 			//Create needed OS-Handles
 			virtual bool Create(SOCK sock) = 0;
@@ -33,7 +33,7 @@ namespace RayEngine
 			//Listen after connections
 			virtual bool Listen() const = 0;
 			//Accepts a connection and returns the clientsocket
-			virtual SocketIPv4Impl* Accept() const = 0;
+			virtual ISocketIPv4Impl* Accept() const = 0;
 			//Connect to another socket
 			virtual bool Connect(const Tchar* ip, int32 port) const = 0;
 			//Send data 
@@ -91,10 +91,10 @@ namespace RayEngine
 
 			SocketIPv4& operator=(SocketIPv4&& other);
 
-			const SocketIPv4Impl* GetImplementation() const;
+			const ISocketIPv4Impl* GetImplementation() const;
 
 		private:
-			SocketIPv4Impl* m_Impl;
+			ISocketIPv4Impl* m_Impl;
 		};
 	}
 }

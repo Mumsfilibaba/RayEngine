@@ -151,6 +151,27 @@
     <ClInclude Include="..\RayEngine\Source\Android\AndroidSensor.h">
       <Filter>Source\Android</Filter>
     </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Vulkan\VkFactory.h">
+      <Filter>Include\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Vulkan\VkCommon.h">
+      <Filter>Include\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Graphics\AdapterInfo.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Graphics\IDevice.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Graphics\ISwapchain.h">
+      <Filter>Include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Vulkan\VKDevice.h">
+      <Filter>Include\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RayEngine\Include\Vulkan\VKSwapchain.h">
+      <Filter>Include\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RayEngine\Source\Android\Android.cpp">
@@ -300,6 +321,21 @@
     <ClCompile Include="..\RayEngine\Source\System\Sensors.cpp">
       <Filter>Source\System</Filter>
     </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Vulkan\VkFactory.cpp">
+      <Filter>Source\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Vulkan\VKDevice.cpp">
+      <Filter>Source\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Vulkan\VKSwapchain.cpp">
+      <Filter>Source\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidFactory.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RayEngine\Source\Android\AndroidVulkanCommon.cpp">
+      <Filter>Source\Android</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">
@@ -349,6 +385,12 @@
     </Filter>
     <Filter Include="Include\Graphics">
       <UniqueIdentifier>{e6bff092-d879-45e5-ad31-9f2672e7f099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Vulkan">
+      <UniqueIdentifier>{7abb91e2-7818-4d13-b27f-10c0868f1419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Vulkan">
+      <UniqueIdentifier>{a70ded29-0e28-4a8f-8197-a43011514527}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

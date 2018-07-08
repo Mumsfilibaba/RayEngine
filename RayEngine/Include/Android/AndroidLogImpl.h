@@ -8,13 +8,13 @@ namespace RayEngine
 {
 	namespace System
 	{
-		class AndroidLogImpl : public LogImpl
+		class AndroidLogImpl : public ILogImpl
 		{
 		public:
-			AndroidLogImpl(LogImpl&& other) = delete;
-			AndroidLogImpl(const LogImpl& other) = delete;
-			AndroidLogImpl& operator=(LogImpl&& other) = delete;
-			AndroidLogImpl& operator=(const LogImpl& other) = delete;
+			AndroidLogImpl(ILogImpl&& other) = delete;
+			AndroidLogImpl(const ILogImpl& other) = delete;
+			AndroidLogImpl& operator=(ILogImpl&& other) = delete;
+			AndroidLogImpl& operator=(const ILogImpl& other) = delete;
 
 			AndroidLogImpl();
 			~AndroidLogImpl();

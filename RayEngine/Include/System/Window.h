@@ -38,7 +38,6 @@ namespace RayEngine
 			int32 Width = 800;
 			int32 Height = 600;
 			
-			//TODO: Fix styles on win32
 			int32 Style = WINDOWSTYLE_STANDARD_WINDOW;
 			int32 Flags = WINDOW_FLAG_NONE;
 

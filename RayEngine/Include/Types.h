@@ -19,11 +19,16 @@ namespace RayEngine
 	typedef char Tchar;
 #endif
 
-	//Defines formats for buffers
-	enum FORMAT
+	enum FORMAT : int32
 	{
 		FORMAT_UNKNOWN = 0,
 		FORMAT_R8G8B8A8_UINT = 1,
 		FORMAT_R32G32B32A32_FLOAT = 2,
+	};
+
+	enum GRAPHICS_API : int32
+	{
+		GRAPHICS_API_UNKNOWN = 0,
+		GRAPHICS_API_VULKAN = 1,
 	};
 }

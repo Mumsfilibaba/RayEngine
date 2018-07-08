@@ -55,7 +55,7 @@
       <PreprocessorDefinitions>_DEBUG; __ANDROID__</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>RayEngineAndroid</AdditionalDependencies>
+      <AdditionalDependencies>RayEngineAndroid;</AdditionalDependencies>
     </Link>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Tegra-Android\Debug;</AdditionalLibraryDirectories>
@@ -64,8 +64,8 @@
       <RPathLink>$(PlatformLibraryPath)</RPathLink>
     </Link>
     <AntBuild>
-      <NativeLibDependencies>
-      </NativeLibDependencies>
+      <NativeLibDependencies>VkLayer_swapchain;VkLayer_core_validation;VkLayer_object_tracker;VkLayer_parameter_validation;VkLayer_threading;VkLayer_unique_objects;</NativeLibDependencies>
+      <NativeLibDirectories>$(ANDROID_NDK_ROOT)\sources\third_party\vulkan\src\build-android\jniLibs\armeabi-v7a;%(NativeLibDirectories)</NativeLibDirectories>
     </AntBuild>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>

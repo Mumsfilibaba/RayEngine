@@ -6,7 +6,7 @@
 
 namespace RayEngine
 {
-	class AndroidBitmapImpl : public BitmapImpl
+	class AndroidBitmapImpl : public IBitmapImpl
 	{
 	public:
 		AndroidBitmapImpl& operator=(AndroidBitmapImpl&& other) = delete;
@@ -25,7 +25,7 @@ namespace RayEngine
 		int32 GetWidth() const override final;
 		int32 GetHeight() const override final;
 
-		BitmapImpl* Copy() const override final;
+		IBitmapImpl* Copy() const override final;
 
 	private:
 		uint8* m_Pixels;

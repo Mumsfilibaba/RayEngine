@@ -171,7 +171,7 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	BitmapImpl* Win32BitmapImpl::Copy() const
+	IBitmapImpl* Win32BitmapImpl::Copy() const
 	{
 		Win32BitmapImpl* res = new Win32BitmapImpl();
 		res->m_Hmask = reinterpret_cast<HBITMAP>(CopyImage(m_Hmask, IMAGE_BITMAP, 0, 0, 0));

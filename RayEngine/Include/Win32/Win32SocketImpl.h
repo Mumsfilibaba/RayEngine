@@ -15,7 +15,7 @@ namespace RayEngine
 {
 	namespace Network
 	{
-		class RE_API Win32SocketIPv4Impl : public SocketIPv4Impl
+		class RE_API Win32SocketIPv4Impl : public ISocketIPv4Impl
 		{
 		public:
 			Win32SocketIPv4Impl(Win32SocketIPv4Impl&& other) = delete;
@@ -32,7 +32,7 @@ namespace RayEngine
 			bool Bind(const Tchar* ip, int32 port) const override final;
 			bool Connect(const Tchar* ip, int32 port) const override final;
 			bool Listen() const override final;
-			SocketIPv4Impl* Accept() const override final;
+			ISocketIPv4Impl* Accept() const override final;
 			
 			bool Send(const void* data, int32 bytes) const override final;
 			bool SendTo(const void* data, int32 bytes) const override final;

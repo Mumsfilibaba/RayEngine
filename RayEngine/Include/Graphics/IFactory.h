@@ -1,20 +1,13 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "AdapterInfo.h"
+#include "IDevice.h"
+#include "ISwapchain.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class IDevice;
-		struct DeviceInfo;
-
-		class ISwapChain;
-		struct SwapChainInfo;
-
-		struct AdapterInfo;
-
 		class IFactory
 		{
 		public:
@@ -26,13 +19,16 @@ namespace RayEngine
 			//Create a device for interaction with the graphicscard
 			virtual bool CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const = 0;
 			//Create a device for interaction with the graphicscard and a swapchain for presenting images to the window
-			virtual bool CreateDeviceAndSwapChain(IDevice** device, const DeviceInfo& deviceInfo,
-				ISwapChain** swapChain, const DeviceInfo& swapChainInfo) const = 0;
+			virtual bool CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo,
+				ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const = 0;
 
-			//Destroy Device
-			virtual void DestroyDevice(IDevice** device) const = 0;
 			//Destroy SwapChain
-			virtual void DestroySwapChain(ISwapChain** swapChain) const = 0;
+			virtual void DestroySwapchain(const IDevice* const device, ISwapchain** swapchain) const = 0;
+
+			virtual GRAPHICS_API GetGraphicsApi() const = 0;
+
+		public:
+			static IFactory* Create(GRAPHICS_API api, bool debugLayers);
 		};
 	}
 }

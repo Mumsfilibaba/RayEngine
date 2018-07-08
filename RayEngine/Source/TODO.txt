@@ -6,11 +6,26 @@ Events:
 -ICommandQueue - Vulkan
 -ISwapChain - Vulkan
 
+-Aquire pointers for native window etc
+-Check if system supports vulkan in factory
+-ANativeWindow pointer in AndroidWindowImpl
 -Save current windowpointer so that we can send events directly to it
+-Virtual Filesystem
 
 -This commit:
+-Added VKFactory
+-Added VKDevice
+-Added VKSwapchain
+-Added AdapterInfo
 
 For later:
+-Error-Codes
+-String-Class
+-Queue-Class
+-Vector-Class
+-Hash-Table-Class
+-Thread-Class
+-Mutex-Class
 -Fix deallocation of androidappstate in ondestroy
 -Math SIMD (Vec3, Mat3, ColorF), Quaternion, ARM Neon support
 -Android Socket Impl

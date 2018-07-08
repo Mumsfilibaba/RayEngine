@@ -76,7 +76,7 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	BitmapImpl* AndroidBitmapImpl::Copy() const
+	IBitmapImpl* AndroidBitmapImpl::Copy() const
 	{
 		AndroidBitmapImpl* impl = new AndroidBitmapImpl();
 		impl->m_Height = m_Height;

@@ -5,16 +5,16 @@
 
 namespace RayEngine
 {
-	class RE_API BitmapImpl
+	class RE_API IBitmapImpl
 	{
 	public:
-		BitmapImpl(const BitmapImpl& other) = delete;
-		BitmapImpl(BitmapImpl&& other) = delete;
-		BitmapImpl& operator=(const BitmapImpl& other) = delete;
-		BitmapImpl& operator=(BitmapImpl&& other) = delete;
+		IBitmapImpl(const IBitmapImpl& other) = delete;
+		IBitmapImpl(IBitmapImpl&& other) = delete;
+		IBitmapImpl& operator=(const IBitmapImpl& other) = delete;
+		IBitmapImpl& operator=(IBitmapImpl&& other) = delete;
 
-		BitmapImpl() {}
-		virtual ~BitmapImpl() {}
+		IBitmapImpl() {}
+		virtual ~IBitmapImpl() {}
 
 		//Load a bitmap from file - See TextureLoader to see available formats - returns true if succeeded
 		virtual bool LoadFromFile(const Tchar* const filename, const Tchar* filePath, int32 width, int32 height) = 0;
@@ -28,7 +28,7 @@ namespace RayEngine
 		virtual int32 GetHeight() const = 0;
 
 		//Returns a new instance as a copy of the implementation - the old object is still valid
-		virtual BitmapImpl* Copy() const = 0;
+		virtual IBitmapImpl* Copy() const = 0;
 	};
 
 	class RE_API Bitmap
@@ -53,12 +53,12 @@ namespace RayEngine
 		int32 GetHeight() const;
 
 		//Get implementation interface
-		const BitmapImpl* GetImplementation() const;
+		const IBitmapImpl* GetImplementation() const;
 
 		Bitmap& operator=(Bitmap&& other);
 		Bitmap& operator=(const Bitmap& other);
 
 	private:
-		BitmapImpl* m_Impl;
+		IBitmapImpl* m_Impl;
 	};
 }

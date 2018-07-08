@@ -18,29 +18,29 @@ namespace RayEngine
 			LOG_SEVERITY_ERROR = 3
 		};
 
-		struct LogMessage
+		struct RE_API LogMessage
 		{
 			LOG_SEVERITY Severity;
 			const Tchar* Message;
 		};
 
 		//Platform implementation of log
-		class LogImpl
+		class RE_API ILogImpl
 		{
 		public:
-			LogImpl(LogImpl&& other) = delete;
-			LogImpl(const LogImpl& other) = delete;
-			LogImpl& operator=(LogImpl&& other) = delete;
-			LogImpl& operator=(const LogImpl& other) = delete;
+			ILogImpl(ILogImpl&& other) = delete;
+			ILogImpl(const ILogImpl& other) = delete;
+			ILogImpl& operator=(ILogImpl&& other) = delete;
+			ILogImpl& operator=(const ILogImpl& other) = delete;
 
-			LogImpl() {}
-			virtual ~LogImpl() {}
+			ILogImpl() {}
+			virtual ~ILogImpl() {}
 
 			//Log something to the platforms log (Console - Win32, LogCat - Android) - Also saves the log in a buffer
 			virtual void Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const = 0;
 		};
 
-		class Log
+		class RE_API Log
 		{
 		public:
 			Log(Log&& other) = delete;
@@ -64,7 +64,7 @@ namespace RayEngine
 			const LogMessage& GetMessage(int32 index) const;
 
 		private:
-			const LogImpl* m_Impl;
+			const ILogImpl* m_Impl;
 			std::vector<LogMessage> m_Messages;
 		};
 	}

@@ -158,7 +158,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		const SocketIPv4Impl* SocketIPv4::GetImplementation() const
+		const ISocketIPv4Impl* SocketIPv4::GetImplementation() const
 		{
 			return m_Impl;
 		}

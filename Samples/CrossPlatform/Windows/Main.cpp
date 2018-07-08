@@ -9,12 +9,16 @@
 #include <Math/RandomGenerator.h>
 #include <System/TouchScreen.h>
 #include <System/Sensors.h>
+#include <Graphics/IFactory.h>
 
 int main(int args, char* argsv[])
 {
 	using namespace RayEngine;
-	using namespace RayEngine::System;
+	using namespace System;
 	using namespace Math;
+	using namespace Graphics;
+
+	Log log;
 
 	SystemInfo info = {};
 	QuerySystemInfo(info);
@@ -42,15 +46,32 @@ int main(int args, char* argsv[])
 	Window window(windowInfo);
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
+
+	IFactory* factory = IFactory::Create(GRAPHICS_API_VULKAN, true);
+	
+	int32 adapterCount = 0;
+	AdapterInfo* adapters = nullptr;
+	factory->EnumerateAdapters(&adapters, adapterCount);
+
+	log.Write(LOG_SEVERITY_INFO, adapters[0].Vendor);
+	log.Write(LOG_SEVERITY_INFO, adapters[0].Model);
+
+	IDevice* device = nullptr;
+	DeviceInfo dInfo = {};
+
+	ISwapchain* swapchain= nullptr;
+	SwapchainInfo scInfo = {};
+	scInfo.Window = &window;
+
+	dInfo.Adapter = &(adapters[0]);
+	factory->CreateDeviceAndSwapchain(&device, dInfo, &swapchain, scInfo);
+
 	window.Show();
 
-	Log log;
+
 	Clock clock;
 	RandomGenerator ran;
-
-	Clipboard::SetString("I can now set the clipboard string hehe");
-	log.Write(LOG_SEVERITY_INFO, Clipboard::GetString());
-
+	
 	int32 color = 0;
 	float strength = 0.0;
 	Math::Vector3 lastAccelerometer;
@@ -79,12 +100,6 @@ int main(int args, char* argsv[])
 		if (!Sensors::SetRefreshRate(SENSOR_TYPE_ACCELEROMETER, TimeStamp::Seconds(0.5)))
 			log.Write(LOG_SEVERITY_WARNING, "Could not set Sensor refreshrate");
 	}
-
-	if (Sensors::SensorSupported(SENSOR_TYPE_GYROSCOPE))
-		log.Write(LOG_SEVERITY_INFO, "Gyroscope supported");
-
-	if (Sensors::SensorSupported(SENSOR_TYPE_MAGNETIC_FIELD))
-		log.Write(LOG_SEVERITY_INFO, "Magnetic Filed Sensor supported");
 
 
 	while (event.Type != EVENT_TYPE_QUIT)

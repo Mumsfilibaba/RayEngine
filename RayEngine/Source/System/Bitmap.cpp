@@ -133,7 +133,7 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	const BitmapImpl* Bitmap::GetImplementation() const
+	const IBitmapImpl* Bitmap::GetImplementation() const
 	{
 		return m_Impl;
 	}

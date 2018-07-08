@@ -1,0 +1,35 @@
+#pragma once
+
+#include "..\Graphics\IDevice.h"
+#include "VKSwapchain.h"
+
+namespace RayEngine
+{
+	namespace Graphics
+	{
+		class VKDevice : public IDevice
+		{
+		public:
+			VKDevice(const VKDevice& other) = delete;
+			VKDevice& operator=(const VKDevice& other) = delete;
+
+		public:
+			VKDevice(VkInstance instance, const DeviceInfo& deviceInfo);
+			VKDevice(VKDevice&& other);
+			~VKDevice();
+
+			VKDevice& operator=(VKDevice&& other);
+
+			VKSwapchain* CreateVKSwapchain(VkSurfaceKHR surface);
+
+			VkDevice GetVkDevice() const;
+
+		private:
+			void Create(VkInstance instance, const DeviceInfo& deviceInfo);
+
+		private:
+			VkDevice m_Device;
+			VkPhysicalDevice m_Adapter;
+		};
+	}
+}
