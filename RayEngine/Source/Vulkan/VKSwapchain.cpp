@@ -90,18 +90,18 @@ namespace RayEngine
 			scInfo.oldSwapchain = 0;
 			scInfo.minImageCount = info.Buffer.Count;
 			scInfo.surface = m_Surface;
-			scInfo.imageFormat = format.format;
-			scInfo.imageColorSpace = format.colorSpace;
+			//scInfo.imageFormat = format.format;
+			//scInfo.imageColorSpace = format.colorSpace;
 			scInfo.imageArrayLayers = 1;
-			scInfo.imageExtent = dimensions;
+			//scInfo.imageExtent = dimensions;
 			scInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 			scInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			scInfo.presentMode = mode;
+			//scInfo.presentMode = mode;
 			scInfo.queueFamilyIndexCount = 0;
 			scInfo.pQueueFamilyIndices = nullptr;
 			scInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 			scInfo.clipped = VK_TRUE;
-			scInfo.preTransform = scInfo.capabilites.currentTransform;
+			//scInfo.preTransform = scInfo.capabilites.currentTransform;
 
 			result = vkCreateSwapchainKHR(device, &scInfo, nullptr, &m_Swapchain);
 			if (result != VK_SUCCESS)

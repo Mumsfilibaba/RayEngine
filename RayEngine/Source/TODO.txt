@@ -11,6 +11,7 @@ Events:
 -ANativeWindow pointer in AndroidWindowImpl
 -Save current windowpointer so that we can send events directly to it
 -Virtual Filesystem
+-AdapterList - Wrapper for array and count of AdapterInfo, so that user does not need to delete the list
 
 -This commit:
 -Added VKFactory

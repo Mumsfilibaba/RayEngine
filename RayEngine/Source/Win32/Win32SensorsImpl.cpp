@@ -1,6 +1,6 @@
 #include "..\..\Include\System\Sensors.h"
 
-#if defined(RE_PLATFORM_WIN32)
+#if defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
 {

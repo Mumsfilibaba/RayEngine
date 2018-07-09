@@ -98,7 +98,7 @@ namespace RayEngine
 
 			int32 index = -1;
 			vkGetPhysicalDeviceQueueFamilyProperties(m_Adapter, &queueFamilyCount, queueFamilies.data());
-			for (int32 i = 0; i < queueFamilyCount; i++)
+			for (uint32 i = 0; i < queueFamilyCount; i++)
 			{
 				if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT &&
 					queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT)

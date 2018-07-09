@@ -1,5 +1,6 @@
 #include "..\..\Include\Android\AndroidVulkanWrapper.h"
 
+#if defined(RE_PLATFORM_ANDROID)
 /////////////////////////////////////////////////////////////
 PFN_vkCreateInstance vkCreateInstance = nullptr;
 PFN_vkDestroyInstance vkDestroyInstance = nullptr;
@@ -21,9 +22,6 @@ PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabili
 PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR = nullptr;
 PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR = nullptr;
 
-
-
-#if defined(RE_PLATFORM_ANDROID)
 #include <dlfcn.h>
 
 #define VK_LOADFUNCTION(function) (function = reinterpret_cast<PFN_##function>(dlsym(libVulkan, #function)))
@@ -62,21 +60,3 @@ namespace RayEngine
 }
 
 #endif
-
-
-
-/////////////////////////////////////////////////////////////
-VkResult VKAPI_PTR vkCreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT * pCreateInfo, const VkAllocationCallbacks * pAllocator, VkDebugReportCallbackEXT * pCallback)
-{
-	auto func = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
-	return func(instance, pCreateInfo, pAllocator, pCallback);
-}
-
-
-
-/////////////////////////////////////////////////////////////
-void VKAPI_PTR vkDestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks * pAllocator)
-{
-	auto func = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT");
-	func(instance, callback, pAllocator);
-}

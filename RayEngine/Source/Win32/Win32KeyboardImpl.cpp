@@ -21,9 +21,19 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	void Keyboard::SetScreenKeyboardVisible(bool visible)
+	bool Keyboard::ShowVirtualKeyboardVisible()
 	{
 		//Not implemented on windows
+		return false;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	bool Keyboard::HideVirtualKeyboardVisible()
+	{
+		//Not implemented on windows
+		return false;
 	}
 }
 

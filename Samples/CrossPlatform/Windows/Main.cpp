@@ -47,7 +47,7 @@ int main(int args, char* argsv[])
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create(GRAPHICS_API_VULKAN, true);
+	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D12, true);
 	
 	int32 adapterCount = 0;
 	AdapterInfo* adapters = nullptr;
@@ -73,7 +73,7 @@ int main(int args, char* argsv[])
 	RandomGenerator ran;
 	
 	int32 color = 0;
-	float strength = 0.0;
+	float strength = 1.0;
 	Math::Vector3 lastAccelerometer;
 
 	ColorF colors[10] = 
@@ -173,6 +173,12 @@ int main(int args, char* argsv[])
 			clock.Reset();
 		}
 	}
+
+
+	delete swapchain;
+	delete[] adapters;
+	delete device;
+	delete factory;
 
 	return 0;
 }
