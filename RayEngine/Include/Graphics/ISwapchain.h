@@ -6,6 +6,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
 		struct SwapchainInfo
 		{
 			System::Window* Window = nullptr;
@@ -18,9 +19,19 @@ namespace RayEngine
 			} Buffer;
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		class ISwapchain
 		{
 		public:
+			ISwapchain(ISwapchain&& other) = delete;
+			ISwapchain(const ISwapchain& other) = delete;
+			ISwapchain& operator=(ISwapchain&& other) = delete;
+			ISwapchain& operator=(const ISwapchain& other) = delete;
+
+		public:
+			ISwapchain() {}
 			virtual ~ISwapchain() {}
 
 			//Present next backbuffer to the front

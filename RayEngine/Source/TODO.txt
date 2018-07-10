@@ -1,6 +1,4 @@
 TODO:
--Add following events
-Events:
 -IFactory - Vulkan
 -IDevice - Vulkan
 -ICommandQueue - Vulkan
@@ -11,13 +9,13 @@ Events:
 -ANativeWindow pointer in AndroidWindowImpl
 -Save current windowpointer so that we can send events directly to it
 -Virtual Filesystem
--AdapterList - Wrapper for array and count of AdapterInfo, so that user does not need to delete the list
+-Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
+-DX12 - Check tearing support - Vulkan (if supported by the API)
+
 
 -This commit:
--Added VKFactory
--Added VKDevice
--Added VKSwapchain
--Added AdapterInfo
+-Added DX12Device
+-Added AdapterList for easier use of adapterinfo
 
 For later:
 -Error-Codes

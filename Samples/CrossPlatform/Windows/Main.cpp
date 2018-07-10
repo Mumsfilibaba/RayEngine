@@ -49,23 +49,36 @@ int main(int args, char* argsv[])
 
 	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D12, true);
 	
+	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
-	AdapterInfo* adapters = nullptr;
-	factory->EnumerateAdapters(&adapters, adapterCount);
+	AdapterList adapters = {};
+	factory->EnumerateAdapters(adapters);
 
-	log.Write(LOG_SEVERITY_INFO, adapters[0].Vendor);
-	log.Write(LOG_SEVERITY_INFO, adapters[0].Model);
+#if defined(RE_PLATFORM_WINDOWS)
+
+	for (int32 i = 0; i < adapters.Count; i++)
+	{
+		if (adapters[i].VendorID != AdapterInfo::INTELVendorID)
+		{
+			adapterIndex = i;
+			break;
+		}
+	}
+#endif
+
+	log.Write(LOG_SEVERITY_INFO, adapters[adapterIndex].VendorName);
+	log.Write(LOG_SEVERITY_INFO, adapters[adapterIndex].ModelName);
 
 	IDevice* device = nullptr;
 	DeviceInfo dInfo = {};
+	dInfo.Adapter = &(adapters[adapterIndex]);
 
 	ISwapchain* swapchain= nullptr;
 	SwapchainInfo scInfo = {};
 	scInfo.Window = &window;
 
-	dInfo.Adapter = &(adapters[0]);
 	factory->CreateDeviceAndSwapchain(&device, dInfo, &swapchain, scInfo);
-
+	
 	window.Show();
 
 
@@ -176,7 +189,6 @@ int main(int args, char* argsv[])
 
 
 	delete swapchain;
-	delete[] adapters;
 	delete device;
 	delete factory;
 

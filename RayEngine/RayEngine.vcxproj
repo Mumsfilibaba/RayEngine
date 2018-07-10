@@ -227,6 +227,7 @@
     <ClInclude Include="Source\Win32\WndclassCache.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\DX12\DX12Device.h" />
     <ClCompile Include="Source\Android\Android.cpp" />
     <ClCompile Include="Source\Android\AndroidAppState.cpp" />
     <ClCompile Include="Source\Android\AndroidBitmapImpl.cpp" />
@@ -242,6 +243,7 @@
     <ClCompile Include="Source\Android\AndroidVulkanCommon.cpp" />
     <ClCompile Include="Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
+    <ClCompile Include="Source\DX12\DX12Device.cpp" />
     <ClCompile Include="Source\DX12\DX12Factory.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />

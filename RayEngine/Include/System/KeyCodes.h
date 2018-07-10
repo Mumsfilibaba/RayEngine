@@ -5,7 +5,7 @@
 
 namespace RayEngine
 {
-	//TODO: Engine specific keycodes
+	/////////////////////////////////////////////////////////////
 	enum KEY : int32
 	{
 		KEY_UNKNOWN = 0,
@@ -142,6 +142,9 @@ namespace RayEngine
 		KEY_SCROLLOCK = 120,
 	};
 
+
+
+	/////////////////////////////////////////////////////////////
 	enum MOUSEBUTTON : int32
 	{
 		MOUSEBUTTON_UNKNOWN = 0,

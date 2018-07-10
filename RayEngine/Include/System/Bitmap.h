@@ -5,6 +5,7 @@
 
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
 	class RE_API IBitmapImpl
 	{
 	public:
@@ -13,6 +14,7 @@ namespace RayEngine
 		IBitmapImpl& operator=(const IBitmapImpl& other) = delete;
 		IBitmapImpl& operator=(IBitmapImpl&& other) = delete;
 
+	public:
 		IBitmapImpl() {}
 		virtual ~IBitmapImpl() {}
 
@@ -31,6 +33,9 @@ namespace RayEngine
 		virtual IBitmapImpl* Copy() const = 0;
 	};
 
+
+
+	/////////////////////////////////////////////////////////////
 	class RE_API Bitmap
 	{
 	public:

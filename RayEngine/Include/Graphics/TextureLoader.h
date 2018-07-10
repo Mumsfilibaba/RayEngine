@@ -5,7 +5,8 @@
 
 namespace RayEngine
 {
-	enum RE_API TEX_EXTENSION
+	/////////////////////////////////////////////////////////////
+	enum TEX_EXTENSION : int32
 	{
 		TEX_EXTENSION_UNKNOWN = 0,
 		TEX_EXTENSION_PNG = 1,
@@ -15,6 +16,9 @@ namespace RayEngine
 		TEX_EXTENSION_HDR = 5,
 	};
 
+
+
+	/////////////////////////////////////////////////////////////
 	class RE_API TextureLoader
 	{
 	public:

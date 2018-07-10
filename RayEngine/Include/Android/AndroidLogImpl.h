@@ -16,6 +16,7 @@ namespace RayEngine
 			AndroidLogImpl& operator=(ILogImpl&& other) = delete;
 			AndroidLogImpl& operator=(const ILogImpl& other) = delete;
 
+		public:
 			AndroidLogImpl();
 			~AndroidLogImpl();
 

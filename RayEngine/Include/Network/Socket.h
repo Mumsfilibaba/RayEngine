@@ -7,6 +7,7 @@ namespace RayEngine
 {
 	namespace Network
 	{
+		/////////////////////////////////////////////////////////////
 		enum SOCK
 		{
 			SOCK_UNKNOWN = 0,
@@ -14,6 +15,9 @@ namespace RayEngine
 			SOCK_STREAM = 2,
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		//Implements an OS-Specific IPv4-Socket
 		class RE_API ISocketIPv4Impl
 		{
@@ -51,6 +55,10 @@ namespace RayEngine
 			virtual void Close() const = 0;
 		};
 
+
+
+
+		/////////////////////////////////////////////////////////////
 		//Wrapper for SocketIPv4Impl
 		class RE_API SocketIPv4
 		{

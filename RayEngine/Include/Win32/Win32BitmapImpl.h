@@ -8,6 +8,7 @@
 
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
 	class RE_API Win32BitmapImpl : public IBitmapImpl
 	{
 	public:
@@ -44,6 +45,9 @@ namespace RayEngine
 	};
 }
 
+
+
+/////////////////////////////////////////////////////////////
 HICON CreateIcon(const RayEngine::Win32BitmapImpl* const bitmap);
 HCURSOR CreateCursor(const RayEngine::Win32BitmapImpl* const bitmap, RayEngine::int32 hotspotX, RayEngine::int32 hotspotY);
 

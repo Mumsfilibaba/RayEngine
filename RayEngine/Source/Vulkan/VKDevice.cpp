@@ -88,7 +88,7 @@ namespace RayEngine
 				return;
 
 
-			m_Adapter = adapters[deviceInfo.Adapter->ID];
+			m_Adapter = adapters[deviceInfo.Adapter->ApiID];
 
 			uint32 queueFamilyCount = 0;
 			vkGetPhysicalDeviceQueueFamilyProperties(m_Adapter, &queueFamilyCount, nullptr);

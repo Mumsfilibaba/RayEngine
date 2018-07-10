@@ -7,6 +7,7 @@
 
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
 	enum SENSOR_TYPE : int32
 	{
 		SENSOR_TYPE_UNKNOWN = -1,
@@ -15,6 +16,9 @@ namespace RayEngine
 		SENSOR_TYPE_MAGNETIC_FIELD = 2,
 	};
 
+
+
+	/////////////////////////////////////////////////////////////
 	struct SensorData
 	{
 	public:
@@ -34,6 +38,9 @@ namespace RayEngine
 		};
 	};
 
+
+
+	/////////////////////////////////////////////////////////////
 	class Sensors
 	{
 	public:

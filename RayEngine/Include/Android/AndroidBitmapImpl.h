@@ -14,6 +14,7 @@ namespace RayEngine
 		AndroidBitmapImpl(AndroidBitmapImpl&& other) = delete;
 		AndroidBitmapImpl(const AndroidBitmapImpl& other) = delete;
 
+	public:
 		AndroidBitmapImpl();
 		~AndroidBitmapImpl();
 

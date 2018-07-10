@@ -10,6 +10,7 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		enum LOG_SEVERITY 
 		{
 			LOG_SEVERITY_UNKNOWN = 0,
@@ -18,12 +19,18 @@ namespace RayEngine
 			LOG_SEVERITY_ERROR = 3
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		struct RE_API LogMessage
 		{
 			LOG_SEVERITY Severity;
 			const Tchar* Message;
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		//Platform implementation of log
 		class RE_API ILogImpl
 		{
@@ -40,6 +47,9 @@ namespace RayEngine
 			virtual void Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const = 0;
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		class RE_API Log
 		{
 		public:

@@ -18,6 +18,7 @@
 
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
 	struct AndroidAppState
 	{
 		ANativeActivity* NativeActivity = nullptr;
@@ -49,6 +50,9 @@ namespace RayEngine
 		bool HasFocus = false;
 	};
 
+
+
+	/////////////////////////////////////////////////////////////
 	void AndroidAppState_SetWindowFlags(AndroidAppState* state, int32 flags);
 	void AndroidAppState_SetWindowColor(AndroidAppState* state, int32 color);
 	void AndroidAppState_SetWindowSize(AndroidAppState* state, int32 width, int32 height);

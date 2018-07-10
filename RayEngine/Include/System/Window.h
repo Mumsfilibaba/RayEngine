@@ -8,6 +8,7 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		enum WINDOWSTYLE
 		{
 			WINDOWSTYLE_UNKNOWN = (1 << 0),
@@ -22,6 +23,9 @@ namespace RayEngine
 				WINDOWSTYLE_RESIZEABLE | WINDOWSTYLE_MINIMIZABLE | WINDOWSTYLE_MAXIMIZABLE,
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		enum WINDOW_FLAG
 		{
 			WINDOW_FLAG_NONE = 0,
@@ -29,6 +33,9 @@ namespace RayEngine
 			WINDOW_FLAG_APP_NO_SLEEP = (1 << 1),
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		//Struct to decribe a window
 		struct RE_API WindowInfo
 		{
@@ -58,6 +65,9 @@ namespace RayEngine
 			int32 CursorHotspotY = 0;
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		//Class for platform implementation of a window
 		class RE_API IWindowImpl
 		{
@@ -103,6 +113,9 @@ namespace RayEngine
 			virtual void GetDesc(WindowInfo& desc) const = 0;
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		//Class for to represent a main window - Can be seen as a wrapper for IWindowImpl
 		class RE_API Window
 		{

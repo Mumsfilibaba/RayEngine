@@ -1,6 +1,9 @@
 #include "..\..\Include\DX12\DX12Factory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include <vector>
+#include <cstdlib>
+#include "..\..\Include\DX12\DX12Device.h"
 
 namespace RayEngine
 {
@@ -17,6 +20,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		DX12Factory::DX12Factory(DX12Factory&& other)
+			: m_Factory(other.m_Factory),
+			m_DebugController(other.m_DebugController)
+		{
+			other.m_Factory = nullptr;
+			other.m_DebugController = nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12Factory::~DX12Factory()
 		{
 			D3DRelease_S(m_Factory);
@@ -26,14 +40,47 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Factory::EnumerateAdapters(AdapterInfo** adapters, int32& count) const
+		void DX12Factory::EnumerateAdapters(AdapterList& list) const
 		{
+			using namespace Microsoft::WRL;
+
+			std::vector<AdapterInfo> adapterInfos;
+			ComPtr<IDXGIAdapter1> adapter;
+			ComPtr<ID3D12Device> dummyDevice;
+
+			for (uint32 i = 0; m_Factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
+			{
+				DXGI_ADAPTER_DESC1 desc = {};
+				if (SUCCEEDED(adapter->GetDesc1(&desc)))
+				{
+					if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&dummyDevice))))
+					{
+						adapterInfos.push_back(AdapterInfo());
+						int32 index = static_cast<int32>(adapterInfos.size() - 1);
+
+						FillAdapterInfo(index, adapterInfos[index], desc);
+					}
+				}
+			}
+
+
+			list = AdapterList(static_cast<int32>(adapterInfos.size()));
+			for (int32 i = 0; i < list.Count; i++)
+				list[i] = adapterInfos[i];
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
 		bool DX12Factory::CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const
+		{
+			return (*device) = new DX12Device(m_Factory, deviceInfo, m_DebugController != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Factory::CreateSwapchain(ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
 		{
 			return false;
 		}
@@ -44,14 +91,8 @@ namespace RayEngine
 		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo, 
 			ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
 		{
-			return false;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Factory::DestroySwapchain(const IDevice* const device, ISwapchain** swapchain) const
-		{
+			DX12Device* d = new DX12Device(m_Factory, deviceInfo, (m_DebugController != nullptr));
+			return (d != nullptr);
 		}
 
 
@@ -60,6 +101,23 @@ namespace RayEngine
 		GRAPHICS_API DX12Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D12;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12Factory& DX12Factory::operator=(DX12Factory&& other)
+		{
+			if (this != &other)
+			{
+				m_DebugController = other.m_DebugController;
+				m_Factory = other.m_Factory;
+
+				other.m_Factory = nullptr;
+				other.m_DebugController = nullptr;
+			}
+
+			return *this;
 		}
 
 
@@ -82,6 +140,51 @@ namespace RayEngine
 				return;
 
 			return;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Factory::FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC1& desc)
+		{
+			info.ApiID = adapterID;
+			info.VendorID = desc.VendorId;
+			info.DeviceID = desc.DeviceId;
+
+
+			constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
+			char str[len];
+			wcstombs(str, desc.Description, len);
+			info.ModelName = str;
+
+			info.VendorName = AdapterInfo::GetVendorString(desc.VendorId);
+
+
+			info.Flags |= ADAPTER_FLAGS_SWAPCHAIN;
+			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+				info.Flags |= ADAPTER_FLAGS_SOFTWARE;
+
+
+			//These are constants for D3D_FEATURE_LEVEL_11_0 the lowest level RayEngine supports
+			info.Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
+			info.Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
+			info.Flags |= ADAPTER_FLAGS_COMPUTE;
+			info.Flags |= ADAPTER_FLAGS_GRAPHICS;
+
+
+			info.Limits.RenderTargetCount = 8;
+
+			info.Limits.Texture1D.Width = 16384;
+			
+			info.Limits.Texture2D.Width = 16384;
+			info.Limits.Texture2D.Height = 16384;
+
+			info.Limits.Texture3D.Width = 2048;
+			info.Limits.Texture3D.Height = 2048;
+			info.Limits.Texture3D.Depth = 2048;
+
+			info.Limits.TextureCube.Width = 16384;
+			info.Limits.TextureCube.Height = 16384;
 		}
 	}
 }

@@ -18,13 +18,12 @@ namespace RayEngine
 			VKFactory(VKFactory&& other);
 			~VKFactory();
 
-			void EnumerateAdapters(AdapterInfo** adapters, int32& count) const override final;
+			void EnumerateAdapters(AdapterList& list) const override final;
 
 			bool CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const override final;
+			bool CreateSwapchain(ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const override final;
 			bool CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo,
 				ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const override final;
-
-			void DestroySwapchain(const IDevice* const device, ISwapchain** swapchain) const override final;
 
 			GRAPHICS_API GetGraphicsApi() const override final;
 			

@@ -151,24 +151,19 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKFactory::EnumerateAdapters(AdapterInfo** adapters, int32& count) const
+		void VKFactory::EnumerateAdapters(AdapterList& list) const
 		{
 			uint32 deviceCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
 			if (result != VK_SUCCESS || deviceCount == 0)
-			{
-				(*adapters) = nullptr;
-				count = 0;
 				return;
-			}
 
 
-			count = deviceCount;
-			(*adapters) = new AdapterInfo[count];
+			list = AdapterList(deviceCount);
 
 
 			std::vector<VkPhysicalDevice> devices;
-			devices.resize(count);
+			devices.resize(list.Count);
 			result = vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 			if (result != VK_SUCCESS)
 				return;
@@ -185,7 +180,7 @@ namespace RayEngine
 			};
 
 
-			for (int32 i = 0; i < count; i++)
+			for (int32 i = 0; i < list.Count; i++)
 			{
 				vkGetPhysicalDeviceFeatures(devices[i], &features);
 				vkGetPhysicalDeviceProperties(devices[i], &properties);
@@ -216,7 +211,7 @@ namespace RayEngine
 				supportFlags |= highestQueueSupport;
 
 
-				FillAdapterInfo((*adapters)[i], features, properties, i, supportFlags);
+				FillAdapterInfo(list[i], features, properties, i, supportFlags);
 			}
 		}
 
@@ -226,6 +221,17 @@ namespace RayEngine
 		bool VKFactory::CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const
 		{
 			return ((*device) = new VKDevice(m_Instance, deviceInfo)) != nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool VKFactory::CreateSwapchain(ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
+		{
+			*swapchain = nullptr;
+
+			//Not implemented for now since vulkan needs a device
+			return false;
 		}
 
 
@@ -251,20 +257,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKFactory::DestroySwapchain(const IDevice* const device, ISwapchain** swapchain) const
-		{
-			VKSwapchain* sc = reinterpret_cast<VKSwapchain*>(*swapchain);
-			sc->Release(m_Instance, reinterpret_cast<const VKDevice*>(device)->GetVkDevice());
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		GRAPHICS_API VKFactory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_VULKAN;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		VKFactory& VKFactory::operator=(VKFactory&& other)
 		{
 			if (this != &other)
@@ -408,34 +408,23 @@ namespace RayEngine
 		void VKFactory::FillAdapterInfo(AdapterInfo& info, VkPhysicalDeviceFeatures& features, 
 			VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags)
 		{
-			info.ID = id;
-			
-			switch (properties.vendorID)
-			{
-			case 0x1002: info.Vendor = "AMD"; break;
-			case 0x1010: info.Vendor = "ImgTec"; break;
-			case 0x10DE: info.Vendor = "NVIDIA"; break;
-			case 0x13B5: info.Vendor = "ARM"; break;
-			case 0x5143: info.Vendor = "Qualcomm"; break;
-			case 0x8086: info.Vendor = "INTEL"; break;
-			default: info.Vendor = "Unknown Vendor"; break;
-			}
+			info.ApiID = id;
+			info.VendorID = properties.vendorID;
+			info.DeviceID = properties.deviceID;
 
-			info.Model = properties.deviceName;
+
+			info.ModelName = properties.deviceName;
+			info.VendorName = AdapterInfo::GetVendorString(properties.vendorID);
+
 
 			if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
-				supportFlags |= ADAPTER_FLAGS_CPU;
-			else if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU)
-				supportFlags |= ADAPTER_FLAGS_VIRTUAL;
-			else if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-				supportFlags |= ADAPTER_FLAGS_DISCRETE;
-			else if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
-				supportFlags |= ADAPTER_FLAGS_INTEGRATED;
+				supportFlags |= ADAPTER_FLAGS_SOFTWARE;
 
 			if (features.geometryShader)
 				supportFlags |= ADAPTER_FLAGS_GEOMETRYSHADER;
 			if (features.tessellationShader)
-				supportFlags |= ADAPTER_FLAGS_TESSELATIONSHADER;
+				supportFlags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
+
 
 			info.Limits.Texture1D.Width = properties.limits.maxImageDimension1D;
 

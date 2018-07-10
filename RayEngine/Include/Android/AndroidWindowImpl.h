@@ -19,6 +19,7 @@ namespace RayEngine
 			AndroidWindowImpl& operator=(const AndroidWindowImpl& other) = delete;
 			AndroidWindowImpl& operator=(AndroidWindowImpl&& other) = delete;
 
+		public:
 			AndroidWindowImpl();
 			~AndroidWindowImpl();
 

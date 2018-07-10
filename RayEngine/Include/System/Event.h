@@ -12,6 +12,7 @@ namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
 		enum EVENT_TYPE : int32
 		{
 			EVENT_TYPE_UNKNOWN = 0,
@@ -32,6 +33,9 @@ namespace RayEngine
 			EVENT_TYPE_SENSORCHANGED = 15,
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		enum EVENT_RESIZE : int32
 		{
 			EVENT_RESIZE_UNKNOWN = 0,
@@ -40,6 +44,9 @@ namespace RayEngine
 			EVENT_RESIZE_MINIMIZED = 3,
 		};
 
+
+
+		/////////////////////////////////////////////////////////////
 		struct RE_API Event
 		{
 		public:

@@ -61,7 +61,7 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	void TimeStamp::SetAsSeconds(double seconds)
 	{
-		m_Nanoseconds = seconds * 1000.0 * 1000.0 * 1000.0;
+		m_Nanoseconds = static_cast<int64>(seconds * 1000.0 * 1000.0 * 1000.0);
 	}
 
 
@@ -69,7 +69,7 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	void TimeStamp::SetAsMilliSeconds(double milliseconds)
 	{
-		m_Nanoseconds = milliseconds * 1000.0  * 1000.0;
+		m_Nanoseconds = static_cast<int64>(milliseconds * 1000.0  * 1000.0);
 	}
 
 
@@ -77,7 +77,7 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	void TimeStamp::SetAsMicroSeconds(double microseconds)
 	{
-		m_Nanoseconds = microseconds * 1000.0;
+		m_Nanoseconds = static_cast<int64>(microseconds * 1000.0);
 	}
 
 
@@ -85,7 +85,7 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	void TimeStamp::SetAsNanoSeconds(double nanoseconds)
 	{
-		m_Nanoseconds = nanoseconds;
+		m_Nanoseconds = static_cast<int64>(nanoseconds);
 	}
 
 
@@ -170,7 +170,7 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	TimeStamp TimeStamp::Seconds(double seconds)
 	{
-		return TimeStamp(seconds * 1000.0 * 1000.0 * 1000.0);
+		return TimeStamp(static_cast<int64>(seconds * 1000.0 * 1000.0 * 1000.0));
 	}
 
 
@@ -178,7 +178,7 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	TimeStamp TimeStamp::MilliSeconds(double milliseconds)
 	{
-		return TimeStamp(milliseconds * 1000.0 * 1000.0);
+		return TimeStamp(static_cast<int64>(milliseconds * 1000.0 * 1000.0));
 	}
 
 
@@ -186,7 +186,7 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	TimeStamp TimeStamp::MicroSeconds(double microseconds)
 	{
-		return TimeStamp(microseconds * 1000.0);
+		return TimeStamp(static_cast<int64>(microseconds * 1000.0));
 	}
 
 
