@@ -75,11 +75,25 @@ int main(int args, char* argsv[])
 
 	factory->CreateDevice(&device, dInfo);
 
-
 	CommanQueueInfo qInfo = {};
 	ICommandQueue* queue = nullptr;
 	device->CreateCommandQueue(&queue, qInfo);
 	
+	IFence* fence = nullptr;
+	device->CreateFence(&fence);
+
+	ISwapchain* swapchain = nullptr;
+	SwapchainInfo scInfo = {};
+	scInfo.Window = &window;
+	scInfo.commandQueue = queue;
+	scInfo.Buffer.Count = 2;
+	scInfo.Buffer.Format = FORMAT_R8G8B8A8_UINT;
+	scInfo.Buffer.Width = window.GetWidth();
+	scInfo.Buffer.Height = window.GetHeight();
+
+	factory->CreateSwapchain(&swapchain, scInfo);
+
+
 	window.Show();
 
 
@@ -189,6 +203,7 @@ int main(int args, char* argsv[])
 	}
 
 
+	delete fence;
 	delete queue;
 	delete device;
 	delete factory;

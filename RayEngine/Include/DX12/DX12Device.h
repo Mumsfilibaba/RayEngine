@@ -19,6 +19,7 @@ namespace RayEngine
 			~DX12Device();
 
 			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
+			bool CreateFence(IFence** fence) const override final;
 
 			DX12Device& operator=(DX12Device&& other);
 

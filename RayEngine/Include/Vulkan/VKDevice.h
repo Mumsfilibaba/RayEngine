@@ -19,6 +19,7 @@ namespace RayEngine
 			~VKDevice();
 
 			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
+			bool CreateFence(IFence** fence) const override final;
 
 			VKDevice& operator=(VKDevice&& other);
 

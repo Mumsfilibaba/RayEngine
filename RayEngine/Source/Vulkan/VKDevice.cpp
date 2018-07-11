@@ -47,6 +47,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateFence(IFence** fence) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VKDevice& VKDevice::operator=(VKDevice&& other)
 		{
 			if (this != &other)

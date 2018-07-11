@@ -53,6 +53,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Fence::Create(ID3D12Device* device)
 		{
+			if (FAILED(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence))))
+				return;
+
+			return;
 		}
 	}
 }

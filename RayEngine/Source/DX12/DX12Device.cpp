@@ -1,5 +1,6 @@
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12CommandQueue.h"
+#include "..\..\Include\DX12\DX12Fence.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -50,6 +51,14 @@ namespace RayEngine
 		bool DX12Device::CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const
 		{
 			return ((*commandQueue = new DX12CommandQueue(m_Device, info)) != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateFence(IFence** fence) const
+		{
+			return ((*fence = new DX12Fence(m_Device)) != nullptr);
 		}
 
 

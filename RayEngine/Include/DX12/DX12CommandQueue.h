@@ -22,6 +22,8 @@ namespace RayEngine
 
 			DX12CommandQueue& operator=(DX12CommandQueue&& other);
 
+			ID3D12CommandQueue* GetCommandQueue() const;
+
 		private:
 			void Create(ID3D12Device* device, const CommanQueueInfo& info);
 

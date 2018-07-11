@@ -66,6 +66,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		ID3D12CommandQueue* DX12CommandQueue::GetCommandQueue() const
+		{
+			return m_Queue;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12CommandQueue::Create(ID3D12Device* device, const CommanQueueInfo& info)
 		{
 			//TODO: different types of commandqueues

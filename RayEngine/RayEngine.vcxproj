@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -180,12 +180,14 @@
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\DX12\DX12Fence.h" />
     <ClInclude Include="Include\DX12\DX12Swapchain.h" />
+    <ClInclude Include="Include\DX12\DX12Texture.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
     <ClInclude Include="Include\Graphics\ICommandQueue.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />
     <ClInclude Include="Include\Graphics\IFactory.h" />
     <ClInclude Include="Include\Graphics\IFence.h" />
     <ClInclude Include="Include\Graphics\ISwapchain.h" />
+    <ClInclude Include="Include\Graphics\ITexture.h" />
     <ClInclude Include="Include\Math\Color.h" />
     <ClInclude Include="Include\Math\ColorF.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
@@ -251,7 +253,9 @@
     <ClCompile Include="Source\DX12\DX12CommandQueue.cpp" />
     <ClCompile Include="Source\DX12\DX12Device.cpp" />
     <ClCompile Include="Source\DX12\DX12Factory.cpp" />
+    <ClCompile Include="Source\DX12\DX12Fence.cpp" />
     <ClCompile Include="Source\DX12\DX12Swapchain.cpp" />
+    <ClCompile Include="Source\DX12\DX12Texture.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />

@@ -210,6 +210,12 @@
     <ClInclude Include="Include\DX12\DX12Fence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Graphics\ITexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX12\DX12Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -393,6 +399,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12CommandQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX12\DX12Fence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX12\DX12Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

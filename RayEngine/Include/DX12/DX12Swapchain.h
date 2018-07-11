@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\Graphics\ISwapchain.h"
-#include "DX12Common.h"
+#include "DX12Texture.h"
 
 namespace RayEngine
 {
@@ -24,9 +24,13 @@ namespace RayEngine
 
 		private:
 			void Create(IDXGIFactory5* factory, const SwapchainInfo& info);
+			void CreateTextures();
 
 		private:
 			IDXGISwapChain1* m_Swapchain;
+			int32 m_BufferCount;
+			int32 m_CurrentBuffer;
+			std::vector<DX12Texture> m_Textures;
 		};
 	}
 }

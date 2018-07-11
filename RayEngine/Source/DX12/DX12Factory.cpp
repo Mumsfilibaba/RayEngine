@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12Swapchain.h"
 
 namespace RayEngine
 {
@@ -82,7 +83,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Factory::CreateSwapchain(ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
 		{
-			return false;
+			return (*swapchain) = new DX12Swapchain(m_Factory, swapchainInfo);
 		}
 
 

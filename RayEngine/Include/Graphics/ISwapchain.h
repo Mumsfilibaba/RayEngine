@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\System\Window.h"
+#include "ICommandQueue.h"
 
 namespace RayEngine
 {
@@ -10,6 +11,9 @@ namespace RayEngine
 		struct SwapchainInfo
 		{
 			System::Window* Window = nullptr;
+			
+			ICommandQueue* commandQueue = nullptr;
+
 			struct
 			{
 				FORMAT Format = FORMAT_UNKNOWN;

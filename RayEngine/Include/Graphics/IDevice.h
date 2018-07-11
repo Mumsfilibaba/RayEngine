@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ICommandQueue.h"
+#include "IFence.h"
 #include "AdapterInfo.h"
 
 namespace RayEngine
@@ -28,7 +29,10 @@ namespace RayEngine
 			IDevice() {}
 			virtual ~IDevice() {}
 
+			//Create a queue for graphics- and computecommands
 			virtual bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const = 0;
+			//Create a fence for synchronization between CPU and GPU
+			virtual bool CreateFence(IFence** fence) const = 0;
 		};
 	}
 }
