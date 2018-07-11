@@ -200,7 +200,7 @@ namespace RayEngine
 
 				int32 queueSupport = 0;
 				int32 highestQueueSupport = 0;
-				for (int32 j = 0; j < queueFamilies.size(); j++)
+				for (int32 j = 0; j < static_cast<int32>(queueFamilies.size()); j++)
 				{
 					CheckQueueFamilySupport(devices[i], queueFamilies[j], queueSupport);
 
@@ -304,7 +304,7 @@ namespace RayEngine
 			for (int32 i = 0; i < count; i++)
 			{
 				found = false;
-				for (int32 j = 0; j < availableLayers.size(); j++)
+				for (int32 j = 0; j < static_cast<int32>(availableLayers.size()); j++)
 				{
 					if (strcmp(neededLayers[i], availableLayers[j].layerName) == 0)
 					{
@@ -346,7 +346,7 @@ namespace RayEngine
 			for (int32 i = 0; i < count; i++)
 			{
 				found = false;
-				for (int32 j = 0; j < availableExtensions.size(); j++)
+				for (int32 j = 0; j < static_cast<int32>(availableExtensions.size()); j++)
 				{
 					if (strcmp(neededExtensions[i], availableExtensions[j].extensionName) == 0)
 					{
@@ -386,7 +386,7 @@ namespace RayEngine
 			for (int32 i = 0; i < count; i++)
 			{
 				supported = false;
-				for (int32 j = 0; j < availableExtensions.size(); j++)
+				for (int32 j = 0; j < static_cast<int32>(availableExtensions.size()); j++)
 				{
 					if (strcmp(neededExtensions[i], availableExtensions[j].extensionName) == 0)
 					{

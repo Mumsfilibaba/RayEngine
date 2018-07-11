@@ -18,6 +18,8 @@ namespace RayEngine
 			DX12Device(DX12Device&& other);
 			~DX12Device();
 
+			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
+
 			DX12Device& operator=(DX12Device&& other);
 
 		private:

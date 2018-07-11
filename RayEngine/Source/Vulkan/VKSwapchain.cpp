@@ -8,7 +8,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VKSwapchain::VKSwapchain(VkDevice device, VkPhysicalDevice adapter, VkSurfaceKHR surface, const SwapchainInfo& info)
 			: m_Swapchain(0),
-			m_Surface(0)
+			m_Surface(0),
+			m_Format()
 		{
 			Create(device, adapter, surface, info);
 		}
@@ -80,6 +81,24 @@ namespace RayEngine
 			result = vkGetPhysicalDeviceSurfacePresentModesKHR(adapter, m_Surface, &count, presentModes.data());
 			if (result != VK_SUCCESS)
 				return;
+
+
+			VkFormat format;
+			if (info.Buffer.Format == FORMAT_R8G8B8A8_UINT)
+				format = VK_FORMAT_R8G8B8A8_UNORM;
+			else if (info.Buffer.Format == FORMAT_B8G8R8A8_UINT)
+				format = VK_FORMAT_B8G8R8A8_UNORM;
+			else if (info.Buffer.Format == FORMAT_R32G32B32A32_FLOAT)
+				format = VK_FORMAT_R32G32B32A32_SFLOAT;
+
+			for (int32 i = 0; i < static_cast<int32>(formats.size()); i--)
+			{
+				if (formats[i].format == format)
+				{
+					m_Format.format = format;
+					break;
+				}
+			}
 
 			
 

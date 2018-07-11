@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ICommandQueue.h"
 #include "AdapterInfo.h"
 
 namespace RayEngine
@@ -26,6 +27,8 @@ namespace RayEngine
 		public:
 			IDevice() {}
 			virtual ~IDevice() {}
+
+			virtual bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const = 0;
 		};
 	}
 }

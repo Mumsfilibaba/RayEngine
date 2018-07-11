@@ -18,6 +18,8 @@ namespace RayEngine
 			VKDevice(VKDevice&& other);
 			~VKDevice();
 
+			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
+
 			VKDevice& operator=(VKDevice&& other);
 
 			VKSwapchain* CreateVKSwapchain(VkSurfaceKHR surface);

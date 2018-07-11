@@ -20,6 +20,7 @@ namespace RayEngine
 			void Create(VkDevice device, VkPhysicalDevice adapter, VkSurfaceKHR surface, const SwapchainInfo& info);
 
 		private:
+			VkSurfaceFormatKHR m_Format;
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;
 		};

@@ -73,11 +73,12 @@ int main(int args, char* argsv[])
 	DeviceInfo dInfo = {};
 	dInfo.Adapter = &(adapters[adapterIndex]);
 
-	ISwapchain* swapchain= nullptr;
-	SwapchainInfo scInfo = {};
-	scInfo.Window = &window;
+	factory->CreateDevice(&device, dInfo);
 
-	factory->CreateDeviceAndSwapchain(&device, dInfo, &swapchain, scInfo);
+
+	CommanQueueInfo qInfo = {};
+	ICommandQueue* queue = nullptr;
+	device->CreateCommandQueue(&queue, qInfo);
 	
 	window.Show();
 
@@ -188,7 +189,7 @@ int main(int args, char* argsv[])
 	}
 
 
-	delete swapchain;
+	delete queue;
 	delete device;
 	delete factory;
 

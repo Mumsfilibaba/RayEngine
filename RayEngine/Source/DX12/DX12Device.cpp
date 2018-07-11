@@ -1,4 +1,5 @@
 #include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12CommandQueue.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -41,6 +42,14 @@ namespace RayEngine
 
 			D3DRelease_S(m_Device);
 			D3DRelease_S(m_Adapter);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const
+		{
+			return ((*commandQueue = new DX12CommandQueue(m_Device, info)) != nullptr);
 		}
 
 

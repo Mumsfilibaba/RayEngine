@@ -39,6 +39,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VKDevice& VKDevice::operator=(VKDevice&& other)
 		{
 			if (this != &other)
