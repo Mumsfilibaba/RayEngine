@@ -186,6 +186,8 @@
     <ClInclude Include="Include\Graphics\IDevice.h" />
     <ClInclude Include="Include\Graphics\IFactory.h" />
     <ClInclude Include="Include\Graphics\IFence.h" />
+    <ClInclude Include="Include\Graphics\IShader.h" />
+    <ClInclude Include="Include\Graphics\IShaderCompiler.h" />
     <ClInclude Include="Include\Graphics\ISwapchain.h" />
     <ClInclude Include="Include\Graphics\ITexture.h" />
     <ClInclude Include="Include\Math\Color.h" />
