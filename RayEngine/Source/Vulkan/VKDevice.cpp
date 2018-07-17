@@ -55,7 +55,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateShader(IShader** shader, const ShaderByteCode & byteCode) const
+		bool VKDevice::CreateShader(IShader** shader, const ShaderByteCode& byteCode) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const
 		{
 			return false;
 		}

@@ -2,6 +2,7 @@
 
 #include "..\System\Window.h"
 #include "ICommandQueue.h"
+#include "ITexture.h"
 
 namespace RayEngine
 {
@@ -38,6 +39,8 @@ namespace RayEngine
 			ISwapchain() {}
 			virtual ~ISwapchain() {}
 
+			//Get the texture resource in the chain
+			virtual const ITexture* GetBuffer(int32 index) const = 0;
 			//Present next backbuffer to the front
 			virtual void Present() const = 0;
 		};

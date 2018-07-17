@@ -82,16 +82,27 @@ int main(int args, char* argsv[])
 	IFence* fence = nullptr;
 	device->CreateFence(&fence);
 
+	constexpr int32 bufferCount = 2;
 	ISwapchain* swapchain = nullptr;
 	SwapchainInfo scInfo = {};
 	scInfo.Window = &window;
 	scInfo.commandQueue = queue;
-	scInfo.Buffer.Count = 2;
+	scInfo.Buffer.Count = bufferCount;
 	scInfo.Buffer.Format = FORMAT_R8G8B8A8_UINT;
 	scInfo.Buffer.Width = window.GetWidth();
 	scInfo.Buffer.Height = window.GetHeight();
 
 	factory->CreateSwapchain(&swapchain, scInfo);
+
+
+	RenderTargetViewInfo rtvInfo = {};
+	IRenderTargetView* rtvs[bufferCount];
+	for (int32 i = 0; i < bufferCount; i++)
+	{
+		rtvInfo.Resource = swapchain->GetBuffer(i);
+		device->CreateRenderTargetView(&(rtvs[i]), rtvInfo);
+	}
+
 
 	IShaderCompiler* compiler = nullptr;
 	factory->CreateShaderCompiler(&compiler);

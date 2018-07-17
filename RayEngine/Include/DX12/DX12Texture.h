@@ -19,6 +19,8 @@ namespace RayEngine
 			DX12Texture(DX12Texture&& other);
 			~DX12Texture();
 
+			ID3D12Resource* GetResource() const;
+
 			DX12Texture& operator=(DX12Texture&& other);
 
 		private:

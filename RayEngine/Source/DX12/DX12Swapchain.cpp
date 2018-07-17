@@ -36,6 +36,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		const ITexture* DX12Swapchain::GetBuffer(int32 index) const
+		{
+			const DX12Texture* ptr = &m_Textures[index];
+			return reinterpret_cast<const ITexture*>(ptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Swapchain::Present() const
 		{
 		}

@@ -3,6 +3,7 @@
 #include "ICommandQueue.h"
 #include "IFence.h"
 #include "IShader.h"
+#include "IRenderTargetView.h"
 #include "AdapterInfo.h"
 
 namespace RayEngine
@@ -36,6 +37,8 @@ namespace RayEngine
 			virtual bool CreateFence(IFence** fence) const = 0;
 			//Creates a shader module for use in a pipelinestate
 			virtual bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const = 0;
+			//Creates a rendertargetview for using a texture as a rendertarget
+			virtual bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const = 0;
 		};
 	}
 }

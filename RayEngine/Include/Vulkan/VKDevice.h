@@ -21,6 +21,7 @@ namespace RayEngine
 			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
 			bool CreateFence(IFence** fence) const override final;
 			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const override final;
+			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const override final;
 
 			VKDevice& operator=(VKDevice&& other);
 

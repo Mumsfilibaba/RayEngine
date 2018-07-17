@@ -67,6 +67,13 @@ namespace RayEngine
 		class IShader
 		{
 		public:
+			IShader(IShader&& other) = delete;
+			IShader(const IShader& other) = delete;
+			IShader& operator=(IShader&& other) = delete;
+			IShader& operator=(const IShader& other) = delete;
+
+		public:
+			IShader() {}
 			virtual ~IShader() {}
 
 			virtual SHADERTYPE GetType() const = 0;

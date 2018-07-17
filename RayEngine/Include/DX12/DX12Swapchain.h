@@ -18,6 +18,7 @@ namespace RayEngine
 			DX12Swapchain(DX12Swapchain&& other);
 			~DX12Swapchain();
 
+			const ITexture* GetBuffer(int32 index) const override final;
 			void Present() const override final;
 
 			DX12Swapchain& operator=(DX12Swapchain&& other);

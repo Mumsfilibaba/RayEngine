@@ -13,6 +13,7 @@ namespace RayEngine
 			VKSwapchain(VkDevice device, VkPhysicalDevice adapter, VkSurfaceKHR surface, const SwapchainInfo& info);
 			~VKSwapchain();
 
+			const ITexture* GetBuffer(int32 index) const override final;
 			void Present() const override final;
 			void Release(VkInstance instance, VkDevice device);
 

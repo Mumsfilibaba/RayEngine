@@ -2,6 +2,7 @@
 #include "..\..\Include\DX12\DX12CommandQueue.h"
 #include "..\..\Include\DX12\DX12Fence.h"
 #include "..\..\Include\DX12\DX12Shader.h"
+#include "..\..\Include\DX12\DX12RenderTargetView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -13,7 +14,10 @@ namespace RayEngine
 		DX12Device::DX12Device(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer)
 			: m_Device(nullptr),
 			m_Adapter(nullptr),
-			m_DebugDevice(nullptr)
+			m_DebugDevice(nullptr),
+			m_ResourceHeap(),
+			m_DsvHeap(),
+			m_RtvHeap()
 		{
 			Create(factory, info, debugLayer);
 		}
@@ -24,11 +28,17 @@ namespace RayEngine
 		DX12Device::DX12Device(DX12Device&& other)
 			: m_Device(other.m_Device),
 			m_Adapter(other.m_Adapter),
-			m_DebugDevice(other.m_DebugDevice)
+			m_DebugDevice(other.m_DebugDevice),
+			m_ResourceHeap(other.m_ResourceHeap),
+			m_DsvHeap(other.m_DsvHeap),
+			m_RtvHeap(other.m_RtvHeap)
 		{
 			other.m_Device = nullptr;
 			other.m_Adapter = nullptr;
 			other.m_DebugDevice = nullptr;
+			memset(&other.m_ResourceHeap, 0, sizeof(other.m_ResourceHeap));
+			memset(&other.m_DsvHeap, 0, sizeof(other.m_DsvHeap));
+			memset(&other.m_RtvHeap, 0, sizeof(other.m_RtvHeap));
 		}
 
 
@@ -73,6 +83,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const
+		{
+			return ((*view = new DX12RenderTargetView(m_Device, m_RtvHeap, info)) != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12Device& DX12Device::operator=(DX12Device&& other)
 		{
 			if (this != &other)
@@ -80,10 +98,16 @@ namespace RayEngine
 				m_Device = other.m_Device;
 				m_Adapter = other.m_Adapter;
 				m_DebugDevice = other.m_DebugDevice;
+				m_ResourceHeap = other.m_ResourceHeap;
+				m_DsvHeap = other.m_DsvHeap;
+				m_RtvHeap = other.m_RtvHeap;
 
-				other.m_Adapter = nullptr;
 				other.m_Device = nullptr;
+				other.m_Adapter = nullptr;
 				other.m_DebugDevice = nullptr;
+				memset(&other.m_ResourceHeap, 0, sizeof(other.m_ResourceHeap));
+				memset(&other.m_DsvHeap, 0, sizeof(other.m_DsvHeap));
+				memset(&other.m_RtvHeap, 0, sizeof(other.m_RtvHeap));
 			}
 
 			return *this;
@@ -100,11 +124,42 @@ namespace RayEngine
 				{
 					if (debugLayer)
 					{
-						if (SUCCEEDED(m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice)))
+						if (FAILED(m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice)))
+						{
 							return;
+						}
 					}
+
+
+					m_ResourceHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 
+						20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_DsvHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
 				}
 			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12DescriptorHeap DX12Device::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num,
+			D3D12_DESCRIPTOR_HEAP_FLAGS flags)
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+			desc.Flags = flags;
+			desc.NodeMask = 0;
+			desc.NumDescriptors = num;
+			desc.Type = type;
+			
+			DX12DescriptorHeap heap = {};
+			if (FAILED(m_Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&heap.Heap))))
+				return DX12DescriptorHeap();
+
+			
+			heap.Count = 0;
+			heap.DescriptorSize = m_Device->GetDescriptorHandleIncrementSize(type);
+
+			return heap;
 		}
 	}
 }
