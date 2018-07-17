@@ -257,6 +257,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool VKFactory::CreateShaderCompiler(IShaderCompiler** compiler) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		GRAPHICS_API VKFactory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_VULKAN;

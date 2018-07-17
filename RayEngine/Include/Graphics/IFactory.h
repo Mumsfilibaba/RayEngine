@@ -3,6 +3,7 @@
 #include "AdapterInfo.h"
 #include "IDevice.h"
 #include "ISwapchain.h"
+#include "IShaderCompiler.h"
 
 namespace RayEngine
 {
@@ -29,6 +30,8 @@ namespace RayEngine
 			//Create a device for interaction with the graphicscard and a swapchain for presenting images to the window
 			virtual bool CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo,
 				ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const = 0;
+			//Create a object for creation of shaders
+			virtual bool CreateShaderCompiler(IShaderCompiler** compiler) const = 0;
 
 			virtual GRAPHICS_API GetGraphicsApi() const = 0;
 

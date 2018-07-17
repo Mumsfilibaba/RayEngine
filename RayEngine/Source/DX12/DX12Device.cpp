@@ -1,6 +1,7 @@
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12CommandQueue.h"
 #include "..\..\Include\DX12\DX12Fence.h"
+#include "..\..\Include\DX12\DX12Shader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -59,6 +60,14 @@ namespace RayEngine
 		bool DX12Device::CreateFence(IFence** fence) const
 		{
 			return ((*fence = new DX12Fence(m_Device)) != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateShader(IShader** shader, const ShaderByteCode& byteCode) const
+		{
+			return ((*shader = new DX12Shader(m_Device, byteCode)) != nullptr);
 		}
 
 

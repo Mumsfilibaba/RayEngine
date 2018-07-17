@@ -117,7 +117,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -179,8 +179,10 @@
     <ClInclude Include="Include\DX12\DX12Factory.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\DX12\DX12Fence.h" />
+    <ClInclude Include="Include\DX12\DX12Shader.h" />
     <ClInclude Include="Include\DX12\DX12Swapchain.h" />
     <ClInclude Include="Include\DX12\DX12Texture.h" />
+    <ClInclude Include="Include\DX12\DXShaderCompiler.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
     <ClInclude Include="Include\Graphics\ICommandQueue.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />
@@ -256,8 +258,11 @@
     <ClCompile Include="Source\DX12\DX12Device.cpp" />
     <ClCompile Include="Source\DX12\DX12Factory.cpp" />
     <ClCompile Include="Source\DX12\DX12Fence.cpp" />
+    <ClCompile Include="Source\DX12\DX12Shader.cpp" />
     <ClCompile Include="Source\DX12\DX12Swapchain.cpp" />
     <ClCompile Include="Source\DX12\DX12Texture.cpp" />
+    <ClCompile Include="Source\DX12\DXShaderCompiler.cpp" />
+    <ClCompile Include="Source\Graphics\ShaderByteCode.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />

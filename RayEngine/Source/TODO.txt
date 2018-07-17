@@ -12,13 +12,8 @@ Render triangle Vulkan
 -DX12 - Check tearing support - Vulkan (if supported by the API)
 -Set names on resources (Even if vulkan may not support it)
 -All formats in DX12, DX11 and Vulkan should be supported
+-
 
--This commit:
--Added DX12Swapchain
--Added ICommandQueue
--Added DX12CommandQueue
--Added IFence
--Added DX12Fence
 
 For later:
 -Error-Codes

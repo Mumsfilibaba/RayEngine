@@ -1,79 +1,20 @@
 #pragma once
 
 #include "IShader.h"
-#include <cstring>
+#include <string>
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		struct ShaderByteCode
+		struct ShaderCompileInfo
 		{
-		public:
-			/////////////////////////////////////////////////////////////
-			inline ShaderByteCode()
-				: Bytes(nullptr),
-				Size(0)
-			{
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline ShaderByteCode(const ShaderByteCode& other)
-				: Bytes(nullptr),
-				Size(0)
-			{
-				Size = other.Size;
-
-				Bytes = new int8[Size];
-				memcpy(Bytes, other.Bytes, Size * sizeof(int8));
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline ShaderByteCode(ShaderByteCode&& other)
-				: Bytes(other.Bytes),
-				Size(other.Size)
-			{
-				other.Bytes = nullptr;
-				other.Size = 0;
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline ~ShaderByteCode()
-			{
-				if (Bytes != nullptr)
-				{
-					delete[] Bytes;
-					Bytes = nullptr;
-				}
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline ShaderByteCode& operator=(const ShaderByteCode& other)
-			{
-				return *this;
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline ShaderByteCode& operator=(ShaderByteCode&& other)
-			{
-				return *this;
-			}
-
-		public:
-			int8* Bytes;
-			int32 Size;
+			std::string EntryPoint = "main";
+			SHADERTYPE Type = SHADERTYPE_UNKNOWN;
+			SHADER_SOURCE_LANG SrcLang = SHADER_SOURCE_LANG_UNKNOWN;
 		};
+
 
 
 
@@ -83,8 +24,8 @@ namespace RayEngine
 		public:
 			virtual ~IShaderCompiler() {}
 
-			virtual ShaderByteCode CompileFromFile() const = 0;
-			virtual ShaderByteCode CompileFromString() const = 0;
+			virtual ShaderByteCode CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info) const = 0;
+			virtual ShaderByteCode CompileFromString(const std::string& src, const ShaderCompileInfo& info) const = 0;
 		};
 	}
 }

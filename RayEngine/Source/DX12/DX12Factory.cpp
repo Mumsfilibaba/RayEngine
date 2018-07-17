@@ -3,6 +3,7 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include <vector>
 #include <cstdlib>
+#include "..\..\Include\DX12\DXShaderCompiler.h"
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12Swapchain.h"
 
@@ -94,6 +95,14 @@ namespace RayEngine
 		{
 			DX12Device* d = new DX12Device(m_Factory, deviceInfo, (m_DebugController != nullptr));
 			return (d != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Factory::CreateShaderCompiler(IShaderCompiler** compiler) const
+		{
+			return (*compiler) = new DXShaderCompiler((m_DebugController != nullptr));
 		}
 
 

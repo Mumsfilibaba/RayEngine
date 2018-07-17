@@ -93,6 +93,17 @@ int main(int args, char* argsv[])
 
 	factory->CreateSwapchain(&swapchain, scInfo);
 
+	IShaderCompiler* compiler = nullptr;
+	factory->CreateShaderCompiler(&compiler);
+
+	ShaderCompileInfo sInfo = {};
+	sInfo.EntryPoint = "main";
+	sInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
+	sInfo.Type = SHADERTYPE_VERTEX;
+	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo);
+
+	IShader* vs = nullptr;
+	device->CreateShader(&vs, vsCode);
 
 	window.Show();
 

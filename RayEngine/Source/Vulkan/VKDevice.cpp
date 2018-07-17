@@ -55,6 +55,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateShader(IShader** shader, const ShaderByteCode & byteCode) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VKDevice& VKDevice::operator=(VKDevice&& other)
 		{
 			if (this != &other)

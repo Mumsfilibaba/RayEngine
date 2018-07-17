@@ -2,6 +2,7 @@
 
 #include "ICommandQueue.h"
 #include "IFence.h"
+#include "IShader.h"
 #include "AdapterInfo.h"
 
 namespace RayEngine
@@ -33,6 +34,8 @@ namespace RayEngine
 			virtual bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const = 0;
 			//Create a fence for synchronization between CPU and GPU
 			virtual bool CreateFence(IFence** fence) const = 0;
+			//Creates a shader module for use in a pipelinestate
+			virtual bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const = 0;
 		};
 	}
 }
