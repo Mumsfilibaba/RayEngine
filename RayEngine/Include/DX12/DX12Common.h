@@ -12,8 +12,16 @@
 #define D3DRelease(IObject) IObject->Release(); IObject = nullptr
 #define D3DRelease_S(IObject) if (IObject != nullptr) { D3DRelease(IObject); }
 
+
+
+
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
+	DXGI_FORMAT ReToDXFormat(FORMAT format);
+	
+
+
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////

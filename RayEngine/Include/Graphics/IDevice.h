@@ -4,6 +4,7 @@
 #include "IFence.h"
 #include "IShader.h"
 #include "IRenderTargetView.h"
+#include "IDepthStencilView.h"
 #include "AdapterInfo.h"
 
 namespace RayEngine
@@ -39,6 +40,10 @@ namespace RayEngine
 			virtual bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const = 0;
 			//Creates a rendertargetview for using a texture as a rendertarget
 			virtual bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const = 0;
+			//Creates a rendertargetview for using a texture as a rendertarget
+			virtual bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const = 0;
+			//Creates a texture resource on the GPU
+			virtual bool CreateTexture(ITexture** texture, const TextureInfo& info) const = 0;
 		};
 	}
 }

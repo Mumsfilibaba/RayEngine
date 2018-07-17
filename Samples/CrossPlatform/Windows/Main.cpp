@@ -104,6 +104,27 @@ int main(int args, char* argsv[])
 	}
 
 
+	TextureInfo dsInfo = {};
+	dsInfo.Flags = TEXTUREFLAGS_DEPTHBUFFER;
+	dsInfo.Format = FORMAT_D16_UNORM;
+	dsInfo.TextureType = TEXTURETYPE_2D;
+	dsInfo.Width = window.GetWidth();
+	dsInfo.Height = window.GetHeight();
+	dsInfo.DepthOrArraySize = 1;
+	dsInfo.MipLevels = 1;
+	dsInfo.SampleCount = 1;
+
+	ITexture* depthStencil = nullptr;
+	device->CreateTexture(&depthStencil, dsInfo);
+
+
+	DepthStencilViewInfo dsvInfo = {};
+	dsvInfo.Resource = depthStencil;
+
+	IDepthStencilView* dsv = nullptr;
+	device->CreateDepthStencilView(&dsv, dsvInfo);
+
+
 	IShaderCompiler* compiler = nullptr;
 	factory->CreateShaderCompiler(&compiler);
 

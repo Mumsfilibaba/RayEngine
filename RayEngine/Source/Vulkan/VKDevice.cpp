@@ -71,6 +71,22 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateTexture(ITexture** texture, const TextureInfo& info) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VKDevice& VKDevice::operator=(VKDevice&& other)
 		{
 			if (this != &other)

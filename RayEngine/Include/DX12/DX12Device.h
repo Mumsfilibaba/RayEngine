@@ -22,6 +22,8 @@ namespace RayEngine
 			bool CreateFence(IFence** fence) const override final;
 			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const override final;
 			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const override final;
+			bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const override final;
+			bool CreateTexture(ITexture** texture, const TextureInfo& info) const override final;
 
 			DX12Device& operator=(DX12Device&& other);
 

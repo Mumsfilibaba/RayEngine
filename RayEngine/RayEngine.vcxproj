@@ -176,6 +176,7 @@
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
     <ClInclude Include="Include\DX12\DX12CommandQueue.h" />
     <ClInclude Include="Include\DX12\DX12Common.h" />
+    <ClInclude Include="Include\DX12\DX12DepthStencilView.h" />
     <ClInclude Include="Include\DX12\DX12Factory.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\DX12\DX12Fence.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Include\DX12\DXShaderCompiler.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
     <ClInclude Include="Include\Graphics\ICommandQueue.h" />
+    <ClInclude Include="Include\Graphics\IDepthStencilView.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />
     <ClInclude Include="Include\Graphics\IFactory.h" />
     <ClInclude Include="Include\Graphics\IFence.h" />
@@ -258,6 +260,8 @@
     <ClCompile Include="Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
     <ClCompile Include="Source\DX12\DX12CommandQueue.cpp" />
+    <ClCompile Include="Source\DX12\DX12Common.cpp" />
+    <ClCompile Include="Source\DX12\DX12DepthStencilView.cpp" />
     <ClCompile Include="Source\DX12\DX12Device.cpp" />
     <ClCompile Include="Source\DX12\DX12Factory.cpp" />
     <ClCompile Include="Source\DX12\DX12Fence.cpp" />

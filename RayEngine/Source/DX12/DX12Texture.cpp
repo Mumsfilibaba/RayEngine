@@ -97,7 +97,28 @@ namespace RayEngine
 
 			dbDesc.MipLevels = info.MipLevels;
 
-			dbDesc.Format = DXGI_FORMAT_D16_UNORM;
+			dbDesc.Format = ReToDXFormat(info.Format);
+
+
+			D3D12_CLEAR_VALUE clearValue;
+			clearValue.Format = DXGI_FORMAT_D16_UNORM;
+			clearValue.DepthStencil.Depth = 1.0f;
+			clearValue.DepthStencil.Stencil = 0;
+
+
+			D3D12_HEAP_PROPERTIES heapProp;
+			heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
+			heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+			heapProp.CreationNodeMask = 1;
+			heapProp.VisibleNodeMask = 1;
+			heapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+
+
+			if (FAILED(device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &dbDesc,
+				D3D12_RESOURCE_STATE_COMMON, &clearValue, IID_PPV_ARGS(&m_Resource))))
+			{
+				return;
+			}
 		}
 
 

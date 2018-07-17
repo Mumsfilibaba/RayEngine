@@ -3,13 +3,14 @@ Render triangle DX12
 Render triangle DX11
 Render triangle Vulkan
 
--Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
+-DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
 -DX12 - Check tearing support - Vulkan (if supported by the API)
 -Set names on resources (Even if vulkan may not support it)
 -All formats in DX12, DX11 and Vulkan should be supported
--DecsriptorHeapManager
--Vulkan referencecounting
--DX Swapchain flags for usage, format, count etc
+-DX - DecsriptorHeapManager
+-Vulkan - referencecounting
+-DX - Swapchain flags for usage, format, count etc
+-DX - ResourceView BaseClass - Very similar classes
 
 -Aquire pointers for native window etc
 -Check if system supports vulkan in factory

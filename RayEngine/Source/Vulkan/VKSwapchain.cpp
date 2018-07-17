@@ -94,7 +94,7 @@ namespace RayEngine
 			VkFormat format;
 			if (info.Buffer.Format == FORMAT_R8G8B8A8_UINT)
 				format = VK_FORMAT_R8G8B8A8_UNORM;
-			else if (info.Buffer.Format == FORMAT_B8G8R8A8_UINT)
+			else if (info.Buffer.Format == FORMAT_B8G8R8A8_UNORM)
 				format = VK_FORMAT_B8G8R8A8_UNORM;
 			else if (info.Buffer.Format == FORMAT_R32G32B32A32_FLOAT)
 				format = VK_FORMAT_R32G32B32A32_SFLOAT;

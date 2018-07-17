@@ -3,6 +3,8 @@
 #include "..\..\Include\DX12\DX12Fence.h"
 #include "..\..\Include\DX12\DX12Shader.h"
 #include "..\..\Include\DX12\DX12RenderTargetView.h"
+#include "..\..\Include\DX12\DX12DepthStencilView.h"
+#include "..\..\Include\DX12\DX12Texture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -86,6 +88,22 @@ namespace RayEngine
 		bool DX12Device::CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const
 		{
 			return ((*view = new DX12RenderTargetView(m_Device, m_RtvHeap, info)) != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const
+		{
+			return (*view = new DX12DepthStencilView(m_Device, m_DsvHeap, info));
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateTexture(ITexture** texture, const TextureInfo& info) const
+		{
+			return ((*texture = new DX12Texture(m_Device, info)) != nullptr);
 		}
 
 
