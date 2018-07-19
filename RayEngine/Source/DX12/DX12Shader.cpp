@@ -36,5 +36,13 @@ namespace RayEngine
 		{
 			return m_Type;
 		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const D3D12_SHADER_BYTECODE& DX12Shader::GetDX12ByteCode() const
+		{
+			return m_Shader;
+		}
 	}
 }

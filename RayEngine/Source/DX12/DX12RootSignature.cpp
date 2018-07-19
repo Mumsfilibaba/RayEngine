@@ -71,52 +71,29 @@ namespace RayEngine
 			std::vector<D3D12_ROOT_PARAMETER1> params;
 			params.resize(info.ParameterCount);
 
+
+			//TODO: Different types
 			for (int32 i = 0; i < info.ParameterCount; i++)
 			{
+				D3D12_DESCRIPTOR_RANGE1 range = {};
+				range.NumDescriptors = 1;
+				range.RegisterSpace = 0;
+				range.Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC;
+				range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+				range.BaseShaderRegister = info.Parameters[i].ShaderRegister;
+				
+				if (info.Parameters[i].ViewType == VIEW_TYPE_UNIFORMBUFFER)
+					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+				else if (info.Parameters[i].ViewType == VIEW_TYPE_TEXTURE)
+					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+				else if (info.Parameters[i].ViewType == VIEW_TYPE_SAMPLER)
+					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+
+
 				D3D12_ROOT_PARAMETER1 parameter = {};
-
-				if (info.Parameters[i].VariableType == PARAMETER_TYPE_DESCRIPTOR_TABLE)
-				{
-					parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-
-					D3D12_DESCRIPTOR_RANGE1 range = {};
-					if (info.Parameters[i].DescriptorTable.ViewType == VIEW_TYPE_UNIFORMBUFFER)
-						range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-					else if (info.Parameters[i].DescriptorTable.ViewType == VIEW_TYPE_TEXTURE)
-						range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-					else if (info.Parameters[i].DescriptorTable.ViewType == VIEW_TYPE_SAMPLER)
-						range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
-
-					range.NumDescriptors = info.Parameters[i].DescriptorTable.Count;
-					range.BaseShaderRegister = info.Parameters[i].ShaderRegister;
-					
-					range.RegisterSpace = 0;
-					range.Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC;
-					range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-
-					parameter.DescriptorTable = { 1, &range };
-				}
-				else if (info.Parameters[i].VariableType == PARAMETER_TYPE_VIEW)
-				{
-					if (info.Parameters[i].View.ViewType == VIEW_TYPE_UNIFORMBUFFER)
-						parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-					else if (info.Parameters[i].View.ViewType == VIEW_TYPE_TEXTURE)
-						parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-
-					parameter.Descriptor.RegisterSpace = 0;
-
-					parameter.Descriptor.ShaderRegister = info.Parameters[i].ShaderRegister;
-				}
-				else if (info.Parameters[i].VariableType == PARAMETER_TYPE_CONSTANT)
-				{
-					parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
-					
-					parameter.Constants.RegisterSpace = 0;
-
-					parameter.Constants.ShaderRegister = info.Parameters[i].ShaderRegister;
-					parameter.Constants.Num32BitValues = info.Parameters[i].Constant.Count;
-				}
+				parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+				parameter.DescriptorTable = { 1, &range };
 
 
 				if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_ALL)

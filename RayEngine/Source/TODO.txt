@@ -3,14 +3,16 @@ Render triangle DX12
 Render triangle DX11
 Render triangle Vulkan
 
+-All formats in DX12, DX11 and Vulkan should be supported
+-DX12 - DecsriptorHeapManager
+-DX12 - Different versions of the parametertype for the shader in the rootsignature
+-DX12 - ResourceView BaseClass - Viewclasses very similar
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
 -DX12 - Check tearing support - Vulkan (if supported by the API)
+-DX12 - Merge Rootsignature and pipelinestate
 -Set names on resources (Even if vulkan may not support it)
--All formats in DX12, DX11 and Vulkan should be supported
--DX - DecsriptorHeapManager
 -Vulkan - referencecounting
--DX - Swapchain flags for usage, format, count etc
--DX - ResourceView BaseClass - Viewclasses very similar
+-DX12 - Swapchain flags for usage, format, count etc
 
 -Static version - Better performance?
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "..\Defines.h"
 #include "..\Types.h"
 #include "IShader.h"
@@ -20,7 +21,40 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		struct RasterizerInfo
+		enum ELEMENT_STEP_TYPE : int32
+		{
+			ELEMENT_STEP_TYPE_UNKNOWN = 0,
+			ELEMENT_STEP_TYPE_VERTEX = 1,
+			ELEMENT_STEP_TYPE_INSTANCE = 2,
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		struct InputElementInfo
+		{
+			std::string Semantic;
+			int32 SemanticIndex = 0;
+			FORMAT Format = FORMAT_UNKNOWN;
+			ELEMENT_STEP_TYPE StepType = ELEMENT_STEP_TYPE_UNKNOWN;
+			int32 DataStepRate = 0;
+			int32 InputSlot = 0;
+			int32 ElementOffset = 0;
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		struct InputLayoutInfo
+		{
+			InputElementInfo* Elements = nullptr;
+			int32 ElementCount = 0;
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		struct RasterizerStateInfo
 		{
 
 		};
@@ -28,7 +62,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		struct DepthStencilInfo
+		struct DepthStencilStateInfo
 		{
 
 		};
@@ -36,7 +70,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		struct BlendInfo
+		struct BlendStateInfo
 		{
 
 		};
@@ -58,12 +92,13 @@ namespace RayEngine
 				
 				struct
 				{
-					RasterizerInfo RasterizerState;
-					DepthStencilInfo DepthStencilState;
-					BlendInfo BlendState;
+					InputLayoutInfo InputLayout;
+					RasterizerStateInfo RasterizerState;
+					DepthStencilStateInfo DepthStencilState;
+					BlendStateInfo BlendState;
 					IShader* VertexShader = nullptr;
 					IShader* HullShader = nullptr;
-					IShader* DomainShadr = nullptr;
+					IShader* DomainShader = nullptr;
 					IShader* GeometryShader = nullptr;
 					IShader* PixelShader = nullptr;
 				} GraphicsPipeline;
@@ -84,6 +119,9 @@ namespace RayEngine
 		public:
 			IPipelineState() {}
 			virtual ~IPipelineState() {}
+
+			//Get type
+			virtual PIPELINETYPE GetPipelineType() const = 0;
 		};
 	}
 }

@@ -19,6 +19,8 @@ namespace RayEngine
 
 			SHADERTYPE GetType() const override final;
 
+			const D3D12_SHADER_BYTECODE& GetDX12ByteCode() const;
+
 		private:
 			SHADERTYPE m_Type;
 			D3D12_SHADER_BYTECODE m_Shader;

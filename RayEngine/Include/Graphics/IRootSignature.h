@@ -8,17 +8,6 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		enum PARAMETER_TYPE : int32
-		{
-			PARAMETER_TYPE_UNKNOWN = 0,
-			PARAMETER_TYPE_DESCRIPTOR_TABLE = 1,
-			PARAMETER_TYPE_VIEW = 2,
-			PARAMETER_TYPE_CONSTANT = 3
-		};
-
-
-
-		/////////////////////////////////////////////////////////////
 		enum VIEW_TYPE : int32
 		{
 			VIEW_TYPE_UNKNOWN = 0,
@@ -60,28 +49,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct ShaderParameter
 		{
-			PARAMETER_TYPE VariableType = PARAMETER_TYPE_UNKNOWN;
 			SHADER_VISIBILITY ShaderVisibility = SHADER_VISIBILITY_UNKNOWN;
 			int32 ShaderRegister = 0;
-			
-			union
-			{
-				struct
-				{
-					VIEW_TYPE ViewType = VIEW_TYPE_UNKNOWN;
-					int32 Count = 0;
-				} DescriptorTable;
-
-				struct
-				{
-					VIEW_TYPE ViewType = VIEW_TYPE_UNKNOWN;
-				} View;
-
-				struct
-				{
-					int32 Count = 0;
-				} Constant;
-			};
+			VIEW_TYPE ViewType = VIEW_TYPE_UNKNOWN;
 		};
 
 

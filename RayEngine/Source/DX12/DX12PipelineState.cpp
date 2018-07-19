@@ -1,3 +1,4 @@
+#include <vector>
 #include "..\..\Include\DX12\DX12RootSignature.h"
 #include "..\..\Include\DX12\DX12PipelineState.h"
 
@@ -7,7 +8,8 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12PipelineState::DX12PipelineState(ID3D12Device* device, const PipelineStateInfo& info)
-			: m_PipelineState(nullptr)
+			: m_PipelineState(nullptr),
+			m_Type(PIPELINETYPE_UNKNOWN)
 		{
 			Create(device, info);
 		}
@@ -16,9 +18,11 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12PipelineState::DX12PipelineState(DX12PipelineState&& other)
-			: m_PipelineState(other.m_PipelineState)
+			: m_PipelineState(other.m_PipelineState),
+			m_Type(other.m_Type)
 		{
 			other.m_PipelineState = nullptr;
+			other.m_Type = PIPELINETYPE_UNKNOWN;
 		}
 
 
@@ -32,6 +36,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		PIPELINETYPE DX12PipelineState::GetPipelineType() const
+		{
+			return m_Type;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12PipelineState& DX12PipelineState::operator=(DX12PipelineState&& other)
 		{
 			if (this != &other)
@@ -39,7 +51,10 @@ namespace RayEngine
 				D3DRelease_S(m_PipelineState);
 
 				m_PipelineState = other.m_PipelineState;
+				m_Type = other.m_Type;
+
 				other.m_PipelineState = nullptr;
+				other.m_Type = PIPELINETYPE_UNKNOWN;
 			}
 
 			return *this;
@@ -63,62 +78,42 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::CreateGraphicsState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info)
 		{
-			D3D12_RASTERIZER_DESC rasterizerState = {};
-			rasterizerState.AntialiasedLineEnable = false;
-			rasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
-			rasterizerState.CullMode = D3D12_CULL_MODE_BACK;
-			rasterizerState.DepthBias = 0;
-			rasterizerState.DepthBiasClamp = 0.0f;
-			rasterizerState.DepthClipEnable = true;
-			rasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-			rasterizerState.ForcedSampleCount = 0;
-			rasterizerState.FrontCounterClockwise = false;
-			rasterizerState.MultisampleEnable = false;
-			rasterizerState.SlopeScaledDepthBias = 0.0f;
+			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
+			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
 
-			D3D12_BLEND_DESC blendState = {};
-			blendState.AlphaToCoverageEnable = false;
-			blendState.IndependentBlendEnable = false;
-			blendState.RenderTarget[0].BlendEnable = false;
-			blendState.RenderTarget[0].LogicOpEnable = false;
-			blendState.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-			blendState.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
-			blendState.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
-			blendState.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-			blendState.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-			blendState.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
-			blendState.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
-			blendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
-			D3D12_DEPTH_STENCIL_DESC depthStencilState = {};
-			depthStencilState.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-			depthStencilState.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-			depthStencilState.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-			depthStencilState.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-			depthStencilState.FrontFace = depthStencilState.BackFace;
-			depthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-			depthStencilState.DepthEnable = true;
-			depthStencilState.StencilEnable = false;
-			depthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-			depthStencilState.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
-			depthStencilState.StencilWriteMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+			for (int32 i = 0; i < inputLayout.size(); i++)
+				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.Elements[i]);
 
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc;
 			memset(&pDesc, 0, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-			pDesc.pRootSignature = rootSignature;
-			pDesc.VS = vs;
-			pDesc.PS = ps;
-			pDesc.InputLayout = { iDescs, _countof(iDescs) };
-			pDesc.RasterizerState = rasterizerState;
-			pDesc.BlendState = blendState;
-			pDesc.DepthStencilState = depthStencilState;
-			pDesc.SampleMask = UINT_MAX;
-			pDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+			
+			//TODO: Fix rendertarget count etc
 			pDesc.NumRenderTargets = 1;
 			pDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 			pDesc.DSVFormat = DXGI_FORMAT_D16_UNORM;
 			pDesc.SampleDesc.Count = 1;
 
+			pDesc.SampleMask = UINT_MAX;
+			pDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+			
+			pDesc.pRootSignature = rootSignature;
+
+			pDesc.InputLayout.pInputElementDescs = inputLayout.data();
+			pDesc.InputLayout.NumElements = inputLayout.size();
+
+			//TODO: Make sure shader is of correct type
+			SetShaderByteCode(pDesc.VS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.VertexShader));
+			SetShaderByteCode(pDesc.HS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.HullShader));
+			SetShaderByteCode(pDesc.DS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.DomainShader));
+			SetShaderByteCode(pDesc.GS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.GeometryShader));
+			SetShaderByteCode(pDesc.PS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.PixelShader));
+			
+			SetRasterizerDesc(pDesc.RasterizerState, info.GraphicsPipeline.RasterizerState);
+
+			SetDepthStencilDesc(pDesc.DepthStencilState, info.GraphicsPipeline.DepthStencilState);
+
+			SetBlendDesc(pDesc.BlendState, info.GraphicsPipeline.BlendState);
+	
 			if (FAILED(device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(&m_PipelineState))))
 				return;
 		}
@@ -128,6 +123,95 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::CreateComputeState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info)
 		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader)
+		{
+			byteCode.BytecodeLength = shader->GetDX12ByteCode().BytecodeLength;
+			byteCode.pShaderBytecode = shader->GetDX12ByteCode().pShaderBytecode;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementInfo& element)
+		{
+			desc.SemanticName = element.Semantic.c_str();
+			desc.SemanticIndex = element.SemanticIndex;
+
+			desc.Format = ReToDXFormat(element.Format);
+
+			desc.InputSlot = element.InputSlot;
+
+			desc.AlignedByteOffset = element.ElementOffset;
+			
+			if (element.StepType == ELEMENT_STEP_TYPE_VERTEX)
+				desc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+			else if (element.StepType == ELEMENT_STEP_TYPE_INSTANCE)
+				desc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
+
+			desc.InstanceDataStepRate = element.DataStepRate;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateInfo& info)
+		{
+			//TODO: Actually set the rasterizerdesc
+			desc.AntialiasedLineEnable = false;
+			desc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+			desc.CullMode = D3D12_CULL_MODE_BACK;
+			desc.DepthBias = 0;
+			desc.DepthBiasClamp = 0.0f;
+			desc.DepthClipEnable = true;
+			desc.FillMode = D3D12_FILL_MODE_SOLID;
+			desc.ForcedSampleCount = 0;
+			desc.FrontCounterClockwise = false;
+			desc.MultisampleEnable = false;
+			desc.SlopeScaledDepthBias = 0.0f;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateInfo& info)
+		{
+			//TODO: Actually set the rasterizerdesc
+			desc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+			desc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+			desc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+			desc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+			desc.FrontFace = desc.BackFace;
+			desc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+			desc.DepthEnable = true;
+			desc.StencilEnable = false;
+			desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+			desc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+			desc.StencilWriteMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info)
+		{
+			//TODO: Actually set the blenddesc
+			desc.AlphaToCoverageEnable = false;
+			desc.IndependentBlendEnable = false;
+			desc.RenderTarget[0].BlendEnable = false;
+			desc.RenderTarget[0].LogicOpEnable = false;
+			desc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+			desc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
+			desc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+			desc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+			desc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+			desc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+			desc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+			desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		}
 	}
 }
