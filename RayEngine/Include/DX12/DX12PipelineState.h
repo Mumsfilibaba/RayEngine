@@ -22,6 +22,8 @@ namespace RayEngine
 
 		private:
 			void Create(ID3D12Device* device, const PipelineStateInfo& info);
+			void CreateGraphicsState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info);
+			void CreateComputeState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info);
 
 		private:
 			ID3D12PipelineState* m_PipelineState;

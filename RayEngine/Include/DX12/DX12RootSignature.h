@@ -18,6 +18,8 @@ namespace RayEngine
 			DX12RootSignature(DX12RootSignature&& other);
 			~DX12RootSignature();
 
+			ID3D12RootSignature* GetRootSignature() const;
+
 			DX12RootSignature& operator=(DX12RootSignature&& other);
 
 		private:

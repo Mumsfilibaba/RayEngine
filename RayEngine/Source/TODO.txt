@@ -10,7 +10,9 @@ Render triangle Vulkan
 -DX - DecsriptorHeapManager
 -Vulkan - referencecounting
 -DX - Swapchain flags for usage, format, count etc
--DX - ResourceView BaseClass - Very similar classes
+-DX - ResourceView BaseClass - Viewclasses very similar
+
+-Static version - Better performance?
 
 -Aquire pointers for native window etc
 -Check if system supports vulkan in factory

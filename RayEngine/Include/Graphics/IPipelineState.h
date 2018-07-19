@@ -10,14 +10,64 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		enum PIPELINETYPE : int32
+		{
+			PIPELINETYPE_UNKNOWN = 0,
+			PIPELINETYPE_GRAPHICS = 1,
+			PIPELINETYPE_COMPUTE = 2,
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		struct RasterizerInfo
+		{
+
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		struct DepthStencilInfo
+		{
+
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		struct BlendInfo
+		{
+
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
 		struct PipelineStateInfo
 		{
+			PIPELINETYPE Type = PIPELINETYPE_UNKNOWN;
 			IRootSignature* RootSignature = nullptr;
-			IShader* VertexShader = nullptr;
-			IShader* HullShader = nullptr;
-			IShader* DomainShadr = nullptr;
-			IShader* GeometryShader = nullptr;
-			IShader* PixelShader = nullptr;
+
+			union
+			{
+				struct
+				{
+					IShader* ComputeShader = nullptr;
+				} ComputePipeline;
+				
+				struct
+				{
+					RasterizerInfo RasterizerState;
+					DepthStencilInfo DepthStencilState;
+					BlendInfo BlendState;
+					IShader* VertexShader = nullptr;
+					IShader* HullShader = nullptr;
+					IShader* DomainShadr = nullptr;
+					IShader* GeometryShader = nullptr;
+					IShader* PixelShader = nullptr;
+				} GraphicsPipeline;
+			};
 		};
 
 

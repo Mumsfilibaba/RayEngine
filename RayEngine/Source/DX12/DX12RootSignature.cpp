@@ -1,3 +1,5 @@
+#include <string>
+#include <vector>
 #include "..\..\Include\DX12\DX12RootSignature.h"
 
 namespace RayEngine
@@ -31,6 +33,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		ID3D12RootSignature* DX12RootSignature::GetRootSignature() const
+		{
+			return m_RootSignature;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12RootSignature& DX12RootSignature::operator=(DX12RootSignature&& other)
 		{
 			if (this != &other)
@@ -49,6 +59,130 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12RootSignature::Create(ID3D12Device* device, const RootSignatureInfo& info)
 		{
+			using namespace Microsoft::WRL;
+
+			D3D12_FEATURE_DATA_ROOT_SIGNATURE feature = {};
+			feature.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
+
+			if (FAILED(device->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &feature, sizeof(D3D12_FEATURE_DATA_ROOT_SIGNATURE))))
+				return;
+
+
+			std::vector<D3D12_ROOT_PARAMETER1> params;
+			params.resize(info.ParameterCount);
+
+			for (int32 i = 0; i < info.ParameterCount; i++)
+			{
+				D3D12_ROOT_PARAMETER1 parameter = {};
+
+				if (info.Parameters[i].VariableType == PARAMETER_TYPE_DESCRIPTOR_TABLE)
+				{
+					parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+
+					D3D12_DESCRIPTOR_RANGE1 range = {};
+					if (info.Parameters[i].DescriptorTable.ViewType == VIEW_TYPE_UNIFORMBUFFER)
+						range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+					else if (info.Parameters[i].DescriptorTable.ViewType == VIEW_TYPE_TEXTURE)
+						range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+					else if (info.Parameters[i].DescriptorTable.ViewType == VIEW_TYPE_SAMPLER)
+						range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+
+					range.NumDescriptors = info.Parameters[i].DescriptorTable.Count;
+					range.BaseShaderRegister = info.Parameters[i].ShaderRegister;
+					
+					range.RegisterSpace = 0;
+					range.Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC;
+					range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+
+					parameter.DescriptorTable = { 1, &range };
+				}
+				else if (info.Parameters[i].VariableType == PARAMETER_TYPE_VIEW)
+				{
+					if (info.Parameters[i].View.ViewType == VIEW_TYPE_UNIFORMBUFFER)
+						parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+					else if (info.Parameters[i].View.ViewType == VIEW_TYPE_TEXTURE)
+						parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+
+					parameter.Descriptor.RegisterSpace = 0;
+
+					parameter.Descriptor.ShaderRegister = info.Parameters[i].ShaderRegister;
+				}
+				else if (info.Parameters[i].VariableType == PARAMETER_TYPE_CONSTANT)
+				{
+					parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+					
+					parameter.Constants.RegisterSpace = 0;
+
+					parameter.Constants.ShaderRegister = info.Parameters[i].ShaderRegister;
+					parameter.Constants.Num32BitValues = info.Parameters[i].Constant.Count;
+				}
+
+
+				if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_ALL)
+					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_VERTEX)
+					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_HULL)
+					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_HULL;
+				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_DOMAIN)
+					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_DOMAIN;
+				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_GEOMETRY)
+					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_GEOMETRY;
+				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_PIXEL)
+					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+
+				params.push_back(parameter);
+			}
+
+
+			D3D12_ROOT_SIGNATURE_DESC1 rDesc = {};
+			memset(&rDesc, 0, sizeof(D3D12_ROOT_SIGNATURE_DESC));
+
+			rDesc.NumParameters = params.size();
+			rDesc.pParameters = params.data();
+
+			//TODO: Static samplers
+
+			if (info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT)
+				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER))
+				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS;
+
+			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_HULL_SHADER))
+				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
+
+			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_DOMAIN_SHADER))
+				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
+
+			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_GEOMETRY_SHADER))
+				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+
+			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER))
+				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+
+			
+			D3D12_VERSIONED_ROOT_SIGNATURE_DESC vrsDesc = {};
+			vrsDesc.Version = feature.HighestVersion;
+			vrsDesc.Desc_1_1 = rDesc;
+
+
+			ComPtr<ID3DBlob> error;
+			ComPtr<ID3DBlob> rSign;
+			if (FAILED(D3D12SerializeVersionedRootSignature(&vrsDesc, &rSign, &error)))
+			{
+				std::string err = reinterpret_cast<char*>(error->GetBufferPointer());
+				return;
+			}
+
+
+			if (FAILED(device->CreateRootSignature(0, rSign->GetBufferPointer(), 
+				rSign->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature))))
+			{
+				return;
+			}
 		}
 	}
 }
