@@ -11,9 +11,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct SwapchainInfo
 		{
-			System::Window* Window = nullptr;
+			System::Window* pWindow = nullptr;
 			
-			ICommandQueue* commandQueue = nullptr;
+			ICommandQueue* pCommandQueue = nullptr;
 
 			struct
 			{

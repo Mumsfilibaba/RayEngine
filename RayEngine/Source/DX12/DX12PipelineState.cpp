@@ -65,7 +65,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::Create(ID3D12Device* device, const PipelineStateInfo& info)
 		{
-			const DX12RootSignature* rootSignature = reinterpret_cast<const DX12RootSignature*>(info.RootSignature);
+			const DX12RootSignature* rootSignature = reinterpret_cast<const DX12RootSignature*>(info.pRootSignature);
 
 			if (info.Type == PIPELINETYPE_GRAPHICS)
 				CreateGraphicsState(device, rootSignature->GetRootSignature(), info);
@@ -82,7 +82,7 @@ namespace RayEngine
 			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
 
 			for (int32 i = 0; i < inputLayout.size(); i++)
-				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.Elements[i]);
+				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.pElements[i]);
 
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc;
 			memset(&pDesc, 0, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -99,14 +99,14 @@ namespace RayEngine
 			pDesc.pRootSignature = rootSignature;
 
 			pDesc.InputLayout.pInputElementDescs = inputLayout.data();
-			pDesc.InputLayout.NumElements = inputLayout.size();
+			pDesc.InputLayout.NumElements = static_cast<uint32>(inputLayout.size());
 
 			//TODO: Make sure shader is of correct type
-			SetShaderByteCode(pDesc.VS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.VertexShader));
-			SetShaderByteCode(pDesc.HS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.HullShader));
-			SetShaderByteCode(pDesc.DS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.DomainShader));
-			SetShaderByteCode(pDesc.GS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.GeometryShader));
-			SetShaderByteCode(pDesc.PS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.PixelShader));
+			SetShaderByteCode(pDesc.VS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pVertexShader));
+			SetShaderByteCode(pDesc.HS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pHullShader));
+			SetShaderByteCode(pDesc.DS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pDomainShader));
+			SetShaderByteCode(pDesc.GS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pGeometryShader));
+			SetShaderByteCode(pDesc.PS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pPixelShader));
 			
 			SetRasterizerDesc(pDesc.RasterizerState, info.GraphicsPipeline.RasterizerState);
 
@@ -202,6 +202,7 @@ namespace RayEngine
 			//TODO: Actually set the blenddesc
 			desc.AlphaToCoverageEnable = false;
 			desc.IndependentBlendEnable = false;
+
 			desc.RenderTarget[0].BlendEnable = false;
 			desc.RenderTarget[0].LogicOpEnable = false;
 			desc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;

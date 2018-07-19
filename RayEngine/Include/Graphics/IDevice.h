@@ -5,6 +5,8 @@
 #include "IShader.h"
 #include "IRenderTargetView.h"
 #include "IDepthStencilView.h"
+#include "IRootSignature.h"
+#include "IPipelineState.h"
 #include "AdapterInfo.h"
 
 namespace RayEngine
@@ -14,7 +16,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct DeviceInfo
 		{
-			AdapterInfo* Adapter = nullptr;
+			AdapterInfo* pAdapter = nullptr;
 		};
 
 
@@ -33,17 +35,21 @@ namespace RayEngine
 			virtual ~IDevice() {}
 
 			//Create a queue for graphics- and computecommands
-			virtual bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const = 0;
+			virtual bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommanQueueInfo& info) const = 0;
 			//Create a fence for synchronization between CPU and GPU
-			virtual bool CreateFence(IFence** fence) const = 0;
+			virtual bool CreateFence(IFence** ppFence) const = 0;
 			//Creates a shader module for use in a pipelinestate
-			virtual bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const = 0;
+			virtual bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) const = 0;
 			//Creates a rendertargetview for using a texture as a rendertarget
-			virtual bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const = 0;
+			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) const = 0;
 			//Creates a rendertargetview for using a texture as a rendertarget
-			virtual bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const = 0;
+			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) const = 0;
 			//Creates a texture resource on the GPU
-			virtual bool CreateTexture(ITexture** texture, const TextureInfo& info) const = 0;
+			virtual bool CreateTexture(ITexture** ppTexture, const TextureInfo& info) const = 0;
+			//Creates a shader rootsignature
+			virtual bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const = 0;
+			//Create a pipelinestate
+			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const = 0;
 		};
 	}
 }

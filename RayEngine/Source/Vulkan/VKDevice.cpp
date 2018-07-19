@@ -87,6 +87,22 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VKDevice& VKDevice::operator=(VKDevice&& other)
 		{
 			if (this != &other)
@@ -136,7 +152,7 @@ namespace RayEngine
 				return;
 
 
-			m_Adapter = adapters[deviceInfo.Adapter->ApiID];
+			m_Adapter = adapters[deviceInfo.pAdapter->ApiID];
 
 			uint32 queueFamilyCount = 0;
 			vkGetPhysicalDeviceQueueFamilyProperties(m_Adapter, &queueFamilyCount, nullptr);

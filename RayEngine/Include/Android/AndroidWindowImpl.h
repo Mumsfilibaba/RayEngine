@@ -28,9 +28,9 @@ namespace RayEngine
 			void Show() const override final;
 
 			void PeekEvents() override final;
-			void PushEvent(const Event& pEvent) override final;
-			bool PopEvent(Event& pEvent) override final;
-			void GetEvent(Event& pEvent) override final;
+			void PushEvent(const Event& event) override final;
+			bool PopEvent(Event& event) override final;
+			void GetEvent(Event& event) override final;
 			void SendQuitEvent(int32 exitCode) const override final;
 
 			void SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY) override final;

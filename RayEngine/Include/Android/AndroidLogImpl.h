@@ -21,7 +21,7 @@ namespace RayEngine
 			~AndroidLogImpl();
 
 			//Log something to the platforms log (Console - Win32, LogCat - Android) - Also saves the log in a buffer
-			void Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const override final;
+			void Write(LOG_SEVERITY severity, const Tchar* pText, va_list args) const override final;
 		};
 	}
 }

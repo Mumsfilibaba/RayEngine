@@ -84,8 +84,8 @@ namespace RayEngine
 			desc.Flags = 0;
 
 			//COMMANQUEUE??
-			HWND hWnd = reinterpret_cast<const System::Win32WindowImpl*>(info.Window->GetImplementation())->GetHWND();
-			ID3D12CommandQueue* queue = reinterpret_cast<DX12CommandQueue*>(info.commandQueue)->GetCommandQueue();
+			HWND hWnd = reinterpret_cast<const System::Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
+			ID3D12CommandQueue* queue = reinterpret_cast<DX12CommandQueue*>(info.pCommandQueue)->GetCommandQueue();
 			
 			if (FAILED(factory->CreateSwapChainForHwnd(queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain)))
 				return;

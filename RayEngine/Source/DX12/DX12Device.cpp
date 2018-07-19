@@ -4,6 +4,8 @@
 #include "..\..\Include\DX12\DX12Shader.h"
 #include "..\..\Include\DX12\DX12RenderTargetView.h"
 #include "..\..\Include\DX12\DX12DepthStencilView.h"
+#include "..\..\Include\DX12\DX12RootSignature.h"
+#include "..\..\Include\DX12\DX12PipelineState.h"
 #include "..\..\Include\DX12\DX12Texture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -109,6 +111,22 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const
+		{
+			return ((*ppRootSignature = new DX12RootSignature(m_Device, info)));
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const
+		{
+			return ((*ppPipelineState = new DX12PipelineState(m_Device, info)));
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12Device& DX12Device::operator=(DX12Device&& other)
 		{
 			if (this != &other)
@@ -136,7 +154,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Device::Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer)
 		{
-			if (SUCCEEDED(factory->EnumAdapters1(info.Adapter->ApiID, &m_Adapter)))
+			if (SUCCEEDED(factory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter)))
 			{
 				if (SUCCEEDED(D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device))))
 				{

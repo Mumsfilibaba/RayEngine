@@ -241,7 +241,7 @@ namespace RayEngine
 			const SwapchainInfo& swapchainInfo) const
 		{
 			VkSurfaceKHR surface = 0;
-			VkResult result = VulkanCreateSwapchainSurface(m_Instance, &surface, swapchainInfo.Window->GetImplementation());
+			VkResult result = VulkanCreateSwapchainSurface(m_Instance, &surface, swapchainInfo.pWindow->GetImplementation());
 			if (result != VK_SUCCESS)
 				return false;
 			

@@ -13,4 +13,4 @@
 
 
 /////////////////////////////////////////////////////////////
-extern VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* surface, const RayEngine::System::IWindowImpl* window);
+extern VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* pSurface, const RayEngine::System::IWindowImpl* pWindow);

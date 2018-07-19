@@ -12,6 +12,7 @@ namespace RayEngine
 		struct RenderTargetViewInfo
 		{
 			const ITexture* Resource = nullptr;
+			FORMAT Format = FORMAT_UNKNOWN;
 		};
 
 

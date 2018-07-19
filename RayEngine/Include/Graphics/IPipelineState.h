@@ -47,7 +47,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct InputLayoutInfo
 		{
-			InputElementInfo* Elements = nullptr;
+			InputElementInfo* pElements = nullptr;
 			int32 ElementCount = 0;
 		};
 
@@ -81,13 +81,13 @@ namespace RayEngine
 		struct PipelineStateInfo
 		{
 			PIPELINETYPE Type = PIPELINETYPE_UNKNOWN;
-			IRootSignature* RootSignature = nullptr;
+			IRootSignature* pRootSignature = nullptr;
 
 			union
 			{
 				struct
 				{
-					IShader* ComputeShader = nullptr;
+					IShader* pComputeShader = nullptr;
 				} ComputePipeline;
 				
 				struct
@@ -96,11 +96,11 @@ namespace RayEngine
 					RasterizerStateInfo RasterizerState;
 					DepthStencilStateInfo DepthStencilState;
 					BlendStateInfo BlendState;
-					IShader* VertexShader = nullptr;
-					IShader* HullShader = nullptr;
-					IShader* DomainShader = nullptr;
-					IShader* GeometryShader = nullptr;
-					IShader* PixelShader = nullptr;
+					IShader* pVertexShader = nullptr;
+					IShader* pHullShader = nullptr;
+					IShader* pDomainShader = nullptr;
+					IShader* pGeometryShader = nullptr;
+					IShader* pPixelShader = nullptr;
 				} GraphicsPipeline;
 			};
 		};

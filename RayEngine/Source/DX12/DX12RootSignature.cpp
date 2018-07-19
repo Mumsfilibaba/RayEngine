@@ -73,6 +73,7 @@ namespace RayEngine
 
 
 			//TODO: Different types
+			//TODO: Multiple Descriptors
 			for (int32 i = 0; i < info.ParameterCount; i++)
 			{
 				D3D12_DESCRIPTOR_RANGE1 range = {};
@@ -81,13 +82,13 @@ namespace RayEngine
 				range.Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC;
 				range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-				range.BaseShaderRegister = info.Parameters[i].ShaderRegister;
+				range.BaseShaderRegister = info.pParameters[i].ShaderRegister;
 				
-				if (info.Parameters[i].ViewType == VIEW_TYPE_UNIFORMBUFFER)
+				if (info.pParameters[i].ViewType == VIEW_TYPE_UNIFORMBUFFER)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-				else if (info.Parameters[i].ViewType == VIEW_TYPE_TEXTURE)
+				else if (info.pParameters[i].ViewType == VIEW_TYPE_TEXTURE)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-				else if (info.Parameters[i].ViewType == VIEW_TYPE_SAMPLER)
+				else if (info.pParameters[i].ViewType == VIEW_TYPE_SAMPLER)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
 
 
@@ -96,17 +97,17 @@ namespace RayEngine
 				parameter.DescriptorTable = { 1, &range };
 
 
-				if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_ALL)
+				if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_ALL)
 					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_VERTEX)
+				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_VERTEX)
 					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_HULL)
+				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_HULL)
 					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_HULL;
-				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_DOMAIN)
+				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_DOMAIN)
 					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_DOMAIN;
-				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_GEOMETRY)
+				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_GEOMETRY)
 					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_GEOMETRY;
-				else if (info.Parameters[i].ShaderVisibility == SHADER_VISIBILITY_PIXEL)
+				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_PIXEL)
 					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 
@@ -117,7 +118,7 @@ namespace RayEngine
 			D3D12_ROOT_SIGNATURE_DESC1 rDesc = {};
 			memset(&rDesc, 0, sizeof(D3D12_ROOT_SIGNATURE_DESC));
 
-			rDesc.NumParameters = params.size();
+			rDesc.NumParameters = static_cast<uint32>(params.size());
 			rDesc.pParameters = params.data();
 
 			//TODO: Static samplers

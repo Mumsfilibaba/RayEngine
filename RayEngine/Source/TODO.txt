@@ -14,6 +14,8 @@ Render triangle Vulkan
 -Vulkan - referencecounting
 -DX12 - Swapchain flags for usage, format, count etc
 
+-Add p for pointers, r for references ect
+
 -Static version - Better performance?
 
 -Aquire pointers for native window etc

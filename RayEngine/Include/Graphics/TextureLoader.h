@@ -26,7 +26,7 @@ namespace RayEngine
 
 	public:
 		//Reverses the Red and Blue channels - For example converting between RGB to BGR or the other way around
-		static void ReverseRB(void* pixels, int32 width, int32 height, FORMAT format);
+		static void ReverseRB(void* pPixels, int32 width, int32 height, FORMAT format);
 		//Load a texture from file - Files can be in the formats:
 		//.png
 		//.tga
@@ -35,8 +35,8 @@ namespace RayEngine
 		//.jpg 
 		//If width or height is not zero then the image will be resized to the specifed size
 		//Returns true if file loaded successfully
-		static bool LoadFromFile(const Tchar* const filename, const Tchar* const filepath, const void** pixels, int32& width, int32& height, FORMAT format);
+		static bool LoadFromFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void** ppPixels, int32& width, int32& height, FORMAT format);
 		//Save a texture to file - Filename should be without extension - returns true if file saved successfully
-		static bool SaveToFile(const Tchar* const filename, const Tchar* const filepath, const void* const pixels, int32 width, int32 height, FORMAT format, TEX_EXTENSION extension);
+		static bool SaveToFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void* const pPixels, int32 width, int32 height, FORMAT format, TEX_EXTENSION extension);
 	};
 }

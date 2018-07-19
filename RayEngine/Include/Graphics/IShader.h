@@ -36,7 +36,7 @@ namespace RayEngine
 		{
 		public:
 			ShaderByteCode();
-			ShaderByteCode(SHADERTYPE type, SHADER_SOURCE_LANG srcLang, int8* bytes, int32 size);
+			ShaderByteCode(SHADERTYPE type, SHADER_SOURCE_LANG srcLang, int8* pBytes, int32 size);
 			ShaderByteCode(const ShaderByteCode& other);
 			ShaderByteCode(ShaderByteCode&& other);
 			~ShaderByteCode();

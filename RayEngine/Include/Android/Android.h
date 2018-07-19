@@ -21,9 +21,9 @@
 namespace RayEngine
 {
 	/////////////////////////////////////////////////////////////
-	extern void SetNativeActivity(ANativeActivity* activity);
+	extern void SetNativeActivity(ANativeActivity* pActivity);
 	extern ANativeActivity* GetNativeActivity();
-	extern void AndroidGetDisplaySize(int32& width, int32& height);
+	extern void AndroidGetDisplaySize(int32& rWidth, int32& rHeight);
 	extern int32 AndroidGetSDKVersion();
 	extern bool AndroidAppHasFocus();
 
@@ -32,7 +32,7 @@ namespace RayEngine
 	extern void AndroidSetNativeWindowFlags(uint32 flags);
 
 	extern System::Event AndroidReciveEvent();
-	extern void AndroidSendEvent(const System::Event& pEvent);
+	extern void AndroidSendEvent(const System::Event& rEvent);
 
 	/////////////////////////////////////////////////////////////
 	extern int32 GetAndroidColor(uint8 r, uint8 g, uint8 b, uint8 a);
