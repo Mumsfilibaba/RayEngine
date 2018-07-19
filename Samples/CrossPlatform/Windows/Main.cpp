@@ -137,30 +137,21 @@ int main(int args, char* argsv[])
 	IShader* vs = nullptr;
 	device->CreateShader(&vs, vsCode);
 
+	
+
+
 	window.Show();
 
 
 	Clock clock;
 	RandomGenerator ran;
 	
-	int32 color = 0;
-	float strength = 1.0;
+
 	Math::Vector3 lastAccelerometer;
 
-	ColorF colors[10] = 
-	{
-		ColorF::CORNFLOWERBLUE,
-		ColorF::SOFTRED,
-		ColorF::SOFTGREEN,
-		ColorF::SOFTBLUE,
-		ColorF::SOFTYELLOW,
-		ColorF::SOFTGRAY,
-		ColorF::RED,
-		ColorF::GREEN,
-		ColorF::BLUE,
-		ColorF::WARMWHITE,
-	};
 
+	float strength = 1.0;
+	ColorF bgColor = ColorF::CORNFLOWERBLUE;
 
 	if (Sensors::SensorSupported(SENSOR_TYPE_ACCELEROMETER))
 	{
@@ -192,34 +183,40 @@ int main(int args, char* argsv[])
 
 			if (event.Type == EVENT_TYPE_FOCUSCHANGED)
 			{
+				static ColorF oldColor = bgColor;
 				if (event.FocusChanged.HasFocus)
-					window.SetBackground(Color::CORNFLOWERBLUE);
+				{
+					bgColor = oldColor;
+				}
 				else
-					window.SetBackground(Color::RED);
+				{
+					oldColor = bgColor;
+					bgColor = ColorF::RED;
+				}
 			}
 
 			if (event.Type == EVENT_TYPE_KEYPRESSED)
 			{
 				if (event.Key.KeyCode == KEY_0)
-					color = 0;
+					bgColor = ColorF::CORNFLOWERBLUE;
 				else if (event.Key.KeyCode == KEY_1)
-					color = 1;
+					bgColor = ColorF::SOFTRED;
 				else if (event.Key.KeyCode == KEY_2)
-					color = 2;
+					bgColor = ColorF::SOFTGREEN;
 				else if (event.Key.KeyCode == KEY_3)
-					color = 3;
+					bgColor = ColorF::SOFTBLUE;
 				else if (event.Key.KeyCode == KEY_4)
-					color = 4;
+					bgColor = ColorF::SOFTYELLOW;
 				else if (event.Key.KeyCode == KEY_5)
-					color = 5;
+					bgColor = ColorF::SOFTGRAY;
 				else if (event.Key.KeyCode == KEY_6)
-					color = 6;
+					bgColor = ColorF::RED;
 				else if (event.Key.KeyCode == KEY_7)
-					color = 7;
+					bgColor = ColorF::GREEN;
 				else if (event.Key.KeyCode == KEY_8)
-					color = 8;
+					bgColor = ColorF::BLUE;
 				else if (event.Key.KeyCode == KEY_9)
-					color = 9;
+					bgColor = ColorF::WARMWHITE;
 			}
 
 			if (event.Type == EVENT_TYPE_SENSORCHANGED)
@@ -239,7 +236,7 @@ int main(int args, char* argsv[])
 
 		if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)
 		{
-			ColorF c = colors[color] * strength;
+			ColorF c = bgColor * strength;
 			window.SetBackground((Color)c);
 			clock.Reset();
 		}
