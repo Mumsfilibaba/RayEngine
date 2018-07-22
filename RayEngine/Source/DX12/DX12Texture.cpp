@@ -1,4 +1,5 @@
 #include "..\..\Include\DX12\DX12Texture.h"
+#include <utility>
 
 namespace RayEngine
 {
@@ -6,7 +7,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(ID3D12Device* device, const TextureInfo& info)
-			: m_Resource(nullptr)
+			: m_Resource()
 		{
 			Create(device, info);
 		}
@@ -16,7 +17,7 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(ID3D12Resource* resource)
-			: m_Resource(nullptr)
+			: m_Resource()
 		{
 			Create(resource);
 		}
@@ -25,9 +26,9 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(DX12Texture&& other)
-			: m_Resource(other.m_Resource)
+			: m_Resource()
 		{
-			other.m_Resource = nullptr;
+			m_Resource = std::move(other.m_Resource);
 		}
 
 
@@ -35,7 +36,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Texture::~DX12Texture()
 		{
-			D3DRelease_S(m_Resource);
 		}
 
 
@@ -43,7 +43,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ID3D12Resource* DX12Texture::GetResource() const
 		{
-			return m_Resource;
+			return m_Resource.GetResource();
 		}
 
 
@@ -53,11 +53,7 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
-				D3DRelease_S(m_Resource);
-
-				m_Resource = other.m_Resource;
-
-				other.m_Resource = nullptr;
+				m_Resource = std::move(other.m_Resource);
 			}
 
 			return *this;
@@ -68,36 +64,14 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Texture::Create(ID3D12Device* device, const TextureInfo& info)
 		{
-			D3D12_RESOURCE_DESC dbDesc = {};
-			memset(&dbDesc, 0, sizeof(D3D12_RESOURCE_DESC));
+			D3D12_RESOURCE_FLAGS flags;
+			if (info.Flags == TEXTUREFLAGS_RENDERTARGET)
+				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+			if (info.Flags == TEXTUREFLAGS_DEPTHBUFFER)
+				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
-			dbDesc.Width = info.Width;
-			dbDesc.Height = info.Height;
 
-			if (info.TextureType == TEXTURETYPE_1D)
-				dbDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE1D;
-			else if (info.TextureType == TEXTURETYPE_2D)
-				dbDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-			else if (info.TextureType == TEXTURETYPE_3D)
-				dbDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
-
-			dbDesc.DepthOrArraySize = info.DepthOrArraySize;
-			dbDesc.SampleDesc.Count = info.SampleCount;
-			dbDesc.SampleDesc.Quality = 0;
-
-			dbDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-			dbDesc.Alignment = 0;
-
-			if (info.Flags & TEXTUREFLAGS_TEXTURE)
-				dbDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
-			if (info.Flags & TEXTUREFLAGS_RENDERTARGET)
-				dbDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-			if (info.Flags & TEXTUREFLAGS_DEPTHBUFFER)
-				dbDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
-			dbDesc.MipLevels = info.MipLevels;
-
-			dbDesc.Format = ReToDXFormat(info.Format);
+			DXGI_FORMAT format = ReToDXFormat(info.Format);
 
 
 			D3D12_CLEAR_VALUE clearValue;
@@ -106,18 +80,20 @@ namespace RayEngine
 			clearValue.DepthStencil.Stencil = 0;
 
 
-			D3D12_HEAP_PROPERTIES heapProp;
-			heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
-			heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-			heapProp.CreationNodeMask = 1;
-			heapProp.VisibleNodeMask = 1;
-			heapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-
-
-			if (FAILED(device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &dbDesc,
-				D3D12_RESOURCE_STATE_COMMON, &clearValue, IID_PPV_ARGS(&m_Resource))))
+			if (info.TextureType == TEXTURETYPE_1D)
 			{
-				return;
+				m_Resource = DX12Resource::CreateTexture1D(device, info.Width, info.DepthOrArraySize, 
+					info.SampleCount, 0, flags, info.MipLevels, format, info.Usage);
+			}
+			else if (info.TextureType == TEXTURETYPE_2D)
+			{
+				m_Resource = DX12Resource::CreateTexture2D(device, info.Width, info.Height, info.DepthOrArraySize,
+					info.SampleCount, 0, flags, info.MipLevels, format, info.Usage);
+			}
+			else if (info.TextureType == TEXTURETYPE_3D)
+			{
+				m_Resource = DX12Resource::CreateTexture3D(device, info.Width, info.Height, info.DepthOrArraySize,
+					info.SampleCount, 0, flags, info.MipLevels, format, info.Usage);
 			}
 		}
 
@@ -127,7 +103,7 @@ namespace RayEngine
 		void DX12Texture::Create(ID3D12Resource* resource)
 		{
 			resource->AddRef();
-			m_Resource = resource;
+			m_Resource = DX12Resource(resource);
 		}
 	}
 }

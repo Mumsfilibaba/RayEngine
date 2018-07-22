@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\Graphics\ITexture.h"
-#include "DX12Common.h"
+#include "DX12Resource.h"
 
 namespace RayEngine
 {
@@ -28,7 +28,7 @@ namespace RayEngine
 			void Create(ID3D12Resource* resource);
 
 		private:
-			ID3D12Resource* m_Resource;
+			DX12Resource m_Resource;
 		};
 	}
 }

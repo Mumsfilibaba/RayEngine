@@ -174,6 +174,7 @@
     <ClInclude Include="Include\Android\AndroidLogImpl.h" />
     <ClInclude Include="Include\Android\AndroidVulkanWrapper.h" />
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
+    <ClInclude Include="Include\DX12\DX12Buffer.h" />
     <ClInclude Include="Include\DX12\DX12CommandQueue.h" />
     <ClInclude Include="Include\DX12\DX12Common.h" />
     <ClInclude Include="Include\DX12\DX12DepthStencilView.h" />
@@ -182,12 +183,14 @@
     <ClInclude Include="Include\DX12\DX12Fence.h" />
     <ClInclude Include="Include\DX12\DX12PipelineState.h" />
     <ClInclude Include="Include\DX12\DX12RenderTargetView.h" />
+    <ClInclude Include="Include\DX12\DX12Resource.h" />
     <ClInclude Include="Include\DX12\DX12RootSignature.h" />
     <ClInclude Include="Include\DX12\DX12Shader.h" />
     <ClInclude Include="Include\DX12\DX12Swapchain.h" />
     <ClInclude Include="Include\DX12\DX12Texture.h" />
     <ClInclude Include="Include\DX12\DXShaderCompiler.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
+    <ClInclude Include="Include\Graphics\IBuffer.h" />
     <ClInclude Include="Include\Graphics\ICommandQueue.h" />
     <ClInclude Include="Include\Graphics\IDepthStencilView.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />
@@ -263,6 +266,7 @@
     <ClCompile Include="Source\Android\AndroidVulkanCommon.cpp" />
     <ClCompile Include="Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
+    <ClCompile Include="Source\DX12\DX12Buffer.cpp" />
     <ClCompile Include="Source\DX12\DX12CommandQueue.cpp" />
     <ClCompile Include="Source\DX12\DX12Common.cpp" />
     <ClCompile Include="Source\DX12\DX12DepthStencilView.cpp" />
@@ -271,6 +275,7 @@
     <ClCompile Include="Source\DX12\DX12Fence.cpp" />
     <ClCompile Include="Source\DX12\DX12PipelineState.cpp" />
     <ClCompile Include="Source\DX12\DX12RenderTargetView.cpp" />
+    <ClCompile Include="Source\DX12\DX12Resource.cpp" />
     <ClCompile Include="Source\DX12\DX12RootSignature.cpp" />
     <ClCompile Include="Source\DX12\DX12Shader.cpp" />
     <ClCompile Include="Source\DX12\DX12Swapchain.cpp" />

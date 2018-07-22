@@ -1,4 +1,5 @@
 #include "..\..\Include\DX12\DX12CommandQueue.h"
+#include "..\..\Include\DX12\DX12Texture.h"
 
 namespace RayEngine
 {
@@ -39,9 +40,57 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::Close() const
+		void DX12CommandQueue::TransitionResource(const ITexture* resource, RESOURCE_STATE from,
+			RESOURCE_STATE to, int32 subresource) const
 		{
-			m_List->Close();
+			const DX12Texture* res = reinterpret_cast<const DX12Texture*>(resource);
+
+			D3D12_RESOURCE_BARRIER barrier = {};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+			barrier.Transition.Subresource = subresource;
+
+			barrier.Transition.pResource = res->GetResource();
+
+			barrier.Transition.StateBefore = ReToDXResourceState(from);
+			barrier.Transition.StateAfter = ReToDXResourceState(to);
+
+			m_List->ResourceBarrier(1, &barrier);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::Execute() const
+		{
+			ID3D12CommandList* list = m_List;
+			m_Queue->ExecuteCommandLists(1, &list);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12CommandQueue::Reset() const
+		{
+			if (FAILED(m_Allocator->Reset()))
+				return false;
+
+			if (FAILED(m_List->Reset(m_Allocator, nullptr)))
+				return false;
+
+			return true;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12CommandQueue::Close() const
+		{
+			if (FAILED(m_List->Close()))
+				return false;
+
+			return true;
 		}
 
 

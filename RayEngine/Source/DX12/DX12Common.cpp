@@ -2,6 +2,7 @@
 
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
 	DXGI_FORMAT ReToDXFormat(FORMAT format)
 	{
 		switch (format)
@@ -59,5 +60,18 @@ namespace RayEngine
 		}
 
 		return DXGI_FORMAT_UNKNOWN;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	D3D12_RESOURCE_STATES ReToDXResourceState(RESOURCE_STATE state)
+	{
+		switch (state)
+		{
+		case RESOURCE_STATE_DEPTH_WRITE: return D3D12_RESOURCE_STATE_DEPTH_WRITE;
+		case RESOURCE_STATE_COMMON:
+		default: return D3D12_RESOURCE_STATE_COMMON;
+		}
 	}
 }

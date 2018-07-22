@@ -119,7 +119,6 @@ namespace RayEngine
 
 
 
-
 			/////////////////////////////////////////////////////////////
 			inline AdapterList(AdapterList&& other)
 				: Adapters(other.Adapters),

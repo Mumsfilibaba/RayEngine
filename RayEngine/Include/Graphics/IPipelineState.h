@@ -83,26 +83,25 @@ namespace RayEngine
 			PIPELINETYPE Type = PIPELINETYPE_UNKNOWN;
 			IRootSignature* pRootSignature = nullptr;
 
-			union
+			//TODO: Maybe use a union
+
+			struct
 			{
-				struct
-				{
-					IShader* pComputeShader = nullptr;
-				} ComputePipeline;
+				IShader* pComputeShader = nullptr;
+			} ComputePipeline;
 				
-				struct
-				{
-					InputLayoutInfo InputLayout;
-					RasterizerStateInfo RasterizerState;
-					DepthStencilStateInfo DepthStencilState;
-					BlendStateInfo BlendState;
-					IShader* pVertexShader = nullptr;
-					IShader* pHullShader = nullptr;
-					IShader* pDomainShader = nullptr;
-					IShader* pGeometryShader = nullptr;
-					IShader* pPixelShader = nullptr;
-				} GraphicsPipeline;
-			};
+			struct
+			{
+				InputLayoutInfo InputLayout;
+				RasterizerStateInfo RasterizerState;
+				DepthStencilStateInfo DepthStencilState;
+				BlendStateInfo BlendState;
+				IShader* pVertexShader = nullptr;
+				IShader* pHullShader = nullptr;
+				IShader* pDomainShader = nullptr;
+				IShader* pGeometryShader = nullptr;
+				IShader* pPixelShader = nullptr;
+			} GraphicsPipeline;
 		};
 
 

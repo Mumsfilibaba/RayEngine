@@ -35,6 +35,7 @@ namespace RayEngine
 			FORMAT Format = FORMAT_UNKNOWN;
 			TEXTURETYPE TextureType = TEXTURETYPE_2D;
 			TEXTUREFLAGS Flags = TEXTUREFLAGS_NONE;
+			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
 			int32 Width = 0;
 			int32 Height = 0;
 			int32 DepthOrArraySize = 0;

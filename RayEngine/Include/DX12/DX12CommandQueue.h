@@ -18,7 +18,12 @@ namespace RayEngine
 			DX12CommandQueue(DX12CommandQueue&& other);
 			~DX12CommandQueue();
 
-			void Close() const override final;
+			void TransitionResource(const ITexture* resource, RESOURCE_STATE from,
+				RESOURCE_STATE to, int32 subresource) const  override final;
+			
+			void Execute() const override final;
+			bool Reset() const override final;
+			bool Close() const override final;
 
 			DX12CommandQueue& operator=(DX12CommandQueue&& other);
 

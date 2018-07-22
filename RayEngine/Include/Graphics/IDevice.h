@@ -7,6 +7,7 @@
 #include "IDepthStencilView.h"
 #include "IRootSignature.h"
 #include "IPipelineState.h"
+#include "IBuffer.h"
 #include "AdapterInfo.h"
 
 namespace RayEngine

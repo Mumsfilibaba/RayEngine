@@ -1,7 +1,6 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "ITexture.h"
 
 namespace RayEngine
 {
@@ -28,8 +27,15 @@ namespace RayEngine
 			ICommandQueue() {}
 			virtual ~ICommandQueue() {}
 
+			//Transition a resource from one state to another
+			virtual void TransitionResource(const ITexture* resource, RESOURCE_STATE from, 
+				RESOURCE_STATE to, int32 subresource) const = 0;
+			//Reset allocator and list
+			virtual bool Reset() const = 0;
 			//Close list for commandsubmition
-			virtual void Close() const = 0;
+			virtual bool Close() const = 0;
+			//Execute the commandqueue
+			virtual void Execute() const = 0;
 		};
 	}
 }

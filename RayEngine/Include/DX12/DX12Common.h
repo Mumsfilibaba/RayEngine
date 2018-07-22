@@ -19,6 +19,7 @@ namespace RayEngine
 {
 	/////////////////////////////////////////////////////////////
 	DXGI_FORMAT ReToDXFormat(FORMAT format);
+	D3D12_RESOURCE_STATES ReToDXResourceState(RESOURCE_STATE state);
 	
 
 

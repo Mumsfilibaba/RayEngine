@@ -29,5 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\vs.hlsl" />
+    <FxCompile Include="Shaders\ps.hlsl" />
   </ItemGroup>
 </Project>

@@ -90,4 +90,25 @@ namespace RayEngine
 		GRAPHICS_API_D3D11 = 2,
 		GRAPHICS_API_VULKAN = 3,
 	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum RESOURCE_STATE : int32
+	{
+		RESOURCE_STATE_UNKNOWN = 0,
+		RESOURCE_STATE_COMMON = 1,
+		RESOURCE_STATE_DEPTH_WRITE = 2,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum RESOURCE_USAGE : int32
+	{
+		RESOURCE_USAGE_UNKNOWN = 0,
+		RESOURCE_USAGE_STATIC = 1,
+		RESOURCE_USAGE_DEFAULT = 2,
+		RESOURCE_USAGE_DYNAMIC = 3,
+	};
 }

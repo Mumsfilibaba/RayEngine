@@ -71,7 +71,7 @@ int main(int args, char* argsv[])
 
 	IDevice* device = nullptr;
 	DeviceInfo dInfo = {};
-	dInfo.Adapter = &(adapters[adapterIndex]);
+	dInfo.pAdapter = &(adapters[adapterIndex]);
 
 	factory->CreateDevice(&device, dInfo);
 
@@ -85,8 +85,8 @@ int main(int args, char* argsv[])
 	constexpr int32 bufferCount = 2;
 	ISwapchain* swapchain = nullptr;
 	SwapchainInfo scInfo = {};
-	scInfo.Window = &window;
-	scInfo.commandQueue = queue;
+	scInfo.pWindow = &window;
+	scInfo.pCommandQueue = queue;
 	scInfo.Buffer.Count = bufferCount;
 	scInfo.Buffer.Format = FORMAT_R8G8B8A8_UINT;
 	scInfo.Buffer.Width = window.GetWidth();
@@ -134,13 +134,61 @@ int main(int args, char* argsv[])
 	sInfo.Type = SHADERTYPE_VERTEX;
 	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo);
 
+	sInfo.Type = SHADERTYPE_PIXEL;
+	ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo);
+
 	IShader* vs = nullptr;
 	device->CreateShader(&vs, vsCode);
 
+	IShader* ps = nullptr;
+	device->CreateShader(&ps, psCode);
+
+
+	IRootSignature* rootSignature = nullptr;
+	RootSignatureInfo rootInfo = {};
+	rootInfo.ParameterCount = 0;
+	rootInfo.pParameters = nullptr;
+	rootInfo.RootSignatureVisibility =
+		ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT | 
+		ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER | 
+		ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER;
+
+	device->CreateRootSignature(&rootSignature, rootInfo);
+
+
+	IPipelineState* pipelineState = nullptr;
+	PipelineStateInfo pipelineInfo = {};
+	pipelineInfo.Type = PIPELINETYPE_GRAPHICS;
+	pipelineInfo.pRootSignature = rootSignature;
+	pipelineInfo.GraphicsPipeline.pVertexShader = vs;
+	pipelineInfo.GraphicsPipeline.pPixelShader = ps;
+
+	InputElementInfo elementinfo = { "POSITION", 0, FORMAT_R32G32B32_FLOAT, ELEMENT_STEP_TYPE_VERTEX, 0, 0, 0 };
+	pipelineInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
+	pipelineInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
+
+	device->CreatePipelineState(&pipelineState, pipelineInfo);
+
+	queue->Reset();
 	
+	queue->TransitionResource(depthStencil, RESOURCE_STATE_COMMON, RESOURCE_STATE_DEPTH_WRITE, 0);
+
+	queue->Close();
+	queue->Execute();
+
+
+	BufferInfo vbInfo = {};
+	vbInfo.Count = 3;
+	vbInfo.Stride = sizeof(Math::Vector3);
+	vbInfo.Type = BUFFERTYPE_VERTEXBUFFER;
+	vbInfo.Usage = RESOURCE_USAGE_DEFAULT;
+
+	IBuffer* vertexBuffer = nullptr;
 
 
 	window.Show();
+
+
 
 
 	Clock clock;
@@ -150,7 +198,7 @@ int main(int args, char* argsv[])
 	Math::Vector3 lastAccelerometer;
 
 
-	float strength = 1.0;
+	float strength = 1.0f;
 	ColorF bgColor = ColorF::CORNFLOWERBLUE;
 
 	if (Sensors::SensorSupported(SENSOR_TYPE_ACCELEROMETER))

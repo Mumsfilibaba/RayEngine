@@ -61,7 +61,7 @@ namespace RayEngine
 		{
 			ShaderParameter* pParameters = nullptr;
 			int32 ParameterCount = 0;
-			ROOT_SIGNATURE_VISIBILITY RootSignatureVisibility = ROOT_SIGNATURE_VISIBILITY_UNKNOWN;
+			int32 RootSignatureVisibility = ROOT_SIGNATURE_VISIBILITY_UNKNOWN;
 		};
 
 

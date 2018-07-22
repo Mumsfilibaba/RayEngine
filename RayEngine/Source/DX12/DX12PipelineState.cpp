@@ -130,8 +130,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader)
 		{
+			if (shader == nullptr)
+				return;
+
 			byteCode.BytecodeLength = shader->GetDX12ByteCode().BytecodeLength;
 			byteCode.pShaderBytecode = shader->GetDX12ByteCode().pShaderBytecode;
+			return;
 		}
 
 
