@@ -21,6 +21,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct BufferInfo
 		{
+			std::string Name = "";
 			BUFFERTYPE Type = BUFFERTYPE_UNKNOWN;
 			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
 			int32 Count = 0;
@@ -32,6 +33,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IBuffer
 		{
+		public:
+			IBuffer(IBuffer&& other) = delete;
+			IBuffer(const IBuffer& other) = delete;
+			IBuffer& operator=(IBuffer&& other) = delete;
+			IBuffer& operator=(const IBuffer& other) = delete;
+
 		public:
 			IBuffer() {}
 			virtual ~IBuffer() {}

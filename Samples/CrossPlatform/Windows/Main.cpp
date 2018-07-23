@@ -177,14 +177,27 @@ int main(int args, char* argsv[])
 	queue->Execute();
 
 
+	Vector3 vertices[3] = 
+	{
+		Vector3(0.0f, 0.5f, 0.0f),
+		Vector3(0.5f, -0.5f, 0.0f),
+		Vector3(-0.5f, -0.5f, 0.0f),
+	};
+
+	ResourceData vbData = {};
+	vbData.pData = vertices;
+	vbData.WidthOrCount = 3;
+	vbData.ByteStride = sizeof(Vector3);
+	vbData.Height = 1;
+
 	BufferInfo vbInfo = {};
 	vbInfo.Count = 3;
-	vbInfo.Stride = sizeof(Math::Vector3);
+	vbInfo.Stride = sizeof(Vector3);
 	vbInfo.Type = BUFFERTYPE_VERTEXBUFFER;
 	vbInfo.Usage = RESOURCE_USAGE_DEFAULT;
 
 	IBuffer* vertexBuffer = nullptr;
-
+	device->CreateBuffer(&vertexBuffer, &vbData, vbInfo);
 
 	window.Show();
 

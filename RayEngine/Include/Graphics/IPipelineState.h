@@ -80,6 +80,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct PipelineStateInfo
 		{
+			std::string Name = "";
 			PIPELINETYPE Type = PIPELINETYPE_UNKNOWN;
 			IRootSignature* pRootSignature = nullptr;
 

@@ -9,7 +9,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct CommanQueueInfo
 		{
-
+			std::string Name = "";
 		};
 
 

@@ -7,6 +7,7 @@
 #include "..\..\Include\DX12\DX12RootSignature.h"
 #include "..\..\Include\DX12\DX12PipelineState.h"
 #include "..\..\Include\DX12\DX12Texture.h"
+#include "..\..\Include\DX12\DX12Buffer.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -106,6 +107,14 @@ namespace RayEngine
 		bool DX12Device::CreateTexture(ITexture** texture, const TextureInfo& info) const
 		{
 			return ((*texture = new DX12Texture(m_Device, info)) != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const
+		{
+			return ((*ppBuffer = new DX12Buffer(m_Device, info)));
 		}
 
 

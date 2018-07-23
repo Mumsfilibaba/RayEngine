@@ -32,6 +32,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct TextureInfo
 		{
+			std::string Name = "";
 			FORMAT Format = FORMAT_UNKNOWN;
 			TEXTURETYPE TextureType = TEXTURETYPE_2D;
 			TEXTUREFLAGS Flags = TEXTUREFLAGS_NONE;

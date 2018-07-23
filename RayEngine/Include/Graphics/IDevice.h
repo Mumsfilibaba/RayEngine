@@ -17,6 +17,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct DeviceInfo
 		{
+			std::string Name = "";
 			AdapterInfo* pAdapter = nullptr;
 		};
 
@@ -47,6 +48,8 @@ namespace RayEngine
 			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) const = 0;
 			//Creates a texture resource on the GPU
 			virtual bool CreateTexture(ITexture** ppTexture, const TextureInfo& info) const = 0;
+			//Creates a buffer resource on the GPU
+			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const = 0;
 			//Creates a shader rootsignature
 			virtual bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const = 0;
 			//Create a pipelinestate

@@ -59,6 +59,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct RootSignatureInfo
 		{
+			std::string Name = "";
 			ShaderParameter* pParameters = nullptr;
 			int32 ParameterCount = 0;
 			int32 RootSignatureVisibility = ROOT_SIGNATURE_VISIBILITY_UNKNOWN;

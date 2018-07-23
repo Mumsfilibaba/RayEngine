@@ -111,4 +111,19 @@ namespace RayEngine
 		RESOURCE_USAGE_DEFAULT = 2,
 		RESOURCE_USAGE_DYNAMIC = 3,
 	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	struct ResourceData
+	{
+		//pData - Data that is meant to be submitted to the graphics card
+		const void* pData = nullptr;
+		//ByteStride - Size in bytes of one element
+		int32 ByteStride = 0;
+		//WidthOrCount - Number of elements in pData - One row of pixels in a texture or number of elements in a buffer
+		int32 WidthOrCount = 0;
+		//Height - Number of rows in pData - Does not matter for buffers
+		int32 Height = 0;
+	};
 }

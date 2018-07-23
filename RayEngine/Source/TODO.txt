@@ -5,9 +5,9 @@ TODO:
 
 -All formats in DX12, DX11 and Vulkan should be supported
 -Set names on resources (Even if vulkan may not support it)
--DX12 - DecsriptorHeapManager
--DX12 - Different versions of the parametertype for the shader in the rootsignature
 -DX12 - ResourceView BaseClass - Viewclasses very similar
+-DX12 - DescriptorHeapManager
+-DX12 - Different versions of the parametertype for the shader in the rootsignature
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
 -DX12 - Check tearing support - Vulkan (if supported by the API)
 -DX12 - Merge Rootsignature and pipelinestate
@@ -16,8 +16,11 @@ TODO:
 -Vulkan - referencecounting
 
 -Add p for pointers
+-AdapterInfo.cpp
 
 -Static version - Better performance?
+
+-Controller support
 
 -Aquire pointers for native window etc
 -Check if system supports vulkan in factory

@@ -87,6 +87,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool VKDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		bool VKDevice::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const
 		{
 			return false;

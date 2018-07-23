@@ -10,8 +10,8 @@ namespace RayEngine
 		class DX12Buffer : public IBuffer
 		{
 		public:
-			DX12PipelineState(const DX12PipelineState& other) = delete;
-			DX12PipelineState& operator=(const DX12PipelineState& other) = delete;
+			DX12Buffer(const DX12Buffer& other) = delete;
+			DX12Buffer& operator=(const DX12Buffer& other) = delete;
 
 		public:
 			DX12Buffer(ID3D12Device* device, const BufferInfo& info);
