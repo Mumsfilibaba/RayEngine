@@ -1,5 +1,7 @@
+#pragma once
+
 #include "..\Graphics\IDevice.h"
-#include "DX12Common.h"
+#include "DX12DescriptorHeap.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 

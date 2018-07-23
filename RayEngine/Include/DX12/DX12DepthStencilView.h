@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\..\Include\Graphics\IDepthStencilView.h"
-#include "DX12Common.h"
+#include "DX12DescriptorHeap.h"
 
 namespace RayEngine
 {

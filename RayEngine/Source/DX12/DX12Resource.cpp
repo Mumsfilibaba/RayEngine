@@ -1,5 +1,4 @@
 #include "..\..\Include\DX12\DX12Resource.h"
-#include <sstream>
 
 namespace RayEngine
 {
@@ -149,10 +148,7 @@ namespace RayEngine
 			}
 			else
 			{
-				std::wstringstream wName;
-				wName << name.c_str();
-				
-				m_Resource->SetName(wName.str().c_str());
+				D3D12SetName(m_Resource, name);
 			}
 
 

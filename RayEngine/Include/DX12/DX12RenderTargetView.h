@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\Graphics\IRenderTargetView.h"
-#include "DX12Common.h"
+#include "DX12DescriptorHeap.h"
 
 namespace RayEngine
 {

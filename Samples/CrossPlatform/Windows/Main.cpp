@@ -319,6 +319,7 @@ int main(int args, char* argsv[])
 
 	delete swapchain;
 	delete queue;
+
 	delete device;
 	delete factory;
 

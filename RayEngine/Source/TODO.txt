@@ -12,8 +12,10 @@ TODO:
 -DX12 - Merge Rootsignature and pipelinestate
 -DX12 - Swapchain flags for usage, format, count etc
 -DX12 - DepthStencilState, RasterizerState, BlendState
+-DX12 - Setup breakpoints when errors occurs
 -Vulkan - referencecounting
 
+-Log for the device so that it can print to the console when an error happens during object creation
 -Add p for pointers
 -AdapterInfo.cpp
 -Controller support

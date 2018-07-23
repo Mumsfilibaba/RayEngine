@@ -1,3 +1,4 @@
+#include <sstream>
 #include "..\..\Include\DX12\DX12Common.h"
 
 namespace RayEngine
@@ -73,5 +74,16 @@ namespace RayEngine
 		case RESOURCE_STATE_COMMON:
 		default: return D3D12_RESOURCE_STATE_COMMON;
 		}
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	void D3D12SetName(ID3D12Object* object, const std::string& name)
+	{
+		std::wstringstream wName;
+		wName << name.c_str();
+
+		object->SetName(wName.str().c_str());
 	}
 }
