@@ -1,6 +1,5 @@
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12CommandQueue.h"
-#include "..\..\Include\DX12\DX12Fence.h"
 #include "..\..\Include\DX12\DX12Shader.h"
 #include "..\..\Include\DX12\DX12RenderTargetView.h"
 #include "..\..\Include\DX12\DX12DepthStencilView.h"
@@ -34,9 +33,9 @@ namespace RayEngine
 			: m_Device(other.m_Device),
 			m_Adapter(other.m_Adapter),
 			m_DebugDevice(other.m_DebugDevice),
-			m_ResourceHeap(other.m_ResourceHeap),
-			m_DsvHeap(other.m_DsvHeap),
-			m_RtvHeap(other.m_RtvHeap)
+			m_ResourceHeap(std::move(other.m_ResourceHeap)),
+			m_DsvHeap(std::move(other.m_DsvHeap)),
+			m_RtvHeap(std::move(other.m_RtvHeap))
 		{
 			other.m_Device = nullptr;
 			other.m_Adapter = nullptr;
@@ -67,14 +66,6 @@ namespace RayEngine
 		bool DX12Device::CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const
 		{
 			return ((*commandQueue = new DX12CommandQueue(m_Device, info)) != nullptr);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateFence(IFence** fence) const
-		{
-			return ((*fence = new DX12Fence(m_Device)) != nullptr);
 		}
 
 
@@ -143,9 +134,9 @@ namespace RayEngine
 				m_Device = other.m_Device;
 				m_Adapter = other.m_Adapter;
 				m_DebugDevice = other.m_DebugDevice;
-				m_ResourceHeap = other.m_ResourceHeap;
-				m_DsvHeap = other.m_DsvHeap;
-				m_RtvHeap = other.m_RtvHeap;
+				m_ResourceHeap = std::move(other.m_ResourceHeap);
+				m_DsvHeap = std::move(other.m_DsvHeap);
+				m_RtvHeap = std::move(other.m_RtvHeap);
 
 				other.m_Device = nullptr;
 				other.m_Adapter = nullptr;
@@ -176,35 +167,11 @@ namespace RayEngine
 					}
 
 
-					m_ResourceHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 
-						20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-					m_DsvHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_DsvHeap = DX12DescriptorHeap(m_Device, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap = DX12DescriptorHeap(m_Device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_ResourceHeap = DX12DescriptorHeap(m_Device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 				}
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12DescriptorHeap DX12Device::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num,
-			D3D12_DESCRIPTOR_HEAP_FLAGS flags)
-		{
-			D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-			desc.Flags = flags;
-			desc.NodeMask = 0;
-			desc.NumDescriptors = num;
-			desc.Type = type;
-			
-			DX12DescriptorHeap heap = {};
-			if (FAILED(m_Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&heap.Heap))))
-				return DX12DescriptorHeap();
-
-			
-			heap.Count = 0;
-			heap.DescriptorSize = m_Device->GetDescriptorHandleIncrementSize(type);
-
-			return heap;
 		}
 	}
 }

@@ -11,11 +11,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		enum PIPELINETYPE : int32
+		enum PIPELINE_TYPE : int32
 		{
-			PIPELINETYPE_UNKNOWN = 0,
-			PIPELINETYPE_GRAPHICS = 1,
-			PIPELINETYPE_COMPUTE = 2,
+			PIPELINE_TYPE_UNKNOWN = 0,
+			PIPELINE_TYPE_GRAPHICS = 1,
+			PIPELINE_TYPE_COMPUTE = 2,
 		};
 
 
@@ -81,7 +81,7 @@ namespace RayEngine
 		struct PipelineStateInfo
 		{
 			std::string Name = "";
-			PIPELINETYPE Type = PIPELINETYPE_UNKNOWN;
+			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
 			IRootSignature* pRootSignature = nullptr;
 
 			//TODO: Maybe use a union
@@ -121,7 +121,7 @@ namespace RayEngine
 			virtual ~IPipelineState() {}
 
 			//Get type
-			virtual PIPELINETYPE GetPipelineType() const = 0;
+			virtual PIPELINE_TYPE GetPipelineType() const = 0;
 		};
 	}
 }

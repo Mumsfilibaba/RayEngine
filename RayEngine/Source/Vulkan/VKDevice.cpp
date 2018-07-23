@@ -47,14 +47,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateFence(IFence** fence) const
-		{
-			return false;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		bool VKDevice::CreateShader(IShader** shader, const ShaderByteCode& byteCode) const
 		{
 			return false;

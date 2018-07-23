@@ -10,7 +10,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct SamplerInfo
 		{
-
+			std::string Name = "";
 		};
 
 

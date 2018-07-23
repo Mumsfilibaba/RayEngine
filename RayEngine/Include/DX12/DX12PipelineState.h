@@ -19,7 +19,7 @@ namespace RayEngine
 			DX12PipelineState(DX12PipelineState&& other);
 			~DX12PipelineState();
 
-			PIPELINETYPE GetPipelineType() const override final;
+			PIPELINE_TYPE GetPipelineType() const override final;
 
 			DX12PipelineState& operator=(DX12PipelineState&& other);
 
@@ -36,7 +36,7 @@ namespace RayEngine
 			static void SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info);
 
 		private:
-			PIPELINETYPE m_Type;
+			PIPELINE_TYPE m_Type;
 			ID3D12PipelineState* m_PipelineState;
 		};
 	}

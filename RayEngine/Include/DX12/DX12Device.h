@@ -19,7 +19,6 @@ namespace RayEngine
 			~DX12Device();
 
 			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
-			bool CreateFence(IFence** fence) const override final;
 			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const override final;
 			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const override final;
 			bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const override final;
@@ -32,8 +31,6 @@ namespace RayEngine
 
 		private:
 			void Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer);
-			DX12DescriptorHeap CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num,
-				D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 
 		private:
 			IDXGIAdapter1* m_Adapter;

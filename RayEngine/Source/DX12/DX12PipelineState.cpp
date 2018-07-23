@@ -9,7 +9,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12PipelineState::DX12PipelineState(ID3D12Device* device, const PipelineStateInfo& info)
 			: m_PipelineState(nullptr),
-			m_Type(PIPELINETYPE_UNKNOWN)
+			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
 			Create(device, info);
 		}
@@ -22,7 +22,7 @@ namespace RayEngine
 			m_Type(other.m_Type)
 		{
 			other.m_PipelineState = nullptr;
-			other.m_Type = PIPELINETYPE_UNKNOWN;
+			other.m_Type = PIPELINE_TYPE_UNKNOWN;
 		}
 
 
@@ -36,7 +36,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		PIPELINETYPE DX12PipelineState::GetPipelineType() const
+		PIPELINE_TYPE DX12PipelineState::GetPipelineType() const
 		{
 			return m_Type;
 		}
@@ -54,7 +54,7 @@ namespace RayEngine
 				m_Type = other.m_Type;
 
 				other.m_PipelineState = nullptr;
-				other.m_Type = PIPELINETYPE_UNKNOWN;
+				other.m_Type = PIPELINE_TYPE_UNKNOWN;
 			}
 
 			return *this;
@@ -67,9 +67,9 @@ namespace RayEngine
 		{
 			const DX12RootSignature* rootSignature = reinterpret_cast<const DX12RootSignature*>(info.pRootSignature);
 
-			if (info.Type == PIPELINETYPE_GRAPHICS)
+			if (info.Type == PIPELINE_TYPE_GRAPHICS)
 				CreateGraphicsState(device, rootSignature->GetRootSignature(), info);
-			else if (info.Type == PIPELINETYPE_COMPUTE)
+			else if (info.Type == PIPELINE_TYPE_COMPUTE)
 				CreateComputeState(device, rootSignature->GetRootSignature(), info);
 		}
 

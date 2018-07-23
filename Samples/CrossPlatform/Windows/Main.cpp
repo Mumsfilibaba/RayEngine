@@ -79,8 +79,6 @@ int main(int args, char* argsv[])
 	ICommandQueue* queue = nullptr;
 	device->CreateCommandQueue(&queue, qInfo);
 	
-	IFence* fence = nullptr;
-	device->CreateFence(&fence);
 
 	constexpr int32 bufferCount = 2;
 	ISwapchain* swapchain = nullptr;
@@ -105,9 +103,12 @@ int main(int args, char* argsv[])
 
 
 	TextureInfo dsInfo = {};
-	dsInfo.Flags = TEXTUREFLAGS_DEPTHBUFFER;
+	dsInfo.Name = "DepthStencil-Texture";
+	dsInfo.Flags = TEXTURE_FLAGS_DEPTHBUFFER;
+	dsInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
+	dsInfo.Usage = RESOURCE_USAGE_DEFAULT;
 	dsInfo.Format = FORMAT_D16_UNORM;
-	dsInfo.TextureType = TEXTURETYPE_2D;
+	dsInfo.Type = TEXTURE_TYPE_2D;
 	dsInfo.Width = window.GetWidth();
 	dsInfo.Height = window.GetHeight();
 	dsInfo.DepthOrArraySize = 1;
@@ -158,7 +159,7 @@ int main(int args, char* argsv[])
 
 	IPipelineState* pipelineState = nullptr;
 	PipelineStateInfo pipelineInfo = {};
-	pipelineInfo.Type = PIPELINETYPE_GRAPHICS;
+	pipelineInfo.Type = PIPELINE_TYPE_GRAPHICS;
 	pipelineInfo.pRootSignature = rootSignature;
 	pipelineInfo.GraphicsPipeline.pVertexShader = vs;
 	pipelineInfo.GraphicsPipeline.pPixelShader = ps;
@@ -191,17 +192,16 @@ int main(int args, char* argsv[])
 	vbData.Height = 1;
 
 	BufferInfo vbInfo = {};
+	vbInfo.Name = "VertexBuffer";
 	vbInfo.Count = 3;
 	vbInfo.Stride = sizeof(Vector3);
-	vbInfo.Type = BUFFERTYPE_VERTEXBUFFER;
+	vbInfo.Type = BUFFER_USAGE_VERTEXBUFFER;
 	vbInfo.Usage = RESOURCE_USAGE_DEFAULT;
 
 	IBuffer* vertexBuffer = nullptr;
 	device->CreateBuffer(&vertexBuffer, &vbData, vbInfo);
 
 	window.Show();
-
-
 
 
 	Clock clock;
@@ -303,8 +303,21 @@ int main(int args, char* argsv[])
 		}
 	}
 
+	queue->Flush();
 
-	delete fence;
+	delete vs;
+	delete ps;
+	delete vertexBuffer;
+	delete dsv;
+	delete rootSignature;
+	delete pipelineState;
+	delete compiler;
+	delete depthStencil;
+
+	for (int32 i = 0; i < bufferCount; i++)
+		delete rtvs[i];
+
+	delete swapchain;
 	delete queue;
 	delete device;
 	delete factory;

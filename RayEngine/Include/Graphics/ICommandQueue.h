@@ -30,6 +30,8 @@ namespace RayEngine
 			//Transition a resource from one state to another
 			virtual void TransitionResource(const ITexture* resource, RESOURCE_STATE from, 
 				RESOURCE_STATE to, int32 subresource) const = 0;
+			//Flushes the commandqueue - Syncronizes the CPU and GPU
+			virtual void Flush() const = 0;
 			//Reset allocator and list
 			virtual bool Reset() const = 0;
 			//Close list for commandsubmition

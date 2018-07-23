@@ -9,7 +9,9 @@ namespace RayEngine
 		DX12CommandQueue::DX12CommandQueue(ID3D12Device* device, const CommanQueueInfo& info)
 			: m_Queue(nullptr),
 			m_Allocator(nullptr),
-			m_List(nullptr)
+			m_List(nullptr),
+			m_Fence(nullptr),
+			m_CurrentFence(0)
 		{
 			Create(device, info);
 		}
@@ -20,11 +22,15 @@ namespace RayEngine
 		DX12CommandQueue::DX12CommandQueue(DX12CommandQueue&& other)
 			: m_Queue(other.m_Queue),
 			m_Allocator(other.m_Allocator),
-			m_List(other.m_List)
+			m_List(other.m_List),
+			m_Fence(other.m_Fence),
+			m_CurrentFence(other.m_CurrentFence)
 		{
 			other.m_Queue = nullptr;
 			other.m_Allocator = nullptr;
 			other.m_List = nullptr;
+			other.m_Fence = nullptr;
+			other.m_CurrentFence = 0;
 		}
 
 
@@ -35,6 +41,7 @@ namespace RayEngine
 			D3DRelease_S(m_Queue);
 			D3DRelease_S(m_Allocator);
 			D3DRelease_S(m_List);
+			D3DRelease_S(m_Fence);
 		}
 
 
@@ -57,6 +64,29 @@ namespace RayEngine
 			barrier.Transition.StateAfter = ReToDXResourceState(to);
 
 			m_List->ResourceBarrier(1, &barrier);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::Flush() const
+		{
+			m_CurrentFence++;
+			if (FAILED(m_Queue->Signal(m_Fence, m_CurrentFence)))
+				return;
+
+			if (m_Fence->GetCompletedValue() < m_CurrentFence)
+			{
+				HANDLE ev = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+
+				if (FAILED(m_Fence->SetEventOnCompletion(m_CurrentFence, ev)))
+					return;
+
+				WaitForSingleObject(ev, INFINITE);
+				CloseHandle(ev);
+			}
+
+			return;
 		}
 
 
@@ -100,13 +130,22 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
+				D3DRelease_S(m_Queue);
+				D3DRelease_S(m_Allocator);
+				D3DRelease_S(m_List);
+				D3DRelease_S(m_Fence);
+
 				m_Queue = other.m_Queue;
 				m_Allocator = other.m_Allocator;
 				m_List = other.m_List;
+				m_Fence = other.m_Fence;
+				m_CurrentFence = other.m_CurrentFence;
 
 				other.m_Queue = nullptr;
 				other.m_Allocator = nullptr;
 				other.m_List = nullptr;
+				other.m_Fence = nullptr;
+				other.m_CurrentFence = 0;
 			}
 
 			return *this;
@@ -145,8 +184,20 @@ namespace RayEngine
 				return;
 
 
+			CreateFence(device);
 			Close();
 			return;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::CreateFence(ID3D12Device* device)
+		{
+			if (FAILED(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence))))
+			{
+				return;
+			}
 		}
 	}
 }

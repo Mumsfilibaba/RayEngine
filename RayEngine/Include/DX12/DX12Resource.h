@@ -10,8 +10,8 @@ namespace RayEngine
 		{
 		public:
 			DX12Resource();
-			DX12Resource(ID3D12Device* device, D3D12_CLEAR_VALUE* clearValue,
-				const D3D12_RESOURCE_DESC& desc, RESOURCE_USAGE usage);
+			DX12Resource(ID3D12Device* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue, const D3D12_RESOURCE_DESC& desc, 
+				D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess);
 			DX12Resource(ID3D12Resource* resource);
 			DX12Resource(const DX12Resource& other);
 			DX12Resource(DX12Resource&& other);
@@ -27,31 +27,20 @@ namespace RayEngine
 
 		private:
 			ID3D12Resource* m_Resource;
-			ID3D12Resource* m_UploadResource;
 			mutable D3D12_RESOURCE_STATES m_State;
 
 		private:
-			void Create(ID3D12Device* device, D3D12_CLEAR_VALUE* clearValue,
-				const D3D12_RESOURCE_DESC& desc, RESOURCE_USAGE usage);
+			void Create(ID3D12Device* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue, const D3D12_RESOURCE_DESC& desc,
+				D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess);
 
 		public:
-			static DX12Resource CreateTexture1D(ID3D12Device* device, uint64 width, uint32 arraySize, 
-				uint32 sampleCount, uint32 sampleQuality, D3D12_RESOURCE_FLAGS flags, uint16 miplevels, 
-				DXGI_FORMAT format, RESOURCE_USAGE usage);
-			static DX12Resource CreateTexture2D(ID3D12Device* device, uint64 width, uint32 height,
-				uint32 arraySize, uint32 sampleCount, uint32 sampleQuality, D3D12_RESOURCE_FLAGS flags,
-				uint16 miplevels, DXGI_FORMAT format, RESOURCE_USAGE usage);
-			static DX12Resource CreateTexture3D(ID3D12Device* device, uint64 width, uint32 height,
-				uint32 depth, uint32 sampleCount, uint32 sampleQuality, D3D12_RESOURCE_FLAGS flags,
-				uint16 miplevels, DXGI_FORMAT format, RESOURCE_USAGE usage);
-			static DX12Resource CreateBuffer(ID3D12Device* device, uint32 count, uint32 stride,
-				D3D12_RESOURCE_FLAGS flags, RESOURCE_USAGE usage);
-
-		private:
-			static DX12Resource Create(ID3D12Device* device, D3D12_CLEAR_VALUE* clearValue, D3D12_RESOURCE_DIMENSION dimension,
-				uint64 width, uint32 height, uint16 depthOrArraySize, uint32 sampleCount, uint32 sampleQuality, 
-				D3D12_TEXTURE_LAYOUT layout, uint32 alignment, D3D12_RESOURCE_FLAGS flags, uint16 miplevels, 
-				DXGI_FORMAT format, RESOURCE_USAGE usage);
+			static D3D12_RESOURCE_DESC CreateDescTexture1D(uint64 width, uint32 arraySize, uint32 sampleCount, 
+				uint32 sampleQuality, D3D12_RESOURCE_FLAGS flags, uint16 miplevels, DXGI_FORMAT format);
+			static D3D12_RESOURCE_DESC CreateDescTexture2D(uint64 width, uint32 height,	uint32 arraySize,
+				uint32 sampleCount, uint32 sampleQuality, D3D12_RESOURCE_FLAGS flags, uint16 miplevels, DXGI_FORMAT format);
+			static D3D12_RESOURCE_DESC CreateDescTexture3D(uint64 width, uint32 height, uint32 depth, 
+				uint32 sampleCount, uint32 sampleQuality, D3D12_RESOURCE_FLAGS flags, uint16 miplevels, DXGI_FORMAT format);
+			static D3D12_RESOURCE_DESC CreateDescBuffer(uint32 count, uint32 stride, D3D12_RESOURCE_FLAGS flags);
 		};
 	}
 }

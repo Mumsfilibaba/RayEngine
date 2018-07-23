@@ -64,37 +64,46 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Texture::Create(ID3D12Device* device, const TextureInfo& info)
 		{
-			D3D12_RESOURCE_FLAGS flags;
-			if (info.Flags == TEXTUREFLAGS_RENDERTARGET)
+			D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
+			if (info.Flags == TEXTURE_FLAGS_RENDERTARGET)
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-			if (info.Flags == TEXTUREFLAGS_DEPTHBUFFER)
+			if (info.Flags == TEXTURE_FLAGS_DEPTHBUFFER)
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
 
 			DXGI_FORMAT format = ReToDXFormat(info.Format);
 
 
-			D3D12_CLEAR_VALUE clearValue;
-			clearValue.Format = DXGI_FORMAT_D16_UNORM;
-			clearValue.DepthStencil.Depth = 1.0f;
-			clearValue.DepthStencil.Stencil = 0;
+			D3D12_CLEAR_VALUE clearValue = {};
+			clearValue.Format = format;
+			clearValue.Color[0] = info.OptimizedColor[0];
+			clearValue.Color[1] = info.OptimizedColor[1];
+			clearValue.Color[2] = info.OptimizedColor[2];
+			clearValue.Color[3] = info.OptimizedColor[3];
+
+			clearValue.DepthStencil.Depth = info.DepthStencil.OptimizedDepth;
+			clearValue.DepthStencil.Stencil = info.DepthStencil.OptimizedStencil;
 
 
-			if (info.TextureType == TEXTURETYPE_1D)
+			D3D12_RESOURCE_DESC desc = {};
+			if (info.Type == TEXTURE_TYPE_1D)
 			{
-				m_Resource = DX12Resource::CreateTexture1D(device, info.Width, info.DepthOrArraySize, 
-					info.SampleCount, 0, flags, info.MipLevels, format, info.Usage);
+				desc = DX12Resource::CreateDescTexture1D(info.Width, info.DepthOrArraySize, info.SampleCount, 0,
+					flags, info.MipLevels, format);
 			}
-			else if (info.TextureType == TEXTURETYPE_2D)
+			else if (info.Type == TEXTURE_TYPE_2D)
 			{
-				m_Resource = DX12Resource::CreateTexture2D(device, info.Width, info.Height, info.DepthOrArraySize,
-					info.SampleCount, 0, flags, info.MipLevels, format, info.Usage);
+				desc = DX12Resource::CreateDescTexture2D(info.Width, info.Height, info.DepthOrArraySize,
+					info.SampleCount, 0, flags, info.MipLevels, format);
 			}
-			else if (info.TextureType == TEXTURETYPE_3D)
+			else if (info.Type == TEXTURE_TYPE_3D)
 			{
-				m_Resource = DX12Resource::CreateTexture3D(device, info.Width, info.Height, info.DepthOrArraySize,
-					info.SampleCount, 0, flags, info.MipLevels, format, info.Usage);
+				desc = DX12Resource::CreateDescTexture3D(info.Width, info.Height, info.DepthOrArraySize, 
+					info.SampleCount, 0, flags, info.MipLevels, format);
 			}
+
+
+			m_Resource = DX12Resource(device, info.Name, &clearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
 		}
 
 

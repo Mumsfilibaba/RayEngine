@@ -3,7 +3,6 @@ TODO:
 -Render triangle DX11
 -Render triangle Vulkan
 
--All formats in DX12, DX11 and Vulkan should be supported
 -Set names on resources (Even if vulkan may not support it)
 -DX12 - ResourceView BaseClass - Viewclasses very similar
 -DX12 - DescriptorHeapManager
@@ -17,9 +16,6 @@ TODO:
 
 -Add p for pointers
 -AdapterInfo.cpp
-
--Static version - Better performance?
-
 -Controller support
 
 -Aquire pointers for native window etc
@@ -30,6 +26,7 @@ TODO:
 
 
 For later:
+-All formats in DX12, DX11 and Vulkan should be supported
 -Error-Codes
 -String-Class
 -Queue-Class

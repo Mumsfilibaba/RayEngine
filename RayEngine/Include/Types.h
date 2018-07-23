@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace RayEngine
 {
 	/////////////////////////////////////////////////////////////
@@ -110,6 +112,16 @@ namespace RayEngine
 		RESOURCE_USAGE_STATIC = 1,
 		RESOURCE_USAGE_DEFAULT = 2,
 		RESOURCE_USAGE_DYNAMIC = 3,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum CPU_ACCESS_FLAG : int32
+	{
+		CPU_ACCESS_FLAG_NONE = 0,
+		CPU_ACCESS_FLAG_READ = (1 << 0),
+		CPU_ACCESS_FLAG_WRITE = (1 << 1)
 	};
 
 

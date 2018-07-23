@@ -8,23 +8,23 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		enum TEXTURETYPE : int32
+		enum TEXTURE_TYPE : int32
 		{
-			TEXTURETYPE_UNKNOWN = 0,
-			TEXTURETYPE_1D = 1,
-			TEXTURETYPE_2D = 2,
-			TEXTURETYPE_3D = 3,
+			TEXTURE_TYPE_UNKNOWN = 0,
+			TEXTURE_TYPE_1D = 1,
+			TEXTURE_TYPE_2D = 2,
+			TEXTURE_TYPE_3D = 3,
 		};
 
 
 
 		/////////////////////////////////////////////////////////////
-		enum TEXTUREFLAGS : int32
+		enum TEXTURE_FLAGS : int32
 		{
-			TEXTUREFLAGS_NONE = 0,
-			TEXTUREFLAGS_RENDERTARGET = 1,
-			TEXTUREFLAGS_TEXTURE = 2,
-			TEXTUREFLAGS_DEPTHBUFFER = 3,
+			TEXTURE_FLAGS_NONE = 0,
+			TEXTURE_FLAGS_RENDERTARGET = 1,
+			TEXTURE_FLAGS_TEXTURE = 2,
+			TEXTURE_FLAGS_DEPTHBUFFER = 3,
 		};
 
 
@@ -33,15 +33,23 @@ namespace RayEngine
 		struct TextureInfo
 		{
 			std::string Name = "";
-			FORMAT Format = FORMAT_UNKNOWN;
-			TEXTURETYPE TextureType = TEXTURETYPE_2D;
-			TEXTUREFLAGS Flags = TEXTUREFLAGS_NONE;
+			TEXTURE_FLAGS Flags = TEXTURE_FLAGS_NONE;
 			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
+			CPU_ACCESS_FLAG CpuAccess = CPU_ACCESS_FLAG_NONE;
+			TEXTURE_TYPE Type = TEXTURE_TYPE_2D;
+			FORMAT Format = FORMAT_UNKNOWN;
 			int32 Width = 0;
 			int32 Height = 0;
 			int32 DepthOrArraySize = 0;
 			int32 SampleCount = 1;
-			int32 MipLevels = 1;
+			int32 MipLevels = 1;			
+			float OptimizedColor[4];
+			
+			struct
+			{
+				float OptimizedDepth = 1.0f;
+				uint8 OptimizedStencil = 0;
+			} DepthStencil;
 		};
 
 

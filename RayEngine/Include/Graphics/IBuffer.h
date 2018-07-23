@@ -8,12 +8,12 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		enum BUFFERTYPE : int32
+		enum BUFFER_USAGE : int32
 		{
-			BUFFERTYPE_UNKNOWN = 0,
-			BUFFERTYPE_UNIFORMBUFFER = 1,
-			BUFFERTYPE_VERTEXBUFFER = 2,
-			BUFFERTYPE_INDEXBUFFER = 3,
+			BUFFER_USAGE_UNKNOWN = 0,
+			BUFFER_USAGE_UNIFORMBUFFER = 1,
+			BUFFER_USAGE_VERTEXBUFFER = 2,
+			BUFFER_USAGE_INDEXBUFFER = 3,
 		};
 
 
@@ -22,8 +22,9 @@ namespace RayEngine
 		struct BufferInfo
 		{
 			std::string Name = "";
-			BUFFERTYPE Type = BUFFERTYPE_UNKNOWN;
 			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
+			CPU_ACCESS_FLAG CpuAccess = CPU_ACCESS_FLAG_NONE;
+			BUFFER_USAGE Type = BUFFER_USAGE_UNKNOWN;
 			int32 Count = 0;
 			int32 Stride = 0;
 		};

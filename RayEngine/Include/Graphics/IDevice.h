@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ICommandQueue.h"
-#include "IFence.h"
 #include "IShader.h"
 #include "IRenderTargetView.h"
 #include "IDepthStencilView.h"
@@ -38,8 +37,6 @@ namespace RayEngine
 
 			//Create a queue for graphics- and computecommands
 			virtual bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommanQueueInfo& info) const = 0;
-			//Create a fence for synchronization between CPU and GPU
-			virtual bool CreateFence(IFence** ppFence) const = 0;
 			//Creates a shader module for use in a pipelinestate
 			virtual bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) const = 0;
 			//Creates a rendertargetview for using a texture as a rendertarget
