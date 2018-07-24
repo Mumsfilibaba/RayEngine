@@ -176,10 +176,11 @@ int main(int args, char* argsv[])
 
 	queue->Reset();
 	
-	queue->TransitionResource(depthStencil, RESOURCE_STATE_COMMON, RESOURCE_STATE_DEPTH_WRITE, 0);
+	queue->TransitionResource(depthStencil, RESOURCE_STATE_DEPTH_WRITE, 0);
 
 	queue->Close();
 	queue->Execute();
+	queue->Flush();
 
 
 	Vector3 vertices[3] = 
@@ -199,7 +200,7 @@ int main(int args, char* argsv[])
 	vbInfo.Name = "VertexBuffer";
 	vbInfo.Count = 3;
 	vbInfo.Stride = sizeof(Vector3);
-	vbInfo.Type = BUFFER_USAGE_VERTEXBUFFER;
+	vbInfo.Type = BUFFER_USAGE_VERTEX;
 	vbInfo.Usage = RESOURCE_USAGE_DEFAULT;
 
 	IBuffer* vertexBuffer = nullptr;
@@ -299,12 +300,55 @@ int main(int args, char* argsv[])
 			}
 		}
 
-		if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)
-		{
-			ColorF c = bgColor * strength;
-			window.SetBackground((Color)c);
-			clock.Reset();
-		}
+		//if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)
+		//{
+		//	ColorF c = bgColor * strength;
+		//	window.SetBackground((Color)c);
+		//	clock.Reset();
+		//}
+
+		queue->Reset();
+
+		int32 buffIndex = swapchain->GetCurrentBuffer();
+		ITexture* pBuff = swapchain->GetBuffer(buffIndex);
+		queue->TransitionResource(pBuff, RESOURCE_STATE_RENDER_TARGET, 0);
+
+		ColorF c = ColorF::DARKGREEN;
+		queue->ClearRendertargetView(rtvs[swapchain->GetCurrentBuffer()], c);
+		queue->ClearDepthStencilView(dsv, 1.0f, 0);
+
+		Viewport vPort = {};
+		vPort.Height = static_cast<float>(window.GetHeight());
+		vPort.Width = static_cast<float>(window.GetWidth());
+		vPort.TopLeftX = 0.0f;
+		vPort.TopLeftY = 0.0f;
+		vPort.MinDepth = 0.0f;
+		vPort.MaxDepth = 1.0f;
+
+		queue->SetViewports(vPort);
+
+		Math::Rectangle rect = {};
+		rect.BottomRight.x = static_cast<float>(window.GetHeight());
+		rect.BottomRight.y = static_cast<float>(window.GetWidth());
+
+		queue->SetScissorRects(rect);
+
+		queue->SetRendertargets(rtvs[buffIndex], dsv);
+		queue->SetPipelineState(pipelineState);
+		queue->SetRootSignature(rootSignature);
+
+		queue->SetPrimitiveTopology(PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		queue->SetVertexBuffers(vertexBuffer, 0);
+		queue->Draw(0, 3);
+
+		queue->TransitionResource(pBuff, RESOURCE_STATE_PRESENT, 0);
+
+		queue->Close();
+		queue->Execute();
+
+		swapchain->Present();
+
+		queue->Flush();
 	}
 
 	queue->Flush();

@@ -21,6 +21,8 @@ namespace RayEngine
 
 			PIPELINE_TYPE GetPipelineType() const override final;
 
+			ID3D12PipelineState* GetD3D12PipelineState() const;
+
 			DX12PipelineState& operator=(DX12PipelineState&& other);
 
 		private:

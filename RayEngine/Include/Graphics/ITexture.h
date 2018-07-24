@@ -66,6 +66,9 @@ namespace RayEngine
 		public:
 			ITexture() {}
 			virtual ~ITexture() {}
+
+			//Returns the current state of the resource
+			virtual RESOURCE_STATE GetResourceState() const = 0;
 		};
 	}
 }

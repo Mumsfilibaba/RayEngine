@@ -20,6 +20,9 @@ namespace RayEngine
 			DX12Texture(DX12Texture&& other);
 			~DX12Texture();
 
+			RESOURCE_STATE GetResourceState() const override final;
+
+			DX12Resource& GetResource();
 			const DX12Resource& GetResource() const;
 
 			DX12Texture& operator=(DX12Texture&& other);

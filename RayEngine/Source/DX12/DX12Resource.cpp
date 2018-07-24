@@ -27,7 +27,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Resource::DX12Resource(ID3D12Resource* resource)
 			: m_Resource(resource),
-			m_State(D3D12_RESOURCE_STATE_COMMON)
+			m_State(D3D12_RESOURCE_STATE_PRESENT)
 		{
 			resource->AddRef();
 		}
@@ -94,9 +94,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		D3D12_RESOURCE_STATES DX12Resource::GetState() const
+		D3D12_RESOURCE_STATES DX12Resource::GetD3D12State() const
 		{
 			return m_State;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Resource::SetD3D12State(D3D12_RESOURCE_STATES state)
+		{
+			m_State = state;
 		}
 
 

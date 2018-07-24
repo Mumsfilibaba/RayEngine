@@ -26,7 +26,8 @@ namespace RayEngine
 			void GetDesc(D3D12_RESOURCE_DESC& desc);
 
 			ID3D12Resource* GetD3D12Resource() const;
-			D3D12_RESOURCE_STATES GetState() const;
+			D3D12_RESOURCE_STATES GetD3D12State() const;
+			void SetD3D12State(D3D12_RESOURCE_STATES state);
 
 			DX12Resource& operator=(DX12Resource&& other);
 

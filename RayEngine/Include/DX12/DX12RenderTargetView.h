@@ -2,13 +2,13 @@
 
 #include "..\Graphics\IDevice.h"
 #include "..\Graphics\IRenderTargetView.h"
-#include "DX12DescriptorHeap.h"
+#include "DX12ViewBase.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12RenderTargetView : public IRenderTargetView
+		class DX12RenderTargetView : public IRenderTargetView, public DX12ViewBase
 		{
 		public:
 			DX12RenderTargetView(const DX12RenderTargetView& other) = delete;
@@ -23,9 +23,6 @@ namespace RayEngine
 
 		private:
 			void Create(const IDevice* pDevice, const RenderTargetViewInfo& info);
-
-		private:
-			D3D12_CPU_DESCRIPTOR_HANDLE m_View;
 		};
 	}
 }

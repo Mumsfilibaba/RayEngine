@@ -2,13 +2,13 @@
 
 #include "..\..\Include\Graphics\IDevice.h"
 #include "..\..\Include\Graphics\IDepthStencilView.h"
-#include "DX12Common.h"
+#include "DX12ViewBase.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12DepthStencilView : public IDepthStencilView
+		class DX12DepthStencilView : public IDepthStencilView, public DX12ViewBase
 		{
 		public:
 			DX12DepthStencilView(const DX12DepthStencilView& other) = delete;
@@ -23,9 +23,6 @@ namespace RayEngine
 
 		private:
 			void Create(const IDevice* pDevice, const DepthStencilViewInfo& info);
-
-		private:
-			D3D12_CPU_DESCRIPTOR_HANDLE m_View;
 		};
 	}
 }

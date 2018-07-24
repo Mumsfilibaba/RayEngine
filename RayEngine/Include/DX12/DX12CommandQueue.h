@@ -19,12 +19,29 @@ namespace RayEngine
 			DX12CommandQueue(DX12CommandQueue&& other);
 			~DX12CommandQueue();
 
+			void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const override final;
+			void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const override final;
+
+			void SetPipelineState(IPipelineState* pPipelineState) const override final;
+			void SetRootSignature(IRootSignature* pRootSignature) const override final;
+			void SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const override final;
+
+			//TODO: Multiple Viewports, rects and rendertargets
+			void SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const override final;
+			void SetViewports(const Viewport& viewport) const override final;
+			void SetScissorRects(const Math::Rectangle& rect) const override final;
+			void SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const override final;
+
 			//TODO: Copy resource
+			void CopyResource(DX12Resource& dst, const DX12Resource& src) const;
 
+			void TransitionResource(DX12Resource& resource, D3D12_RESOURCE_STATES to, int32 subresource) const;
+			void TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const  override final;
 
-			//TODO: Transition DX12Resource
-			void TransitionResource(const DX12Resource& resource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
-			void TransitionResource(const ITexture* pResource, RESOURCE_STATE from, RESOURCE_STATE to, int32 subresource) const  override final;
+			void Draw(int32 startVertex, int32 vertexCount) const override final;
+			void DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const override final;
+			void DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const override final;
+			void DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const override final;
 
 			void Flush() const override final;
 			void Execute() const override final;

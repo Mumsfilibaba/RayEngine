@@ -1,6 +1,11 @@
 #include "..\..\Include\DX12\DX12CommandQueue.h"
 #include "..\..\Include\DX12\DX12Texture.h"
 #include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12RenderTargetView.h"
+#include "..\..\Include\DX12\DX12DepthStencilView.h"
+#include "..\..\Include\DX12\DX12PipelineState.h"
+#include "..\..\Include\DX12\DX12RootSignature.h"
+#include "..\..\Include\DX12\DX12Buffer.h"
 
 namespace RayEngine
 {
@@ -60,7 +65,132 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::TransitionResource(const DX12Resource& resource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const
+		void DX12CommandQueue::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
+		{
+			DX12RenderTargetView* pDX12View = reinterpret_cast<DX12RenderTargetView*>(pView);
+			m_List->ClearRenderTargetView(pDX12View->GetD3D12CpuDescriptorHandle(), pColor, 0, nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
+		{
+			DX12RenderTargetView* pDX12View = reinterpret_cast<DX12RenderTargetView*>(pView);
+			m_List->ClearDepthStencilView(pDX12View->GetD3D12CpuDescriptorHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depth, stencil, 0, nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::SetPipelineState(IPipelineState* pPipelineState) const
+		{
+			DX12PipelineState* pDX12PipelineState = reinterpret_cast<DX12PipelineState*>(pPipelineState);
+
+			m_List->SetPipelineState(pDX12PipelineState->GetD3D12PipelineState());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::SetRootSignature(IRootSignature* pRootSignature) const
+		{
+			DX12RootSignature* pDX12RootSignature = reinterpret_cast<DX12RootSignature*>(pRootSignature);
+
+			m_List->SetGraphicsRootSignature(pDX12RootSignature->GetD3D12RootSignature());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const
+		{
+			DX12Buffer* pDX12Buffer = reinterpret_cast<DX12Buffer*>(pBuffer);
+
+			D3D12_VERTEX_BUFFER_VIEW view = pDX12Buffer->GetD3D12VertexBufferView();
+			m_List->IASetVertexBuffers(startSlot, 1, &view);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
+		{
+			DX12RenderTargetView* pDX12RenderTarget = reinterpret_cast<DX12RenderTargetView*>(pRenderTarget);
+			DX12DepthStencilView* pDX12DepthStencil = reinterpret_cast<DX12DepthStencilView*>(pDepthStencil);
+
+			D3D12_CPU_DESCRIPTOR_HANDLE rtv = pDX12RenderTarget->GetD3D12CpuDescriptorHandle();
+			D3D12_CPU_DESCRIPTOR_HANDLE dsv = pDX12DepthStencil->GetD3D12CpuDescriptorHandle();
+
+			m_List->OMSetRenderTargets(1, &rtv, false, &dsv);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::SetViewports(const Viewport& viewport) const
+		{
+			D3D12_VIEWPORT view = 
+			{ 
+				viewport.TopLeftX,
+				viewport.TopLeftY,
+				viewport.Width, 
+				viewport.Height,
+				viewport.MinDepth, 
+				viewport.MaxDepth
+			};
+
+			m_List->RSSetViewports(1, &view);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::SetScissorRects(const Math::Rectangle& rect) const
+		{
+			D3D12_RECT dxRect = 
+			{
+				static_cast<LONG>(rect.TopLeft.x),
+				static_cast<LONG>(rect.TopLeft.y),
+				static_cast<LONG>(rect.BottomRight.x),
+				static_cast<LONG>(rect.BottomRight.y)
+			};
+
+			m_List->RSSetScissorRects(1, &dxRect);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const
+		{
+			D3D_PRIMITIVE_TOPOLOGY dxTopology;
+
+			switch (topology)
+			{
+			case PRIMITIVE_TOPOLOGY_TRIANGLELIST: dxTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST; break;
+			case PRIMITIVE_TOPOLOGY_TRIANGLESTRIP: dxTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP; break;
+			case PRIMITIVE_TOPOLOGY_LINELIST: dxTopology = D3D_PRIMITIVE_TOPOLOGY_LINELIST; break;
+			case PRIMITIVE_TOPOLOGY_LINESTRIP: dxTopology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP; break;
+			case PRIMITIVE_TOPOLOGY_POINTS: dxTopology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST; break;
+			default: dxTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED; break;
+			}
+
+			m_List->IASetPrimitiveTopology(dxTopology);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::CopyResource(DX12Resource& dst, const DX12Resource& src) const
+		{
+			m_List->CopyResource(dst.GetD3D12Resource(), src.GetD3D12Resource());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::TransitionResource(DX12Resource& resource, D3D12_RESOURCE_STATES to, int32 subresource) const
 		{
 			D3D12_RESOURCE_BARRIER barrier = {};
 			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -70,19 +200,53 @@ namespace RayEngine
 
 			barrier.Transition.pResource = resource.GetD3D12Resource();
 
-			barrier.Transition.StateBefore = from;
+			barrier.Transition.StateBefore = resource.GetD3D12State();
 			barrier.Transition.StateAfter = to;
 
 			m_List->ResourceBarrier(1, &barrier);
+
+			resource.SetD3D12State(to);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::TransitionResource(const ITexture* pResource, RESOURCE_STATE from, RESOURCE_STATE to, int32 subresource) const
+		void DX12CommandQueue::TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const
 		{
-			const DX12Texture* pDX12resource = reinterpret_cast<const DX12Texture*>(pResource);
-			TransitionResource(pDX12resource->GetResource(), ReToDXResourceState(from), ReToDXResourceState(to), subresource);
+			DX12Texture* pDX12resource = reinterpret_cast<DX12Texture*>(pResource);
+			TransitionResource(pDX12resource->GetResource(), ReToDXResourceState(to), subresource);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::Draw(int32 startVertex, int32 vertexCount) const
+		{
+			m_List->DrawInstanced(vertexCount, 1, startVertex, 0);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
+		{
+			m_List->DrawIndexedInstanced(indexCount, 1, startIndex, startVertex, 0);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const
+		{
+			m_List->DrawInstanced(vertexCount, instanceCount, startVertex, startInstance);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
+		{
+			m_List->DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
 		}
 
 
@@ -202,13 +366,13 @@ namespace RayEngine
 			if (FAILED(pD3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_Allocator))))
 				return;
 			else
-				D3D12SetName(m_Queue, info.Name + ": Allocator");
+				D3D12SetName(m_Allocator, info.Name + ": Allocator");
 
 
 			if (FAILED(pD3D12Device->CreateCommandList(qDesc.NodeMask, D3D12_COMMAND_LIST_TYPE_DIRECT, m_Allocator, nullptr, IID_PPV_ARGS(&m_List))))
 				return;
 			else
-				D3D12SetName(m_Queue, info.Name + ": List");
+				D3D12SetName(m_List, info.Name + ": List");
 
 
 			if (FAILED(pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence))))

@@ -36,6 +36,23 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		int32 DX12Swapchain::GetCurrentBuffer() const
+		{
+			return m_CurrentBuffer;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ITexture* DX12Swapchain::GetBuffer(int32 index)
+		{
+			DX12Texture* ptr = &m_Textures[index];
+			return reinterpret_cast<ITexture*>(ptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		const ITexture* DX12Swapchain::GetBuffer(int32 index) const
 		{
 			const DX12Texture* ptr = &m_Textures[index];
@@ -48,6 +65,8 @@ namespace RayEngine
 		void DX12Swapchain::Present() const
 		{
 			m_Swapchain->Present(0, 0);
+			m_CurrentBuffer++;
+			m_CurrentBuffer = m_CurrentBuffer % m_BufferCount;
 		}
 
 
@@ -110,7 +129,11 @@ namespace RayEngine
 			for (int32 i = 0; i < m_BufferCount; i++)
 			{
 				if (SUCCEEDED(m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer))))
+				{
+					D3D12SetName(buffer.Get(), "Swapchain Buffer " + std::to_string(i));
+
 					m_Textures.emplace_back(DX12Texture(buffer.Get()));
+				}
 			}
 
 			m_Textures.shrink_to_fit();

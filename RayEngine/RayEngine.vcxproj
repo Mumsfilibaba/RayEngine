@@ -188,6 +188,7 @@
     <ClInclude Include="Include\DX12\DX12Shader.h" />
     <ClInclude Include="Include\DX12\DX12Swapchain.h" />
     <ClInclude Include="Include\DX12\DX12Texture.h" />
+    <ClInclude Include="Include\DX12\DX12ViewBase.h" />
     <ClInclude Include="Include\DX12\DXShaderCompiler.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
     <ClInclude Include="Include\Graphics\IBuffer.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Include\Graphics\IShaderCompiler.h" />
     <ClInclude Include="Include\Graphics\ISwapchain.h" />
     <ClInclude Include="Include\Graphics\ITexture.h" />
+    <ClInclude Include="Include\Graphics\Viewport.h" />
     <ClInclude Include="Include\Math\Color.h" />
     <ClInclude Include="Include\Math\ColorF.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
@@ -280,6 +282,7 @@
     <ClCompile Include="Source\DX12\DX12Shader.cpp" />
     <ClCompile Include="Source\DX12\DX12Swapchain.cpp" />
     <ClCompile Include="Source\DX12\DX12Texture.cpp" />
+    <ClCompile Include="Source\DX12\DX12ViewBase.cpp" />
     <ClCompile Include="Source\DX12\DXShaderCompiler.cpp" />
     <ClCompile Include="Source\Graphics\ShaderByteCode.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />

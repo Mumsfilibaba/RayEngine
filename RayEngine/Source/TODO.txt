@@ -13,6 +13,9 @@ TODO:
 -DX12 - DepthStencilState, RasterizerState, BlendState
 -DX12 - Setup breakpoints when errors occurs
 -DX12 - Device object should create native ptrs
+-DX12 - Dynamic uploadheap - Resizeses when needed
+-DX12 - ViewManager for buffers?
+-Seperate CommandList and commandQueue
 -Vulkan - referencecounting
 
 -Add p for pointers

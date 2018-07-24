@@ -39,7 +39,10 @@ namespace RayEngine
 			ISwapchain() {}
 			virtual ~ISwapchain() {}
 
+			//Returns the number of the current buffer being done rendering
+			virtual int32 GetCurrentBuffer() const = 0;
 			//Get the texture resource in the chain
+			virtual ITexture* GetBuffer(int32 index) = 0;
 			virtual const ITexture* GetBuffer(int32 index) const = 0;
 			//Present next backbuffer to the front
 			virtual void Present() const = 0;

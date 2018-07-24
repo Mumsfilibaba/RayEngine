@@ -45,6 +45,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		ID3D12PipelineState* DX12PipelineState::GetD3D12PipelineState() const
+		{
+			return m_PipelineState;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12PipelineState& DX12PipelineState::operator=(DX12PipelineState&& other)
 		{
 			if (this != &other)

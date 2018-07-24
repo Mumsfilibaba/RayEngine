@@ -24,6 +24,22 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		int32 VKSwapchain::GetCurrentBuffer() const
+		{
+			return int32();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ITexture* VKSwapchain::GetBuffer(int32 index)
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		const ITexture* VKSwapchain::GetBuffer(int32 index) const
 		{
 			return nullptr;

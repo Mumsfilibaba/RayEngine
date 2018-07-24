@@ -4,8 +4,8 @@ namespace Math
 {
 	/////////////////////////////////////////////////////////////
 	Rectangle::Rectangle()
-		: topLeft(),
-		bottomRight()
+		: TopLeft(),
+		BottomRight()
 	{
 	}
 
@@ -13,8 +13,8 @@ namespace Math
 
 	/////////////////////////////////////////////////////////////
 	Rectangle::Rectangle(const Math::Vector2& topLeft, const Math::Vector2& bottomRight)
-		: topLeft(topLeft),
-		bottomRight(bottomRight)
+		: TopLeft(topLeft),
+		BottomRight(bottomRight)
 	{
 	}
 }

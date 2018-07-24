@@ -18,6 +18,8 @@ namespace RayEngine
 			DX12Swapchain(DX12Swapchain&& other);
 			~DX12Swapchain();
 
+			int32 GetCurrentBuffer() const override final;
+			ITexture* GetBuffer(int32 index) override final;
 			const ITexture* GetBuffer(int32 index) const override final;
 			void Present() const override final;
 
@@ -30,7 +32,7 @@ namespace RayEngine
 		private:
 			IDXGISwapChain1* m_Swapchain;
 			int32 m_BufferCount;
-			int32 m_CurrentBuffer;
+			mutable int32 m_CurrentBuffer;
 			std::vector<DX12Texture> m_Textures;
 		};
 	}
