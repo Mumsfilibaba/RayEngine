@@ -22,7 +22,7 @@ namespace RayEngine
 			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const override final;
 			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const override final;
 			bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const override final;
-			bool CreateTexture(ITexture** texture, const TextureInfo& info) const override final;
+			bool CreateTexture(ITexture** texture, const ResourceData* const pInitialData, const TextureInfo& info) const override final;
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const override final;
 			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const override final;

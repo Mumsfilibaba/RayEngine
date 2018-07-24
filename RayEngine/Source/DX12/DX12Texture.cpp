@@ -7,10 +7,10 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Texture::DX12Texture(const IDevice* pDevice, const TextureInfo& info)
+		DX12Texture::DX12Texture(const IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: DX12Resource()
 		{
-			Create(pDevice, info);
+			Create(pDevice, pInitialData, info);
 		}
 
 
@@ -57,16 +57,11 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Texture::Create(const IDevice* pDevice, const TextureInfo& info)
+		void DX12Texture::Create(const IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
-			D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
-			if (info.Flags == TEXTURE_FLAGS_RENDERTARGET)
-				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-			if (info.Flags == TEXTURE_FLAGS_DEPTHBUFFER)
-				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
 			DXGI_FORMAT format = ReToDXFormat(info.Format);
 
+			D3D12_CLEAR_VALUE* pClearValue = nullptr;
 			D3D12_CLEAR_VALUE clearValue = {};
 			clearValue.Format = format;
 			clearValue.Color[0] = info.OptimizedColor[0];
@@ -76,6 +71,18 @@ namespace RayEngine
 
 			clearValue.DepthStencil.Depth = info.DepthStencil.OptimizedDepth;
 			clearValue.DepthStencil.Stencil = info.DepthStencil.OptimizedStencil;
+
+			D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
+			if (info.Flags == TEXTURE_FLAGS_RENDERTARGET)
+			{
+				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+				pClearValue = &clearValue;
+			}
+			if (info.Flags == TEXTURE_FLAGS_DEPTHBUFFER)
+			{
+				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+				pClearValue = &clearValue;
+			}
 
 
 			D3D12_RESOURCE_DESC desc = {};
@@ -106,7 +113,43 @@ namespace RayEngine
 
 
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
-			DX12Resource::Create(pD3D12Device, info.Name, &clearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
+			const DX12CommandQueue* pQueue = reinterpret_cast<const DX12Device*>(pDevice)->GetDX12CommandQueue();
+
+			DX12Resource::Create(pD3D12Device, info.Name, pClearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
+
+
+			if (pInitialData != nullptr)
+			{
+				D3D12_RESOURCE_DESC uploadDesc = {};
+				uploadDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+				uploadDesc.Width = pInitialData->ByteStride * pInitialData->WidthOrCount * pInitialData->Height;
+				uploadDesc.Height = 1;
+				uploadDesc.DepthOrArraySize = 1;
+				uploadDesc.SampleDesc.Count = 1;
+				uploadDesc.SampleDesc.Quality = 0;
+				uploadDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+				uploadDesc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+				uploadDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+				uploadDesc.MipLevels = 1;
+				uploadDesc.Format = DXGI_FORMAT_UNKNOWN;
+
+				DX12Resource uploadBuffer(pD3D12Device, info.Name + " : UploadBuffer", nullptr, uploadDesc,
+					D3D12_RESOURCE_STATE_GENERIC_READ, RESOURCE_USAGE_DYNAMIC, CPU_ACCESS_FLAG_WRITE);
+
+				void* gpuPtr = uploadBuffer.Map(0);
+				memcpy(gpuPtr, pInitialData->pData, pInitialData->ByteStride * pInitialData->WidthOrCount * pInitialData->Height);
+				uploadBuffer.Unmap();
+
+				pQueue->Reset();
+
+				pQueue->TransitionResource(this, D3D12_RESOURCE_STATE_COPY_DEST, 0);
+				pQueue->CopyTextureRegion(this, &uploadBuffer, format, info.Width, info.Height, 1, pInitialData->ByteStride);
+				pQueue->TransitionResource(this, D3D12_RESOURCE_STATE_GENERIC_READ, 0);
+
+				pQueue->Close();
+				pQueue->Execute();
+				pQueue->Flush();
+			}
 		}
 	}
 }

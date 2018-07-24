@@ -26,6 +26,9 @@
     <Image Include="Cursor.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Textures\chess.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\vs.hlsl" />

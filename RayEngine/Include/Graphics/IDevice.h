@@ -44,7 +44,7 @@ namespace RayEngine
 			//Creates a rendertargetview for using a texture as a rendertarget
 			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) const = 0;
 			//Creates a texture resource on the GPU
-			virtual bool CreateTexture(ITexture** ppTexture, const TextureInfo& info) const = 0;
+			virtual bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) const = 0;
 			//Creates a buffer resource on the GPU
 			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const = 0;
 			//Creates a shader rootsignature

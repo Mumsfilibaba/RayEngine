@@ -18,6 +18,8 @@ TODO:
 -Seperate CommandList and commandQueue
 -Vulkan - referencecounting
 
+-How resources are used needs refining
+-TextureLoader needs to be updated with the new formats
 -Add p for pointers
 -AdapterInfo.cpp
 -DX12 - Merge Rootsignature and pipelinestate?

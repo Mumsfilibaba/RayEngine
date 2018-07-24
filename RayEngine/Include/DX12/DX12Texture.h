@@ -15,7 +15,7 @@ namespace RayEngine
 			DX12Texture& operator=(const DX12Texture& other) = delete;
 
 		public:
-			DX12Texture(const IDevice* pDevice, const TextureInfo& info);
+			DX12Texture(const IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
 			DX12Texture(ID3D12Resource* pResource);
 			DX12Texture(DX12Texture&& other);
 			~DX12Texture();
@@ -25,7 +25,7 @@ namespace RayEngine
 			DX12Texture& operator=(DX12Texture&& other);
 
 		private:
-			void Create(const IDevice* pDevice, const TextureInfo& info);
+			void Create(const IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
 		};
 	}
 }

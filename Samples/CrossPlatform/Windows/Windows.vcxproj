@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Cursor.png" />
+    <Image Include="Textures\chess.jpg" />
     <Image Include="Walter.png" />
   </ItemGroup>
   <ItemGroup>

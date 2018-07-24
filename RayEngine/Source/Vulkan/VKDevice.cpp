@@ -71,7 +71,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateTexture(ITexture** texture, const TextureInfo& info) const
+		bool VKDevice::CreateTexture(ITexture** texture, const ResourceData* const pInitialData, const TextureInfo& info) const
 		{
 			return false;
 		}

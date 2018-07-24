@@ -34,6 +34,8 @@ namespace RayEngine
 
 			//TODO: Copy resource
 			void CopyResource(DX12Resource* dst, const DX12Resource* src) const;
+			void CopyTextureRegion(DX12Resource* dst, const DX12Resource* src, DXGI_FORMAT format,
+				int32 width, int32 height, int32 depth, int32 stride) const;
 
 			void TransitionResource(DX12Resource* resource, D3D12_RESOURCE_STATES to, int32 subresource) const;
 			void TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const  override final;

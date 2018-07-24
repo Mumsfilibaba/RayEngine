@@ -10,6 +10,7 @@
 #include <System/TouchScreen.h>
 #include <System/Sensors.h>
 #include <Graphics/IFactory.h>
+#include <Graphics/TextureLoader.h>
 
 int main(int args, char* argsv[])
 {
@@ -118,7 +119,33 @@ int main(int args, char* argsv[])
 	dsInfo.SampleCount = 1;
 
 	ITexture* depthStencil = nullptr;
-	device->CreateTexture(&depthStencil, dsInfo);
+	device->CreateTexture(&depthStencil, nullptr, dsInfo);
+
+
+	TextureInfo textureInfo = {};
+	textureInfo.Name = "Texture";
+	textureInfo.Flags = TEXTURE_FLAGS_TEXTURE;
+	textureInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
+	textureInfo.Usage = RESOURCE_USAGE_DEFAULT;
+	textureInfo.Format = FORMAT_R8G8B8A8_UNORM;
+	textureInfo.Type = TEXTURE_TYPE_2D;
+	textureInfo.Width = 512;
+	textureInfo.Height = 512;
+	textureInfo.DepthOrArraySize = 1;
+	textureInfo.MipLevels = 1;
+	textureInfo.SampleCount = 1;
+
+	ResourceData textureData = {};
+	textureData.ByteStride = sizeof(uint8) * 4;
+	textureData.WidthOrCount = 512;
+	textureData.Height = 512;
+
+
+	TextureLoader::LoadFromFile("chess.jpg", "Textures/", &textureData.pData, 
+		textureData.WidthOrCount, textureData.Height, FORMAT_R8G8B8A8_UNORM);
+	
+	ITexture* texture = nullptr;
+	device->CreateTexture(&texture, &textureData, textureInfo);
 
 
 	DepthStencilViewInfo dsvInfo = {};

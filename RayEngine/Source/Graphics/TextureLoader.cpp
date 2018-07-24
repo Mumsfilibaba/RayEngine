@@ -73,7 +73,7 @@ namespace RayEngine
 		int32 reqComponents = 0;
 		void* data = nullptr;
 
-		if (format == FORMAT_R8G8B8A8_UINT)
+		if (format == FORMAT_R8G8B8A8_UINT || format == FORMAT_R8G8B8A8_UNORM)
 			data = static_cast<void*>(stbi_load(fullpath.c_str(), &wi, &he, &reqComponents, 4));
 		else if (format == FORMAT_R32G32B32A32_FLOAT)
 			data = stbi_loadf(fullpath.c_str(), &wi, &he, &reqComponents, 4);
@@ -88,7 +88,7 @@ namespace RayEngine
 				int32 res = 0;
 				void* output = nullptr;
 				
-				if (FORMAT_R8G8B8A8_UINT)
+				if (format == FORMAT_R8G8B8A8_UINT || format == FORMAT_R8G8B8A8_UNORM)
 				{
 					output = new uint8[outWi * outHe * 4];
 					res = stbir_resize_uint8(reinterpret_cast<const uint8*>(data), wi, he, 0,

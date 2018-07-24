@@ -95,9 +95,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateTexture(ITexture** texture, const TextureInfo& info) const
+		bool DX12Device::CreateTexture(ITexture** texture, const ResourceData* const pInitialData, const TextureInfo& info) const
 		{
-			return ((*texture = new DX12Texture(this, info)) != nullptr);
+			return ((*texture = new DX12Texture(this, pInitialData, info)) != nullptr);
 		}
 
 

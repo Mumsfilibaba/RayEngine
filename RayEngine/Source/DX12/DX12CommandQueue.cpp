@@ -190,6 +190,31 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::CopyTextureRegion(DX12Resource* dst, const DX12Resource* src, DXGI_FORMAT format, 
+			int32 width, int32 height, int32 depth, int32 stride) const
+		{
+			D3D12_TEXTURE_COPY_LOCATION srcLoc = {};
+			srcLoc.pResource = src->GetD3D12Resource();
+			srcLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+			srcLoc.PlacedFootprint.Offset = 0;
+			srcLoc.PlacedFootprint.Footprint.Width = width;
+			srcLoc.PlacedFootprint.Footprint.Height = height;
+			srcLoc.PlacedFootprint.Footprint.Depth = depth;
+			srcLoc.PlacedFootprint.Footprint.Format = format;
+			srcLoc.PlacedFootprint.Footprint.RowPitch = width * stride * depth;
+
+
+			D3D12_TEXTURE_COPY_LOCATION dstLoc = {};
+			dstLoc.pResource = dst->GetD3D12Resource();
+			dstLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+			dstLoc.SubresourceIndex = 0;
+
+			m_List->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12CommandQueue::TransitionResource(DX12Resource* resource, D3D12_RESOURCE_STATES to, int32 subresource) const
 		{
 			D3D12_RESOURCE_BARRIER barrier = {};
