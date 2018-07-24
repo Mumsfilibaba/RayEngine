@@ -7,7 +7,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Resource::DX12Resource()
 			: m_Resource(nullptr),
-			m_State()
+			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
 		}
 
@@ -17,7 +17,7 @@ namespace RayEngine
 		DX12Resource::DX12Resource(ID3D12Device* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue,
 			const D3D12_RESOURCE_DESC& desc, D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess)
 			: m_Resource(nullptr),
-			m_State()
+			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
 			Create(device, name, clearValue, desc, initalState, usage, cpuAccess);
 		}
@@ -27,19 +27,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Resource::DX12Resource(ID3D12Resource* resource)
 			: m_Resource(resource),
-			m_State()
+			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
 			resource->AddRef();
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12Resource::DX12Resource(const DX12Resource& other)
-			: m_Resource(other.m_Resource),
-			m_State(other.m_State)
-		{
-			other.m_Resource->AddRef();
 		}
 
 
@@ -64,6 +54,30 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void* DX12Resource::Map(int32 subresource)
+		{
+			//TODO: Variable Range
+
+			void* gpuPtr = nullptr;
+			D3D12_RANGE range = { 0, 0, };
+
+			if (FAILED(m_Resource->Map(subresource, &range, &gpuPtr)))
+				return nullptr;
+			
+			return gpuPtr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Resource::Unmap()
+		{
+			m_Resource->Unmap(0, nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Resource::GetDesc(D3D12_RESOURCE_DESC& desc)
 		{
 			desc = m_Resource->GetDesc();
@@ -71,9 +85,8 @@ namespace RayEngine
 
 
 
-
 		/////////////////////////////////////////////////////////////
-		ID3D12Resource* DX12Resource::GetResource() const
+		ID3D12Resource* DX12Resource::GetD3D12Resource() const
 		{
 			return m_Resource;
 		}
@@ -84,24 +97,6 @@ namespace RayEngine
 		D3D12_RESOURCE_STATES DX12Resource::GetState() const
 		{
 			return m_State;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12Resource& DX12Resource::operator=(const DX12Resource& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Resource);
-
-				other.m_Resource->AddRef();
-				m_Resource = other.m_Resource;
-
-				m_State = other.m_State;
-			}
-
-			return *this;
 		}
 
 

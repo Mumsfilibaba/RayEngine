@@ -2,6 +2,7 @@
 
 #include "..\..\Include\Graphics\IBuffer.h"
 #include "DX12Resource.h"
+#include "DX12CommandQueue.h"
 
 namespace RayEngine
 {
@@ -14,14 +15,15 @@ namespace RayEngine
 			DX12Buffer& operator=(const DX12Buffer& other) = delete;
 
 		public:
-			DX12Buffer(ID3D12Device* device, const BufferInfo& info);
+			DX12Buffer(const IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
 			~DX12Buffer();
 
 		private:
-			void Create(ID3D12Device* device, const BufferInfo& info);
+			void Create(const IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
 
 		private:
 			DX12Resource m_Buffer;
+			DX12Resource m_UploadBuffer;
 		};
 	}
 }

@@ -20,11 +20,10 @@ namespace RayEngine
 
 			void EnumerateAdapters(AdapterList& list) const override final;
 
-			bool CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const override final;
-			bool CreateSwapchain(ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const override final;
-			bool CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo,
-				ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const override final;
-			bool CreateShaderCompiler(IShaderCompiler** compiler) const override final;
+			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) const override final;
+			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) const override final;
+			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) const override final;
+			bool CreateShaderCompiler(IShaderCompiler** ppCompiler) const override final;
 
 			GRAPHICS_API GetGraphicsApi() const override final;
 

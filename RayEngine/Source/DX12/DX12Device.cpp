@@ -50,22 +50,22 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Device::~DX12Device()
 		{
+			D3DRelease_S(m_Device);
+			D3DRelease_S(m_Adapter);
+
 			if (m_DebugDevice != nullptr)
 			{
 				m_DebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL);
 				D3DRelease(m_DebugDevice);
 			}
-
-			D3DRelease_S(m_Device);
-			D3DRelease_S(m_Adapter);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const
+		bool DX12Device::CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) const
 		{
-			return ((*commandQueue = new DX12CommandQueue(m_Device, info)) != nullptr);
+			return ((*commandQueue = new DX12CommandQueue(this, info)) != nullptr);
 		}
 
 
@@ -73,7 +73,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateShader(IShader** shader, const ShaderByteCode& byteCode) const
 		{
-			return ((*shader = new DX12Shader(m_Device, byteCode)) != nullptr);
+			return ((*shader = new DX12Shader(byteCode)) != nullptr);
 		}
 
 
@@ -81,7 +81,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const
 		{
-			return ((*view = new DX12RenderTargetView(m_Device, m_RtvHeap, info)) != nullptr);
+			return ((*view = new DX12RenderTargetView(this, info)) != nullptr);
 		}
 
 
@@ -89,7 +89,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const
 		{
-			return (*view = new DX12DepthStencilView(m_Device, m_DsvHeap, info));
+			return (*view = new DX12DepthStencilView(this, info));
 		}
 
 
@@ -97,7 +97,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateTexture(ITexture** texture, const TextureInfo& info) const
 		{
-			return ((*texture = new DX12Texture(m_Device, info)) != nullptr);
+			return ((*texture = new DX12Texture(this, info)) != nullptr);
 		}
 
 
@@ -105,7 +105,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const
 		{
-			return ((*ppBuffer = new DX12Buffer(m_Device, info)));
+			return ((*ppBuffer = new DX12Buffer(this, pInitialData, info)));
 		}
 
 
@@ -113,7 +113,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const
 		{
-			return ((*ppRootSignature = new DX12RootSignature(m_Device, info)));
+			return ((*ppRootSignature = new DX12RootSignature(this, info)));
 		}
 
 
@@ -121,7 +121,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const
 		{
-			return ((*ppPipelineState = new DX12PipelineState(m_Device, info)));
+			return ((*ppPipelineState = new DX12PipelineState(this, info)));
 		}
 
 
@@ -152,6 +152,46 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		ID3D12Device* DX12Device::GetD3D12Device() const
+		{
+			return m_Device;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const DX12CommandQueue* DX12Device::GetDX12CommandQueue() const
+		{
+			return &m_UploadQueue;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const DX12DescriptorHeap* DX12Device::GetDX12DepthStencilViewHeap() const
+		{
+			return &m_DsvHeap;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const DX12DescriptorHeap* DX12Device::GetDX12RenderTargetViewHeap() const
+		{
+			return &m_RtvHeap;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const DX12DescriptorHeap* DX12Device::GetDX12ResourceHeap() const
+		{
+			return &m_ResourceHeap;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Device::Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer)
 		{
 			if (SUCCEEDED(factory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter)))
@@ -167,9 +207,16 @@ namespace RayEngine
 					}
 
 
-					m_DsvHeap = DX12DescriptorHeap(m_Device, "DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap = DX12DescriptorHeap(m_Device, "RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_ResourceHeap = DX12DescriptorHeap(m_Device, "Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					D3D12SetName(m_Device, info.Name);
+
+					m_DsvHeap = DX12DescriptorHeap(m_Device, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap = DX12DescriptorHeap(m_Device, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_ResourceHeap = DX12DescriptorHeap(m_Device, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+
+
+					CommandQueueInfo queueInfo = {};
+					queueInfo.Name = "Device UploadQueue";
+					m_UploadQueue = DX12CommandQueue(this, queueInfo);
 				}
 			}
 		}

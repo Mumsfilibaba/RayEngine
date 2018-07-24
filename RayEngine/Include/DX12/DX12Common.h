@@ -19,7 +19,7 @@ namespace RayEngine
 {
 	DXGI_FORMAT ReToDXFormat(FORMAT format);
 	D3D12_RESOURCE_STATES ReToDXResourceState(RESOURCE_STATE state);
-	void D3D12SetName(ID3D12Object* object, const std::string& name);
+	void D3D12SetName(ID3D12Object* pObject, const std::string& name);
 }
 
 #endif

@@ -79,11 +79,11 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	void D3D12SetName(ID3D12Object* object, const std::string& name)
+	void D3D12SetName(ID3D12Object* pObject, const std::string& name)
 	{
 		std::wstringstream wName;
 		wName << name.c_str();
 
-		object->SetName(wName.str().c_str());
+		pObject->SetName(wName.str().c_str());
 	}
 }

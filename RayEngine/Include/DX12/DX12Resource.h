@@ -9,20 +9,25 @@ namespace RayEngine
 		class DX12Resource
 		{
 		public:
+			DX12Resource(const DX12Resource& other) = delete;
+			DX12Resource& operator=(const DX12Resource& other) = delete;
+		
+		public:
 			DX12Resource();
-			DX12Resource(ID3D12Device* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue, const D3D12_RESOURCE_DESC& desc, 
+			DX12Resource(ID3D12Device* pDevice, const std::string& name, D3D12_CLEAR_VALUE* pClearValue, const D3D12_RESOURCE_DESC& desc, 
 				D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess);
-			DX12Resource(ID3D12Resource* resource);
-			DX12Resource(const DX12Resource& other);
+			DX12Resource(ID3D12Resource* pResource);
 			DX12Resource(DX12Resource&& other);
 			~DX12Resource();
 
+			void* Map(int32 subresource);
+			void Unmap();
+
 			void GetDesc(D3D12_RESOURCE_DESC& desc);
 
-			ID3D12Resource* GetResource() const;
+			ID3D12Resource* GetD3D12Resource() const;
 			D3D12_RESOURCE_STATES GetState() const;
 
-			DX12Resource& operator=(const DX12Resource& other);
 			DX12Resource& operator=(DX12Resource&& other);
 
 		private:
@@ -30,7 +35,7 @@ namespace RayEngine
 			mutable D3D12_RESOURCE_STATES m_State;
 
 		private:
-			void Create(ID3D12Device* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue, const D3D12_RESOURCE_DESC& desc,
+			void Create(ID3D12Device* pDevice, const std::string& name, D3D12_CLEAR_VALUE* pClearValue, const D3D12_RESOURCE_DESC& desc,
 				D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess);
 
 		public:

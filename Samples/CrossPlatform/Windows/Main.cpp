@@ -71,12 +71,14 @@ int main(int args, char* argsv[])
 
 	IDevice* device = nullptr;
 	DeviceInfo dInfo = {};
+	dInfo.Name = "Main Device";
 	dInfo.pAdapter = &(adapters[adapterIndex]);
 
 	factory->CreateDevice(&device, dInfo);
 
-	CommanQueueInfo qInfo = {};
 	ICommandQueue* queue = nullptr;
+	CommandQueueInfo qInfo = {};
+	qInfo.Name = "Main Queue";
 	device->CreateCommandQueue(&queue, qInfo);
 	
 
@@ -147,6 +149,7 @@ int main(int args, char* argsv[])
 
 	IRootSignature* rootSignature = nullptr;
 	RootSignatureInfo rootInfo = {};
+	rootInfo.Name = "RootSignature";
 	rootInfo.ParameterCount = 0;
 	rootInfo.pParameters = nullptr;
 	rootInfo.RootSignatureVisibility =
@@ -159,6 +162,7 @@ int main(int args, char* argsv[])
 
 	IPipelineState* pipelineState = nullptr;
 	PipelineStateInfo pipelineInfo = {};
+	pipelineInfo.Name = "PipelineState";
 	pipelineInfo.Type = PIPELINE_TYPE_GRAPHICS;
 	pipelineInfo.pRootSignature = rootSignature;
 	pipelineInfo.GraphicsPipeline.pVertexShader = vs;

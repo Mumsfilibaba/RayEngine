@@ -2,6 +2,7 @@
 
 #include "..\Graphics\IDevice.h"
 #include "DX12DescriptorHeap.h"
+#include "DX12CommandQueue.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -20,7 +21,7 @@ namespace RayEngine
 			DX12Device(DX12Device&& other);
 			~DX12Device();
 
-			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
+			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) const override final;
 			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const override final;
 			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const override final;
 			bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const override final;
@@ -31,6 +32,12 @@ namespace RayEngine
 
 			DX12Device& operator=(DX12Device&& other);
 
+			ID3D12Device* GetD3D12Device() const;
+			const DX12CommandQueue* GetDX12CommandQueue() const;
+			const DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const;
+			const DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const;
+			const DX12DescriptorHeap* GetDX12ResourceHeap() const;
+
 		private:
 			void Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer);
 
@@ -38,6 +45,7 @@ namespace RayEngine
 			IDXGIAdapter1* m_Adapter;
 			ID3D12Device* m_Device;
 			ID3D12DebugDevice* m_DebugDevice;
+			DX12CommandQueue m_UploadQueue;
 			mutable DX12DescriptorHeap m_ResourceHeap;
 			mutable DX12DescriptorHeap m_DsvHeap;
 			mutable DX12DescriptorHeap m_RtvHeap;

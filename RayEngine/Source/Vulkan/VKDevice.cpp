@@ -39,7 +39,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const
+		bool VKDevice::CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) const
 		{
 			return false;
 		}

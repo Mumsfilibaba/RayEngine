@@ -15,13 +15,13 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12DescriptorHeap::DX12DescriptorHeap(ID3D12Device* device, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
+		DX12DescriptorHeap::DX12DescriptorHeap(ID3D12Device* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
 			int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
 			: m_Heap(nullptr),
 			m_Count(0),
 			m_DescriptorSize(0)
 		{
-			Create(device, name, type, num, flags);
+			Create(pDevice, name, type, num, flags);
 		}
 
 
@@ -81,7 +81,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DescriptorHeap::Create(ID3D12Device* device, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
+		void DX12DescriptorHeap::Create(ID3D12Device* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
 			int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc = {};
@@ -90,12 +90,12 @@ namespace RayEngine
 			desc.NumDescriptors = num;
 			desc.Type = type;
 
-			if (SUCCEEDED(device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_Heap))))
+			if (SUCCEEDED(pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_Heap))))
 			{
 				D3D12SetName(m_Heap, name);
 
 				m_Count = 0;
-				m_DescriptorSize = device->GetDescriptorHandleIncrementSize(type);
+				m_DescriptorSize = pDevice->GetDescriptorHandleIncrementSize(type);
 			}
 		}
 	}

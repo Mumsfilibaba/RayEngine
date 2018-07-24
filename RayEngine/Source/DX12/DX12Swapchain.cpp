@@ -47,6 +47,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Swapchain::Present() const
 		{
+			m_Swapchain->Present(0, 0);
 		}
 
 
@@ -83,9 +84,9 @@ namespace RayEngine
 			//TODO: Tearing?
 			desc.Flags = 0;
 
-			//COMMANQUEUE??
+			//COMMANDQUEUE??
 			HWND hWnd = reinterpret_cast<const System::Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
-			ID3D12CommandQueue* queue = reinterpret_cast<DX12CommandQueue*>(info.pCommandQueue)->GetCommandQueue();
+			ID3D12CommandQueue* queue = reinterpret_cast<DX12CommandQueue*>(info.pCommandQueue)->GetD3D12CommandQueue();
 			
 			if (FAILED(factory->CreateSwapChainForHwnd(queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain)))
 				return;
@@ -105,12 +106,14 @@ namespace RayEngine
 		{
 			using namespace Microsoft::WRL;
 
-			ComPtr<ID3D12Resource> buffer;
+			ComPtr<ID3D12Resource> buffer = nullptr;
 			for (int32 i = 0; i < m_BufferCount; i++)
 			{
 				if (SUCCEEDED(m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer))))
-					m_Textures.push_back(DX12Texture(buffer.Get()));
+					m_Textures.emplace_back(DX12Texture(buffer.Get()));
 			}
+
+			m_Textures.shrink_to_fit();
 		}
 	}
 }

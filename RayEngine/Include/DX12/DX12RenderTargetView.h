@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\Graphics\IDevice.h"
 #include "..\Graphics\IRenderTargetView.h"
 #include "DX12DescriptorHeap.h"
 
@@ -14,14 +15,14 @@ namespace RayEngine
 			DX12RenderTargetView& operator=(const DX12RenderTargetView& other) = delete;
 
 		public:
-			DX12RenderTargetView(ID3D12Device* device, DX12DescriptorHeap& heap, const RenderTargetViewInfo& info);
+			DX12RenderTargetView(const IDevice* pDevice, const RenderTargetViewInfo& info);
 			DX12RenderTargetView(DX12RenderTargetView&& other);
 			~DX12RenderTargetView();
 
 			DX12RenderTargetView& operator=(DX12RenderTargetView&& other);
 
 		private:
-			void Create(ID3D12Device* device, DX12DescriptorHeap& heap, const RenderTargetViewInfo& info);
+			void Create(const IDevice* pDevice, const RenderTargetViewInfo& info);
 
 		private:
 			D3D12_CPU_DESCRIPTOR_HANDLE m_View;

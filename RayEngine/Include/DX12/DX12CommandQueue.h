@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..\..\Include\Graphics\ICommandQueue.h"
-#include "DX12Common.h"
+#include "..\Graphics\IDevice.h"
+#include "DX12Resource.h"
 
 namespace RayEngine
 {
@@ -14,13 +14,18 @@ namespace RayEngine
 			DX12CommandQueue& operator=(const DX12CommandQueue& other) = delete;
 
 		public:
-			DX12CommandQueue(ID3D12Device* device, const CommanQueueInfo& info);
+			DX12CommandQueue();
+			DX12CommandQueue(const IDevice* pDevice, const CommandQueueInfo& info);
 			DX12CommandQueue(DX12CommandQueue&& other);
 			~DX12CommandQueue();
 
-			void TransitionResource(const ITexture* resource, RESOURCE_STATE from,
-				RESOURCE_STATE to, int32 subresource) const  override final;
-			
+			//TODO: Copy resource
+
+
+			//TODO: Transition DX12Resource
+			void TransitionResource(const DX12Resource& resource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
+			void TransitionResource(const ITexture* pResource, RESOURCE_STATE from, RESOURCE_STATE to, int32 subresource) const  override final;
+
 			void Flush() const override final;
 			void Execute() const override final;
 			bool Reset() const override final;
@@ -28,11 +33,10 @@ namespace RayEngine
 
 			DX12CommandQueue& operator=(DX12CommandQueue&& other);
 
-			ID3D12CommandQueue* GetCommandQueue() const;
+			ID3D12CommandQueue* GetD3D12CommandQueue() const;
 
 		private:
-			void Create(ID3D12Device* device, const CommanQueueInfo& info);
-			void CreateFence(ID3D12Device* device);
+			void Create(const IDevice* pDevice, const CommandQueueInfo& info);
 
 		private:
 			ID3D12CommandQueue* m_Queue;

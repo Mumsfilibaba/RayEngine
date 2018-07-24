@@ -7,7 +7,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		struct CommanQueueInfo
+		struct CommandQueueInfo
 		{
 			std::string Name = "";
 		};

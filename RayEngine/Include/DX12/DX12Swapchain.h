@@ -14,7 +14,7 @@ namespace RayEngine
 			DX12Swapchain& operator=(const DX12Swapchain& other) = delete;
 
 		public:
-			DX12Swapchain(IDXGIFactory5* factory, const SwapchainInfo& info);
+			DX12Swapchain(IDXGIFactory5* pFactory, const SwapchainInfo& info);
 			DX12Swapchain(DX12Swapchain&& other);
 			~DX12Swapchain();
 
@@ -24,7 +24,7 @@ namespace RayEngine
 			DX12Swapchain& operator=(DX12Swapchain&& other);
 
 		private:
-			void Create(IDXGIFactory5* factory, const SwapchainInfo& info);
+			void Create(IDXGIFactory5* pFactory, const SwapchainInfo& info);
 			void CreateTextures();
 
 		private:

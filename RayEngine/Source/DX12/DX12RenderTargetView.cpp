@@ -1,15 +1,16 @@
 #include "..\..\Include\DX12\DX12RenderTargetView.h"
 #include "..\..\Include\DX12\DX12Texture.h"
+#include "..\..\Include\DX12\DX12Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12RenderTargetView::DX12RenderTargetView(ID3D12Device* device, DX12DescriptorHeap& heap, const RenderTargetViewInfo& info)
+		DX12RenderTargetView::DX12RenderTargetView(const IDevice* pDevice, const RenderTargetViewInfo& info)
 			: m_View()
 		{
-			Create(device, heap, info);
+			Create(pDevice, info);
 		}
 
 
@@ -45,15 +46,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12RenderTargetView::Create(ID3D12Device* device, DX12DescriptorHeap& heap,
-			const RenderTargetViewInfo& info)
+		void DX12RenderTargetView::Create(const IDevice* pDevice, const RenderTargetViewInfo& info)
 		{
-			m_View = heap.GetNext();
+			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
+			const DX12DescriptorHeap* pHeap = reinterpret_cast<const DX12Device*>(pDevice)->GetDX12RenderTargetViewHeap();
+
+			m_View = pHeap->GetNext();
 
 			//TODO: Use a Desc
 
-			ID3D12Resource* resource = reinterpret_cast<const DX12Texture*>(info.Resource)->GetResource();
-			device->CreateRenderTargetView(resource, nullptr, m_View);
+			ID3D12Resource* resource = reinterpret_cast<const DX12Texture*>(info.Resource)->GetResource().GetD3D12Resource();
+			pD3D12Device->CreateRenderTargetView(resource, nullptr, m_View);
 		}
 	}
 }

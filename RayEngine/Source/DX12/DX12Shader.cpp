@@ -5,7 +5,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Shader::DX12Shader(ID3D12Device* device, const ShaderByteCode& bytecode)
+		DX12Shader::DX12Shader(const ShaderByteCode& bytecode)
 			: m_Type(bytecode.GetType()),
 			m_Shader()
 		{
@@ -40,9 +40,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		const D3D12_SHADER_BYTECODE& DX12Shader::GetDX12ByteCode() const
+		const D3D12_SHADER_BYTECODE* DX12Shader::GetD3D12ByteCode() const
 		{
-			return m_Shader;
+			return &m_Shader;
 		}
 	}
 }

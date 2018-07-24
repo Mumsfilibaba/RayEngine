@@ -14,8 +14,7 @@ namespace RayEngine
 
 		public:
 			DX12DescriptorHeap();
-			DX12DescriptorHeap(ID3D12Device* device, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, 
-				int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
+			DX12DescriptorHeap(ID3D12Device* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 			DX12DescriptorHeap(DX12DescriptorHeap&& other);
 			~DX12DescriptorHeap();
 
@@ -24,8 +23,7 @@ namespace RayEngine
 			DX12DescriptorHeap& operator=(DX12DescriptorHeap&& other);
 
 		private:
-			void Create(ID3D12Device* device, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
-				int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
+			void Create(ID3D12Device* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 
 		private:
 			ID3D12DescriptorHeap* m_Heap;

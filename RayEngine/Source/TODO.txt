@@ -9,15 +9,16 @@ TODO:
 -DX12 - Different versions of the parametertype for the shader in the rootsignature
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
 -DX12 - Check tearing support - Vulkan (if supported by the API)
--DX12 - Merge Rootsignature and pipelinestate
 -DX12 - Swapchain flags for usage, format, count etc
 -DX12 - DepthStencilState, RasterizerState, BlendState
 -DX12 - Setup breakpoints when errors occurs
+-DX12 - Device object should create native ptrs
 -Vulkan - referencecounting
 
--Log for the device so that it can print to the console when an error happens during object creation
 -Add p for pointers
 -AdapterInfo.cpp
+-DX12 - Merge Rootsignature and pipelinestate?
+-Log for the device so that it can print to the console when an error happens during object creation
 -Controller support
 
 -Aquire pointers for native window etc

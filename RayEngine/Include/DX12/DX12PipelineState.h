@@ -15,7 +15,7 @@ namespace RayEngine
 			DX12PipelineState& operator=(const DX12PipelineState& other) = delete;
 
 		public:
-			DX12PipelineState(ID3D12Device* device, const PipelineStateInfo& info);
+			DX12PipelineState(const IDevice* pdevice, const PipelineStateInfo& info);
 			DX12PipelineState(DX12PipelineState&& other);
 			~DX12PipelineState();
 
@@ -24,9 +24,9 @@ namespace RayEngine
 			DX12PipelineState& operator=(DX12PipelineState&& other);
 
 		private:
-			void Create(ID3D12Device* device, const PipelineStateInfo& info);
-			void CreateGraphicsState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info);
-			void CreateComputeState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info);
+			void Create(const IDevice* pDevice, const PipelineStateInfo& info);
+			void CreateGraphicsState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
+			void CreateComputeState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
 			
 		private:
 			static void SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader);

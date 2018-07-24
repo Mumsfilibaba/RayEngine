@@ -18,7 +18,7 @@ namespace RayEngine
 			VKDevice(VKDevice&& other);
 			~VKDevice();
 
-			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommanQueueInfo& info) const override final;
+			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) const override final;
 			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const override final;
 			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const override final;
 			bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const override final;

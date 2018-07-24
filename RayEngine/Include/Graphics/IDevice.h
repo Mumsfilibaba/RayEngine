@@ -36,7 +36,7 @@ namespace RayEngine
 			virtual ~IDevice() {}
 
 			//Create a queue for graphics- and computecommands
-			virtual bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommanQueueInfo& info) const = 0;
+			virtual bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) const = 0;
 			//Creates a shader module for use in a pipelinestate
 			virtual bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) const = 0;
 			//Creates a rendertargetview for using a texture as a rendertarget

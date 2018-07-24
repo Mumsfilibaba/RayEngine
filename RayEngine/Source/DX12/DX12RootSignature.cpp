@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12RootSignature.h"
 
 namespace RayEngine
@@ -7,10 +8,10 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12RootSignature::DX12RootSignature(ID3D12Device* device, const RootSignatureInfo& info)
+		DX12RootSignature::DX12RootSignature(const IDevice* pDevice, const RootSignatureInfo& info)
 			: m_RootSignature(nullptr)
 		{
-			Create(device, info);
+			Create(pDevice, info);
 		}
 
 
@@ -33,7 +34,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		ID3D12RootSignature* DX12RootSignature::GetRootSignature() const
+		ID3D12RootSignature* DX12RootSignature::GetD3D12RootSignature() const
 		{
 			return m_RootSignature;
 		}
@@ -57,14 +58,16 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12RootSignature::Create(ID3D12Device* device, const RootSignatureInfo& info)
+		void DX12RootSignature::Create(const IDevice* pDevice, const RootSignatureInfo& info)
 		{
 			using namespace Microsoft::WRL;
 
 			D3D12_FEATURE_DATA_ROOT_SIGNATURE feature = {};
 			feature.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
 
-			if (FAILED(device->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &feature, sizeof(D3D12_FEATURE_DATA_ROOT_SIGNATURE))))
+
+			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
+			if (FAILED(pD3D12Device->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &feature, sizeof(D3D12_FEATURE_DATA_ROOT_SIGNATURE))))
 				return;
 
 
@@ -156,10 +159,14 @@ namespace RayEngine
 			}
 
 
-			if (FAILED(device->CreateRootSignature(0, rSign->GetBufferPointer(), 
+			if (FAILED(pD3D12Device->CreateRootSignature(0, rSign->GetBufferPointer(), 
 				rSign->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature))))
 			{
 				return;
+			}
+			else
+			{
+				D3D12SetName(m_RootSignature, info.Name);
 			}
 		}
 	}

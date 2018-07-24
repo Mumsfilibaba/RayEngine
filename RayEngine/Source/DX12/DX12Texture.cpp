@@ -1,4 +1,5 @@
 #include "..\..\Include\DX12\DX12Texture.h"
+#include "..\..\Include\DX12\DX12Device.h"
 #include <utility>
 
 namespace RayEngine
@@ -6,10 +7,10 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Texture::DX12Texture(ID3D12Device* device, const TextureInfo& info)
+		DX12Texture::DX12Texture(const IDevice* pDevice, const TextureInfo& info)
 			: m_Resource()
 		{
-			Create(device, info);
+			Create(pDevice, info);
 		}
 
 
@@ -41,9 +42,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		ID3D12Resource* DX12Texture::GetResource() const
+		const DX12Resource& DX12Texture::GetResource() const
 		{
-			return m_Resource.GetResource();
+			return m_Resource;
 		}
 
 
@@ -62,7 +63,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Texture::Create(ID3D12Device* device, const TextureInfo& info)
+		void DX12Texture::Create(const IDevice* pDevice, const TextureInfo& info)
 		{
 			D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
 			if (info.Flags == TEXTURE_FLAGS_RENDERTARGET)
@@ -103,7 +104,8 @@ namespace RayEngine
 			}
 
 
-			m_Resource = DX12Resource(device, info.Name, &clearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
+			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
+			m_Resource = DX12Resource(pD3D12Device, info.Name, &clearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
 		}
 
 
@@ -111,7 +113,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Texture::Create(ID3D12Resource* resource)
 		{
-			resource->AddRef();
 			m_Resource = DX12Resource(resource);
 		}
 	}

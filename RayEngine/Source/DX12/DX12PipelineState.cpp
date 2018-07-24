@@ -1,17 +1,18 @@
 #include <vector>
 #include "..\..\Include\DX12\DX12RootSignature.h"
 #include "..\..\Include\DX12\DX12PipelineState.h"
+#include "..\..\Include\DX12\DX12Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12PipelineState::DX12PipelineState(ID3D12Device* device, const PipelineStateInfo& info)
+		DX12PipelineState::DX12PipelineState(const IDevice* pDevice, const PipelineStateInfo& info)
 			: m_PipelineState(nullptr),
 			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
-			Create(device, info);
+			Create(pDevice, info);
 		}
 
 
@@ -63,20 +64,23 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12PipelineState::Create(ID3D12Device* device, const PipelineStateInfo& info)
+		void DX12PipelineState::Create(const IDevice* pDevice, const PipelineStateInfo& info)
 		{
 			const DX12RootSignature* rootSignature = reinterpret_cast<const DX12RootSignature*>(info.pRootSignature);
 
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsState(device, rootSignature->GetRootSignature(), info);
+				CreateGraphicsState(pDevice, rootSignature->GetD3D12RootSignature(), info);
 			else if (info.Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputeState(device, rootSignature->GetRootSignature(), info);
+				CreateComputeState(pDevice, rootSignature->GetD3D12RootSignature(), info);
+
+			if (m_PipelineState != nullptr)
+				D3D12SetName(m_PipelineState, info.Name);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateGraphicsState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info)
+		void DX12PipelineState::CreateGraphicsState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info)
 		{
 			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
 			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
@@ -96,7 +100,7 @@ namespace RayEngine
 			pDesc.SampleMask = UINT_MAX;
 			pDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 			
-			pDesc.pRootSignature = rootSignature;
+			pDesc.pRootSignature = pRootSignature;
 
 			pDesc.InputLayout.pInputElementDescs = inputLayout.data();
 			pDesc.InputLayout.NumElements = static_cast<uint32>(inputLayout.size());
@@ -114,15 +118,18 @@ namespace RayEngine
 
 			SetBlendDesc(pDesc.BlendState, info.GraphicsPipeline.BlendState);
 	
-			if (FAILED(device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(&m_PipelineState))))
+
+			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
+			if (FAILED(pD3D12Device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(&m_PipelineState))))
 				return;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateComputeState(ID3D12Device* device, ID3D12RootSignature* rootSignature, const PipelineStateInfo& info)
+		void DX12PipelineState::CreateComputeState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info)
 		{
+			//TODO: Compute states
 		}
 
 
@@ -133,8 +140,8 @@ namespace RayEngine
 			if (shader == nullptr)
 				return;
 
-			byteCode.BytecodeLength = shader->GetDX12ByteCode().BytecodeLength;
-			byteCode.pShaderBytecode = shader->GetDX12ByteCode().pShaderBytecode;
+			byteCode.BytecodeLength = shader->GetD3D12ByteCode()->BytecodeLength;
+			byteCode.pShaderBytecode = shader->GetD3D12ByteCode()->pShaderBytecode;
 			return;
 		}
 
