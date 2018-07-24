@@ -33,9 +33,9 @@ namespace RayEngine
 			void SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const override final;
 
 			//TODO: Copy resource
-			void CopyResource(DX12Resource& dst, const DX12Resource& src) const;
+			void CopyResource(DX12Resource* dst, const DX12Resource* src) const;
 
-			void TransitionResource(DX12Resource& resource, D3D12_RESOURCE_STATES to, int32 subresource) const;
+			void TransitionResource(DX12Resource* resource, D3D12_RESOURCE_STATES to, int32 subresource) const;
 			void TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const  override final;
 
 			void Draw(int32 startVertex, int32 vertexCount) const override final;

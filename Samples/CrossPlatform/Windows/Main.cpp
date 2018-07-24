@@ -328,8 +328,8 @@ int main(int args, char* argsv[])
 		queue->SetViewports(vPort);
 
 		Math::Rectangle rect = {};
-		rect.BottomRight.x = static_cast<float>(window.GetHeight());
-		rect.BottomRight.y = static_cast<float>(window.GetWidth());
+		rect.BottomRight.x = static_cast<float>(window.GetWidth());
+		rect.BottomRight.y = static_cast<float>(window.GetHeight());
 
 		queue->SetScissorRects(rect);
 

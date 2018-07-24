@@ -45,7 +45,7 @@ namespace RayEngine
 			//TODO: Use a Desc
 
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
-			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.Resource)->GetResource().GetD3D12Resource();
+			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.Resource)->GetD3D12Resource();
 			pD3D12Device->CreateDepthStencilView(pD3D12Resource, nullptr, m_ViewHandle);
 		}
 	}

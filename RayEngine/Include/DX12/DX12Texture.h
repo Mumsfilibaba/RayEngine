@@ -8,7 +8,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12Texture : public ITexture
+		class DX12Texture : public ITexture, public DX12Resource
 		{
 		public:
 			DX12Texture(const DX12Texture& other) = delete;
@@ -22,17 +22,10 @@ namespace RayEngine
 
 			RESOURCE_STATE GetResourceState() const override final;
 
-			DX12Resource& GetResource();
-			const DX12Resource& GetResource() const;
-
 			DX12Texture& operator=(DX12Texture&& other);
 
 		private:
 			void Create(const IDevice* pDevice, const TextureInfo& info);
-			void Create(ID3D12Resource* pResource);
-
-		private:
-			DX12Resource m_Resource;
 		};
 	}
 }

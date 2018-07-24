@@ -182,15 +182,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::CopyResource(DX12Resource& dst, const DX12Resource& src) const
+		void DX12CommandQueue::CopyResource(DX12Resource* dst, const DX12Resource* src) const
 		{
-			m_List->CopyResource(dst.GetD3D12Resource(), src.GetD3D12Resource());
+			m_List->CopyResource(dst->GetD3D12Resource(), src->GetD3D12Resource());
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::TransitionResource(DX12Resource& resource, D3D12_RESOURCE_STATES to, int32 subresource) const
+		void DX12CommandQueue::TransitionResource(DX12Resource* resource, D3D12_RESOURCE_STATES to, int32 subresource) const
 		{
 			D3D12_RESOURCE_BARRIER barrier = {};
 			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -198,14 +198,14 @@ namespace RayEngine
 
 			barrier.Transition.Subresource = subresource;
 
-			barrier.Transition.pResource = resource.GetD3D12Resource();
+			barrier.Transition.pResource = resource->GetD3D12Resource();
 
-			barrier.Transition.StateBefore = resource.GetD3D12State();
+			barrier.Transition.StateBefore = resource->GetD3D12State();
 			barrier.Transition.StateAfter = to;
 
 			m_List->ResourceBarrier(1, &barrier);
 
-			resource.SetD3D12State(to);
+			resource->SetD3D12State(to);
 		}
 
 
@@ -214,7 +214,7 @@ namespace RayEngine
 		void DX12CommandQueue::TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const
 		{
 			DX12Texture* pDX12resource = reinterpret_cast<DX12Texture*>(pResource);
-			TransitionResource(pDX12resource->GetResource(), ReToDXResourceState(to), subresource);
+			TransitionResource(pDX12resource, ReToDXResourceState(to), subresource);
 		}
 
 
