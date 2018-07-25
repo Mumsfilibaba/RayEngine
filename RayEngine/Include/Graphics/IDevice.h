@@ -24,7 +24,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDevice
+		class IDevice : public IReferenceCounter
 		{
 		public:
 			IDevice(IDevice&& other) = delete;

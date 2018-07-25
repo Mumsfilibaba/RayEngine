@@ -23,6 +23,13 @@ namespace RayEngine
 			D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const;
 			D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const;
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(const IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
 			void CreateView(const IDevice* pDevice, const BufferInfo& usage);
@@ -35,6 +42,8 @@ namespace RayEngine
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;
+
+			mutable uint32 m_ReferenceCounter;
 		};
 	}
 }

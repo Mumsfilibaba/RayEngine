@@ -228,9 +228,6 @@
     <ClInclude Include="Include\DX12\DX12RenderTargetView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Vulkan\VkObj.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Graphics\IDepthStencilView.h">
       <Filter>Header Files</Filter>
     </ClInclude>

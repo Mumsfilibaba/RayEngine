@@ -1,7 +1,6 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "..\IReferenceCounter.h"
 
 namespace RayEngine
 {
@@ -32,7 +31,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IBuffer
+		class IBuffer : public IReferenceCounter
 		{
 		public:
 			IBuffer(IBuffer&& other) = delete;

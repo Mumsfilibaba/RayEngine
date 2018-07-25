@@ -19,7 +19,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IRenderTargetView
+		class IRenderTargetView : public IReferenceCounter
 		{
 		public:
 			IRenderTargetView(IRenderTargetView&& other) = delete;

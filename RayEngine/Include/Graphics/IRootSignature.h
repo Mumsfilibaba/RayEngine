@@ -1,7 +1,6 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "..\IReferenceCounter.h"
 
 namespace RayEngine
 {
@@ -68,7 +67,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IRootSignature
+		class IRootSignature : public IReferenceCounter
 		{
 		public:
 			IRootSignature(IRootSignature&& other) = delete;

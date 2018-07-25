@@ -370,6 +370,39 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IReferenceCounter* DX12CommandQueue::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12CommandQueue::GetReferenceCount() const
+		{
+			return m_ReferenceCounter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12CommandQueue::Release() const
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12CommandQueue::AddRef()
+		{
+			m_ReferenceCounter++;
+			return m_ReferenceCounter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12CommandQueue::Create(const IDevice* pDevice, const CommandQueueInfo& info)
 		{
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();

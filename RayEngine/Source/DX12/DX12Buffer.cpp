@@ -14,7 +14,11 @@ namespace RayEngine
 			Create(pDevice, pInitalData, info);
 		}
 
-		DX12Buffer::DX12Buffer(DX12Buffer && other)
+
+
+		/////////////////////////////////////////////////////////////
+		DX12Buffer::DX12Buffer(DX12Buffer&& other)
+			: DX12Resource(std::move(other))
 		{
 		}
 
@@ -23,6 +27,42 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Buffer::~DX12Buffer()
 		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IReferenceCounter* DX12Buffer::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12Buffer::GetReferenceCount() const
+		{
+			return m_ReferenceCounter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Buffer::Release() const
+		{
+			m_ReferenceCounter--;
+			if (m_ReferenceCounter < 1)
+				delete this;
+		}
+
+
+		
+		/////////////////////////////////////////////////////////////
+		uint32 DX12Buffer::AddRef()
+		{
+			m_ReferenceCounter++;
+			return m_ReferenceCounter;
 		}
 
 

@@ -78,7 +78,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		struct PipelineStateInfo
+		struct PipelineStateInfo : public IReferenceCounter
 		{
 			std::string Name = "";
 			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;

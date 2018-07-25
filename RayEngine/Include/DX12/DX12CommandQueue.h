@@ -54,6 +54,13 @@ namespace RayEngine
 
 			ID3D12CommandQueue* GetD3D12CommandQueue() const;
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(const IDevice* pDevice, const CommandQueueInfo& info);
 
@@ -63,6 +70,7 @@ namespace RayEngine
 			ID3D12GraphicsCommandList* m_List;
 			ID3D12Fence* m_Fence;
 			mutable uint64 m_CurrentFence;
+			mutable uint32 m_ReferenceCounter;
 		};
 	}
 }

@@ -248,7 +248,6 @@
     <ClInclude Include="Include\Win32\Win32BitmapImpl.h" />
     <ClInclude Include="Source\Android\AndroidKeycodes.h" />
     <ClInclude Include="Source\Android\AndroidSensor.h" />
-    <ClInclude Include="Source\Vulkan\VkObj.h" />
     <ClInclude Include="Source\Win32\Win32KeyCodes.h" />
     <ClInclude Include="Source\Win32\WndclassCache.h" />
   </ItemGroup>

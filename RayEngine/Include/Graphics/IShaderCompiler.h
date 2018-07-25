@@ -19,7 +19,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IShaderCompiler
+		class IShaderCompiler : public IReferenceCounter
 		{
 		public:
 			virtual ~IShaderCompiler() {}

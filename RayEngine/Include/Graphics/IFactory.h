@@ -9,7 +9,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class IFactory
+		class IFactory : public IReferenceCounter
 		{
 			IFactory(IFactory&& other) = delete;
 			IFactory(const IFactory& other) = delete;
