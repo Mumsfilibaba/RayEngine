@@ -8,6 +8,7 @@
 #include "IPipelineState.h"
 #include "IBuffer.h"
 #include "AdapterInfo.h"
+#include "..\System\Log.h"
 
 namespace RayEngine
 {
@@ -51,6 +52,8 @@ namespace RayEngine
 			virtual bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const = 0;
 			//Create a pipelinestate
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const = 0;
+			//Gets the device log
+			virtual System::Log* GetDeviceLog() const = 0;
 		};
 	}
 }

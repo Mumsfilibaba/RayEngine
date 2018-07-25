@@ -17,6 +17,7 @@
 /////////////////////////////////////////////////////////////
 namespace RayEngine
 {
+	std::string DXErrorString(HRESULT hr);
 	DXGI_FORMAT ReToDXFormat(FORMAT format);
 	RESOURCE_STATE DXToREResourceState(D3D12_RESOURCE_STATES state);
 	D3D12_RESOURCE_STATES ReToDXResourceState(RESOURCE_STATE state);

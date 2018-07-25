@@ -127,6 +127,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		System::Log* DX12Device::GetDeviceLog() const
+		{
+			return &m_Log;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12Device& DX12Device::operator=(DX12Device&& other)
 		{
 			if (this != &other)

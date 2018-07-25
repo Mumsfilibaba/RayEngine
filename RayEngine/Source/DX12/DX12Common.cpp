@@ -1,8 +1,18 @@
 #include <sstream>
 #include "..\..\Include\DX12\DX12Common.h"
+#include <comdef.h>
 
 namespace RayEngine
 {
+	/////////////////////////////////////////////////////////////
+	std::string DXErrorString(HRESULT hr)
+	{
+		_com_error err(hr);
+		return err.ErrorMessage();
+	}
+
+
+
 	/////////////////////////////////////////////////////////////
 	DXGI_FORMAT ReToDXFormat(FORMAT format)
 	{

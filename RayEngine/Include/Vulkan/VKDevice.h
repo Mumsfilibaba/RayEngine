@@ -26,6 +26,7 @@ namespace RayEngine
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const override final;
 			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const override final;
+			System::Log* GetDeviceLog() const override final;
 
 			VKDevice& operator=(VKDevice&& other);
 

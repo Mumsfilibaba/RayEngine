@@ -382,31 +382,53 @@ namespace RayEngine
 			qDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
 			qDesc.NodeMask = 0;
 
-			if (FAILED(pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue))))
-				return;
-			else
-				D3D12SetName(m_Queue, info.Name);
 
-
-			if (FAILED(pD3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_Allocator))))
-				return;
-			else
-				D3D12SetName(m_Allocator, info.Name + ": Allocator");
-
-
-			if (FAILED(pD3D12Device->CreateCommandList(qDesc.NodeMask, D3D12_COMMAND_LIST_TYPE_DIRECT, m_Allocator, nullptr, IID_PPV_ARGS(&m_List))))
-				return;
-			else
-				D3D12SetName(m_List, info.Name + ": List");
-
-
-			if (FAILED(pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence))))
+			HRESULT hr = pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
+			if (FAILED(hr))
 			{
+				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandQueue");
+				return;
+			}
+			else
+			{ 
+				D3D12SetName(m_Queue, info.Name);
+			}
+
+
+			hr = pD3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_Allocator));
+			if (FAILED(hr))
+			{
+				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandAllocator");
+				return;
+			}
+			else
+			{
+				D3D12SetName(m_Allocator, info.Name + ": Allocator");
+			}
+
+
+			hr = pD3D12Device->CreateCommandList(qDesc.NodeMask, D3D12_COMMAND_LIST_TYPE_DIRECT, m_Allocator, nullptr, IID_PPV_ARGS(&m_List));
+			if (FAILED(hr))
+			{
+				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandList");
+				return;
+			}
+			else
+			{
+				D3D12SetName(m_List, info.Name + ": List");
+			}
+
+
+			hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
+			if (FAILED(hr))
+			{
+				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
 				return;
 			}
 
 
 			Close();
+
 			return;
 		}
 	}

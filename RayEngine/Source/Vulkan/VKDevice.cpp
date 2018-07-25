@@ -103,6 +103,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		System::Log* VKDevice::GetDeviceLog() const
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VKDevice& VKDevice::operator=(VKDevice&& other)
 		{
 			if (this != &other)
