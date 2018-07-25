@@ -205,6 +205,7 @@
     <ClInclude Include="Include\Graphics\ISwapchain.h" />
     <ClInclude Include="Include\Graphics\ITexture.h" />
     <ClInclude Include="Include\Graphics\Viewport.h" />
+    <ClInclude Include="Include\IReferenceCounter.h" />
     <ClInclude Include="Include\Math\Color.h" />
     <ClInclude Include="Include\Math\ColorF.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
