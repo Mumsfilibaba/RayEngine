@@ -13,24 +13,30 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12CommandQueue::DX12CommandQueue()
-			: m_Queue(nullptr),
+			: m_Device(nullptr),
+			m_Queue(nullptr),
 			m_Allocator(nullptr),
 			m_List(nullptr),
 			m_Fence(nullptr),
-			m_CurrentFence(0)
+			m_CurrentFence(0),
+			m_ReferenceCounter(0)
 		{
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		DX12CommandQueue::DX12CommandQueue(const IDevice* pDevice, const CommandQueueInfo& info)
-			: m_Queue(nullptr),
+		DX12CommandQueue::DX12CommandQueue(IDevice* pDevice, const CommandQueueInfo& info)
+			: m_Device(nullptr),
+			m_Queue(nullptr),
 			m_Allocator(nullptr),
 			m_List(nullptr),
 			m_Fence(nullptr),
-			m_CurrentFence(0)
+			m_CurrentFence(0),
+			m_ReferenceCounter(0)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 			Create(pDevice, info);
 		}
 
@@ -38,17 +44,21 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12CommandQueue::DX12CommandQueue(DX12CommandQueue&& other)
-			: m_Queue(other.m_Queue),
+			: m_Device(other.m_Device),
+			m_Queue(other.m_Queue),
 			m_Allocator(other.m_Allocator),
 			m_List(other.m_List),
 			m_Fence(other.m_Fence),
-			m_CurrentFence(other.m_CurrentFence)
+			m_CurrentFence(other.m_CurrentFence),
+			m_ReferenceCounter(other.m_ReferenceCounter)
 		{
+			other.m_Device = nullptr;
 			other.m_Queue = nullptr;
 			other.m_Allocator = nullptr;
 			other.m_List = nullptr;
 			other.m_Fence = nullptr;
 			other.m_CurrentFence = 0;
+			other.m_ReferenceCounter = 0;
 		}
 
 
@@ -60,6 +70,12 @@ namespace RayEngine
 			D3DRelease_S(m_Allocator);
 			D3DRelease_S(m_List);
 			D3DRelease_S(m_Fence);
+
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
 		}
 
 
@@ -334,6 +350,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IDevice* DX12CommandQueue::GetDevice() const
+		{
+			return m_Device;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12CommandQueue& DX12CommandQueue::operator=(DX12CommandQueue&& other)
 		{
 			if (this != &other)
@@ -342,18 +366,29 @@ namespace RayEngine
 				D3DRelease_S(m_Allocator);
 				D3DRelease_S(m_List);
 				D3DRelease_S(m_Fence);
+				if (m_Device != nullptr)
+				{
+					m_Device->Release();
+					m_Device = nullptr;
+				}
 
+
+				m_Device = other.m_Device;
 				m_Queue = other.m_Queue;
 				m_Allocator = other.m_Allocator;
 				m_List = other.m_List;
 				m_Fence = other.m_Fence;
 				m_CurrentFence = other.m_CurrentFence;
+				m_ReferenceCounter = other.m_ReferenceCounter;
 
+
+				other.m_Device = nullptr;
 				other.m_Queue = nullptr;
 				other.m_Allocator = nullptr;
 				other.m_List = nullptr;
 				other.m_Fence = nullptr;
 				other.m_CurrentFence = 0;
+				other.m_ReferenceCounter = 0;
 			}
 
 			return *this;
@@ -389,6 +424,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12CommandQueue::Release() const
 		{
+			m_ReferenceCounter--;
+			if (m_ReferenceCounter < 1)
+				delete this;
 		}
 
 
@@ -403,7 +441,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::Create(const IDevice* pDevice, const CommandQueueInfo& info)
+		void DX12CommandQueue::Create(IDevice* pDevice, const CommandQueueInfo& info)
 		{
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
 
@@ -461,7 +499,6 @@ namespace RayEngine
 
 
 			Close();
-
 			return;
 		}
 	}

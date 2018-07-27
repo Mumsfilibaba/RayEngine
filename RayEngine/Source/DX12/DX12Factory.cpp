@@ -16,6 +16,7 @@ namespace RayEngine
 			: m_Factory(nullptr),
 			m_DebugController(nullptr)
 		{
+			AddRef();
 			Create(debugLayer);
 		}
 
@@ -76,7 +77,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Factory::CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const
 		{
-			return (*device) = new DX12Device(m_Factory, deviceInfo, m_DebugController != nullptr);
+			return (*device) = new DX12Device(this, deviceInfo, m_DebugController != nullptr);
 		}
 
 
@@ -93,7 +94,7 @@ namespace RayEngine
 		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo, 
 			ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
 		{
-			DX12Device* d = new DX12Device(m_Factory, deviceInfo, (m_DebugController != nullptr));
+			DX12Device* d = new DX12Device(this, deviceInfo, (m_DebugController != nullptr));
 			return (d != nullptr);
 		}
 
@@ -128,6 +129,14 @@ namespace RayEngine
 			}
 
 			return *this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IDXGIFactory5* DX12Factory::GetDXGIFactory() const
+		{
+			return m_Factory;
 		}
 
 

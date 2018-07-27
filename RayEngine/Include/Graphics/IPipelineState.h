@@ -78,7 +78,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		struct PipelineStateInfo : public IReferenceCounter
+		struct PipelineStateInfo
 		{
 			std::string Name = "";
 			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
@@ -108,7 +108,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IPipelineState
+		class IPipelineState : public IReferenceCounter
 		{
 		public:
 			IPipelineState(IPipelineState&& other) = delete;
@@ -122,6 +122,8 @@ namespace RayEngine
 
 			//Get type
 			virtual PIPELINE_TYPE GetPipelineType() const = 0;
+			//Get the device that created the pipelinestate
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

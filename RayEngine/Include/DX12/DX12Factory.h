@@ -3,6 +3,8 @@
 #include "..\Graphics\IFactory.h"
 #include "DX12Common.h"
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -29,6 +31,8 @@ namespace RayEngine
 
 			DX12Factory& operator=(DX12Factory&& other);
 
+			IDXGIFactory5* GetDXGIFactory() const;
+
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;
 			void Release() const override final;
@@ -42,6 +46,7 @@ namespace RayEngine
 		private:
 			ID3D12Debug* m_DebugController;
 			IDXGIFactory5* m_Factory;
+
 			mutable uint32 m_ReferenceCounter;
 
 		private:
@@ -49,3 +54,5 @@ namespace RayEngine
 		};
 	}
 }
+
+#endif

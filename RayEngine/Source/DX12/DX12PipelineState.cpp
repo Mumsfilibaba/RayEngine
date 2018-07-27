@@ -8,10 +8,14 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12PipelineState::DX12PipelineState(const IDevice* pDevice, const PipelineStateInfo& info)
-			: m_PipelineState(nullptr),
-			m_Type(PIPELINE_TYPE_UNKNOWN)
+		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateInfo& info)
+			: m_Device(nullptr),
+			m_PipelineState(nullptr),
+			m_Type(PIPELINE_TYPE_UNKNOWN),
+			m_ReferenceCount(0)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 			Create(pDevice, info);
 		}
 
@@ -19,11 +23,15 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12PipelineState::DX12PipelineState(DX12PipelineState&& other)
-			: m_PipelineState(other.m_PipelineState),
-			m_Type(other.m_Type)
+			: m_Device(other.m_Device),
+			m_PipelineState(other.m_PipelineState),
+			m_Type(other.m_Type),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Device = nullptr;
 			other.m_PipelineState = nullptr;
 			other.m_Type = PIPELINE_TYPE_UNKNOWN;
+			other.m_ReferenceCount = 0;
 		}
 
 
@@ -32,6 +40,11 @@ namespace RayEngine
 		DX12PipelineState::~DX12PipelineState()
 		{
 			D3DRelease_S(m_PipelineState);
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
 		}
 
 
@@ -40,6 +53,14 @@ namespace RayEngine
 		PIPELINE_TYPE DX12PipelineState::GetPipelineType() const
 		{
 			return m_Type;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IDevice* DX12PipelineState::GetDevice() const
+		{
+			return m_Device;
 		}
 
 
@@ -58,40 +79,68 @@ namespace RayEngine
 			if (this != &other)
 			{
 				D3DRelease_S(m_PipelineState);
+				if (m_Device != nullptr)
+				{
+					m_Device->Release();
+					m_Device = nullptr;
+				}
 
+
+				m_Device = other.m_Device;
 				m_PipelineState = other.m_PipelineState;
 				m_Type = other.m_Type;
+				m_ReferenceCount = other.m_ReferenceCount;
 
+
+				other.m_Device = nullptr;
 				other.m_PipelineState = nullptr;
 				other.m_Type = PIPELINE_TYPE_UNKNOWN;
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;
 		}
 
-		IReferenceCounter * DX12PipelineState::QueryReference()
-		{
-			return nullptr;
-		}
 
-		uint32 DX12PipelineState::GetReferenceCount() const
-		{
-			return uint32();
-		}
 
-		void DX12PipelineState::Release() const
+		/////////////////////////////////////////////////////////////
+		IReferenceCounter* DX12PipelineState::QueryReference()
 		{
-		}
-
-		uint32 DX12PipelineState::AddRef()
-		{
-			return uint32();
+			AddRef();
+			return this;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12PipelineState::Create(const IDevice* pDevice, const PipelineStateInfo& info)
+		uint32 DX12PipelineState::GetReferenceCount() const
+		{
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::Release() const
+		{
+			m_ReferenceCount--;
+			if (m_ReferenceCount < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12PipelineState::AddRef()
+		{
+			m_ReferenceCount++;
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::Create(IDevice* pDevice, const PipelineStateInfo& info)
 		{
 			const DX12RootSignature* rootSignature = reinterpret_cast<const DX12RootSignature*>(info.pRootSignature);
 
@@ -107,7 +156,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateGraphicsState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info)
+		void DX12PipelineState::CreateGraphicsState(IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info)
 		{
 			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
 			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
@@ -154,7 +203,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateComputeState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info)
+		void DX12PipelineState::CreateComputeState(IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info)
 		{
 			//TODO: Compute states
 		}

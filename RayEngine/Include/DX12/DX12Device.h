@@ -17,7 +17,7 @@ namespace RayEngine
 			DX12Device& operator=(const DX12Device& other) = delete;
 
 		public:
-			DX12Device(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer);
+			DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 			DX12Device(DX12Device&& other);
 			~DX12Device();
 
@@ -30,6 +30,8 @@ namespace RayEngine
 			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const override final;
 			System::Log* GetDeviceLog() const override final;
+			
+			IFactory* GetFactory() const override final;
 
 			DX12Device& operator=(DX12Device&& other);
 
@@ -47,9 +49,11 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
-			void Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer);
+			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
 		private:
+			IFactory* m_Factory;
+
 			IDXGIAdapter1* m_Adapter;
 			ID3D12Device* m_Device;
 			ID3D12DebugDevice* m_DebugDevice;
@@ -58,6 +62,7 @@ namespace RayEngine
 			mutable DX12DescriptorHeap m_DsvHeap;
 			mutable DX12DescriptorHeap m_RtvHeap;
 			mutable System::Log m_Log;
+
 			mutable uint32 m_ReferenceCount;
 		};
 	}

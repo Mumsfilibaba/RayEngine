@@ -7,6 +7,7 @@
 #include "..\..\Include\DX12\DX12PipelineState.h"
 #include "..\..\Include\DX12\DX12Texture.h"
 #include "..\..\Include\DX12\DX12Buffer.h"
+#include "..\..\Include\DX12\DX12Factory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -15,34 +16,39 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Device::DX12Device(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer)
-			: m_Device(nullptr),
+		DX12Device::DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
+			: m_Factory(nullptr),
+			m_Device(nullptr),
 			m_Adapter(nullptr),
 			m_DebugDevice(nullptr),
 			m_ResourceHeap(),
 			m_DsvHeap(),
-			m_RtvHeap()
+			m_RtvHeap(),
+			m_ReferenceCount(0)
 		{
-			Create(factory, info, debugLayer);
+			AddRef();
+			m_Factory = reinterpret_cast<IFactory*>(pFactory);
+			Create(pFactory, info, debugLayer);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
 		DX12Device::DX12Device(DX12Device&& other)
-			: m_Device(other.m_Device),
+			: m_Factory(other.m_Factory),
+			m_Device(other.m_Device),
 			m_Adapter(other.m_Adapter),
 			m_DebugDevice(other.m_DebugDevice),
 			m_ResourceHeap(std::move(other.m_ResourceHeap)),
 			m_DsvHeap(std::move(other.m_DsvHeap)),
-			m_RtvHeap(std::move(other.m_RtvHeap))
+			m_RtvHeap(std::move(other.m_RtvHeap)),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Factory = nullptr;
 			other.m_Device = nullptr;
 			other.m_Adapter = nullptr;
 			other.m_DebugDevice = nullptr;
-			memset(&other.m_ResourceHeap, 0, sizeof(other.m_ResourceHeap));
-			memset(&other.m_DsvHeap, 0, sizeof(other.m_DsvHeap));
-			memset(&other.m_RtvHeap, 0, sizeof(other.m_RtvHeap));
+			other.m_ReferenceCount = 0;
 		}
 
 
@@ -57,6 +63,12 @@ namespace RayEngine
 			{
 				m_DebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL);
 				D3DRelease(m_DebugDevice);
+			}
+
+			if (m_Factory != nullptr)
+			{
+				m_Factory->Release();
+				m_Factory = nullptr;
 			}
 		}
 
@@ -135,23 +147,40 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IFactory* DX12Device::GetFactory() const
+		{
+			return m_Factory;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12Device& DX12Device::operator=(DX12Device&& other)
 		{
 			if (this != &other)
 			{
+				if (m_Factory != nullptr)
+				{
+					m_Factory->Release();
+					m_Factory = nullptr;
+				}
+
+
+				m_Factory = other.m_Factory;
 				m_Device = other.m_Device;
 				m_Adapter = other.m_Adapter;
 				m_DebugDevice = other.m_DebugDevice;
 				m_ResourceHeap = std::move(other.m_ResourceHeap);
 				m_DsvHeap = std::move(other.m_DsvHeap);
 				m_RtvHeap = std::move(other.m_RtvHeap);
+				m_ReferenceCount = other.m_ReferenceCount;
 
+
+				other.m_Factory = nullptr;
 				other.m_Device = nullptr;
 				other.m_Adapter = nullptr;
 				other.m_DebugDevice = nullptr;
-				memset(&other.m_ResourceHeap, 0, sizeof(other.m_ResourceHeap));
-				memset(&other.m_DsvHeap, 0, sizeof(other.m_DsvHeap));
-				memset(&other.m_RtvHeap, 0, sizeof(other.m_RtvHeap));
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;
@@ -236,9 +265,11 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Device::Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer)
+		void DX12Device::Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
 		{
-			if (SUCCEEDED(factory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter)))
+			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
+
+			if (SUCCEEDED(pDXGIFactory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter)))
 			{
 				if (SUCCEEDED(D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device))))
 				{

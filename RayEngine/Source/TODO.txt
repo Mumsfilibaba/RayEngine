@@ -4,7 +4,6 @@ TODO:
 -Render triangle Vulkan
 
 -Set names on resources (Even if vulkan may not support it)
--DX12 - ResourceView BaseClass - Viewclasses very similar
 -DX12 - DescriptorHeapManager
 -DX12 - Different versions of the parametertype for the shader in the rootsignature
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
@@ -15,6 +14,7 @@ TODO:
 -DX12 - Device object should create native ptrs
 -DX12 - Dynamic uploadheap - Resizeses when needed
 -DX12 - ViewManager for buffers?
+-Create rendertargets for swapchain during creation?
 -Seperate CommandList and commandQueue
 -Vulkan - referencecounting
 

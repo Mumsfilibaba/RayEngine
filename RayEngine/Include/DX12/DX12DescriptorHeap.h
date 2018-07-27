@@ -3,6 +3,8 @@
 #include "..\Graphics\IDevice.h"
 #include "DX12Common.h"
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -34,10 +36,15 @@ namespace RayEngine
 			void Create(IDevice* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 
 		private:
+			IDevice* m_Device;
+			
 			ID3D12DescriptorHeap* m_Heap;
-			mutable int32 m_Count;
 			int32 m_DescriptorSize;
+			mutable int32 m_Count;
+
 			mutable uint32 m_ReferenceCount;
 		};
 	}
 }
+
+#endif

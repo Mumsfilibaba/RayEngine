@@ -7,7 +7,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Texture::DX12Texture(const IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: DX12Resource()
 		{
 			Create(pDevice, pInitialData, info);
@@ -57,7 +57,43 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Texture::Create(const IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		IReferenceCounter* DX12Texture::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12Texture::GetReferenceCount() const
+		{
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Texture::Release() const
+		{
+			m_ReferenceCount--;
+			if (m_ReferenceCount < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12Texture::AddRef()
+		{
+			m_ReferenceCount++;
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Texture::Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
 			DXGI_FORMAT format = ReToDXFormat(info.Format);
 
@@ -115,7 +151,7 @@ namespace RayEngine
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
 			const DX12CommandQueue* pQueue = reinterpret_cast<const DX12Device*>(pDevice)->GetDX12CommandQueue();
 
-			DX12Resource::Create(pD3D12Device, info.Name, pClearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
+			DX12Resource::Create(pDevice, info.Name, pClearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
 
 
 			if (pInitialData != nullptr)

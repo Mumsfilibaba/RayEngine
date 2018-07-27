@@ -70,6 +70,8 @@ namespace RayEngine
 			virtual bool Close() const = 0;
 			//Execute the commandqueue
 			virtual void Execute() const = 0;
+			//Returns the device that created the object
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

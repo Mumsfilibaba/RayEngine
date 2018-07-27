@@ -28,6 +28,9 @@ namespace RayEngine
 		public:
 			IDepthStencilView() {}
 			virtual ~IDepthStencilView() {}
+
+			//Returns the device that created the object
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

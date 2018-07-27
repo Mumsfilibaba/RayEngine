@@ -4,6 +4,8 @@
 #include "DX12Common.h"
 #include "DX12Shader.h"
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -15,11 +17,12 @@ namespace RayEngine
 			DX12PipelineState& operator=(const DX12PipelineState& other) = delete;
 
 		public:
-			DX12PipelineState(const IDevice* pdevice, const PipelineStateInfo& info);
+			DX12PipelineState(IDevice* pdevice, const PipelineStateInfo& info);
 			DX12PipelineState(DX12PipelineState&& other);
 			~DX12PipelineState();
 
 			PIPELINE_TYPE GetPipelineType() const override final;
+			IDevice* GetDevice() const override final;
 
 			ID3D12PipelineState* GetD3D12PipelineState() const;
 
@@ -33,9 +36,9 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
-			void Create(const IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateGraphicsState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
-			void CreateComputeState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
+			void Create(IDevice* pDevice, const PipelineStateInfo& info);
+			void CreateGraphicsState(IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
+			void CreateComputeState(IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
 			
 		private:
 			static void SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader);
@@ -45,9 +48,14 @@ namespace RayEngine
 			static void SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info);
 
 		private:
+			IDevice* m_Device;
+			
 			ID3D12PipelineState* m_PipelineState;
 			PIPELINE_TYPE m_Type;
+			
 			mutable uint32 m_ReferenceCount;
 		};
 	}
 }
+
+#endif

@@ -7,9 +7,13 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12DepthStencilView::DX12DepthStencilView(const IDevice* pDevice, const DepthStencilViewInfo& info)
-			: DX12ViewBase(reinterpret_cast<const DX12Device*>(pDevice)->GetDX12DepthStencilViewHeap())
+		DX12DepthStencilView::DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info)
+			: m_Device(nullptr),
+			m_ReferenceCount(0),
+			m_View()
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice);
 			Create(pDevice, info);
 		}
 
@@ -17,8 +21,13 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12DepthStencilView::DX12DepthStencilView(DX12DepthStencilView&& other)
-			: DX12ViewBase(std::move(other))
+			: m_Device(other.m_Device),
+			m_ReferenceCount(other.m_ReferenceCount),
+			m_View(other.m_View)
 		{
+			other.m_Device = nullptr;
+			other.m_ReferenceCount = 0;
+			other.m_View.ptr = 0;
 		}
 
 
@@ -26,6 +35,19 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DepthStencilView::~DX12DepthStencilView()
 		{
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		D3D12_CPU_DESCRIPTOR_HANDLE DX12DepthStencilView::GetD3D12CpuDescriptorHandle() const
+		{
+			return m_View;
 		}
 
 
@@ -33,8 +55,34 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DepthStencilView& DX12DepthStencilView::operator=(DX12DepthStencilView&& other)
 		{
-			DX12ViewBase::operator=(std::move(other));
+			if (this != &other)
+			{
+				if (m_Device != nullptr)
+				{
+					m_Device->Release();
+					m_Device = nullptr;
+				}
+
+
+				m_Device = other.m_Device;
+				m_ReferenceCount = other.m_ReferenceCount;
+				m_View = other.m_View;
+
+
+				other.m_Device = nullptr;
+				other.m_ReferenceCount = 0;
+				other.m_View.ptr = 0;
+			}
+
 			return *this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IDevice* DX12DepthStencilView::GetDevice() const
+		{
+			return m_Device;
 		}
 
 
@@ -76,13 +124,16 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DepthStencilView::Create(const IDevice* pDevice, const DepthStencilViewInfo& info)
+		void DX12DepthStencilView::Create(IDevice* pDevice, const DepthStencilViewInfo& info)
 		{
+			const DX12DescriptorHeap* pHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12DepthStencilViewHeap();
+			m_View= pHeap->GetNext();
+			
 			//TODO: Use a Desc
 
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
 			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.Resource)->GetD3D12Resource();
-			pD3D12Device->CreateDepthStencilView(pD3D12Resource, nullptr, m_ViewHandle);
+			pD3D12Device->CreateDepthStencilView(pD3D12Resource, nullptr, m_View);
 		}
 	}
 }

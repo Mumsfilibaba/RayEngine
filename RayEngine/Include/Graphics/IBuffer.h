@@ -42,6 +42,13 @@ namespace RayEngine
 		public:
 			IBuffer() {}
 			virtual ~IBuffer() {}
+
+			//Maps the buffer from the GPU to CPU - returns the pointer to the buffer
+			virtual void* Map(int32 subresource) = 0;
+			//Unmaps the buffer from the GPU to CPU
+			virtual void Unmap() = 0;
+			//Returns the device that created the buffer
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

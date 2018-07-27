@@ -7,9 +7,11 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12DescriptorHeap::DX12DescriptorHeap()
-			: m_Heap(nullptr),
+			: m_Device(nullptr),
+			m_Heap(nullptr),
 			m_Count(0),
-			m_DescriptorSize(0)
+			m_DescriptorSize(0),
+			m_ReferenceCount(0)
 		{
 		}
 
@@ -18,10 +20,14 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DescriptorHeap::DX12DescriptorHeap(IDevice* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
 			int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
-			: m_Heap(nullptr),
+			: m_Device(nullptr),
+			m_Heap(nullptr),
 			m_Count(0),
-			m_DescriptorSize(0)
+			m_DescriptorSize(0),
+			m_ReferenceCount(0)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 			Create(pDevice, name, type, num, flags);
 		}
 
@@ -29,13 +35,17 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12DescriptorHeap::DX12DescriptorHeap(DX12DescriptorHeap&& other)
-			: m_Heap(other.m_Heap),
+			: m_Device(other.m_Device),
+			m_Heap(other.m_Heap),
 			m_Count(other.m_Count),
-			m_DescriptorSize(other.m_DescriptorSize)
+			m_DescriptorSize(other.m_DescriptorSize),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Device = nullptr;
 			other.m_Heap = nullptr;
 			other.m_Count = 0;
 			other.m_DescriptorSize = 0;
+			other.m_ReferenceCount = 0;
 		}
 
 
@@ -44,6 +54,11 @@ namespace RayEngine
 		DX12DescriptorHeap::~DX12DescriptorHeap()
 		{
 			D3DRelease_S(m_Heap);
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
 		}
 
 
@@ -66,14 +81,25 @@ namespace RayEngine
 			if (this != &other)
 			{
 				D3DRelease_S(m_Heap);
+				if (m_Device != nullptr)
+				{
+					m_Device->Release();
+					m_Device = nullptr;
+				}
 
+
+				m_Device = other.m_Device;
 				m_Heap = other.m_Heap;
 				m_Count = other.m_Count;
 				m_DescriptorSize = other.m_DescriptorSize;
+				m_ReferenceCount = other.m_ReferenceCount;
 
+
+				other.m_Device = nullptr;
 				other.m_Heap = nullptr;
 				other.m_Count = 0;
 				other.m_DescriptorSize = 0;
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;

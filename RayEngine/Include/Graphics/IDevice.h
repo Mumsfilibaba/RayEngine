@@ -15,6 +15,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		class IFactory;
+
+
+
+		/////////////////////////////////////////////////////////////
 		struct DeviceInfo
 		{
 			std::string Name = "";
@@ -54,6 +59,8 @@ namespace RayEngine
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const = 0;
 			//Gets the device log
 			virtual System::Log* GetDeviceLog() const = 0;
+			//Gets the factory that created the device
+			virtual IFactory* GetFactory() const = 0;
 		};
 	}
 }

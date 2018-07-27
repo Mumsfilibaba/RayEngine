@@ -3,6 +3,8 @@
 #include "..\Graphics\IDevice.h"
 #include "DX12Resource.h"
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -15,7 +17,7 @@ namespace RayEngine
 
 		public:
 			DX12CommandQueue();
-			DX12CommandQueue(const IDevice* pDevice, const CommandQueueInfo& info);
+			DX12CommandQueue(IDevice* pDevice, const CommandQueueInfo& info);
 			DX12CommandQueue(DX12CommandQueue&& other);
 			~DX12CommandQueue();
 
@@ -50,6 +52,8 @@ namespace RayEngine
 			bool Reset() const override final;
 			bool Close() const override final;
 
+			IDevice* GetDevice() const override final;
+
 			DX12CommandQueue& operator=(DX12CommandQueue&& other);
 
 			ID3D12CommandQueue* GetD3D12CommandQueue() const;
@@ -62,15 +66,20 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
-			void Create(const IDevice* pDevice, const CommandQueueInfo& info);
+			void Create(IDevice* pDevice, const CommandQueueInfo& info);
 
 		private:
+			IDevice* m_Device;
+			
 			ID3D12CommandQueue* m_Queue;
 			ID3D12CommandAllocator* m_Allocator;
 			ID3D12GraphicsCommandList* m_List;
 			ID3D12Fence* m_Fence;
 			mutable uint64 m_CurrentFence;
+			
 			mutable uint32 m_ReferenceCounter;
 		};
 	}
 }
+
+#endif
