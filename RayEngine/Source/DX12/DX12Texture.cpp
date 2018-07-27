@@ -2,14 +2,20 @@
 #include "..\..\Include\DX12\DX12Device.h"
 #include <utility>
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
-			: DX12Resource()
+			: m_Device(nullptr),
+			m_Resource(nullptr),
+			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 			Create(pDevice, pInitialData, info);
 		}
 
@@ -18,16 +24,27 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(ID3D12Resource* pResource)
-			: DX12Resource(pResource)
+			: m_Device(nullptr),
+			m_Resource(nullptr),
+			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
+			m_Resource = pResource;
+			pResource->AddRef();
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(DX12Texture&& other)
-			: DX12Resource(std::move(other))
+			: m_Device(other.m_Device),
+			m_Resource(other.m_Resource),
+			m_State(other.m_State),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Device = nullptr;
+			other.m_Resource = nullptr;
+			other.m_State = D3D12_RESOURCE_STATE_COMMON;
+			other.m_ReferenceCount = 0;
 		}
 
 
@@ -35,6 +52,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Texture::~DX12Texture()
 		{
+			D3DRelease_S(m_Resource);
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
 		}
 
 
@@ -48,10 +71,63 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IDevice* DX12Texture::GetDevice() const
+		{
+			return m_Device;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12Texture& DX12Texture::operator=(DX12Texture&& other)
 		{
-			DX12Resource::operator=(std::move(other));
+			if (this != &other)
+			{
+				D3DRelease_S(m_Resource);
+				if (m_Device != nullptr)
+				{
+					m_Device->Release();
+					m_Device = nullptr;
+				}
+
+
+				m_Device = other.m_Device;
+				m_Resource = other.m_Resource;
+				m_State = other.m_State;
+				m_ReferenceCount = other.m_ReferenceCount;
+
+
+				other.m_Device = nullptr;
+				other.m_Resource = nullptr;
+				other.m_State = D3D12_RESOURCE_STATE_COMMON;
+				other.m_ReferenceCount = 0;
+			}
+
 			return *this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D12Resource* DX12Texture::GetD3D12Resource() const
+		{
+			return m_Resource;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		D3D12_RESOURCE_STATES DX12Texture::GetD3D12State() const
+		{
+			return m_State;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Texture::SetD3D12State(D3D12_RESOURCE_STATES state) const
+		{
+			m_State = state;
 		}
 
 
@@ -148,10 +224,31 @@ namespace RayEngine
 			}
 
 
+			D3D12_HEAP_PROPERTIES heapProp = {};
+			heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+			heapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+			heapProp.CreationNodeMask = 1;
+			heapProp.VisibleNodeMask = 1;
+
+			if (info.Usage == RESOURCE_USAGE_DEFAULT || info.Usage == RESOURCE_USAGE_STATIC)
+				heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
+			else if (info.Usage == RESOURCE_USAGE_DYNAMIC)
+				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
 			const DX12CommandQueue* pQueue = reinterpret_cast<const DX12Device*>(pDevice)->GetDX12CommandQueue();
+			if (FAILED(pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc,
+				D3D12_RESOURCE_STATE_COMMON, pClearValue, IID_PPV_ARGS(&m_Resource))))
+			{
+				return;
+			}
+			else
+			{
+				D3D12SetName(m_Resource, info.Name);
+			}
 
-			DX12Resource::Create(pDevice, info.Name, pClearValue, desc, D3D12_RESOURCE_STATE_COMMON, info.Usage, info.CpuAccess);
+			m_State = D3D12_RESOURCE_STATE_COMMON;
 
 
 			if (pInitialData != nullptr)
@@ -169,7 +266,7 @@ namespace RayEngine
 				uploadDesc.MipLevels = 1;
 				uploadDesc.Format = DXGI_FORMAT_UNKNOWN;
 
-				DX12Resource uploadBuffer(pD3D12Device, info.Name + " : UploadBuffer", nullptr, uploadDesc,
+				DX12Resource uploadBuffer(pDevice, info.Name + " : UploadBuffer", nullptr, uploadDesc,
 					D3D12_RESOURCE_STATE_GENERIC_READ, RESOURCE_USAGE_DYNAMIC, CPU_ACCESS_FLAG_WRITE);
 
 				void* gpuPtr = uploadBuffer.Map(0);
@@ -189,3 +286,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

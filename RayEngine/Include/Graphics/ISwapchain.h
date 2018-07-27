@@ -46,6 +46,8 @@ namespace RayEngine
 			virtual const ITexture* GetBuffer(int32 index) const = 0;
 			//Present next backbuffer to the front
 			virtual void Present() const = 0;
+			//Get the CommandQueue that created the swapchain
+			virtual ICommandQueue* GetCommanQueue() const = 0;
 		};
 	}
 }

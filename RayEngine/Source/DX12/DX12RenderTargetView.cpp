@@ -2,14 +2,20 @@
 #include "..\..\Include\DX12\DX12Texture.h"
 #include "..\..\Include\DX12\DX12Device.h"
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12RenderTargetView::DX12RenderTargetView(const IDevice* pDevice, const RenderTargetViewInfo& info)
-			: DX12ViewBase(reinterpret_cast<const DX12Device*>(pDevice)->GetDX12RenderTargetViewHeap())
+		DX12RenderTargetView::DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
+			: m_Device(nullptr),
+			m_View(),
+			m_ReferenceCount(0)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice);
 			Create(pDevice, info);
 		}
 
@@ -17,8 +23,12 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12RenderTargetView::DX12RenderTargetView(DX12RenderTargetView&& other)
-			: DX12ViewBase(std::move(other))
+			: m_Device(other.m_Device),
+			m_View(other.m_View),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Device = nullptr;
+			other.m_ReferenceCount = 0;
 		}
 
 
@@ -26,6 +36,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12RenderTargetView::~DX12RenderTargetView()
 		{
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
 		}
 
 
@@ -33,14 +48,48 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12RenderTargetView& DX12RenderTargetView::operator=(DX12RenderTargetView&& other)
 		{
-			DX12ViewBase::operator=(std::move(other));
+			if (this != &other)
+			{
+				if (m_Device != nullptr)
+				{
+					m_Device->Release();
+					m_Device = nullptr;
+				}
+
+
+				m_Device = other.m_Device;
+				m_ReferenceCount = other.m_ReferenceCount;
+				m_View = other.m_View;
+
+
+				other.m_Device = nullptr;
+				other.m_ReferenceCount = 0;
+				other.m_View.ptr = 0;
+			}
+
 			return *this;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		IReferenceCounter * DX12RenderTargetView::QueryReference()
+		D3D12_CPU_DESCRIPTOR_HANDLE DX12RenderTargetView::GetD3D12CpuDescriptorHandle() const
+		{
+			return m_View;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IDevice* DX12RenderTargetView::GetDevice() const
+		{
+			return m_Device;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IReferenceCounter* DX12RenderTargetView::QueryReference()
 		{
 			AddRef();
 			return this;
@@ -76,13 +125,18 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12RenderTargetView::Create(const IDevice* pDevice, const RenderTargetViewInfo& info)
+		void DX12RenderTargetView::Create(IDevice* pDevice, const RenderTargetViewInfo& info)
 		{
+			const DX12DescriptorHeap* pHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12RenderTargetViewHeap();
+			m_View = pHeap->GetNext();
+
 			//TODO: Use a Desc
 
 			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
 			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.Resource)->GetD3D12Resource();
-			pD3D12Device->CreateRenderTargetView(pD3D12Resource, nullptr, m_ViewHandle);
+			pD3D12Device->CreateRenderTargetView(pD3D12Resource, nullptr, m_View);
 		}
 	}
 }
+
+#endif

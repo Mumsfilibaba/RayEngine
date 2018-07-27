@@ -1,7 +1,5 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
 #include "ITexture.h"
 
 namespace RayEngine
@@ -30,6 +28,9 @@ namespace RayEngine
 		public:
 			IRenderTargetView() {}
 			virtual ~IRenderTargetView() {}
+
+			//Get the device that created the view
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

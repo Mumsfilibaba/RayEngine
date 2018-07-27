@@ -1,6 +1,7 @@
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12Buffer.h"
 
+#if defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
 {
@@ -41,6 +42,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Buffer::~DX12Buffer()
 		{
+			D3DRelease_S(m_Resource);
 			if (m_Device != nullptr)
 			{
 				m_Device->Release();
@@ -286,3 +288,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

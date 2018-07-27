@@ -7,15 +7,20 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		enum SHADERTYPE : int32
+		class IDevice;
+
+
+
+		/////////////////////////////////////////////////////////////
+		enum SHADER_TYPE : int32
 		{
-			SHADERTYPE_UNKNOWN = 0,
-			SHADERTYPE_VERTEX = 1,
-			SHADERTYPE_HULL = 2,
-			SHADERTYPE_DOMAIN = 3,
-			SHADERTYPE_GEOMETRY = 4,
-			SHADERTYPE_PIXEL = 5,
-			SHADERTYPE_COMPUTE = 6,
+			SHADER_TYPE_UNKNOWN = 0,
+			SHADER_TYPE_VERTEX = 1,
+			SHADER_TYPE_HULL = 2,
+			SHADER_TYPE_DOMAIN = 3,
+			SHADER_TYPE_GEOMETRY = 4,
+			SHADER_TYPE_PIXEL = 5,
+			SHADER_TYPE_COMPUTE = 6,
 		};
 
 
@@ -35,7 +40,7 @@ namespace RayEngine
 		{
 		public:
 			ShaderByteCode();
-			ShaderByteCode(SHADERTYPE type, SHADER_SOURCE_LANG srcLang, int8* pBytes, int32 size);
+			ShaderByteCode(SHADER_TYPE type, SHADER_SOURCE_LANG srcLang, int8* pBytes, int32 size);
 			ShaderByteCode(const ShaderByteCode& other);
 			ShaderByteCode(ShaderByteCode&& other);
 			~ShaderByteCode();
@@ -43,7 +48,7 @@ namespace RayEngine
 			int8* Detach();
 
 			SHADER_SOURCE_LANG GetSourceLanguage() const;
-			SHADERTYPE GetType() const;
+			SHADER_TYPE GetType() const;
 			const int8* GetBytes() const;
 			int32 GetSize() const;
 
@@ -55,7 +60,7 @@ namespace RayEngine
 
 		private:
 			SHADER_SOURCE_LANG m_Lang;
-			SHADERTYPE m_Type;
+			SHADER_TYPE m_Type;
 			int8* m_Bytes;
 			int32 m_Size;
 		};
@@ -75,7 +80,10 @@ namespace RayEngine
 			IShader() {}
 			virtual ~IShader() {}
 
-			virtual SHADERTYPE GetType() const = 0;
+			//Retrives the shadertype
+			virtual SHADER_TYPE GetType() const = 0;
+			//Retrives the device that created the shader
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

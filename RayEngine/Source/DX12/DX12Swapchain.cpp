@@ -1,28 +1,43 @@
 #include "..\..\Include\Win32\Win32WindowImpl.h"
 #include "..\..\Include\DX12\DX12CommandQueue.h"
 #include "..\..\Include\DX12\DX12Swapchain.h"
+#include "..\..\Include\DX12\DX12Factory.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Swapchain::DX12Swapchain(IDXGIFactory5* factory, const SwapchainInfo& info)
-			: m_Swapchain(nullptr),
+		DX12Swapchain::DX12Swapchain(IFactory* pFactory, const SwapchainInfo& info)
+			: m_CommandQueue(nullptr),
+			m_Swapchain(nullptr),
 			m_BufferCount(0),
 			m_CurrentBuffer(0),
-			m_Textures()
+			m_Textures(),
+			m_ReferenceCount(0)
 		{
-			Create(factory, info);
+			Create(pFactory, info);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
 		DX12Swapchain::DX12Swapchain(DX12Swapchain&& other)
-			: m_Swapchain(other.m_Swapchain)
+			: m_CommandQueue(other.m_CommandQueue),
+			m_Swapchain(other.m_Swapchain),
+			m_BufferCount(other.m_BufferCount),
+			m_CurrentBuffer(other.m_BufferCount),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_CommandQueue = nullptr;
 			other.m_Swapchain = nullptr;
+			other.m_BufferCount = 0;
+			other.m_CurrentBuffer = 0;
+			other.m_ReferenceCount = 0;
+
+			other.m_Textures.swap(m_Textures);
 		}
 
 
@@ -31,6 +46,11 @@ namespace RayEngine
 		DX12Swapchain::~DX12Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
+			if (m_CommandQueue != nullptr)
+			{
+				m_CommandQueue->Release();
+				m_CommandQueue = nullptr;
+			}
 		}
 
 
@@ -76,9 +96,28 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
-				m_Swapchain = other.m_Swapchain;
+				if (m_CommandQueue != nullptr)
+				{
+					m_CommandQueue->Release();
+					m_CommandQueue = nullptr;
+				}
 
+
+				m_CommandQueue = other.m_CommandQueue;
+				m_Swapchain = other.m_Swapchain;
+				m_BufferCount = other.m_BufferCount;
+				m_CurrentBuffer = other.m_CurrentBuffer;
+				m_ReferenceCount = other.m_ReferenceCount;
+
+
+				other.m_CommandQueue = nullptr;
 				other.m_Swapchain = nullptr;
+				other.m_BufferCount = 0;
+				other.m_CurrentBuffer = 0;
+				other.m_ReferenceCount = 0;
+
+
+				other.m_Textures.swap(m_Textures);
 			}
 
 			return *this;
@@ -123,7 +162,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Swapchain::Create(IDXGIFactory5* factory, const SwapchainInfo& info)
+		void DX12Swapchain::Create(IFactory* pFactory, const SwapchainInfo& info)
 		{
 			DXGI_SWAP_CHAIN_DESC1 desc = {};
 			desc.BufferCount = m_BufferCount = info.Buffer.Count;
@@ -141,13 +180,14 @@ namespace RayEngine
 
 			//COMMANDQUEUE??
 			HWND hWnd = reinterpret_cast<const System::Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
-			ID3D12CommandQueue* queue = reinterpret_cast<DX12CommandQueue*>(info.pCommandQueue)->GetD3D12CommandQueue();
+			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
+			ID3D12CommandQueue* pD3D12queue = reinterpret_cast<DX12CommandQueue*>(info.pCommandQueue)->GetD3D12CommandQueue();
 			
-			if (FAILED(factory->CreateSwapChainForHwnd(queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain)))
+			if (FAILED(pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain)))
 				return;
 
 
-			factory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
+			pDXGIFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
 
 
 			CreateTextures();
@@ -176,3 +216,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

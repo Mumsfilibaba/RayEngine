@@ -3,14 +3,20 @@
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12RootSignature.h"
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12RootSignature::DX12RootSignature(const IDevice* pDevice, const RootSignatureInfo& info)
-			: m_RootSignature(nullptr)
+		DX12RootSignature::DX12RootSignature(IDevice* pDevice, const RootSignatureInfo& info)
+			: m_Device(nullptr),
+			m_RootSignature(nullptr),
+			m_ReferenceCount(0)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 			Create(pDevice, info);
 		}
 
@@ -18,9 +24,13 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12RootSignature::DX12RootSignature(DX12RootSignature&& other)
-			: m_RootSignature(other.m_RootSignature)
+			: m_Device(other.m_Device),
+			m_RootSignature(other.m_RootSignature),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Device = nullptr;
 			other.m_RootSignature = nullptr;
+			other.m_ReferenceCount = 0;
 		}
 
 
@@ -29,6 +39,11 @@ namespace RayEngine
 		DX12RootSignature::~DX12RootSignature()
 		{
 			D3DRelease_S(m_RootSignature);
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
 		}
 
 
@@ -42,14 +57,34 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IDevice* DX12RootSignature::GetDevice() const
+		{
+			return m_Device;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12RootSignature& DX12RootSignature::operator=(DX12RootSignature&& other)
 		{
 			if (this != &other)
 			{
 				D3DRelease_S(m_RootSignature);
+				if (m_Device != nullptr)
+				{
+					m_Device->Release();
+					m_Device = nullptr;
+				}
 
+
+				m_Device = other.m_Device;
 				m_RootSignature = other.m_RootSignature;
+				m_ReferenceCount = other.m_ReferenceCount;
+
+
+				other.m_Device = nullptr;
 				other.m_RootSignature = nullptr;
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;
@@ -93,7 +128,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12RootSignature::Create(const IDevice* pDevice, const RootSignatureInfo& info)
+		void DX12RootSignature::Create(IDevice* pDevice, const RootSignatureInfo& info)
 		{
 			using namespace Microsoft::WRL;
 
@@ -206,3 +241,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

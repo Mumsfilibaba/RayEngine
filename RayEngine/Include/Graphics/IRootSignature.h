@@ -7,6 +7,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		class IDevice;
+
+
+
+		/////////////////////////////////////////////////////////////
 		enum VIEW_TYPE : int32
 		{
 			VIEW_TYPE_UNKNOWN = 0,
@@ -78,6 +83,9 @@ namespace RayEngine
 		public:
 			IRootSignature() {}
 			virtual ~IRootSignature() {}
+
+			//Gets the device that created the rootsignature
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

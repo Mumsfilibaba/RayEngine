@@ -7,6 +7,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		class IDevice;
+
+
+
+		/////////////////////////////////////////////////////////////
 		struct SamplerInfo
 		{
 			std::string Name = "";
@@ -26,6 +31,8 @@ namespace RayEngine
 		public:
 			ISampler() {}
 			virtual ~ISampler() {}
+
+			virtual IDevice* 
 		};
 	}
 }

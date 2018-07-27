@@ -1,17 +1,17 @@
 #pragma once
 
 #include "..\Graphics\ISwapchain.h"
-#include "VkCommon.h"
+#include "VulkCommon.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class VKSwapchain : public ISwapchain
+		class VulkSwapchain : public ISwapchain
 		{
 		public:
-			VKSwapchain(VkDevice device, VkPhysicalDevice adapter, VkSurfaceKHR surface, const SwapchainInfo& info);
-			~VKSwapchain();
+			VulkSwapchain(IDevice* pDevice, VkSurfaceKHR surface, const SwapchainInfo& info);
+			~VulkSwapchain();
 
 			int32 GetCurrentBuffer() const override final;
 			ITexture* GetBuffer(int32 index) override final;
@@ -28,7 +28,7 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
-			void Create(VkDevice device, VkPhysicalDevice adapter, VkSurfaceKHR surface, const SwapchainInfo& info);
+			void Create(IDevice* pDevice, VkSurfaceKHR surface, const SwapchainInfo& info);
 
 		private:
 			VkSurfaceFormatKHR m_Format;

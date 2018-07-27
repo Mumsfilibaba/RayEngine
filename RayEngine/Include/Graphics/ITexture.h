@@ -7,6 +7,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		class IDevice;
+
+
+
+		/////////////////////////////////////////////////////////////
 		enum TEXTURE_TYPE : int32
 		{
 			TEXTURE_TYPE_UNKNOWN = 0,
@@ -68,6 +73,8 @@ namespace RayEngine
 
 			//Returns the current state of the resource
 			virtual RESOURCE_STATE GetResourceState() const = 0;
+			//Get the Device that created the texture
+			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

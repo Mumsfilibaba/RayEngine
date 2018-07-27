@@ -2,6 +2,8 @@
 #include "..\..\Include\DX12\DX12Common.h"
 #include <comdef.h>
 
+#if defined(RE_PLATFORM_WINDOWS)
+
 namespace RayEngine
 {
 	/////////////////////////////////////////////////////////////
@@ -114,3 +116,5 @@ namespace RayEngine
 			return;
 	}
 }
+
+#endif
