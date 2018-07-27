@@ -34,12 +34,21 @@ namespace RayEngine
 
 			VkDevice GetVkDevice() const;
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(VkInstance instance, const DeviceInfo& deviceInfo);
 
 		private:
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
+
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

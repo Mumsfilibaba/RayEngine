@@ -290,6 +290,42 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IReferenceCounter* VKFactory::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 VKFactory::GetReferenceCount() const
+		{
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void VKFactory::Release() const
+		{
+			m_ReferenceCount--;
+			if (m_ReferenceCount < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 VKFactory::AddRef()
+		{
+			m_ReferenceCount++;
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		bool VKFactory::InstanceLayersSupported(const char * const * neededLayers, int32 count)
 		{
 			uint32 layerCount = 0;

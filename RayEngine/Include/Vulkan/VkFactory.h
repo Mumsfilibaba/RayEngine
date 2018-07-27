@@ -30,12 +30,21 @@ namespace RayEngine
 			
 			VKFactory& operator=(VKFactory&& other);
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(bool debugLayers);
 
 		private:
 			VkInstance m_Instance;
 			VkDebugReportCallbackEXT m_DbgCallback;
+
+			mutable uint32 m_ReferenceCount;
 
 		public:
 			static bool InstanceLayersSupported(const char* const * neededLayers, int32 count);

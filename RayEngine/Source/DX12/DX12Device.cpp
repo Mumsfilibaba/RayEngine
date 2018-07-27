@@ -200,6 +200,42 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IReferenceCounter* DX12Device::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12Device::GetReferenceCount() const
+		{
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Device::Release() const
+		{
+			m_ReferenceCount--;
+			if (m_ReferenceCount < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////s
+		uint32 DX12Device::AddRef()
+		{
+			m_ReferenceCount++;
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Device::Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer)
 		{
 			if (SUCCEEDED(factory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter)))
@@ -217,9 +253,9 @@ namespace RayEngine
 
 					D3D12SetName(m_Device, info.Name);
 
-					m_DsvHeap = DX12DescriptorHeap(m_Device, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap = DX12DescriptorHeap(m_Device, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_ResourceHeap = DX12DescriptorHeap(m_Device, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_DsvHeap = DX12DescriptorHeap(this, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap = DX12DescriptorHeap(this, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_ResourceHeap = DX12DescriptorHeap(this, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
 
 					CommandQueueInfo queueInfo = {};

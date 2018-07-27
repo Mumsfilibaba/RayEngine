@@ -30,6 +30,9 @@ namespace RayEngine
 
 		private:
 			void Create(const IDevice* pDevice, const DepthStencilViewInfo& info);
+
+		private:
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

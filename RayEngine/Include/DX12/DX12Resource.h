@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\Graphics\IDevice.h"
 #include "DX12Common.h"
 
 namespace RayEngine
@@ -14,7 +15,7 @@ namespace RayEngine
 		
 		public:
 			DX12Resource();
-			DX12Resource(ID3D12Device* pDevice, const std::string& name, D3D12_CLEAR_VALUE* pClearValue,
+			DX12Resource(IDevice* pDevice, const std::string& name, D3D12_CLEAR_VALUE* pClearValue,
 				const D3D12_RESOURCE_DESC& desc,  D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage,
 				CPU_ACCESS_FLAG cpuAccess);
 			DX12Resource(ID3D12Resource* pResource);
@@ -32,13 +33,13 @@ namespace RayEngine
 
 			DX12Resource& operator=(DX12Resource&& other);
 
+		protected:
+			void Create(IDevice* pDevice, const std::string& name, D3D12_CLEAR_VALUE* pClearValue, const D3D12_RESOURCE_DESC& desc,
+				D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess);
+
 		private:
 			ID3D12Resource* m_Resource;
 			mutable D3D12_RESOURCE_STATES m_State;
-
-		protected:
-			void Create(ID3D12Device* pDevice, const std::string& name, D3D12_CLEAR_VALUE* pClearValue, const D3D12_RESOURCE_DESC& desc,
-				D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess);
 		};
 	}
 }

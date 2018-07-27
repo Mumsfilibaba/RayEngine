@@ -84,6 +84,25 @@ namespace RayEngine
 			return *this;
 		}
 
+		IReferenceCounter * DX12Swapchain::QueryReference()
+		{
+			return nullptr;
+		}
+
+		uint32 DX12Swapchain::GetReferenceCount() const
+		{
+			return uint32();
+		}
+
+		void DX12Swapchain::Release() const
+		{
+		}
+
+		uint32 DX12Swapchain::AddRef()
+		{
+			return uint32();
+		}
+
 
 
 		/////////////////////////////////////////////////////////////

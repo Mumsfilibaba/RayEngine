@@ -37,6 +37,25 @@ namespace RayEngine
 			return *this;
 		}
 
+		IReferenceCounter * DX12RenderTargetView::QueryReference()
+		{
+			return nullptr;
+		}
+
+		uint32 DX12RenderTargetView::GetReferenceCount() const
+		{
+			return uint32();
+		}
+
+		void DX12RenderTargetView::Release() const
+		{
+		}
+
+		uint32 DX12RenderTargetView::AddRef()
+		{
+			return uint32();
+		}
+
 
 
 		/////////////////////////////////////////////////////////////

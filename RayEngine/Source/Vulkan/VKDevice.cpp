@@ -144,6 +144,42 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IReferenceCounter* VKDevice::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 VKDevice::GetReferenceCount() const
+		{
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void VKDevice::Release() const
+		{
+			m_ReferenceCount--;
+			if (m_ReferenceCount < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 VKDevice::AddRef()
+		{
+			m_ReferenceCount++;
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void VKDevice::Create(VkInstance instance, const DeviceInfo& deviceInfo)
 		{
 			uint32 adapterCount = 0;

@@ -25,6 +25,13 @@ namespace RayEngine
 
 			DX12PipelineState& operator=(DX12PipelineState&& other);
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(const IDevice* pDevice, const PipelineStateInfo& info);
 			void CreateGraphicsState(const IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
@@ -38,8 +45,9 @@ namespace RayEngine
 			static void SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info);
 
 		private:
-			PIPELINE_TYPE m_Type;
 			ID3D12PipelineState* m_PipelineState;
+			PIPELINE_TYPE m_Type;
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

@@ -40,6 +40,42 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IReferenceCounter* DX12DepthStencilView::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12DepthStencilView::GetReferenceCount() const
+		{
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DepthStencilView::Release() const
+		{
+			m_ReferenceCount--;
+			if (m_ReferenceCount < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12DepthStencilView::AddRef()
+		{
+			m_ReferenceCount++;
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12DepthStencilView::Create(const IDevice* pDevice, const DepthStencilViewInfo& info)
 		{
 			//TODO: Use a Desc

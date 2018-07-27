@@ -20,6 +20,13 @@ namespace RayEngine
 
 			void Release(VkInstance instance, VkDevice device);
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(VkDevice device, VkPhysicalDevice adapter, VkSurfaceKHR surface, const SwapchainInfo& info);
 
@@ -27,6 +34,8 @@ namespace RayEngine
 			VkSurfaceFormatKHR m_Format;
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;
+
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

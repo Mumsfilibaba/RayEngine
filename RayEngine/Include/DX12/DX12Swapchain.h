@@ -25,6 +25,13 @@ namespace RayEngine
 
 			DX12Swapchain& operator=(DX12Swapchain&& other);
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(IDXGIFactory5* pFactory, const SwapchainInfo& info);
 			void CreateTextures();
@@ -32,8 +39,9 @@ namespace RayEngine
 		private:
 			IDXGISwapChain1* m_Swapchain;
 			int32 m_BufferCount;
-			mutable int32 m_CurrentBuffer;
 			std::vector<DX12Texture> m_Textures;
+			mutable int32 m_CurrentBuffer;
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

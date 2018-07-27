@@ -23,11 +23,19 @@ namespace RayEngine
 			ShaderByteCode CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info) const override final;
 			ShaderByteCode CompileFromString(const std::string& src, const ShaderCompileInfo& info) const override final;
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			std::string GetShaderModel(SHADERTYPE type) const;
 
 		private:
 			int32 m_Flags;
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

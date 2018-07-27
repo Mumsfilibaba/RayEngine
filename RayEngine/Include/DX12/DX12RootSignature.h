@@ -23,11 +23,19 @@ namespace RayEngine
 
 			DX12RootSignature& operator=(DX12RootSignature&& other);
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(const IDevice* pDevice, const RootSignatureInfo& info);
 
 		private:
 			ID3D12RootSignature* m_RootSignature;
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

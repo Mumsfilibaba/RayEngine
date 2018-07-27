@@ -21,9 +21,17 @@ namespace RayEngine
 
 			const D3D12_SHADER_BYTECODE* GetD3D12ByteCode() const;
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
-			SHADERTYPE m_Type;
 			D3D12_SHADER_BYTECODE m_Shader;
+			SHADERTYPE m_Type;
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

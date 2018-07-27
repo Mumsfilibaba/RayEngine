@@ -1,4 +1,5 @@
 #include "..\..\Include\DX12\DX12DescriptorHeap.h"
+#include "..\..\Include\DX12\DX12Device.h"
 
 namespace RayEngine
 {
@@ -15,7 +16,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12DescriptorHeap::DX12DescriptorHeap(ID3D12Device* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
+		DX12DescriptorHeap::DX12DescriptorHeap(IDevice* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
 			int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
 			: m_Heap(nullptr),
 			m_Count(0),
@@ -81,7 +82,43 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DescriptorHeap::Create(ID3D12Device* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
+		IReferenceCounter * DX12DescriptorHeap::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12DescriptorHeap::GetReferenceCount() const
+		{
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DescriptorHeap::Release() const
+		{
+			m_ReferenceCount--;
+			if (m_ReferenceCount < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////s
+		uint32 DX12DescriptorHeap::AddRef()
+		{
+			m_ReferenceCount++;
+			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DescriptorHeap::Create(IDevice* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type,
 			int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc = {};
@@ -90,12 +127,14 @@ namespace RayEngine
 			desc.NumDescriptors = num;
 			desc.Type = type;
 
-			if (SUCCEEDED(pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_Heap))))
+
+			ID3D12Device* pD3D12Device = reinterpret_cast<DX12Device*>(pDevice)->GetD3D12Device();
+			if (SUCCEEDED(pD3D12Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_Heap))))
 			{
 				D3D12SetName(m_Heap, name);
 
 				m_Count = 0;
-				m_DescriptorSize = pDevice->GetDescriptorHandleIncrementSize(type);
+				m_DescriptorSize = pD3D12Device->GetDescriptorHandleIncrementSize(type);
 			}
 		}
 	}

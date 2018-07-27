@@ -39,6 +39,13 @@ namespace RayEngine
 			const DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const;
 			const DX12DescriptorHeap* GetDX12ResourceHeap() const;
 
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
+
+		protected:
+			uint32 AddRef() override final;
+
 		private:
 			void Create(IDXGIFactory5* factory, const DeviceInfo& info, bool debugLayer);
 
@@ -51,6 +58,7 @@ namespace RayEngine
 			mutable DX12DescriptorHeap m_DsvHeap;
 			mutable DX12DescriptorHeap m_RtvHeap;
 			mutable System::Log m_Log;
+			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

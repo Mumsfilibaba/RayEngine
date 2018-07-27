@@ -44,5 +44,20 @@ namespace RayEngine
 		{
 			return &m_Shader;
 		}
+		IReferenceCounter * DX12Shader::QueryReference()
+		{
+			return nullptr;
+		}
+		uint32 DX12Shader::GetReferenceCount() const
+		{
+			return uint32();
+		}
+		void DX12Shader::Release() const
+		{
+		}
+		uint32 DX12Shader::AddRef()
+		{
+			return uint32();
+		}
 	}
 }

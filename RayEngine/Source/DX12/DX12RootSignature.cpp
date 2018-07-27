@@ -55,6 +55,25 @@ namespace RayEngine
 			return *this;
 		}
 
+		IReferenceCounter * DX12RootSignature::QueryReference()
+		{
+			return nullptr;
+		}
+
+		uint32 DX12RootSignature::GetReferenceCount() const
+		{
+			return uint32();
+		}
+
+		void DX12RootSignature::Release() const
+		{
+		}
+
+		uint32 DX12RootSignature::AddRef()
+		{
+			return uint32();
+		}
+
 
 
 		/////////////////////////////////////////////////////////////

@@ -69,6 +69,25 @@ namespace RayEngine
 			return *this;
 		}
 
+		IReferenceCounter * DX12PipelineState::QueryReference()
+		{
+			return nullptr;
+		}
+
+		uint32 DX12PipelineState::GetReferenceCount() const
+		{
+			return uint32();
+		}
+
+		void DX12PipelineState::Release() const
+		{
+		}
+
+		uint32 DX12PipelineState::AddRef()
+		{
+			return uint32();
+		}
+
 
 
 		/////////////////////////////////////////////////////////////

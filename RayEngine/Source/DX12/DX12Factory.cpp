@@ -133,6 +133,42 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IReferenceCounter* DX12Factory::QueryReference()
+		{
+			AddRef();
+			return this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12Factory::GetReferenceCount() const
+		{
+			return m_ReferenceCounter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Factory::Release() const
+		{
+			m_ReferenceCounter--;
+			if (m_ReferenceCounter < 1)
+				delete this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 DX12Factory::AddRef()
+		{
+			m_ReferenceCounter++;
+			return m_ReferenceCounter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Factory::Create(bool debugLayer)
 		{
 			uint32 factoryFlags = 0;
