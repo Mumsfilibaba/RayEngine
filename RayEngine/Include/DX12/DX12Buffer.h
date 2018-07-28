@@ -20,15 +20,6 @@ namespace RayEngine
 			DX12Buffer(DX12Buffer&& other);
 			~DX12Buffer();
 
-			void* Map(int32 subresource) override final;
-			void Unmap() override final;
-
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-			IDevice* GetDevice() const override final;
-
 			D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const;
 			D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const;
 			D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const;
@@ -38,6 +29,15 @@ namespace RayEngine
 			ID3D12Resource* GetD3D12Resource() const;
 			D3D12_RESOURCE_STATES GetD3D12State() const;
 			void SetD3D12State(D3D12_RESOURCE_STATES state);
+
+			void* Map(int32 subresource) override final;
+			void Unmap() override final;
+
+			IDevice* GetDevice() const override final;
+
+			IReferenceCounter* QueryReference() override final;
+			uint32 GetReferenceCount() const override final;
+			void Release() const override final;
 
 		protected:
 			uint32 AddRef() override final;

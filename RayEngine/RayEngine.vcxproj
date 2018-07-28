@@ -179,6 +179,7 @@
     <ClInclude Include="Include\DX12\DX12Common.h" />
     <ClInclude Include="Include\DX12\DX12DepthStencilView.h" />
     <ClInclude Include="Include\DX12\DX12DescriptorHeap.h" />
+    <ClInclude Include="Include\DX12\DX12DynamicUploadHeap.h" />
     <ClInclude Include="Include\DX12\DX12Factory.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\DX12\DX12PipelineState.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="Source\DX12\DX12DepthStencilView.cpp" />
     <ClCompile Include="Source\DX12\DX12DescriptorHeap.cpp" />
     <ClCompile Include="Source\DX12\DX12Device.cpp" />
+    <ClCompile Include="Source\DX12\DX12DynmicUploadHeap.cpp" />
     <ClCompile Include="Source\DX12\DX12Factory.cpp" />
     <ClCompile Include="Source\DX12\DX12PipelineState.cpp" />
     <ClCompile Include="Source\DX12\DX12RenderTargetView.cpp" />
