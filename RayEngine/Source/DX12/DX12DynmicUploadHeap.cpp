@@ -35,8 +35,10 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DynamicUploadHeap::SetData(void* pData, int32 size)
+		void DX12DynamicUploadHeap::SetData(void* pData, int32 sizeInBytes)
 		{
+			m_Resource->Map();
+			m_Resource->Unmap();
 		}
 
 
@@ -109,8 +111,12 @@ namespace RayEngine
 			D3D12_HEAP_DESC hDesc = {};
 			hDesc.Alignment = alignment;
 			hDesc.Flags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS;
-			hDesc.Properties = ;
-			hDesc.SizeInBytes = size;
+			hDesc.SizeInBytes = sizeInBytes;
+			hDesc.Properties.CPUPageProperty = ;
+			hDesc.Properties.CreationNodeMask = 1;
+			hDesc.Properties.VisibleNodeMask = 1;
+			hDesc.Properties.Type = ;
+			hDesc.Properties.MemoryPoolPreference = ;
 
 			ID3D12Device* pD3D12Device = reinterpret_cast<DX12Device*>(pDevice)->GetD3D12Device();
 			if (FAILED(pD3D12Device->CreateHeap(&hDesc, IID_PPV_ARGS(&m_Heap))))

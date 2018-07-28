@@ -16,14 +16,11 @@ TODO:
 -DX12 - ViewManager for buffers?
 -Create rendertargets for swapchain during creation?
 -Seperate CommandList and commandQueue
--Vulkan - referencecounting
 
 -How resources are used needs refining
 -TextureLoader needs to be updated with the new formats
 -Add p for pointers
--AdapterInfo.cpp
--DX12 - Merge Rootsignature and pipelinestate?
--Log for the device so that it can print to the console when an error happens during object creation
+-AdapterInfo.cppcreation
 -Controller support
 
 -Aquire pointers for native window etc
