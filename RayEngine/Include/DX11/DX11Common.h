@@ -1,9 +1,8 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "..\DXBase\DXCommon.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include <dxgi.h>
 #include <d3d11.h>
+#include <wrl\client.h>
 #endif

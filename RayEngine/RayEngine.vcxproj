@@ -117,7 +117,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib;</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -174,6 +174,9 @@
     <ClInclude Include="Include\Android\AndroidLogImpl.h" />
     <ClInclude Include="Include\Android\AndroidVulkanWrapper.h" />
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
+    <ClInclude Include="Include\DX11\DX11Common.h" />
+    <ClInclude Include="Include\DX11\DX11Device.h" />
+    <ClInclude Include="Include\DX11\DX11Factory.h" />
     <ClInclude Include="Include\DX12\DX12Buffer.h" />
     <ClInclude Include="Include\DX12\DX12CommandQueue.h" />
     <ClInclude Include="Include\DX12\DX12Common.h" />
@@ -188,7 +191,8 @@
     <ClInclude Include="Include\DX12\DX12Shader.h" />
     <ClInclude Include="Include\DX12\DX12Swapchain.h" />
     <ClInclude Include="Include\DX12\DX12Texture.h" />
-    <ClInclude Include="Include\DX12\DXShaderCompiler.h" />
+    <ClInclude Include="Include\DXBase\DXCommon.h" />
+    <ClInclude Include="Include\DXBase\DXShaderCompiler.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
     <ClInclude Include="Include\Graphics\IBuffer.h" />
     <ClInclude Include="Include\Graphics\ICommandQueue.h" />
@@ -267,6 +271,9 @@
     <ClCompile Include="Source\Android\AndroidVulkanCommon.cpp" />
     <ClCompile Include="Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
+    <ClCompile Include="Source\DX11\DX11Common.cpp" />
+    <ClCompile Include="Source\DX11\DX11Device.cpp" />
+    <ClCompile Include="Source\DX11\DX11Factory.cpp" />
     <ClCompile Include="Source\DX12\DX12Buffer.cpp" />
     <ClCompile Include="Source\DX12\DX12CommandQueue.cpp" />
     <ClCompile Include="Source\DX12\DX12Common.cpp" />
@@ -281,7 +288,8 @@
     <ClCompile Include="Source\DX12\DX12Shader.cpp" />
     <ClCompile Include="Source\DX12\DX12Swapchain.cpp" />
     <ClCompile Include="Source\DX12\DX12Texture.cpp" />
-    <ClCompile Include="Source\DX12\DXShaderCompiler.cpp" />
+    <ClCompile Include="Source\DXBase\DXCommon.cpp" />
+    <ClCompile Include="Source\DXBase\DXShaderCompiler.cpp" />
     <ClCompile Include="Source\Graphics\ShaderByteCode.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />

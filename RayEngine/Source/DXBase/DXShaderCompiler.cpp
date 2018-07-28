@@ -1,6 +1,6 @@
 #include <fstream>
 #include <sstream>
-#include "..\..\Include\DX12\DXShaderCompiler.h"
+#include "..\..\Include\DXBase\DXShaderCompiler.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX12\DX12Factory.h"

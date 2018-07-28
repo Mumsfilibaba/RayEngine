@@ -48,7 +48,7 @@ int main(int args, char* argsv[])
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D12, true);
+	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D11, true);
 	
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;

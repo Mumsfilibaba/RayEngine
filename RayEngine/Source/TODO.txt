@@ -18,6 +18,8 @@ TODO:
 -Create rendertargets for swapchain during creation?
 -Seperate CommandList and commandQueue
 
+-DX11/DX12 - Same factory - Same SwapChain both uses DXGI?
+
 -How resources are used needs refining
 -TextureLoader needs to be updated with the new formats
 -Add p for pointers

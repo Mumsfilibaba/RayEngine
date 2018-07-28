@@ -3,7 +3,7 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include <vector>
 #include <cstdlib>
-#include "..\..\Include\DX12\DXShaderCompiler.h"
+#include "..\..\Include\DXBase\DXShaderCompiler.h"
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12Swapchain.h"
 

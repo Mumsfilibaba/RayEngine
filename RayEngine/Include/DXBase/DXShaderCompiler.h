@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\Graphics\IShaderCompiler.h"
-#include "DX12Common.h"
+#include "DXCommon.h"
 #include <d3dcompiler.h>
 
 namespace RayEngine
