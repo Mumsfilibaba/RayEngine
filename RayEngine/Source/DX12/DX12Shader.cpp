@@ -69,6 +69,13 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
+				if (m_Shader.pShaderBytecode != nullptr)
+				{
+					delete m_Shader.pShaderBytecode;
+					m_Shader.pShaderBytecode = nullptr;
+				}
+
+
 				if (m_Device != nullptr)
 				{
 					m_Device->Release();

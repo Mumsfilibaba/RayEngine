@@ -161,10 +161,10 @@ int main(int args, char* argsv[])
 	ShaderCompileInfo sInfo = {};
 	sInfo.EntryPoint = "main";
 	sInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
-	sInfo.Type = SHADERTYPE_VERTEX;
+	sInfo.Type = SHADER_TYPE_VERTEX;
 	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo);
 
-	sInfo.Type = SHADERTYPE_PIXEL;
+	sInfo.Type = SHADER_TYPE_PIXEL;
 	ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo);
 
 	IShader* vs = nullptr;
@@ -380,23 +380,26 @@ int main(int args, char* argsv[])
 
 	queue->Flush();
 
-	delete vs;
-	delete ps;
-	delete vertexBuffer;
-	delete dsv;
-	delete rootSignature;
-	delete pipelineState;
-	delete compiler;
-	delete depthStencil;
+	texture->Release();
+	delete textureData.pData;
+
+	vs->Release();
+	ps->Release();
+	vertexBuffer->Release();
+	dsv->Release();
+	rootSignature->Release();
+	pipelineState->Release();
+	compiler->Release();
+	depthStencil->Release();
 
 	for (int32 i = 0; i < bufferCount; i++)
-		delete rtvs[i];
+		rtvs[i]->Release();
 
-	delete swapchain;
-	delete queue;
+	swapchain->Release();
+	queue->Release();
 
-	delete device;
-	delete factory;
+	device->Release();
+	factory->Release();
 
 	return 0;
 }

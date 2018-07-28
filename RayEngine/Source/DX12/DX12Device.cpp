@@ -21,6 +21,7 @@ namespace RayEngine
 			m_Device(nullptr),
 			m_Adapter(nullptr),
 			m_DebugDevice(nullptr),
+			m_UploadHeap(nullptr),
 			m_ResourceHeap(),
 			m_DsvHeap(),
 			m_RtvHeap(),
@@ -28,7 +29,10 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory);
+			
 			Create(pFactory, info, debugLayer);
+
+			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
 		}
 
 
@@ -39,6 +43,7 @@ namespace RayEngine
 			m_Device(other.m_Device),
 			m_Adapter(other.m_Adapter),
 			m_DebugDevice(other.m_DebugDevice),
+			m_UploadHeap(other.m_UploadHeap),
 			m_ResourceHeap(std::move(other.m_ResourceHeap)),
 			m_DsvHeap(std::move(other.m_DsvHeap)),
 			m_RtvHeap(std::move(other.m_RtvHeap)),
@@ -48,6 +53,7 @@ namespace RayEngine
 			other.m_Device = nullptr;
 			other.m_Adapter = nullptr;
 			other.m_DebugDevice = nullptr;
+			other.m_UploadHeap = nullptr;
 			other.m_ReferenceCount = 0;
 		}
 
@@ -56,6 +62,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Device::~DX12Device()
 		{
+			if (m_UploadHeap != nullptr)
+			{
+				delete m_UploadHeap;
+				m_UploadHeap = nullptr;
+			}
+
 			D3DRelease_S(m_Device);
 			D3DRelease_S(m_Adapter);
 
@@ -159,10 +171,20 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
+				D3DRelease_S(m_Device);
+				D3DRelease_S(m_DebugDevice);
+				D3DRelease_S(m_Adapter);
+			
 				if (m_Factory != nullptr)
 				{
 					m_Factory->Release();
 					m_Factory = nullptr;
+				}
+
+				if (m_UploadHeap != nullptr)
+				{
+					delete m_UploadHeap;
+					m_UploadHeap = nullptr;
 				}
 
 
@@ -170,6 +192,7 @@ namespace RayEngine
 				m_Device = other.m_Device;
 				m_Adapter = other.m_Adapter;
 				m_DebugDevice = other.m_DebugDevice;
+				m_UploadHeap = other.m_UploadHeap;
 				m_ResourceHeap = std::move(other.m_ResourceHeap);
 				m_DsvHeap = std::move(other.m_DsvHeap);
 				m_RtvHeap = std::move(other.m_RtvHeap);
@@ -180,6 +203,7 @@ namespace RayEngine
 				other.m_Device = nullptr;
 				other.m_Adapter = nullptr;
 				other.m_DebugDevice = nullptr;
+				other.m_UploadHeap = nullptr;
 				other.m_ReferenceCount = 0;
 			}
 
@@ -224,6 +248,14 @@ namespace RayEngine
 		const DX12DescriptorHeap* DX12Device::GetDX12ResourceHeap() const
 		{
 			return &m_ResourceHeap;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12DynamicUploadHeap* DX12Device::GetDX12UploadHeap() const
+		{
+			return m_UploadHeap;
 		}
 
 

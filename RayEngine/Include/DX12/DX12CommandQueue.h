@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\Graphics\IDevice.h"
-#include "DX12Resource.h"
+#include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -34,13 +34,11 @@ namespace RayEngine
 			void SetScissorRects(const Math::Rectangle& rect) const override final;
 			void SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const override final;
 
-			//TODO: Copy resource
-			void CopyResource(DX12Resource* dst, const DX12Resource* src) const;
-			void CopyTextureRegion(DX12Resource* dst, const DX12Resource* src, DXGI_FORMAT format,
-				int32 width, int32 height, int32 depth, int32 stride) const;
+			void CopyResource(ID3D12Resource* pDst, ID3D12Resource* pSrc) const;
+			void CopyTextureRegion(ID3D12Resource* pDst, ID3D12Resource* pSrc, DXGI_FORMAT format,int32 width, int32 height, int32 depth, int32 stride) const;
 
-			void TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const  override final;
-			void TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
+			void TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const override final;
+			void TransitionResource(ID3D12Resource* pResource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
 
 			void Draw(int32 startVertex, int32 vertexCount) const override final;
 			void DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const override final;

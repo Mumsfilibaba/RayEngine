@@ -240,9 +240,6 @@
     <ClInclude Include="Include\DX12\DX12Buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DX12\DX12Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Graphics\ISampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -471,9 +468,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12Buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DX12\DX12Resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12DescriptorHeap.cpp">

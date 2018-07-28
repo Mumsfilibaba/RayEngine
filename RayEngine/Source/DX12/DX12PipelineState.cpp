@@ -18,6 +18,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+
 			Create(pDevice, info);
 		}
 

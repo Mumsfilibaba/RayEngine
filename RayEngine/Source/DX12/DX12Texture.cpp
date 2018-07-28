@@ -16,6 +16,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+
 			Create(pDevice, pInitialData, info);
 		}
 
@@ -23,11 +24,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Texture::DX12Texture(ID3D12Resource* pResource)
+		DX12Texture::DX12Texture(IDevice* pDevice, ID3D12Resource* pResource)
 			: m_Device(nullptr),
 			m_Resource(nullptr),
 			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+
 			m_Resource = pResource;
 			pResource->AddRef();
 		}
@@ -253,31 +257,19 @@ namespace RayEngine
 
 			if (pInitialData != nullptr)
 			{
-				D3D12_RESOURCE_DESC uploadDesc = {};
-				uploadDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-				uploadDesc.Width = pInitialData->ByteStride * pInitialData->WidthOrCount * pInitialData->Height;
-				uploadDesc.Height = 1;
-				uploadDesc.DepthOrArraySize = 1;
-				uploadDesc.SampleDesc.Count = 1;
-				uploadDesc.SampleDesc.Quality = 0;
-				uploadDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-				uploadDesc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
-				uploadDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-				uploadDesc.MipLevels = 1;
-				uploadDesc.Format = DXGI_FORMAT_UNKNOWN;
-
-				DX12Resource uploadBuffer(pDevice, info.Name + " : UploadBuffer", nullptr, uploadDesc,
-					D3D12_RESOURCE_STATE_GENERIC_READ, RESOURCE_USAGE_DYNAMIC, CPU_ACCESS_FLAG_WRITE);
-
-				void* gpuPtr = uploadBuffer.Map(0);
-				memcpy(gpuPtr, pInitialData->pData, pInitialData->ByteStride * pInitialData->WidthOrCount * pInitialData->Height);
-				uploadBuffer.Unmap();
+				DX12DynamicUploadHeap* uploadHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12UploadHeap();
+				uploadHeap->SetData(pInitialData->pData, pInitialData->ByteStride * pInitialData->WidthOrCount);
 
 				pQueue->Reset();
 
-				pQueue->TransitionResource(this, D3D12_RESOURCE_STATE_COPY_DEST, 0);
-				pQueue->CopyTextureRegion(this, &uploadBuffer, format, info.Width, info.Height, 1, pInitialData->ByteStride);
-				pQueue->TransitionResource(this, D3D12_RESOURCE_STATE_GENERIC_READ, 0);
+				ID3D12Resource* pSrc = uploadHeap->GetD3D12Resource();
+				pQueue->TransitionResource(GetD3D12Resource(), GetD3D12State(), D3D12_RESOURCE_STATE_COPY_DEST, 0);
+				SetD3D12State(D3D12_RESOURCE_STATE_COPY_DEST);
+
+				pQueue->CopyTextureRegion(GetD3D12Resource(), pSrc, format, info.Width, info.Height, 1, pInitialData->ByteStride);
+				
+				pQueue->TransitionResource(GetD3D12Resource(), GetD3D12State(), D3D12_RESOURCE_STATE_GENERIC_READ, 0);
+				SetD3D12State(D3D12_RESOURCE_STATE_GENERIC_READ);
 
 				pQueue->Close();
 				pQueue->Execute();

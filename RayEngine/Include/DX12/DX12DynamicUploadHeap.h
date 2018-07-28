@@ -1,6 +1,7 @@
 #pragma once
 
-#include "DX12Device.h"
+#include "..\Graphics\IDevice.h"
+#include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -16,9 +17,12 @@ namespace RayEngine
 
 		public:
 			DX12DynamicUploadHeap(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes);
+			DX12DynamicUploadHeap(DX12DynamicUploadHeap&& other);
 			~DX12DynamicUploadHeap();
 
-			void SetData(void* pData, int32 size);
+			DX12DynamicUploadHeap& operator=(DX12DynamicUploadHeap&& other);
+
+			void SetData(const void* pData, int32 size);
 
 			IDevice* GetDevice() const;
 			ID3D12Heap* GetD3D12Heap() const;
@@ -40,6 +44,7 @@ namespace RayEngine
 			ID3D12Heap* m_Heap;
 			ID3D12Resource* m_Resource;
 			D3D12_RESOURCE_STATES m_State;
+			int32 m_SizeInBytes;
 
 			mutable uint32 m_ReferenceCount;
 		};

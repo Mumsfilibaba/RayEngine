@@ -23,6 +23,7 @@ namespace RayEngine
 			m_CurrentFence(0),
 			m_ReferenceCounter(0)
 		{
+			AddRef();
 		}
 
 
@@ -39,6 +40,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			
 			Create(pDevice, info);
 		}
 
@@ -200,19 +202,18 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::CopyResource(DX12Resource* dst, const DX12Resource* src) const
+		void DX12CommandQueue::CopyResource(ID3D12Resource* pDst, ID3D12Resource* pSrc) const
 		{
-			m_List->CopyResource(dst->GetD3D12Resource(), src->GetD3D12Resource());
+			m_List->CopyResource(pDst, pSrc);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::CopyTextureRegion(DX12Resource* dst, const DX12Resource* src, DXGI_FORMAT format, 
-			int32 width, int32 height, int32 depth, int32 stride) const
+		void DX12CommandQueue::CopyTextureRegion(ID3D12Resource* pDst, ID3D12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth, int32 stride) const
 		{
 			D3D12_TEXTURE_COPY_LOCATION srcLoc = {};
-			srcLoc.pResource = src->GetD3D12Resource();
+			srcLoc.pResource = pSrc;
 			srcLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 			srcLoc.PlacedFootprint.Offset = 0;
 			srcLoc.PlacedFootprint.Footprint.Width = width;
@@ -223,7 +224,7 @@ namespace RayEngine
 
 
 			D3D12_TEXTURE_COPY_LOCATION dstLoc = {};
-			dstLoc.pResource = dst->GetD3D12Resource();
+			dstLoc.pResource = pDst;
 			dstLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 			dstLoc.SubresourceIndex = 0;
 
@@ -233,16 +234,13 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const
+		void DX12CommandQueue::TransitionResource(ID3D12Resource* pResource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const
 		{
 			D3D12_RESOURCE_BARRIER barrier = {};
 			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-
 			barrier.Transition.Subresource = subresource;
-
-			barrier.Transition.pResource = resource;
-
+			barrier.Transition.pResource = pResource;
 			barrier.Transition.StateBefore = from;
 			barrier.Transition.StateAfter = to;
 
@@ -255,7 +253,10 @@ namespace RayEngine
 		void DX12CommandQueue::TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const
 		{
 			DX12Texture* pDX12resource = reinterpret_cast<DX12Texture*>(pResource);
-			TransitionResource(pDX12resource->GetD3D12Resource(), pDX12resource->GetD3D12State(), ReToDXResourceState(to), subresource);
+			D3D12_RESOURCE_STATES dxState = ReToDXResourceState(to);
+
+			TransitionResource(pDX12resource->GetD3D12Resource(), pDX12resource->GetD3D12State(), dxState, subresource);
+			pDX12resource->SetD3D12State(dxState);
 		}
 
 

@@ -2,7 +2,7 @@
 
 #include "..\Graphics\ITexture.h"
 #include "..\Graphics\IDevice.h"
-#include "DX12Resource.h"
+#include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -18,7 +18,7 @@ namespace RayEngine
 
 		public:
 			DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
-			DX12Texture(ID3D12Resource* pResource);
+			DX12Texture(IDevice* pDevice, ID3D12Resource* pResource);
 			DX12Texture(DX12Texture&& other);
 			~DX12Texture();
 

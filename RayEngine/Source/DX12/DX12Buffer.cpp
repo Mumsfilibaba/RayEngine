@@ -17,6 +17,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+
 			Create(pDevice, pInitalData, info);
 		}
 
@@ -242,20 +243,19 @@ namespace RayEngine
 			{
 				//TODO: Should be changed later to take different CPU_ACCESS into account??
 
-				DX12Resource uploadBuffer(pDevice, (info.Name + ": UploadBuffer"), nullptr, desc,
-					D3D12_RESOURCE_STATE_GENERIC_READ, RESOURCE_USAGE_DYNAMIC, CPU_ACCESS_FLAG_WRITE);
-
-
-				void* gpuData = uploadBuffer.Map(0);
-				memcpy(gpuData, pInitalData->pData, pInitalData->ByteStride * pInitalData->WidthOrCount);
-				uploadBuffer.Unmap();
-
+				DX12DynamicUploadHeap* uploadHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12UploadHeap();
+				uploadHeap->SetData(pInitalData->pData, pInitalData->ByteStride * pInitalData->WidthOrCount);
 
 				pQueue->Reset();
 
-				pQueue->TransitionResource(this, D3D12_RESOURCE_STATE_COPY_DEST, 0);
-				pQueue->CopyResource(this, &uploadBuffer);
-				pQueue->TransitionResource(this, D3D12_RESOURCE_STATE_GENERIC_READ, 0);
+				ID3D12Resource* pSrc = uploadHeap->GetD3D12Resource();
+				pQueue->TransitionResource(GetD3D12Resource(), GetD3D12State(), D3D12_RESOURCE_STATE_COPY_DEST, 0);
+				SetD3D12State(D3D12_RESOURCE_STATE_COPY_DEST);
+
+				pQueue->CopyResource(GetD3D12Resource(), pSrc);
+				
+				pQueue->TransitionResource(GetD3D12Resource(), GetD3D12State(), D3D12_RESOURCE_STATE_GENERIC_READ, 0);
+				SetD3D12State(D3D12_RESOURCE_STATE_GENERIC_READ);
 
 				pQueue->Close();
 				pQueue->Execute();

@@ -14,6 +14,7 @@ TODO:
 -DX12 - Device object should create native ptrs
 -DX12 - Dynamic uploadheap - Resizeses when needed
 -DX12 - ViewManager for buffers?
+-DX12 - Resource-Transitions
 -Create rendertargets for swapchain during creation?
 -Seperate CommandList and commandQueue
 

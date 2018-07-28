@@ -218,8 +218,11 @@ namespace RayEngine
 			//COMMANDQUEUE??
 			HWND hWnd = reinterpret_cast<const System::Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
 			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
-			ID3D12CommandQueue* pD3D12queue = reinterpret_cast<DX12CommandQueue*>(info.pCommandQueue)->GetD3D12CommandQueue();
+
+			m_CommandQueue = reinterpret_cast<ICommandQueue*>(info.pCommandQueue->QueryReference());
+			ID3D12CommandQueue* pD3D12queue = reinterpret_cast<DX12CommandQueue*>(m_CommandQueue)->GetD3D12CommandQueue();
 			
+
 			if (FAILED(pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain)))
 				return;
 
@@ -245,7 +248,7 @@ namespace RayEngine
 				{
 					D3D12SetName(buffer.Get(), "Swapchain Buffer " + std::to_string(i));
 
-					m_Textures.emplace_back(DX12Texture(buffer.Get()));
+					m_Textures.emplace_back(DX12Texture(m_CommandQueue->GetDevice(), buffer.Get()));
 				}
 			}
 
