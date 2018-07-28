@@ -27,6 +27,7 @@ namespace RayEngine
 			const ITexture* GetBuffer(int32 index) const override final;
 			void Present() const override final;
 			
+			IFactory* GetFactory() const override final;
 			ICommandQueue* GetCommandQueue() const override final;
 
 			IReferenceCounter* QueryReference() override final;
@@ -41,6 +42,7 @@ namespace RayEngine
 			void CreateTextures();
 
 		private:
+			IFactory* m_Factory;
 			ICommandQueue* m_CommandQueue;
 			
 			IDXGISwapChain1* m_Swapchain;

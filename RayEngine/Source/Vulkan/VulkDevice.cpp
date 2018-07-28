@@ -1,34 +1,49 @@
-#include "..\..\Include\Vulkan\VKDevice.h"
 #include <vector>
+#include "..\..\Include\Vulkan\VulkDevice.h"
+#include "..\..\Include\Vulkan\VulkFactory.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		VKDevice::VKDevice(VkInstance instance, const DeviceInfo& deviceInfo)
-			: m_Device(nullptr),
-			m_Adapter(nullptr)
+		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo)
+			: m_Factory(nullptr),
+			m_Device(nullptr),
+			m_Adapter(nullptr),
+			m_ReferenceCount(0)
 		{
-			Create(instance, deviceInfo);
+			AddRef();
+			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
+			Create(pFactory, deviceInfo);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		VKDevice::VKDevice(VKDevice&& other)
-			: m_Device(other.m_Device),
-			m_Adapter(other.m_Adapter)
+		VulkDevice::VulkDevice(VulkDevice&& other)
+			: m_Factory(other.m_Factory),
+			m_Device(other.m_Device),
+			m_Adapter(other.m_Adapter),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Factory = nullptr;
 			other.m_Device = nullptr;
 			other.m_Adapter = nullptr;
+			other.m_ReferenceCount = 0;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		VKDevice::~VKDevice()
+		VulkDevice::~VulkDevice()
 		{
+			if (m_Factory != nullptr)
+			{
+				m_Factory->Release();
+				m_Factory = nullptr;
+			}
+
 			if (m_Device != nullptr)
 			{
 				vkDestroyDevice(m_Device, nullptr);
@@ -39,7 +54,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) const
+		bool VulkDevice::CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info)
 		{
 			return false;
 		}
@@ -47,7 +62,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateShader(IShader** shader, const ShaderByteCode& byteCode) const
+		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderByteCode& byteCode)
 		{
 			return false;
 		}
@@ -55,7 +70,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const
+		bool VulkDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
 		{
 			return false;
 		}
@@ -63,7 +78,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const
+		bool VulkDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
 		{
 			return false;
 		}
@@ -71,7 +86,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateTexture(ITexture** texture, const ResourceData* const pInitialData, const TextureInfo& info) const
+		bool VulkDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
 			return false;
 		}
@@ -79,7 +94,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const
+		bool VulkDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
 		{
 			return false;
 		}
@@ -87,7 +102,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const
+		bool VulkDevice::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info)
 		{
 			return false;
 		}
@@ -95,7 +110,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const
+		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
 		{
 			return false;
 		}
@@ -103,7 +118,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		System::Log* VKDevice::GetDeviceLog() const
+		System::Log* VulkDevice::GetDeviceLog()
 		{
 			return nullptr;
 		}
@@ -111,7 +126,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VKDevice& VKDevice::operator=(VKDevice&& other)
+		VulkDevice& VulkDevice::operator=(VulkDevice&& other)
 		{
 			if (this != &other)
 			{
@@ -128,15 +143,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VKSwapchain* VKDevice::CreateVKSwapchain(VkSurfaceKHR surface)
+		IFactory* VulkDevice::GetFactory() const
 		{
-			return nullptr;
+			return m_Factory;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		VkDevice VKDevice::GetVkDevice() const
+		VkDevice VulkDevice::GetVkDevice() const
 		{
 			return m_Device;
 		}
@@ -144,7 +159,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IReferenceCounter* VKDevice::QueryReference()
+		VkPhysicalDevice VulkDevice::GetVkPhysicalDevice() const
+		{
+			return m_Adapter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IReferenceCounter* VulkDevice::QueryReference()
 		{
 			AddRef();
 			return this;
@@ -153,7 +176,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		uint32 VKDevice::GetReferenceCount() const
+		uint32 VulkDevice::GetReferenceCount() const
 		{
 			return m_ReferenceCount;
 		}
@@ -161,7 +184,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKDevice::Release() const
+		void VulkDevice::Release() const
 		{
 			m_ReferenceCount--;
 			if (m_ReferenceCount < 1)
@@ -171,7 +194,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		uint32 VKDevice::AddRef()
+		uint32 VulkDevice::AddRef()
 		{
 			m_ReferenceCount++;
 			return m_ReferenceCount;
@@ -180,8 +203,10 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKDevice::Create(VkInstance instance, const DeviceInfo& deviceInfo)
+		void VulkDevice::Create(IFactory* pFactory, const DeviceInfo& deviceInfo)
 		{
+			VkInstance instance = reinterpret_cast<VulkFactory*>(pFactory)->GetVkInstance();
+
 			uint32 adapterCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(instance, &adapterCount, nullptr);
 			if (result != VK_SUCCESS)

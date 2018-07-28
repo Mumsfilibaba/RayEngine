@@ -20,18 +20,17 @@ namespace RayEngine
 			DX12Factory(DX12Factory&& other);
 			~DX12Factory();
 
+			DX12Factory& operator=(DX12Factory&& other);
+			IDXGIFactory5* GetDXGIFactory() const;
+			
 			void EnumerateAdapters(AdapterList& list) const override final;
 
-			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) const override final;
-			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) const override final;
-			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) const override final;
-			bool CreateShaderCompiler(IShaderCompiler** ppCompiler) const override final;
+			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
+			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
+			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
+			bool CreateShaderCompiler(IShaderCompiler** ppCompiler) override final;
 
 			GRAPHICS_API GetGraphicsApi() const override final;
-
-			DX12Factory& operator=(DX12Factory&& other);
-
-			IDXGIFactory5* GetDXGIFactory() const;
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;

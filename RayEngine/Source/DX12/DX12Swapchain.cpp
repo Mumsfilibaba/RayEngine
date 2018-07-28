@@ -11,13 +11,17 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12Swapchain::DX12Swapchain(IFactory* pFactory, const SwapchainInfo& info)
-			: m_CommandQueue(nullptr),
+			: m_Factory(nullptr),
+			m_CommandQueue(nullptr),
 			m_Swapchain(nullptr),
 			m_BufferCount(0),
 			m_CurrentBuffer(0),
 			m_Textures(),
 			m_ReferenceCount(0)
 		{
+			AddRef();
+			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
+
 			Create(pFactory, info);
 		}
 
@@ -25,12 +29,14 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12Swapchain::DX12Swapchain(DX12Swapchain&& other)
-			: m_CommandQueue(other.m_CommandQueue),
+			: m_Factory(other.m_Factory),
+			m_CommandQueue(other.m_CommandQueue),
 			m_Swapchain(other.m_Swapchain),
 			m_BufferCount(other.m_BufferCount),
 			m_CurrentBuffer(other.m_BufferCount),
 			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Factory = nullptr;
 			other.m_CommandQueue = nullptr;
 			other.m_Swapchain = nullptr;
 			other.m_BufferCount = 0;
@@ -46,6 +52,13 @@ namespace RayEngine
 		DX12Swapchain::~DX12Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
+			if (m_Factory != nullptr)
+			{
+				m_Factory->Release();
+				m_Factory = nullptr;
+			}
+
+			
 			if (m_CommandQueue != nullptr)
 			{
 				m_CommandQueue->Release();
@@ -85,6 +98,7 @@ namespace RayEngine
 		void DX12Swapchain::Present() const
 		{
 			m_Swapchain->Present(0, 0);
+
 			m_CurrentBuffer++;
 			m_CurrentBuffer = m_CurrentBuffer % m_BufferCount;
 		}
@@ -96,6 +110,12 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
+				if (m_Factory != nullptr)
+				{
+					m_Factory->Release();
+					m_Factory = nullptr;
+				}
+
 				if (m_CommandQueue != nullptr)
 				{
 					m_CommandQueue->Release();
@@ -103,6 +123,7 @@ namespace RayEngine
 				}
 
 
+				m_Factory = other.m_Factory;
 				m_CommandQueue = other.m_CommandQueue;
 				m_Swapchain = other.m_Swapchain;
 				m_BufferCount = other.m_BufferCount;
@@ -110,17 +131,33 @@ namespace RayEngine
 				m_ReferenceCount = other.m_ReferenceCount;
 
 
+				other.m_Factory = nullptr;
 				other.m_CommandQueue = nullptr;
 				other.m_Swapchain = nullptr;
 				other.m_BufferCount = 0;
 				other.m_CurrentBuffer = 0;
 				other.m_ReferenceCount = 0;
 
-
 				other.m_Textures.swap(m_Textures);
 			}
 
 			return *this;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IFactory* DX12Swapchain::GetFactory() const
+		{
+			return m_Factory;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ICommandQueue* DX12Swapchain::GetCommandQueue() const
+		{
+			return m_CommandQueue;
 		}
 
 

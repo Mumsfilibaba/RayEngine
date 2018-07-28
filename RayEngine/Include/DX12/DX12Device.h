@@ -21,18 +21,6 @@ namespace RayEngine
 			DX12Device(DX12Device&& other);
 			~DX12Device();
 
-			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) const override final;
-			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) const override final;
-			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const override final;
-			bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const override final;
-			bool CreateTexture(ITexture** texture, const ResourceData* const pInitialData, const TextureInfo& info) const override final;
-			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const override final;
-			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const override final;
-			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const override final;
-			System::Log* GetDeviceLog() const override final;
-			
-			IFactory* GetFactory() const override final;
-
 			DX12Device& operator=(DX12Device&& other);
 
 			ID3D12Device* GetD3D12Device() const;
@@ -40,6 +28,18 @@ namespace RayEngine
 			const DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const;
 			const DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const;
 			const DX12DescriptorHeap* GetDX12ResourceHeap() const;
+
+			bool CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) override final;
+			bool CreateShader(IShader** shader, const ShaderByteCode& byteCode) override final;
+			bool CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) override final;
+			bool CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) override final;
+			bool CreateTexture(ITexture** texture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
+			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
+			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) override final;
+			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+			System::Log* GetDeviceLog() override final;
+			
+			IFactory* GetFactory() const override final;
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;

@@ -153,12 +153,6 @@
     <ClInclude Include="Include\Android\AndroidVulkanWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Vulkan\VkCommon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Vulkan\VkFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\System\TouchScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -178,12 +172,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Graphics\ISwapchain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Vulkan\VKDevice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Vulkan\VKSwapchain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DX12\DX12Factory.h">
@@ -261,13 +249,22 @@
     <ClInclude Include="Include\DX12\DX12DescriptorHeap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DX12\DX12ViewBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Graphics\Viewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\IReferenceCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Vulkan\VulkCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Vulkan\VulkSwapchain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Vulkan\VulkFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Vulkan\VulkDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -398,9 +395,6 @@
     <ClCompile Include="Source\Win32\Win32SensorsImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Vulkan\VkFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\System\Sensors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -422,19 +416,10 @@
     <ClCompile Include="Source\Android\AndroidClipboardImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Vulkan\VKDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Vulkan\VKSwapchain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Android\AndroidVulkanCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Android\AndroidFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Vulkan\VulkanCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Win32\Win32VulkanCommon.cpp">
@@ -491,7 +476,16 @@
     <ClCompile Include="Source\DX12\DX12DescriptorHeap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX12\DX12ViewBase.cpp">
+    <ClCompile Include="Source\Vulkan\VulkDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Vulkan\VulkCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Vulkan\VulkSwapchain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Vulkan\VulkFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

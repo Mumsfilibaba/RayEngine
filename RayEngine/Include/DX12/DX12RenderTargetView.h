@@ -2,9 +2,9 @@
 
 #include "..\Graphics\IDevice.h"
 #include "..\Graphics\IRenderTargetView.h"
-#include "DX12ViewBase.h"
 
-#if defined(RE_PLATFROM_WINDOWS)
+#if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Common.h"
 
 namespace RayEngine
 {

@@ -1,7 +1,7 @@
-#include "..\..\Include\System\Log.h"
-#include "..\..\Include\Vulkan\VkFactory.h"
-#include "..\..\Include\Vulkan\VKDevice.h"
 #include <vector>
+#include "..\..\Include\System\Log.h"
+#include "..\..\Include\Vulkan\VulkFactory.h"
+#include "..\..\Include\Vulkan\VulKDevice.h"
 
 #define VULKAN_EXTENSION_COUNT 3
 #if defined(RE_PLATFORM_ANDROID)
@@ -15,28 +15,32 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		VKFactory::VKFactory(bool debugLayers)
+		VulkFactory::VulkFactory(bool debugLayers)
 			: m_Instance(nullptr),
-			m_DbgCallback(0)
+			m_DbgCallback(0),
+			m_ReferenceCount(0)
 		{
+			AddRef();
 			Create(debugLayers);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		VKFactory::VKFactory(VKFactory&& other)
+		VulkFactory::VulkFactory(VulkFactory&& other)
 			: m_Instance(other.m_Instance),
-			m_DbgCallback(other.m_DbgCallback)
+			m_DbgCallback(other.m_DbgCallback),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
 			other.m_Instance = nullptr;
 			other.m_DbgCallback = 0;
+			other.m_ReferenceCount = 0;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		VKFactory::~VKFactory()
+		VulkFactory::~VulkFactory()
 		{
 			if (m_DbgCallback != 0)
 			{
@@ -54,7 +58,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKFactory::Create(bool debugLayers)
+		VkInstance VulkFactory::GetVkInstance() const
+		{
+			return m_Instance;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void VulkFactory::Create(bool debugLayers)
 		{
 			VkApplicationInfo aInfo = {};
 			aInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -132,7 +144,7 @@ namespace RayEngine
 				//Setup debug callback
 				VkDebugReportCallbackCreateInfoEXT dbgCallbackInfo = {};
 				dbgCallbackInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-				dbgCallbackInfo.pfnCallback = VKFactory::DebugCallback;
+				dbgCallbackInfo.pfnCallback = VulkFactory::DebugCallback;
 				dbgCallbackInfo.pNext = nullptr;
 				dbgCallbackInfo.pUserData = nullptr;
 				dbgCallbackInfo.flags = 
@@ -151,7 +163,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKFactory::EnumerateAdapters(AdapterList& list) const
+		void VulkFactory::EnumerateAdapters(AdapterList& list) const
 		{
 			uint32 deviceCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
@@ -218,17 +230,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKFactory::CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const
+		bool VulkFactory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
 		{
-			return ((*device) = new VKDevice(m_Instance, deviceInfo)) != nullptr;
+			return ((*ppDevice) = new VulkDevice(this, deviceInfo)) != nullptr;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKFactory::CreateSwapchain(ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
+		bool VulkFactory::CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			*swapchain = nullptr;
+			*ppSwapchain = nullptr;
 
 			//Not implemented for now since vulkan needs a device
 			return false;
@@ -237,27 +249,26 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKFactory::CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo, ISwapchain** swapchain, 
-			const SwapchainInfo& swapchainInfo) const
+		bool VulkFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
 			VkSurfaceKHR surface = 0;
 			VkResult result = VulkanCreateSwapchainSurface(m_Instance, &surface, swapchainInfo.pWindow->GetImplementation());
 			if (result != VK_SUCCESS)
 				return false;
 			
-			(*device) = new VKDevice(m_Instance, deviceInfo);
-			VKDevice* d = reinterpret_cast<VKDevice*>(*device);
+			VulkDevice* pVulkDevice = new VulkDevice(this, deviceInfo);
+			(*ppDevice) = pVulkDevice;
 			
-			VKSwapchain* sc = d->CreateVKSwapchain(surface);
-			(*swapchain) = sc;
+			VulkSwapchain* pVulkSwapchain = new VulkSwapchain(this, pVulkDevice, swapchainInfo);
+			(*ppSwapchain) = pVulkSwapchain;
 
-			return sc != nullptr;
+			return pVulkSwapchain != nullptr;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKFactory::CreateShaderCompiler(IShaderCompiler** compiler) const
+		bool VulkFactory::CreateShaderCompiler(IShaderCompiler** ppCompiler)
 		{
 			return false;
 		}
@@ -265,7 +276,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		GRAPHICS_API VKFactory::GetGraphicsApi() const
+		GRAPHICS_API VulkFactory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_VULKAN;
 		}
@@ -273,15 +284,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VKFactory& VKFactory::operator=(VKFactory&& other)
+		VulkFactory& VulkFactory::operator=(VulkFactory&& other)
 		{
 			if (this != &other)
 			{
 				m_Instance = other.m_Instance;
 				m_DbgCallback = other.m_DbgCallback;
+				m_ReferenceCount = other.m_ReferenceCount;
 
 				other.m_Instance = nullptr;
 				other.m_DbgCallback = 0;
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;
@@ -290,7 +303,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IReferenceCounter* VKFactory::QueryReference()
+		IReferenceCounter* VulkFactory::QueryReference()
 		{
 			AddRef();
 			return this;
@@ -299,7 +312,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		uint32 VKFactory::GetReferenceCount() const
+		uint32 VulkFactory::GetReferenceCount() const
 		{
 			return m_ReferenceCount;
 		}
@@ -307,7 +320,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKFactory::Release() const
+		void VulkFactory::Release() const
 		{
 			m_ReferenceCount--;
 			if (m_ReferenceCount < 1)
@@ -317,7 +330,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		uint32 VKFactory::AddRef()
+		uint32 VulkFactory::AddRef()
 		{
 			m_ReferenceCount++;
 			return m_ReferenceCount;
@@ -326,7 +339,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKFactory::InstanceLayersSupported(const char * const * neededLayers, int32 count)
+		bool VulkFactory::InstanceLayersSupported(const char * const * neededLayers, int32 count)
 		{
 			uint32 layerCount = 0;
 			VkResult result = vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -368,7 +381,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKFactory::InstanceExtensionsSupported(const char* const * neededExtensions, int32 count)
+		bool VulkFactory::InstanceExtensionsSupported(const char* const * neededExtensions, int32 count)
 		{
 			uint32 extensionCount = 0;
 			VkResult result = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
@@ -410,7 +423,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VKFactory::DeviceExtensionsSupported(VkPhysicalDevice& adapter, const char * const * neededExtensions, int32 count)
+		bool VulkFactory::DeviceExtensionsSupported(VkPhysicalDevice& adapter, const char * const * neededExtensions, int32 count)
 		{
 			uint32 extensionCount = 0;
 			VkResult result = vkEnumerateDeviceExtensionProperties(adapter, nullptr, &extensionCount, nullptr);
@@ -449,7 +462,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKFactory::FillAdapterInfo(AdapterInfo& info, VkPhysicalDeviceFeatures& features, 
+		void VulkFactory::FillAdapterInfo(AdapterInfo& info, VkPhysicalDeviceFeatures& features, 
 			VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags)
 		{
 			info.ApiID = id;
@@ -490,7 +503,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VKFactory::CheckQueueFamilySupport(VkPhysicalDevice& adapter, VkQueueFamilyProperties& queuefamily, int32& supportFlags)
+		void VulkFactory::CheckQueueFamilySupport(VkPhysicalDevice& adapter, VkQueueFamilyProperties& queuefamily, int32& supportFlags)
 		{
 			if (queuefamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 				supportFlags |= ADAPTER_FLAGS_GRAPHICS;
@@ -501,7 +514,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VKAPI_ATTR VkBool32 VKAPI_CALL VKFactory::DebugCallback(VkDebugReportFlagsEXT flags, 
+		VKAPI_ATTR VkBool32 VKAPI_CALL VulkFactory::DebugCallback(VkDebugReportFlagsEXT flags, 
 			VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code,
 			const char* layerPrefix, const char* msg, void* userData)
 		{

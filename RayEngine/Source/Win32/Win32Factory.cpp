@@ -1,8 +1,7 @@
 #include "..\..\Include\Graphics\IFactory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-
-#include "..\..\Include\Vulkan\VkFactory.h"
+#include "..\..\Include\Vulkan\VulkFactory.h"
 #include "..\..\Include\DX12\DX12Factory.h"
 
 namespace RayEngine
@@ -16,7 +15,7 @@ namespace RayEngine
 			else if (api == GRAPHICS_API_D3D11)
 				return nullptr;
 			else if (api == GRAPHICS_API_VULKAN)
-				return new VKFactory(debugLayers);
+				return new VulkFactory(debugLayers);
 
 			return nullptr;
 		}

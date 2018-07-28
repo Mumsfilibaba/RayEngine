@@ -1,15 +1,23 @@
-#include "..\..\Include\DX12\DXShaderCompiler.h"
 #include <fstream>
 #include <sstream>
+#include "..\..\Include\DX12\DXShaderCompiler.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Factory.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DXShaderCompiler::DXShaderCompiler(bool debug)
-			: m_Flags(0)
+		DXShaderCompiler::DXShaderCompiler(IFactory* pFactory, bool debug)
+			: m_Factory(nullptr),
+			m_Flags(0),
+			m_ReferenceCount(0)
 		{
+			AddRef();
+			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
+
 			if (debug)
 				m_Flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 		}
@@ -18,9 +26,13 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DXShaderCompiler::DXShaderCompiler(DXShaderCompiler&& other)
-			: m_Flags(other.m_Flags)
+			: m_Factory(other.m_Factory),
+			m_Flags(other.m_Flags),
+			m_ReferenceCount(other.m_ReferenceCount)
 		{
+			other.m_Factory = nullptr;
 			other.m_Flags = 0;
+			other.m_ReferenceCount = 0;
 		}
 
 
@@ -30,9 +42,20 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
-				m_Flags = other.m_Flags;
+				if (m_Factory != nullptr)
+				{
+					m_Factory->Release();
+					m_Factory = nullptr;
+				}
 
+
+				m_Factory = other.m_Factory;
+				m_Flags = other.m_Flags;
+				m_ReferenceCount = other.m_ReferenceCount;
+
+				other.m_Factory = nullptr;
 				other.m_Flags = 0;
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;
@@ -43,6 +66,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DXShaderCompiler::~DXShaderCompiler()
 		{
+			if (m_Factory != nullptr)
+			{
+				m_Factory->Release();
+				m_Factory = nullptr;
+			}
 		}
 
 
@@ -92,6 +120,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IFactory* DXShaderCompiler::GetFactory() const
+		{
+			return m_Factory;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		IReferenceCounter* DXShaderCompiler::QueryReference()
 		{
 			AddRef();
@@ -128,19 +164,21 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		std::string DXShaderCompiler::GetShaderModel(SHADERTYPE type) const
+		std::string DXShaderCompiler::GetShaderModel(SHADER_TYPE type) const
 		{
 			switch (type)
 			{
-			case SHADERTYPE_VERTEX: return "vs_5_0";
-			case SHADERTYPE_HULL: return "hs_5_0";
-			case SHADERTYPE_DOMAIN: return "ds_5_0";
-			case SHADERTYPE_GEOMETRY: return "gs_5_0";
-			case SHADERTYPE_PIXEL: return "ps_5_0";
-			case SHADERTYPE_COMPUTE: return "cs_5_0";
+			case SHADER_TYPE_VERTEX: return "vs_5_0";
+			case SHADER_TYPE_HULL: return "hs_5_0";
+			case SHADER_TYPE_DOMAIN: return "ds_5_0";
+			case SHADER_TYPE_GEOMETRY: return "gs_5_0";
+			case SHADER_TYPE_PIXEL: return "ps_5_0";
+			case SHADER_TYPE_COMPUTE: return "cs_5_0";
 			}
 
 			return std::string();
 		}
 	}
 }
+
+#endif

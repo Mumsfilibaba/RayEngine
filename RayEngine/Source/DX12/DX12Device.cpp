@@ -75,47 +75,47 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateCommandQueue(ICommandQueue** commandQueue, const CommandQueueInfo& info) const
+		bool DX12Device::CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info)
 		{
-			return ((*commandQueue = new DX12CommandQueue(this, info)) != nullptr);
+			return ((*ppCommandQueue = new DX12CommandQueue(this, info)) != nullptr);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateShader(IShader** shader, const ShaderByteCode& byteCode) const
+		bool DX12Device::CreateShader(IShader** ppShader, const ShaderByteCode& byteCode)
 		{
-			return ((*shader = new DX12Shader(byteCode)) != nullptr);
+			return ((*ppShader = new DX12Shader(this, byteCode)) != nullptr);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateRenderTargetView(IRenderTargetView** view, const RenderTargetViewInfo& info) const
+		bool DX12Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
 		{
-			return ((*view = new DX12RenderTargetView(this, info)) != nullptr);
+			return ((*ppView = new DX12RenderTargetView(this, info)) != nullptr);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateDepthStencilView(IDepthStencilView** view, const DepthStencilViewInfo& info) const
+		bool DX12Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
 		{
-			return (*view = new DX12DepthStencilView(this, info));
+			return (*ppView = new DX12DepthStencilView(this, info));
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateTexture(ITexture** texture, const ResourceData* const pInitialData, const TextureInfo& info) const
+		bool DX12Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
-			return ((*texture = new DX12Texture(this, pInitialData, info)) != nullptr);
+			return ((*ppTexture = new DX12Texture(this, pInitialData, info)) != nullptr);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const
+		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
 		{
 			return ((*ppBuffer = new DX12Buffer(this, pInitialData, info)));
 		}
@@ -123,7 +123,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const
+		bool DX12Device::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info)
 		{
 			return ((*ppRootSignature = new DX12RootSignature(this, info)));
 		}
@@ -131,7 +131,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const
+		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
 		{
 			return ((*ppPipelineState = new DX12PipelineState(this, info)));
 		}
@@ -139,7 +139,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		System::Log* DX12Device::GetDeviceLog() const
+		System::Log* DX12Device::GetDeviceLog()
 		{
 			return &m_Log;
 		}

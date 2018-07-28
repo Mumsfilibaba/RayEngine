@@ -15,13 +15,15 @@ namespace RayEngine
 			DXShaderCompiler& operator=(const DXShaderCompiler& other) = delete;
 
 		public:
-			DXShaderCompiler(bool debug);
+			DXShaderCompiler(IFactory* pFactory, bool debug);
 			DXShaderCompiler(DXShaderCompiler&& other);
 			DXShaderCompiler& operator=(DXShaderCompiler&& other);
 			~DXShaderCompiler();
 		
 			ShaderByteCode CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info) const override final;
 			ShaderByteCode CompileFromString(const std::string& src, const ShaderCompileInfo& info) const override final;
+			
+			IFactory* GetFactory() const override final;
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;
@@ -31,10 +33,13 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
-			std::string GetShaderModel(SHADERTYPE type) const;
+			std::string GetShaderModel(SHADER_TYPE type) const;
 
 		private:
+			IFactory* m_Factory;
+
 			int32 m_Flags;
+
 			mutable uint32 m_ReferenceCount;
 		};
 	}

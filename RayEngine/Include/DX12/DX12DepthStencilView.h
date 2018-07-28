@@ -2,9 +2,9 @@
 
 #include "..\..\Include\Graphics\IDevice.h"
 #include "..\..\Include\Graphics\IDepthStencilView.h"
-#include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Common.h"
 
 namespace RayEngine
 {

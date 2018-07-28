@@ -14,27 +14,27 @@ namespace RayEngine
 			VulkDevice& operator=(const VulkDevice& other) = delete;
 
 		public:
-			VulkDevice(IFactory* pInstance, const DeviceInfo& deviceInfo);
+			VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo);
 			VulkDevice(VulkDevice&& other);
 			~VulkDevice();
 
-			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) const override final;
-			bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) const override final;
-			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) const override final;
-			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) const override final;
-			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) const override final;
-			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) const override final;
-			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) const override final;
-			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) const override final;
-			System::Log* GetDeviceLog() const override final;
+			IFactory* GetFactory() const;
+			VkDevice GetVkDevice() const;
+			VkPhysicalDevice GetVkPhysicalDevice() const;
 
 			VulkDevice& operator=(VulkDevice&& other);
+			
 
-			VKSwapchain* CreateVKSwapchain(VkSurfaceKHR surface);
+			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) override final;
+			bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) override final;
+			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
+			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
+			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
+			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
+			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) override final;
+			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+			System::Log* GetDeviceLog() override final;
 
-			VkDevice GetVkDevice() const;
-
-			IFactory* GetFactory() const;
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;
@@ -44,10 +44,10 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
-			void Create(VkInstance instance, const DeviceInfo& deviceInfo);
+			void Create(IFactory* pFactory, const DeviceInfo& deviceInfo);
 
 		private:
-			IFactory* m_Facory;
+			IFactory* m_Factory;
 
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;

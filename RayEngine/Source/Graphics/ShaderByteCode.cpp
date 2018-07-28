@@ -7,7 +7,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ShaderByteCode::ShaderByteCode()
 			: m_Lang(SHADER_SOURCE_LANG_UNKNOWN),
-			m_Type(SHADERTYPE_UNKNOWN),
+			m_Type(SHADER_TYPE_UNKNOWN),
 			m_Bytes(nullptr),
 			m_Size(0)
 		{
@@ -16,7 +16,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		ShaderByteCode::ShaderByteCode(SHADERTYPE type, SHADER_SOURCE_LANG srcLang, int8* bytes, int32 size)
+		ShaderByteCode::ShaderByteCode(SHADER_TYPE type, SHADER_SOURCE_LANG srcLang, int8* bytes, int32 size)
 			: m_Lang(srcLang),
 			m_Type(type),
 			m_Bytes(nullptr),
@@ -68,7 +68,7 @@ namespace RayEngine
 		{
 			int8* bytes = m_Bytes;
 			m_Bytes = nullptr;
-			m_Type = SHADERTYPE_UNKNOWN;
+			m_Type = SHADER_TYPE_UNKNOWN;
 			m_Lang = SHADER_SOURCE_LANG_UNKNOWN;
 			m_Size = 0;
 
@@ -86,7 +86,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		SHADERTYPE ShaderByteCode::GetType() const
+		SHADER_TYPE ShaderByteCode::GetType() const
 		{
 			return m_Type;
 		}
@@ -144,7 +144,7 @@ namespace RayEngine
 				other.m_Bytes = nullptr;
 				other.m_Size = 0;
 				other.m_Lang = SHADER_SOURCE_LANG_UNKNOWN;
-				other.m_Type = SHADERTYPE_UNKNOWN;
+				other.m_Type = SHADER_TYPE_UNKNOWN;
 			}
 
 			return *this;

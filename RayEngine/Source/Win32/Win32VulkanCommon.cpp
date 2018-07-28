@@ -1,7 +1,6 @@
-#include "..\..\Include\Vulkan\VkCommon.h"
+#include "..\..\Include\Vulkan\VulkCommon.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-
 #include "..\..\Include\Win32\Win32WindowImpl.h"
 
 /////////////////////////////////////////////////////////////

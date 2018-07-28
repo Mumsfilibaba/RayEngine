@@ -39,8 +39,8 @@ namespace RayEngine
 			void CopyTextureRegion(DX12Resource* dst, const DX12Resource* src, DXGI_FORMAT format,
 				int32 width, int32 height, int32 depth, int32 stride) const;
 
-			void TransitionResource(DX12Resource* resource, D3D12_RESOURCE_STATES to, int32 subresource) const;
 			void TransitionResource(ITexture* pResource, RESOURCE_STATE to, int32 subresource) const  override final;
+			void TransitionResource(ID3D12Resource* resource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
 
 			void Draw(int32 startVertex, int32 vertexCount) const override final;
 			void DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const override final;

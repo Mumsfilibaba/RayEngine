@@ -9,6 +9,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		class IFactory;
+
+
+
+		/////////////////////////////////////////////////////////////
 		struct SwapchainInfo
 		{
 			System::Window* pWindow = nullptr;
@@ -47,7 +52,9 @@ namespace RayEngine
 			//Present next backbuffer to the front
 			virtual void Present() const = 0;
 			//Get the CommandQueue that created the swapchain
-			virtual ICommandQueue* GetCommanQueue() const = 0;
+			virtual ICommandQueue* GetCommandQueue() const = 0;
+			//Get the factory that created the swapchain 
+			virtual IFactory* GetFactory() const = 0;
 		};
 	}
 }

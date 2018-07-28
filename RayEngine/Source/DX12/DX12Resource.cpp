@@ -1,6 +1,7 @@
 #include "..\..\Include\DX12\DX12Resource.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Device.h"
 
 namespace RayEngine
 {
@@ -16,7 +17,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Resource::DX12Resource(ID3D12Device* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue,
+		DX12Resource::DX12Resource(IDevice* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue,
 			const D3D12_RESOURCE_DESC& desc, D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess)
 			: m_Resource(nullptr),
 			m_State(D3D12_RESOURCE_STATE_COMMON)
@@ -131,7 +132,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Resource::Create(ID3D12Device* device, const std::string& name, D3D12_CLEAR_VALUE* clearValue, const D3D12_RESOURCE_DESC& desc,
+		void DX12Resource::Create(IDevice* pDevice, const std::string& name, D3D12_CLEAR_VALUE* clearValue, const D3D12_RESOURCE_DESC& desc,
 			D3D12_RESOURCE_STATES initalState, RESOURCE_USAGE usage, CPU_ACCESS_FLAG cpuAccess)
 		{
 			D3D12_HEAP_PROPERTIES heapProp = {};
@@ -146,7 +147,8 @@ namespace RayEngine
 				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 
-			if (FAILED(device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc,
+			ID3D12Device* pD3D12Device = reinterpret_cast<DX12Device*>(pDevice)->GetD3D12Device();
+			if (FAILED(pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc,
 				initalState, clearValue, IID_PPV_ARGS(&m_Resource))))
 			{
 				return;

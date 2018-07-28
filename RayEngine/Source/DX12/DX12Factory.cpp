@@ -75,35 +75,34 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateDevice(IDevice** device, const DeviceInfo& deviceInfo) const
+		bool DX12Factory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
 		{
-			return (*device) = new DX12Device(this, deviceInfo, m_DebugController != nullptr);
+			return (*ppDevice) = new DX12Device(this, deviceInfo, m_DebugController != nullptr);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateSwapchain(ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
+		bool DX12Factory::CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			return (*swapchain) = new DX12Swapchain(m_Factory, swapchainInfo);
+			return (*ppSwapchain) = new DX12Swapchain(this, swapchainInfo);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** device, const DeviceInfo& deviceInfo, 
-			ISwapchain** swapchain, const SwapchainInfo& swapchainInfo) const
+		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			DX12Device* d = new DX12Device(this, deviceInfo, (m_DebugController != nullptr));
-			return (d != nullptr);
+			DX12Device* pDX12Device = new DX12Device(this, deviceInfo, (m_DebugController != nullptr));
+			return (pDX12Device != nullptr);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateShaderCompiler(IShaderCompiler** compiler) const
+		bool DX12Factory::CreateShaderCompiler(IShaderCompiler** ppCompiler)
 		{
-			return (*compiler) = new DXShaderCompiler((m_DebugController != nullptr));
+			return (*ppCompiler) = new DXShaderCompiler(this, (m_DebugController != nullptr));
 		}
 
 

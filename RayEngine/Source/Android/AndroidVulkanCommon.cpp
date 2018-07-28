@@ -1,7 +1,7 @@
-#include "..\..\Include\Vulkan\VkCommon.h"
-#include "AndroidAppState.h"
+#include "..\..\Include\Vulkan\VulkCommon.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "AndroidAppState.h"
 
 /////////////////////////////////////////////////////////////
 VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* surface, const RayEngine::System::IWindowImpl* window)

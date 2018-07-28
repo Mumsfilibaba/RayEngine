@@ -6,12 +6,16 @@
 namespace RayEngine
 {
 	namespace Graphics
-	{
+	{	/////////////////////////////////////////////////////////////
+		class IFactory;
+
+
+
 		/////////////////////////////////////////////////////////////
 		struct ShaderCompileInfo
 		{
 			std::string EntryPoint = "main";
-			SHADERTYPE Type = SHADERTYPE_UNKNOWN;
+			SHADER_TYPE Type = SHADER_TYPE_UNKNOWN;
 			SHADER_SOURCE_LANG SrcLang = SHADER_SOURCE_LANG_UNKNOWN;
 		};
 
