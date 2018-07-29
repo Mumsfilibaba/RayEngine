@@ -279,6 +279,18 @@
     <ClInclude Include="Include\DXBase\DXCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\DX11\DX11CommandQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11Swapchain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11RenderTargetView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -510,6 +522,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DXBase\DXCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11CommandQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11Swapchain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11RenderTargetView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -15,17 +15,21 @@ TODO:
 -DX12 - Dynamic uploadheap - Resizeses when needed
 -DX12 - ViewManager for buffers?
 -DX12 - Resource-Transitions
+-DX12 - How resources are used needs refining
+-Swapchain Resize
+-Swapchain Fullscreen
 -Create rendertargets for swapchain during creation?
 -Seperate CommandList and commandQueue
 
 -DX11/DX12 - Same factory - Same SwapChain both uses DXGI?
+-DX11/DX12 - Bufferusage flags
 
--How resources are used needs refining
 -TextureLoader needs to be updated with the new formats
 -Add p for pointers
 -AdapterInfo.cppcreation
 -Controller support
 
+-Parent interfaces should be queried instead of just returned
 -Aquire pointers for native window etc
 -Check if system supports vulkan in factory
 -ANativeWindow pointer in AndroidWindowImpl

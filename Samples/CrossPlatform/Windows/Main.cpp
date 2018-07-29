@@ -89,7 +89,7 @@ int main(int args, char* argsv[])
 	scInfo.pWindow = &window;
 	scInfo.pCommandQueue = queue;
 	scInfo.Buffer.Count = bufferCount;
-	scInfo.Buffer.Format = FORMAT_R8G8B8A8_UINT;
+	scInfo.Buffer.Format = FORMAT_R8G8B8A8_UNORM;
 	scInfo.Buffer.Width = window.GetWidth();
 	scInfo.Buffer.Height = window.GetHeight();
 

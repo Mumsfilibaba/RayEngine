@@ -2,6 +2,8 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Factory.h"
+#include "..\..\Include\DX11\DX11CommandQueue.h"
+#include "..\..\Include\DX11\DX11RenderTargetView.h"
 #include <d3dcommon.h>
 
 namespace RayEngine
@@ -121,7 +123,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info)
 		{
-			return false;
+			return ((*ppCommandQueue = new DX11CommandQueue(this, info)) != nullptr);
 		}
 
 
@@ -137,7 +139,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
 		{
-			return false;
+			return ((*ppView = new DX11RenderTargetView(this, info)));
 		}
 
 
@@ -262,7 +264,7 @@ namespace RayEngine
 			}
 
 
-			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, info.Name.size(), info.Name.c_str());
+			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 			if (debugLayer)
 			{
 				hr = m_Device->QueryInterface<ID3D11Debug>(&m_DebugDevice);

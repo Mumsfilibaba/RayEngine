@@ -1,8 +1,9 @@
 #include <vector>
 #include "..\..\Include\DX11\DX11Factory.h"
-#include "..\..\Include\DX11\DX11Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11Swapchain.h"
 
 namespace RayEngine
 {
@@ -101,7 +102,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			return false;
+			return ((*ppSwapchain = new DX11Swapchain(this, swapchainInfo)));
 		}
 
 

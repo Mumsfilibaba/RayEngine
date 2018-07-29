@@ -174,9 +174,13 @@
     <ClInclude Include="Include\Android\AndroidLogImpl.h" />
     <ClInclude Include="Include\Android\AndroidVulkanWrapper.h" />
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
+    <ClInclude Include="Include\DX11\DX11CommandQueue.h" />
     <ClInclude Include="Include\DX11\DX11Common.h" />
     <ClInclude Include="Include\DX11\DX11Device.h" />
     <ClInclude Include="Include\DX11\DX11Factory.h" />
+    <ClInclude Include="Include\DX11\DX11RenderTargetView.h" />
+    <ClInclude Include="Include\DX11\DX11Swapchain.h" />
+    <ClInclude Include="Include\DX11\DX11Texture.h" />
     <ClInclude Include="Include\DX12\DX12Buffer.h" />
     <ClInclude Include="Include\DX12\DX12CommandQueue.h" />
     <ClInclude Include="Include\DX12\DX12Common.h" />
@@ -271,9 +275,13 @@
     <ClCompile Include="Source\Android\AndroidVulkanCommon.cpp" />
     <ClCompile Include="Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
+    <ClCompile Include="Source\DX11\DX11CommandQueue.cpp" />
     <ClCompile Include="Source\DX11\DX11Common.cpp" />
     <ClCompile Include="Source\DX11\DX11Device.cpp" />
     <ClCompile Include="Source\DX11\DX11Factory.cpp" />
+    <ClCompile Include="Source\DX11\DX11RenderTargetView.cpp" />
+    <ClCompile Include="Source\DX11\DX11Swapchain.cpp" />
+    <ClCompile Include="Source\DX11\DX11Texture.cpp" />
     <ClCompile Include="Source\DX12\DX12Buffer.cpp" />
     <ClCompile Include="Source\DX12\DX12CommandQueue.cpp" />
     <ClCompile Include="Source\DX12\DX12Common.cpp" />
