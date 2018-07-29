@@ -53,7 +53,6 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Adapter);
 			D3DRelease_S(m_Device);
-			D3DRelease_S(m_DebugDevice);
 			D3DRelease_S(m_ImmediateContext);
 
 			if (m_Factory != nullptr)
@@ -61,6 +60,9 @@ namespace RayEngine
 				m_Factory->Release();
 				m_Factory = nullptr;
 			}
+
+			m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
+			D3DRelease_S(m_DebugDevice);
 		}
 
 
