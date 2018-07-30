@@ -4,6 +4,7 @@
 #include "..\..\Include\DX11\DX11Factory.h"
 #include "..\..\Include\DX11\DX11CommandQueue.h"
 #include "..\..\Include\DX11\DX11RenderTargetView.h"
+#include "..\..\Include\DX11\DX11Texture.h"
 #include <d3dcommon.h>
 
 namespace RayEngine
@@ -141,7 +142,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
 		{
-			return ((*ppView = new DX11RenderTargetView(this, info)));
+			return ((*ppView = new DX11RenderTargetView(this, info)) != nullptr);
 		}
 
 
@@ -157,7 +158,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
-			return false;
+			return ((*ppTexture = new DX11Texture(this, pInitialData, info)) != nullptr);
 		}
 
 

@@ -176,6 +176,7 @@
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
     <ClInclude Include="Include\DX11\DX11CommandQueue.h" />
     <ClInclude Include="Include\DX11\DX11Common.h" />
+    <ClInclude Include="Include\DX11\DX11DepthStencilView.h" />
     <ClInclude Include="Include\DX11\DX11Device.h" />
     <ClInclude Include="Include\DX11\DX11Factory.h" />
     <ClInclude Include="Include\DX11\DX11RenderTargetView.h" />
@@ -277,6 +278,7 @@
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
     <ClCompile Include="Source\DX11\DX11CommandQueue.cpp" />
     <ClCompile Include="Source\DX11\DX11Common.cpp" />
+    <ClCompile Include="Source\DX11\DX11DepthStencilView.cpp" />
     <ClCompile Include="Source\DX11\DX11Device.cpp" />
     <ClCompile Include="Source\DX11\DX11Factory.cpp" />
     <ClCompile Include="Source\DX11\DX11RenderTargetView.cpp" />

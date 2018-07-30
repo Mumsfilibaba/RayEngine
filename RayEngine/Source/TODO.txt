@@ -1,7 +1,9 @@
 TODO:
--Render triangle DX12
 -Render triangle DX11
 -Render triangle Vulkan
+
+-DX12 - ImmediateContext
+-Seperate CommandList and commandQueue
 
 -Set names on resources (Even if vulkan may not support it)
 -DX12 - DescriptorHeapManager
@@ -19,14 +21,12 @@ TODO:
 -Swapchain Resize
 -Swapchain Fullscreen
 -Create rendertargets for swapchain during creation?
--Seperate CommandList and commandQueue
 
--DX11/DX12 - Same factory - Same SwapChain both uses DXGI?
 -DX11/DX12 - Bufferusage flags
 
 -TextureLoader needs to be updated with the new formats
 -Add p for pointers
--AdapterInfo.cppcreation
+-AdapterInfo.cpp
 -Controller support
 
 -Parent interfaces should be queried instead of just returned
