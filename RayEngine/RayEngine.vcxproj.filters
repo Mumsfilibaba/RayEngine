@@ -294,6 +294,15 @@
     <ClInclude Include="Include\DX11\DX11DepthStencilView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\DX11\DX11Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11RootSignature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11PipelineState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -540,6 +549,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX11\DX11DepthStencilView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11RootSignature.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11PipelineState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

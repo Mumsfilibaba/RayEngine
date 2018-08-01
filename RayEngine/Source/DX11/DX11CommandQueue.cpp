@@ -250,7 +250,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11CommandQueue::Reset() const
 		{
-			D3DRelease(m_List);
+			D3DRelease_S(m_List);
 			return true;
 		}
 

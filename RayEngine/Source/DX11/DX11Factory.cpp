@@ -4,6 +4,7 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
 #include "..\..\Include\DX11\DX11Swapchain.h"
+#include "..\..\Include\DXBase\DXShaderCompiler.h"
 
 namespace RayEngine
 {
@@ -118,7 +119,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Factory::CreateShaderCompiler(IShaderCompiler** ppCompiler)
 		{
-			return false;
+			return ((*ppCompiler = new DXShaderCompiler(this, m_DebugLayer)));
 		}
 
 

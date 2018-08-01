@@ -56,7 +56,18 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct RasterizerStateInfo
 		{
+			FILL_MODE FillMode = FILL_MODE_SOLID;
+			CULL_MODE CullMode = CULL_MODE_BACK;
+			bool FrontCounterClockwise = false;
+			
+			bool DepthClipEnable = true;
+			int32 DepthBias = 0;
+			float DepthBiasClamp = 0.0f;
+			float SlopeScaleDepthBias = 0.0f;
 
+			bool ScissorEnable = false;
+			bool MultisampleEnable = false;
+			bool AntialiasedLineEnable = false;
 		};
 
 
@@ -64,7 +75,16 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct DepthStencilStateInfo
 		{
+			bool DepthEnable = true;
+			DEPTH_WRITE_MASK DepthWriteMask = DEPTH_WRITE_MASK_ALL;
+			COMPARISON_FUNC DepthFunc = COMPARISON_FUNC_LESS;
+			
+			bool StencilEnable = false;
+			uint8 StencilReadMask = -1;
+			uint8 StencilWriteMask = -1;
 
+			StencilOperationInfo Frontface;
+			StencilOperationInfo BackFace;
 		};
 
 
@@ -72,7 +92,22 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct BlendStateInfo
 		{
+			bool AlphaToCoverageEnable = false;
+			bool IndependentBlendEnable = false;
+			const float BlendFactor[4];
+			uint32 SampleMask = -1;
+			
+			struct
+			{
+				bool BlendEnable = false;
+				BLEND_TYPE SrcBlend = BLEND_TYPE_UNKNOWN;
+				BLEND_TYPE DstBlend = BLEND_TYPE_UNKNOWN;
+				BLEND_OPERATION BlendOperation = BLEND_OPERATION_UNKNOWN;
+				BLEND_TYPE SrcAlphaBlend = BLEND_TYPE_UNKNOWN;
+				BLEND_TYPE DstAlphaBlend = BLEND_TYPE_UNKNOWN;
+				BLEND_OPERATION AlphaBlendOperation = BLEND_OPERATION_UNKNOWN;
 
+			} RenderTargets[8];
 		};
 
 

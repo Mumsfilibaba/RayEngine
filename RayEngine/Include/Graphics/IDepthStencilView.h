@@ -10,7 +10,7 @@ namespace RayEngine
 		struct DepthStencilViewInfo
 		{
 			std::string Name = "";
-			const ITexture* Resource = nullptr;
+			const ITexture* pResource = nullptr;
 			FORMAT Format = FORMAT_UNKNOWN;
 		};
 

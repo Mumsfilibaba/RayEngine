@@ -142,6 +142,116 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
+	enum BLEND_TYPE : int32
+	{
+		BLEND_TYPE_UNKNOWN = 0,
+		//Blend factor = (0, 0, 0, 0)
+		BLEND_TYPE_ZERO = 1,
+		//Blend factor = (1, 1, 1, 1)
+		BLEND_TYPE_ONE = 2,
+		//Blend factor = (Rsrc, Gsrc, Bsrc, Asrc)
+		BLEND_TYPE_SRC_COLOR = 3,
+		//Blend factor = (1 - Rsrc, 1 - Gsrc, 1 - Bsrc, 1 - Asrc)
+		BLEND_TYPE_INV_SRC_COLOR = 4,
+		//Blend factor = (Asrc, Asrc, Asrc, Asrc)
+		BLEND_TYPE_SRC_ALPHA = 5,
+		//Blend factor = (1 - Asrc, 1 - Asrc, 1 - Asrc, 1 - Asrc)
+		BLEND_TYPE_INV_SRC_ALPHA = 6,
+		//Blend factor = (Adst, Adst, Adst, Adst)
+		BLEND_TYPE_DEST_ALPHA = 7,
+		//Blend factor = (1 - Adst, 1 - Adst, 1 - Adst, 1 - Adst)
+		BLEND_TYPE_INV_DEST_ALPHA = 8,
+		//Blend factor = (Rdst, Gdst, Bdst, Adst)
+		BLEND_TYPE_DEST_COLOR = 9,
+		//Blend factor = (1 - Rdst, 1 - Gdst, 1 - Bdst, 1 - Adst)
+		BLEND_TYPE_INV_DEST_COLOR = 10,
+		//Blend factor = (f, f, f, f), f = min(Asrc, 1 - Asrc)
+		BLEND_TYPE_SRC_ALPHA_SAT = 11,
+		//Blend factor = (BlendFactor[0], BlendFactor[1], BlendFactor[2], BlendFactor[3])
+		BLEND_TYPE_BLEND_FACTOR = 12,
+		//Blend factor = (1 - BlendFactor[0], 1 - BlendFactor[1], 1 - BlendFactor[2], 1 - BlendFactor[3])
+		BLEND_TYPE_INV_BLEND_FACTOR = 13,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum BLEND_OPERATION : int32
+	{
+		BLEND_OPERATION_UNKNOWN = 0,
+		BLEND_OPERATION_OP_ADD = 1,
+		BLEND_OPERATION_OP_SUBTRACT = 2,
+		BLEND_OPERATION_OP_REV_SUBTRACT = 3,
+		BLEND_OPERATION_OP_MIN = 4,
+		BLEND_OPERATION_OP_MAX = 5,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum DEPTH_WRITE_MASK : int32
+	{
+		DEPTH_WRITE_MASK_UNKNOWN = 0,
+		DEPTH_WRITE_MASK_ZERO = 1,
+		DEPTH_WRITE_MASK_ALL = 2,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum COMPARISON_FUNC : int32 
+	{
+		COMPARISON_FUNC_UNKNOWN = 0,
+		COMPARISON_FUNC_NEVER = 1,
+		COMPARISON_FUNC_LESS = 2,
+		COMPARISON_FUNC_EQUAL = 3,
+		COMPARISON_FUNC_LESS_EQUAL = 4,
+		COMPARISON_FUNC_GREATER = 5,
+		COMPARISON_FUNC_NOT_EQUAL = 6,
+		COMPARISON_FUNC_GREATER_EQUAL = 7,
+		COMPARISON_FUNC_ALWAYS = 8
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum STENCIL_OPERATION : int32
+	{
+		STENCIL_OPERATION_UNKNOWN = 0,
+		STENCIL_OPERATION_KEEP = 1,
+		STENCIL_OPERATION_ZERO = 2,
+		STENCIL_OPERATION_REPLACE = 3,
+		STENCIL_OPERATION_INCR_SAT = 4,
+		STENCIL_OPERATION_DECR_SAT = 5,
+		STENCIL_OPERATION_INVERT = 6,
+		STENCIL_OPERATION_INCR = 7,
+		STENCIL_OPERATION_DECR = 8,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum FILL_MODE : int32
+	{
+		FILL_MODE_UNKNOWN = 0,
+		FILL_MODE_SOLID = 1,
+		FILL_MODE_WIREFRAME = 2,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum CULL_MODE : int32
+	{
+		CULL_MODE_UNKNOWN = 0,
+		CULL_MODE_BACK = 1,
+		CULL_MODE_FRONT = 2,
+		CULL_MODE_NONE = 3,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
 	struct ResourceData
 	{
 		//pData - Data that is meant to be submitted to the graphics card
@@ -152,5 +262,16 @@ namespace RayEngine
 		int32 WidthOrCount = 0;
 		//Height - Number of rows in pData - Does not matter for buffers
 		int32 Height = 0;
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	struct StencilOperationInfo
+	{
+		STENCIL_OPERATION StencilFailOperation = STENCIL_OPERATION_KEEP;
+		STENCIL_OPERATION StencilDepthFailOperation = STENCIL_OPERATION_KEEP;
+		STENCIL_OPERATION StencilPassoperation = STENCIL_OPERATION_KEEP;
+		COMPARISON_FUNC StencilFunc = COMPARISON_FUNC_ALWAYS;
 	};
 }

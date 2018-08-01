@@ -138,7 +138,7 @@ namespace RayEngine
 			desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 			desc.Texture2D.MipSlice = 0;
 
-			ID3D11Texture2D* pD3D11Texture2D = reinterpret_cast<const DX11Texture*>(info.Resource)->GetD3D11Texture2D();
+			ID3D11Texture2D* pD3D11Texture2D = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
 			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateRenderTargetView(pD3D11Texture2D, &desc, &m_View);
 			if (FAILED(hr))

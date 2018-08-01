@@ -5,6 +5,10 @@
 #include "..\..\Include\DX11\DX11CommandQueue.h"
 #include "..\..\Include\DX11\DX11RenderTargetView.h"
 #include "..\..\Include\DX11\DX11Texture.h"
+#include "..\..\Include\DX11\DX11DepthStencilView.h"
+#include "..\..\Include\DX11\DX11Shader.h"
+#include "..\..\Include\DX11\DX11RootSignature.h"
+#include "..\..\Include\DX11\DX11PipelineState.h"
 #include <d3dcommon.h>
 
 namespace RayEngine
@@ -134,7 +138,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateShader(IShader** ppShader, const ShaderByteCode& byteCode)
 		{
-			return false;
+			return ((*ppShader = new DX11Shader(this, byteCode)));
 		}
 
 
@@ -150,7 +154,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
 		{
-			return false;
+			return ((*ppView = new DX11DepthStencilView(this, info)));
 		}
 
 
@@ -174,7 +178,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info)
 		{
-			return false;
+			return ((*ppRootSignature = new DX11RootSignature(this, info)));
 		}
 
 
@@ -182,7 +186,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
 		{
-			return false;
+			return ((*ppPipelineState = new DX11PipelineState(this, info)));
 		}
 
 

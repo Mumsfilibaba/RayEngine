@@ -100,7 +100,7 @@ int main(int args, char* argsv[])
 	IRenderTargetView* rtvs[bufferCount];
 	for (int32 i = 0; i < bufferCount; i++)
 	{
-		rtvInfo.Resource = swapchain->GetBuffer(i);
+		rtvInfo.pResource = swapchain->GetBuffer(i);
 		device->CreateRenderTargetView(&(rtvs[i]), rtvInfo);
 	}
 
@@ -149,7 +149,7 @@ int main(int args, char* argsv[])
 
 
 	DepthStencilViewInfo dsvInfo = {};
-	dsvInfo.Resource = depthStencil;
+	dsvInfo.pResource = depthStencil;
 
 	IDepthStencilView* dsv = nullptr;
 	device->CreateDepthStencilView(&dsv, dsvInfo);

@@ -179,7 +179,10 @@
     <ClInclude Include="Include\DX11\DX11DepthStencilView.h" />
     <ClInclude Include="Include\DX11\DX11Device.h" />
     <ClInclude Include="Include\DX11\DX11Factory.h" />
+    <ClInclude Include="Include\DX11\DX11PipelineState.h" />
     <ClInclude Include="Include\DX11\DX11RenderTargetView.h" />
+    <ClInclude Include="Include\DX11\DX11RootSignature.h" />
+    <ClInclude Include="Include\DX11\DX11Shader.h" />
     <ClInclude Include="Include\DX11\DX11Swapchain.h" />
     <ClInclude Include="Include\DX11\DX11Texture.h" />
     <ClInclude Include="Include\DX12\DX12Buffer.h" />
@@ -261,6 +264,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DX12\DX12Device.h" />
+    <ClCompile Include="Source\DX11\DX11PipelineState.cpp" />
+    <ClCompile Include="Source\DX11\DX11RootSignature.cpp" />
+    <ClCompile Include="Source\DX11\DX11Shader.cpp" />
     <ClCompile Include="Source\Android\Android.cpp" />
     <ClCompile Include="Source\Android\AndroidAppState.cpp" />
     <ClCompile Include="Source\Android\AndroidBitmapImpl.cpp" />
