@@ -57,6 +57,7 @@ namespace RayEngine
 		struct RasterizerStateInfo
 		{
 			bool ConservativeRasterizerEnable = false;
+			int32 ForcedSampleCount = 0;
 
 			FILL_MODE FillMode = FILL_MODE_SOLID;
 			CULL_MODE CullMode = CULL_MODE_BACK;
@@ -102,12 +103,13 @@ namespace RayEngine
 			struct
 			{
 				bool BlendEnable = false;
-				BLEND_TYPE SrcBlend = BLEND_TYPE_UNKNOWN;
-				BLEND_TYPE DstBlend = BLEND_TYPE_UNKNOWN;
-				BLEND_OPERATION BlendOperation = BLEND_OPERATION_UNKNOWN;
-				BLEND_TYPE SrcAlphaBlend = BLEND_TYPE_UNKNOWN;
-				BLEND_TYPE DstAlphaBlend = BLEND_TYPE_UNKNOWN;
-				BLEND_OPERATION AlphaBlendOperation = BLEND_OPERATION_UNKNOWN;
+				BLEND_TYPE SrcBlend = BLEND_TYPE_ONE;
+				BLEND_TYPE DstBlend = BLEND_TYPE_ZERO;
+				BLEND_OPERATION BlendOperation = BLEND_OPERATION_ADD;
+				BLEND_TYPE SrcAlphaBlend = BLEND_TYPE_ONE;
+				BLEND_TYPE DstAlphaBlend = BLEND_TYPE_ZERO;
+				BLEND_OPERATION AlphaBlendOperation = BLEND_OPERATION_ADD;
+				uint8 RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL;
 
 			} RenderTargets[8];
 		};

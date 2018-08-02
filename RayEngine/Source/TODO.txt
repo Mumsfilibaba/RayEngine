@@ -13,7 +13,7 @@ TODO:
 -DX12 - Swapchain flags for usage, format, count etc
 -DX12 - Setup breakpoints when errors occurs
 -DX12 - Dynamic uploadheap - Resize when needed
--DX12 - Resource-Transitions
+-DX12 - Resource-Transitions when views get bound
 -DX12 - How resources are used needs refining
 -Swapchain Resize
 -Swapchain Fullscreen

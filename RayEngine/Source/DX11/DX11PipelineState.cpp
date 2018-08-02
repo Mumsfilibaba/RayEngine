@@ -477,7 +477,6 @@ namespace RayEngine
 			desc.MultisampleEnable = info.GraphicsPipeline.RasterizerState.MultisampleEnable;
 			desc.AntialiasedLineEnable = info.GraphicsPipeline.RasterizerState.AntialiasedLineEnable;
 
-
 			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateRasterizerState(&desc, &m_RasterizerState);
 			if (FAILED(hr))
@@ -539,6 +538,25 @@ namespace RayEngine
 				desc.RenderTarget[i].SrcBlendAlpha = ReToDX11Blend(info.GraphicsPipeline.BlendState.RenderTargets[i].SrcAlphaBlend);
 				desc.RenderTarget[i].DestBlendAlpha = ReToDX11Blend(info.GraphicsPipeline.BlendState.RenderTargets[i].DstAlphaBlend);
 				desc.RenderTarget[i].BlendOpAlpha = ReToDX11BlendOp(info.GraphicsPipeline.BlendState.RenderTargets[i].AlphaBlendOperation);
+
+				uint8 renderTargetWriteMask = 0;
+				if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask == COLOR_WRITE_ENABLE_ALL)
+				{
+					renderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+				}
+				else
+				{
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_RED)
+						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_RED;
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_GREEN)
+						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_GREEN;
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_BLUE)
+						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_BLUE;
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_ALPHA)
+						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_ALPHA;
+				}
+
+				desc.RenderTarget[i].RenderTargetWriteMask = renderTargetWriteMask;
 			}
 
 			m_BlendFactor[0] = info.GraphicsPipeline.BlendState.BlendFactor[0];
