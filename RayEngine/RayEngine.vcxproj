@@ -256,6 +256,7 @@
     <ClInclude Include="Include\Vulkan\VulkFactory.h" />
     <ClInclude Include="Include\Vulkan\VulkImageView.h" />
     <ClInclude Include="Include\Vulkan\VulkRenderTargetView.h" />
+    <ClInclude Include="Include\Vulkan\VulkShaderCompiler.h" />
     <ClInclude Include="Include\Vulkan\VulkSwapchain.h" />
     <ClInclude Include="Include\Vulkan\VulkTexture.h" />
     <ClInclude Include="Include\Win32\Win32LogImpl.h" />
@@ -344,6 +345,7 @@
     <ClCompile Include="Source\Vulkan\VulkFactory.cpp" />
     <ClCompile Include="Source\Vulkan\VulkImageView.cpp" />
     <ClCompile Include="Source\Vulkan\VulkRenderTargetView.cpp" />
+    <ClCompile Include="Source\Vulkan\VulkShaderCompiler.cpp" />
     <ClCompile Include="Source\Vulkan\VulkSwapchain.cpp" />
     <ClCompile Include="Source\Vulkan\VulkCommon.cpp" />
     <ClCompile Include="Source\Vulkan\VulkTexture.cpp" />

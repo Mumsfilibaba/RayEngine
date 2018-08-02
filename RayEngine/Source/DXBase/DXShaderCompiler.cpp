@@ -25,45 +25,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DXShaderCompiler::DXShaderCompiler(DXShaderCompiler&& other)
-			: m_Factory(other.m_Factory),
-			m_Flags(other.m_Flags),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Factory = nullptr;
-			other.m_Flags = 0;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DXShaderCompiler& DXShaderCompiler::operator=(DXShaderCompiler&& other)
-		{
-			if (this != &other)
-			{
-				if (m_Factory != nullptr)
-				{
-					m_Factory->Release();
-					m_Factory = nullptr;
-				}
-
-
-				m_Factory = other.m_Factory;
-				m_Flags = other.m_Flags;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-				other.m_Factory = nullptr;
-				other.m_Flags = 0;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DXShaderCompiler::~DXShaderCompiler()
 		{
 			if (m_Factory != nullptr)
