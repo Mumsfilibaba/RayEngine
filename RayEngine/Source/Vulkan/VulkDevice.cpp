@@ -1,6 +1,8 @@
 #include <vector>
 #include "..\..\Include\Vulkan\VulkDevice.h"
 #include "..\..\Include\Vulkan\VulkFactory.h"
+#include "..\..\Include\Vulkan\VulkTexture.h"
+#include "..\..\Include\Vulkan\VulkRenderTargetView.h"
 
 namespace RayEngine
 {
@@ -58,7 +60,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool VulkDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
 		{
-			return false;
+			return ((*ppView = new VulkRenderTargetView(this, info)));
 		}
 
 
@@ -74,7 +76,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool VulkDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
-			return false;
+			return ((*ppTexture = new VulkTexture(this, pInitialData, info)));
 		}
 
 

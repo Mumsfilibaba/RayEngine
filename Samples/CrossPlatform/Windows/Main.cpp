@@ -48,7 +48,7 @@ int main(int args, char* argsv[])
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D12, true);
+	IFactory* factory = IFactory::Create(GRAPHICS_API_VULKAN, true);
 	
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
@@ -104,6 +104,8 @@ int main(int args, char* argsv[])
 
 
 	RenderTargetViewInfo rtvInfo = {};
+	rtvInfo.Format = scInfo.Buffer.Format;
+	
 	IRenderTargetView* rtvs[bufferCount];
 	for (int32 i = 0; i < bufferCount; i++)
 	{

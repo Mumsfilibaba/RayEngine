@@ -65,7 +65,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		int32 VulkSwapchain::GetCurrentBuffer() const
 		{
-			return int32();
+			return 0;
 		}
 
 
@@ -73,7 +73,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ITexture* VulkSwapchain::GetBuffer(int32 index)
 		{
-			return nullptr;
+			return m_Textures[index];
 		}
 
 
@@ -81,7 +81,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		const ITexture* VulkSwapchain::GetBuffer(int32 index) const
 		{
-			return nullptr;
+			return m_Textures[index];
 		}
 
 

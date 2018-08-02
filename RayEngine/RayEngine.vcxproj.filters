@@ -315,6 +315,12 @@
     <ClInclude Include="Include\DX12\DX12View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Vulkan\VulkRenderTargetView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Vulkan\VulkImageView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -582,6 +588,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12View.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Vulkan\VulkImageView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Vulkan\VulkRenderTargetView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

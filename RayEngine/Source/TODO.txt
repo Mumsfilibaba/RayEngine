@@ -19,8 +19,9 @@ TODO:
 -Swapchain Fullscreen
 -Create rendertargets for swapchain during creation?
 
--DX12 - DepthStencilState, RasterizerState, BlendState
-
+-ITexture - GetType
+-DX12 - RenderTargetView - Setup a desc
+-DX12 - DepthStencilView - Setup a desc
 -DX11/DX12 - Bufferusage flags
 
 -Vk - Create dummy surface and search for correct formats etc
