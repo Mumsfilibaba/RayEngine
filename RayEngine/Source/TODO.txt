@@ -25,6 +25,7 @@ TODO:
 
 -DX11/DX12 - Bufferusage flags
 
+-Vk - Create dummy surface and search for correct formats etc
 -TextureLoader needs to be updated with the new formats
 -Add p for pointers
 -AdapterInfo.cpp

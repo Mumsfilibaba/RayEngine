@@ -24,7 +24,6 @@ namespace RayEngine
 
 			VulkDevice& operator=(VulkDevice&& other);
 			
-
 			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) override final;
 			bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
@@ -34,7 +33,6 @@ namespace RayEngine
 			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
 			System::Log* GetDeviceLog() override final;
-
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;
@@ -51,6 +49,7 @@ namespace RayEngine
 
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
+			System::Log m_Log;
 
 			mutable uint32 m_ReferenceCount;
 		};

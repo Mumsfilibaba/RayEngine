@@ -15,6 +15,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
+
 			Create(pFactory, deviceInfo);
 		}
 
@@ -120,7 +121,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		System::Log* VulkDevice::GetDeviceLog()
 		{
-			return nullptr;
+			return &m_Log;
 		}
 
 
@@ -130,11 +131,27 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
+				if (m_Factory != nullptr)
+				{
+					m_Factory->Release();
+					m_Factory = nullptr;
+				}
+
+				if (m_Device != nullptr)
+				{
+					vkDestroyDevice(m_Device, nullptr);
+					m_Device = nullptr;
+				}
+
+				m_Factory = other.m_Factory;
 				m_Device = other.m_Device;
 				m_Adapter = other.m_Adapter;
+				m_ReferenceCount = other.m_ReferenceCount;
 
+				other.m_Factory = nullptr;
 				other.m_Device = nullptr;
 				other.m_Adapter = nullptr;
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;
@@ -205,29 +222,39 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkDevice::Create(IFactory* pFactory, const DeviceInfo& deviceInfo)
 		{
+			using namespace System;
+
 			VkInstance instance = reinterpret_cast<VulkFactory*>(pFactory)->GetVkInstance();
 
 			uint32 adapterCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(instance, &adapterCount, nullptr);
 			if (result != VK_SUCCESS)
+			{
+				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
 				return;
-
+			}
 
 			std::vector<VkPhysicalDevice> adapters;
 			adapters.resize(adapterCount);
-
 			result = vkEnumeratePhysicalDevices(instance, &adapterCount, adapters.data());
 			if (result != VK_SUCCESS)
+			{
+				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
 				return;
+			}
+			else
+			{
+				m_Adapter = adapters[deviceInfo.pAdapter->ApiID];
+			}
 
-
-			m_Adapter = adapters[deviceInfo.pAdapter->ApiID];
 
 			uint32 queueFamilyCount = 0;
 			vkGetPhysicalDeviceQueueFamilyProperties(m_Adapter, &queueFamilyCount, nullptr);
 
 			std::vector<VkQueueFamilyProperties> queueFamilies;
 			queueFamilies.resize(queueFamilyCount);
+
+			//TODO: Check for presentation support
 
 			int32 index = -1;
 			vkGetPhysicalDeviceQueueFamilyProperties(m_Adapter, &queueFamilyCount, queueFamilies.data());
@@ -242,7 +269,10 @@ namespace RayEngine
 			}
 
 			if (index < 0)
+			{
+				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: No supported queuefamilies.");
 				return;
+			}
 
 
 			float priority = 1.0f;
@@ -273,7 +303,11 @@ namespace RayEngine
 			dInfo.pQueueCreateInfos = &qInfo;
 
 			result = vkCreateDevice(m_Adapter, &dInfo, nullptr, &m_Device);
-			return;
+			if (result != VK_SUCCESS)
+			{
+				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create device.");
+				return;
+			}
 		}
 	}
 }

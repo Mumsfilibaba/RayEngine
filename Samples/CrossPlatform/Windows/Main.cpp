@@ -48,7 +48,7 @@ int main(int args, char* argsv[])
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D11, true);
+	IFactory* factory = IFactory::Create(GRAPHICS_API_VULKAN, true);
 	
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
@@ -70,30 +70,37 @@ int main(int args, char* argsv[])
 	log.Write(LOG_SEVERITY_INFO, adapters[adapterIndex].VendorName);
 	log.Write(LOG_SEVERITY_INFO, adapters[adapterIndex].ModelName);
 
+	constexpr int32 bufferCount = 2;
+	ISwapchain* swapchain = nullptr;
 	IDevice* device = nullptr;
+	ICommandQueue* queue = nullptr;
+
 	DeviceInfo dInfo = {};
 	dInfo.Name = "Main Device";
 	dInfo.pAdapter = &(adapters[adapterIndex]);
 
-	factory->CreateDevice(&device, dInfo);
-
-	ICommandQueue* queue = nullptr;
-	CommandQueueInfo qInfo = {};
-	qInfo.Name = "Main Queue";
-	device->CreateCommandQueue(&queue, qInfo);
-	
-
-	constexpr int32 bufferCount = 2;
-	ISwapchain* swapchain = nullptr;
 	SwapchainInfo scInfo = {};
 	scInfo.pWindow = &window;
 	scInfo.pCommandQueue = queue;
 	scInfo.Buffer.Count = bufferCount;
-	scInfo.Buffer.Format = FORMAT_R8G8B8A8_UNORM;
+	scInfo.Buffer.Format = FORMAT_B8G8R8A8_UNORM;
 	scInfo.Buffer.Width = window.GetWidth();
 	scInfo.Buffer.Height = window.GetHeight();
 
-	factory->CreateSwapchain(&swapchain, scInfo);
+	if (factory->GetGraphicsApi() != GRAPHICS_API_VULKAN)
+	{
+		factory->CreateDevice(&device, dInfo);
+
+		CommandQueueInfo qInfo = {};
+		qInfo.Name = "Main Queue";
+		device->CreateCommandQueue(&queue, qInfo);
+	
+		factory->CreateSwapchain(&swapchain, scInfo);
+	}
+	else
+	{
+		factory->CreateDeviceAndSwapchain(&device, dInfo, &swapchain, scInfo);
+	}
 
 
 	RenderTargetViewInfo rtvInfo = {};

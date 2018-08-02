@@ -1,7 +1,8 @@
 #pragma once
 
+#include <vector>
 #include "..\Graphics\ISwapchain.h"
-#include "VulkCommon.h"
+#include "VulkTexture.h"
 
 namespace RayEngine
 {
@@ -39,7 +40,12 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
-			void Create(IDevice* pDevice, const SwapchainInfo& info);
+			void ReleaseObjects();
+			void Create(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
+
+		private:
+			static VkExtent2D GetSupportedSize(const VkSurfaceCapabilitiesKHR& capabilities, int32 width, int32 height);
+			static VkSurfaceFormatKHR GetSupportedFormat(IDevice* pDevice, VkSurfaceKHR surface, VkFormat desiredFormat);
 
 		private:
 			IDevice* m_Device;
@@ -49,6 +55,7 @@ namespace RayEngine
 			VkSurfaceFormatKHR m_Format;
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;
+			std::vector<VulkTexture> m_Textures;
 
 			mutable uint32 m_ReferenceCount;
 		};

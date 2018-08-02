@@ -1,7 +1,18 @@
-#include <vector>
+#include <limits>
+#include <algorithm>
 #include "..\..\Include\Vulkan\VulkSwapchain.h"
 #include "..\..\Include\Vulkan\VulkFactory.h"
 #include "..\..\Include\Vulkan\VulkDevice.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+#if defined(max)
+#undef max
+#endif
+
+#if defined(min)
+#undef min
+#endif
+#endif
 
 namespace RayEngine
 {
@@ -22,7 +33,7 @@ namespace RayEngine
 			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 
-			Create(pDevice, info);
+			Create(pFactory, pDevice, info);
 		}
 
 
@@ -53,42 +64,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkSwapchain::~VulkSwapchain()
 		{
-			if (m_Surface != 0)
-			{
-				VkInstance instance = reinterpret_cast<VulkFactory*>(m_Factory)->GetVkInstance();
-
-				vkDestroySurfaceKHR(instance, m_Surface, nullptr);
-				m_Surface = 0;
-			}
-
-			if (m_Swapchain != 0)
-			{
-				VkDevice device = reinterpret_cast<VulkDevice*>(m_Device)->GetVkDevice();
-
-				vkDestroySwapchainKHR(device, m_Swapchain, nullptr);
-				m_Swapchain = 0;
-			}
-
-
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
-
-
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
-
-
-			if (m_CommandQueue != nullptr)
-			{
-				m_CommandQueue->Release();
-				m_CommandQueue = nullptr;
-			}
+			ReleaseObjects();
 		}
 
 
@@ -98,23 +74,22 @@ namespace RayEngine
 		{
 			if (this != &other)
 			{
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
+				ReleaseObjects();
 
-				if (m_Factory != nullptr)
-				{
-					m_Factory->Release();
-					m_Factory = nullptr;
-				}
+				m_Factory = other.m_Factory;
+				m_Device = other.m_Device;
+				m_CommandQueue = other.m_CommandQueue;
+				m_Surface = other.m_Surface;
+				m_Swapchain = other.m_Swapchain;
+				m_ReferenceCount = other.m_ReferenceCount;
+				m_Format = other.m_Format;
 
-				if (m_CommandQueue != nullptr)
-				{
-					m_CommandQueue->Release();
-					m_CommandQueue = nullptr;
-				}
+				other.m_Factory = nullptr;
+				other.m_Device = nullptr;
+				other.m_CommandQueue = nullptr;
+				other.m_Surface = nullptr;
+				other.m_Swapchain = nullptr;
+				other.m_ReferenceCount = 0;
 			}
 
 			return *this;
@@ -221,59 +196,97 @@ namespace RayEngine
 
 
 
-		/////////////////////////////////////////////////////////////
-		void VulkSwapchain::Create(IDevice* pDevice, const SwapchainInfo& info)
+		/////////////////////////////////////////////////////////////s
+		void VulkSwapchain::ReleaseObjects()
 		{
-			//m_Surface = surface;
-			VkPhysicalDevice adapter = reinterpret_cast<VulkDevice*>(pDevice)->GetVkPhysicalDevice();
+			if (m_Surface != 0)
+			{
+				VkInstance instance = reinterpret_cast<VulkFactory*>(m_Factory)->GetVkInstance();
 
-			VkSurfaceCapabilitiesKHR capabilities = {};
-			VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(adapter, m_Surface, &capabilities);
+				vkDestroySurfaceKHR(instance, m_Surface, nullptr);
+				m_Surface = 0;
+			}
+
+			if (m_Swapchain != 0)
+			{
+				VkDevice device = reinterpret_cast<VulkDevice*>(m_Device)->GetVkDevice();
+
+				vkDestroySwapchainKHR(device, m_Swapchain, nullptr);
+				m_Swapchain = 0;
+			}
+
+
+			if (m_Factory != nullptr)
+			{
+				m_Factory->Release();
+				m_Factory = nullptr;
+			}
+
+			if (m_Device != nullptr)
+			{
+				m_Device->Release();
+				m_Device = nullptr;
+			}
+
+			if (m_CommandQueue != nullptr)
+			{
+				m_CommandQueue->Release();
+				m_CommandQueue = nullptr;
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void VulkSwapchain::Create(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+		{
+			using namespace System;
+
+			VkInstance instance = reinterpret_cast<VulkFactory*>(pFactory)->GetVkInstance();
+			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, info.pWindow->GetImplementation());
 			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
 				return;
+			}
+
+
+			VkPhysicalDevice adapter = reinterpret_cast<VulkDevice*>(pDevice)->GetVkPhysicalDevice();
+			VkSurfaceCapabilitiesKHR capabilities = {};
+			result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(adapter, m_Surface, &capabilities);
+			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
+				return;
+			}
 
 
 			uint32 count = 0;
-			result = vkGetPhysicalDeviceSurfaceFormatsKHR(adapter, m_Surface, &count, nullptr);
-			if (result != VK_SUCCESS)
-				return;
-
-			std::vector<VkSurfaceFormatKHR> formats;
-			formats.resize(count);
-			result = vkGetPhysicalDeviceSurfaceFormatsKHR(adapter, m_Surface, &count, formats.data());
-			if (result != VK_SUCCESS)
-				return;
-
-
 			result = vkGetPhysicalDeviceSurfacePresentModesKHR(adapter, m_Surface, &count, nullptr);
 			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
 				return;
+			}
 
 			std::vector<VkPresentModeKHR> presentModes;
 			presentModes.resize(count);
 			result = vkGetPhysicalDeviceSurfacePresentModesKHR(adapter, m_Surface, &count, presentModes.data());
 			if (result != VK_SUCCESS)
-				return;
-
-
-			VkFormat format;
-			if (info.Buffer.Format == FORMAT_R8G8B8A8_UINT)
-				format = VK_FORMAT_R8G8B8A8_UNORM;
-			else if (info.Buffer.Format == FORMAT_B8G8R8A8_UNORM)
-				format = VK_FORMAT_B8G8R8A8_UNORM;
-			else if (info.Buffer.Format == FORMAT_R32G32B32A32_FLOAT)
-				format = VK_FORMAT_R32G32B32A32_SFLOAT;
-
-			for (int32 i = 0; i < static_cast<int32>(formats.size()); i--)
 			{
-				if (formats[i].format == format)
-				{
-					m_Format.format = format;
-					break;
-				}
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
+				return;
 			}
 
-			
+
+			m_Format = GetSupportedFormat(pDevice, m_Surface, ReToVkFormat(info.Buffer.Format));
+			if (m_Format.format == VK_FORMAT_UNDEFINED)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Format is not supported.");
+				return;
+			}
+
+			VkExtent2D size = GetSupportedSize(capabilities, info.pWindow->GetWidth(), info.pWindow->GetHeight());
 
 			VkSwapchainCreateInfoKHR scInfo = {};
 			scInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -282,23 +295,97 @@ namespace RayEngine
 			scInfo.oldSwapchain = 0;
 			scInfo.minImageCount = info.Buffer.Count;
 			scInfo.surface = m_Surface;
-			//scInfo.imageFormat = format.format;
-			//scInfo.imageColorSpace = format.colorSpace;
+			scInfo.imageFormat = m_Format.format;
+			scInfo.imageColorSpace = m_Format.colorSpace;
 			scInfo.imageArrayLayers = 1;
-			//scInfo.imageExtent = dimensions;
+			scInfo.imageExtent = size;
 			scInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 			scInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			//scInfo.presentMode = mode;
+			scInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR; //For now
 			scInfo.queueFamilyIndexCount = 0;
 			scInfo.pQueueFamilyIndices = nullptr;
 			scInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 			scInfo.clipped = VK_TRUE;
-			//scInfo.preTransform = scInfo.capabilites.currentTransform;
+			scInfo.preTransform = capabilities.currentTransform;
 
 			VkDevice device = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
 			result = vkCreateSwapchainKHR(device, &scInfo, nullptr, &m_Swapchain);
 			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create swapchain.");
 				return;
+			}
+
+
+			vkGetSwapchainImagesKHR(device, m_Swapchain, &count, nullptr);
+			
+			std::vector<VkImage> swapchainImages;
+			swapchainImages.resize(count);
+			vkGetSwapchainImagesKHR(device, m_Swapchain, &count, swapchainImages.data());
+
+			m_Textures.resize(count);
+			for (int32 i = 0; i < swapchainImages.size(); i++)
+				m_Textures[i] = VulkTexture(pDevice, swapchainImages[i]);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkExtent2D VulkSwapchain::GetSupportedSize(const VkSurfaceCapabilitiesKHR& capabilities, int32 width, int32 height)
+		{
+			if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+				return capabilities.currentExtent;
+
+			VkExtent2D dimension = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+
+			dimension.width = std::max(capabilities.minImageExtent.width,
+				std::min(capabilities.maxImageExtent.width, dimension.width));
+			dimension.height = std::max(capabilities.minImageExtent.height,
+				std::min(capabilities.maxImageExtent.height, dimension.height));
+
+			return dimension;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkSurfaceFormatKHR VulkSwapchain::GetSupportedFormat(IDevice* pDevice, VkSurfaceKHR surface, VkFormat desiredFormat)
+		{
+			using namespace System;
+
+			VkSurfaceFormatKHR format = {};
+			format.format = VK_FORMAT_UNDEFINED;
+
+			VkPhysicalDevice adapter = reinterpret_cast<VulkDevice*>(pDevice)->GetVkPhysicalDevice();
+
+			uint32 count = 0;
+			VkResult result = vkGetPhysicalDeviceSurfaceFormatsKHR(adapter, surface, &count, nullptr);
+			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported surface formats.");
+				return format;
+			}
+
+			std::vector<VkSurfaceFormatKHR> formats;
+			formats.resize(count);
+			result = vkGetPhysicalDeviceSurfaceFormatsKHR(adapter, surface, &count, formats.data());
+			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported surface formats.");
+				return format;
+			}
+
+
+			for (int32 i = 0; i < static_cast<int32>(formats.size()); i++)
+			{
+				if (formats[i].format == desiredFormat)
+				{
+					format = formats[i];
+					break;
+				}
+			}
+
+			return format;
 		}
 	}
 }

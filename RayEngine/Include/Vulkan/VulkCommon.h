@@ -11,6 +11,12 @@
 #endif
 
 
-
-/////////////////////////////////////////////////////////////
-extern VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* pSurface, const RayEngine::System::IWindowImpl* pWindow);
+namespace RayEngine
+{
+	namespace Graphics
+	{
+		/////////////////////////////////////////////////////////////
+		VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* pSurface, const System::IWindowImpl* pWindow);
+		VkFormat ReToVkFormat(FORMAT format);
+	}
+}

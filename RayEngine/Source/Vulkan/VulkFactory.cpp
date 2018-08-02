@@ -21,6 +21,7 @@ namespace RayEngine
 			m_ReferenceCount(0)
 		{
 			AddRef();
+
 			Create(debugLayers);
 		}
 
@@ -250,12 +251,7 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		bool VulkFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
-		{
-			VkSurfaceKHR surface = 0;
-			VkResult result = VulkanCreateSwapchainSurface(m_Instance, &surface, swapchainInfo.pWindow->GetImplementation());
-			if (result != VK_SUCCESS)
-				return false;
-			
+		{	
 			VulkDevice* pVulkDevice = new VulkDevice(this, deviceInfo);
 			(*ppDevice) = pVulkDevice;
 			
@@ -518,7 +514,7 @@ namespace RayEngine
 			VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code,
 			const char* layerPrefix, const char* msg, void* userData)
 		{
-			System::Log log;
+			static System::Log log;
 			System::LOG_SEVERITY severity = System::LOG_SEVERITY_UNKNOWN;
 
 			if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
