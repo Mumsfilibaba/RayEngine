@@ -103,6 +103,7 @@ namespace RayEngine
 			struct
 			{
 				bool BlendEnable = false;
+				bool LogicOpEnable = false;
 				BLEND_TYPE SrcBlend = BLEND_TYPE_ONE;
 				BLEND_TYPE DstBlend = BLEND_TYPE_ZERO;
 				BLEND_OPERATION BlendOperation = BLEND_OPERATION_ADD;

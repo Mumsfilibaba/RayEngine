@@ -12,18 +12,17 @@ namespace RayEngine
 		public:
 			VulkDevice(const VulkDevice& other) = delete;
 			VulkDevice& operator=(const VulkDevice& other) = delete;
+			VulkDevice(VulkDevice&& other) = delete;
+			VulkDevice& operator=(VulkDevice&& other) = delete;
 
 		public:
 			VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo);
-			VulkDevice(VulkDevice&& other);
 			~VulkDevice();
 
 			IFactory* GetFactory() const;
 			VkDevice GetVkDevice() const;
 			VkPhysicalDevice GetVkPhysicalDevice() const;
 
-			VulkDevice& operator=(VulkDevice&& other);
-			
 			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) override final;
 			bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;

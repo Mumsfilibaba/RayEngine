@@ -27,24 +27,6 @@ namespace RayEngine
 
 
 
-
-		/////////////////////////////////////////////////////////////
-		DX12Shader::DX12Shader(DX12Shader&& other)
-			: m_Device(other.m_Device),
-			m_Type(other.m_Type),
-			m_Shader(other.m_Shader),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_Type = SHADER_TYPE_UNKNOWN;
-			other.m_ReferenceCount = 0;
-
-			other.m_Shader.BytecodeLength = 0;
-			other.m_Shader.pShaderBytecode = nullptr;
-		}
-
-
-
 		/////////////////////////////////////////////////////////////
 		DX12Shader::~DX12Shader()
 		{
@@ -60,42 +42,6 @@ namespace RayEngine
 				delete[] m_Shader.pShaderBytecode;
 				m_Shader.pShaderBytecode = nullptr;
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12Shader& DX12Shader::operator=(DX12Shader&& other)
-		{
-			if (this != &other)
-			{
-				if (m_Shader.pShaderBytecode != nullptr)
-				{
-					delete m_Shader.pShaderBytecode;
-					m_Shader.pShaderBytecode = nullptr;
-				}
-
-
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-				m_Device = other.m_Device;
-				m_Type = other.m_Type;
-				m_Shader = other.m_Shader;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-				other.m_Device = nullptr;
-				other.m_Type = SHADER_TYPE_UNKNOWN;
-				other.m_ReferenceCount = 0;
-				
-				other.m_Shader.BytecodeLength = 0;
-				other.m_Shader.pShaderBytecode = nullptr;
-			}
-
-			return *this;
 		}
 
 

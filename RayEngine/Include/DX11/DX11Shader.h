@@ -14,13 +14,12 @@ namespace RayEngine
 		public:
 			DX11Shader(const DX11Shader& other) = delete;
 			DX11Shader& operator=(const DX11Shader& other) = delete;
+			DX11Shader(DX11Shader&& other) = delete;
+			DX11Shader& operator=(DX11Shader&& other) = delete;
 
 		public:
 			DX11Shader(IDevice* pDevice, const ShaderByteCode& byteCode);
-			DX11Shader(DX11Shader&& other);
 			~DX11Shader();
-
-			DX11Shader& operator=(DX11Shader&& other);
 
 			const ShaderByteCode& GetByteCode() const;
 			ID3D11VertexShader* GetD3D11VertexShader() const;
@@ -29,7 +28,6 @@ namespace RayEngine
 			ID3D11GeometryShader* GetD3D11GeometryShader() const;
 			ID3D11PixelShader* GetD3D11PixelShader() const;
 			ID3D11ComputeShader* GetD3D11ComputeShader() const;
-
 
 			SHADER_TYPE GetType() const override final;
 			IDevice* GetDevice() const override final;

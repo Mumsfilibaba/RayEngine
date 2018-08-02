@@ -10,9 +10,9 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
-			: m_Device(nullptr),
-			m_Resource(nullptr),
-			m_State(D3D12_RESOURCE_STATE_COMMON)
+			: DX12Resource(),
+			m_Device(nullptr),
+			m_ReferenceCount(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -25,9 +25,9 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(IDevice* pDevice, ID3D12Resource* pResource)
-			: m_Device(nullptr),
-			m_Resource(nullptr),
-			m_State(D3D12_RESOURCE_STATE_COMMON)
+			: DX12Resource(), 
+			m_Device(nullptr),
+			m_ReferenceCount(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -39,24 +39,8 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Texture::DX12Texture(DX12Texture&& other)
-			: m_Device(other.m_Device),
-			m_Resource(other.m_Resource),
-			m_State(other.m_State),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_Resource = nullptr;
-			other.m_State = D3D12_RESOURCE_STATE_COMMON;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12Texture::~DX12Texture()
 		{
-			D3DRelease_S(m_Resource);
 			if (m_Device != nullptr)
 			{
 				m_Device->Release();
@@ -78,60 +62,6 @@ namespace RayEngine
 		IDevice* DX12Texture::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12Texture& DX12Texture::operator=(DX12Texture&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Resource);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_Resource = other.m_Resource;
-				m_State = other.m_State;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_Resource = nullptr;
-				other.m_State = D3D12_RESOURCE_STATE_COMMON;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		ID3D12Resource* DX12Texture::GetD3D12Resource() const
-		{
-			return m_Resource;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		D3D12_RESOURCE_STATES DX12Texture::GetD3D12State() const
-		{
-			return m_State;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Texture::SetD3D12State(D3D12_RESOURCE_STATES state) const
-		{
-			m_State = state;
 		}
 
 

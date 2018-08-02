@@ -15,18 +15,16 @@ namespace RayEngine
 		public:
 			DX12PipelineState(const DX12PipelineState& other) = delete;
 			DX12PipelineState& operator=(const DX12PipelineState& other) = delete;
+			DX12PipelineState(DX12PipelineState&& other) = delete;
+			DX12PipelineState& operator=(DX12PipelineState&& other) = delete;
 
 		public:
 			DX12PipelineState(IDevice* pdevice, const PipelineStateInfo& info);
-			DX12PipelineState(DX12PipelineState&& other);
 			~DX12PipelineState();
 
+			ID3D12PipelineState* GetD3D12PipelineState() const;
 			PIPELINE_TYPE GetPipelineType() const override final;
 			IDevice* GetDevice() const override final;
-
-			ID3D12PipelineState* GetD3D12PipelineState() const;
-
-			DX12PipelineState& operator=(DX12PipelineState&& other);
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;

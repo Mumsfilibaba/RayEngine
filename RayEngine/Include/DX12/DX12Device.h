@@ -16,19 +16,18 @@ namespace RayEngine
 		public:
 			DX12Device(const DX12Device& other) = delete;
 			DX12Device& operator=(const DX12Device& other) = delete;
+			DX12Device(DX12Device&& other) = delete;
+			DX12Device& operator=(DX12Device&& other) = delete;
 
 		public:
 			DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
-			DX12Device(DX12Device&& other);
 			~DX12Device();
 
-			DX12Device& operator=(DX12Device&& other);
-
 			ID3D12Device* GetD3D12Device() const;
-			const DX12CommandQueue* GetDX12CommandQueue() const;
-			const DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const;
-			const DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const;
-			const DX12DescriptorHeap* GetDX12ResourceHeap() const;
+			DX12CommandQueue* GetDX12CommandQueue() const;
+			DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const;
+			DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const;
+			DX12DescriptorHeap* GetDX12ResourceHeap() const;
 			DX12DynamicUploadHeap* GetDX12UploadHeap() const;
 
 			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) override final;
@@ -60,11 +59,11 @@ namespace RayEngine
 			ID3D12Device* m_Device;
 			ID3D12DebugDevice* m_DebugDevice;
 			DX12DynamicUploadHeap* m_UploadHeap;
-			
-			DX12CommandQueue m_UploadQueue;
-			mutable DX12DescriptorHeap m_ResourceHeap;
-			mutable DX12DescriptorHeap m_DsvHeap;
-			mutable DX12DescriptorHeap m_RtvHeap;
+			DX12CommandQueue* m_UploadQueue;
+			DX12DescriptorHeap* m_ResourceHeap;
+			DX12DescriptorHeap* m_DsvHeap;
+			DX12DescriptorHeap* m_RtvHeap;
+
 			mutable System::Log m_Log;
 
 			mutable uint32 m_ReferenceCount;

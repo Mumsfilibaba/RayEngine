@@ -12,17 +12,16 @@ namespace RayEngine
 		public:
 			DX11CommandQueue(const DX11CommandQueue& other) = delete;
 			DX11CommandQueue& operator=(const DX11CommandQueue& other) = delete;
+			DX11CommandQueue(DX11CommandQueue&& other) = delete;
+			DX11CommandQueue& operator=(DX11CommandQueue&& other) = delete;
 
 		public:
 			DX11CommandQueue(IDevice* pDevice, const CommandQueueInfo& info);
-			DX11CommandQueue(DX11CommandQueue&& other);
 			~DX11CommandQueue();
 
 			ID3D11CommandList* GetD3D11CommandList() const;
 			ID3D11DeviceContext* GetD3D11DefferedContext() const;
 
-			DX11CommandQueue& operator=(DX11CommandQueue&& other);
-			
 			void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const override final;
 			void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const override final;
 			 

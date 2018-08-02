@@ -14,11 +14,11 @@ namespace RayEngine
 		public:
 			DX12CommandQueue(const DX12CommandQueue& other) = delete;
 			DX12CommandQueue& operator=(const DX12CommandQueue& other) = delete;
+			DX12CommandQueue(DX12CommandQueue&& other) = delete;
+			DX12CommandQueue& operator=(DX12CommandQueue&& other) = delete;
 
 		public:
-			DX12CommandQueue();
 			DX12CommandQueue(IDevice* pDevice, const CommandQueueInfo& info);
-			DX12CommandQueue(DX12CommandQueue&& other);
 			~DX12CommandQueue();
 
 			void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const override final;
@@ -51,9 +51,6 @@ namespace RayEngine
 			bool Close() const override final;
 
 			IDevice* GetDevice() const override final;
-
-			DX12CommandQueue& operator=(DX12CommandQueue&& other);
-
 			ID3D12CommandQueue* GetD3D12CommandQueue() const;
 
 			IReferenceCounter* QueryReference() override final;

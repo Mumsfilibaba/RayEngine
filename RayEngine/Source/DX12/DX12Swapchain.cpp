@@ -14,7 +14,6 @@ namespace RayEngine
 			: m_Factory(nullptr),
 			m_CommandQueue(nullptr),
 			m_Swapchain(nullptr),
-			m_BufferCount(0),
 			m_CurrentBuffer(0),
 			m_Textures(),
 			m_ReferenceCount(0)
@@ -28,27 +27,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Swapchain::DX12Swapchain(DX12Swapchain&& other)
-			: m_Factory(other.m_Factory),
-			m_CommandQueue(other.m_CommandQueue),
-			m_Swapchain(other.m_Swapchain),
-			m_BufferCount(other.m_BufferCount),
-			m_CurrentBuffer(other.m_BufferCount),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Factory = nullptr;
-			other.m_CommandQueue = nullptr;
-			other.m_Swapchain = nullptr;
-			other.m_BufferCount = 0;
-			other.m_CurrentBuffer = 0;
-			other.m_ReferenceCount = 0;
-
-			other.m_Textures.swap(m_Textures);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12Swapchain::~DX12Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
@@ -57,12 +35,20 @@ namespace RayEngine
 				m_Factory->Release();
 				m_Factory = nullptr;
 			}
-
 			
 			if (m_CommandQueue != nullptr)
 			{
 				m_CommandQueue->Release();
 				m_CommandQueue = nullptr;
+			}
+
+			for (int32 i = 0; i < m_Textures.size(); i++)
+			{
+				if (m_Textures[i] != nullptr)
+				{
+					m_Textures[i]->Release();
+					m_Textures[i] = nullptr;
+				}
 			}
 		}
 
@@ -79,8 +65,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ITexture* DX12Swapchain::GetBuffer(int32 index)
 		{
-			DX12Texture* ptr = &m_Textures[index];
-			return reinterpret_cast<ITexture*>(ptr);
+			return m_Textures[index];
 		}
 
 
@@ -88,8 +73,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		const ITexture* DX12Swapchain::GetBuffer(int32 index) const
 		{
-			const DX12Texture* ptr = &m_Textures[index];
-			return reinterpret_cast<const ITexture*>(ptr);
+			return m_Textures[index];
 		}
 
 
@@ -100,48 +84,7 @@ namespace RayEngine
 			m_Swapchain->Present(0, 0);
 
 			m_CurrentBuffer++;
-			m_CurrentBuffer = m_CurrentBuffer % m_BufferCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12Swapchain& DX12Swapchain::operator=(DX12Swapchain&& other)
-		{
-			if (this != &other)
-			{
-				if (m_Factory != nullptr)
-				{
-					m_Factory->Release();
-					m_Factory = nullptr;
-				}
-
-				if (m_CommandQueue != nullptr)
-				{
-					m_CommandQueue->Release();
-					m_CommandQueue = nullptr;
-				}
-
-
-				m_Factory = other.m_Factory;
-				m_CommandQueue = other.m_CommandQueue;
-				m_Swapchain = other.m_Swapchain;
-				m_BufferCount = other.m_BufferCount;
-				m_CurrentBuffer = other.m_CurrentBuffer;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Factory = nullptr;
-				other.m_CommandQueue = nullptr;
-				other.m_Swapchain = nullptr;
-				other.m_BufferCount = 0;
-				other.m_CurrentBuffer = 0;
-				other.m_ReferenceCount = 0;
-
-				other.m_Textures.swap(m_Textures);
-			}
-
-			return *this;
+			m_CurrentBuffer = m_CurrentBuffer % m_Textures.size();
 		}
 
 
@@ -202,7 +145,7 @@ namespace RayEngine
 		void DX12Swapchain::Create(IFactory* pFactory, const SwapchainInfo& info)
 		{
 			DXGI_SWAP_CHAIN_DESC1 desc = {};
-			desc.BufferCount = m_BufferCount = info.Buffer.Count;
+			desc.BufferCount = info.Buffer.Count;
 			desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 			desc.Width = info.Buffer.Width;
 			desc.Height = info.Buffer.Height;
@@ -229,30 +172,28 @@ namespace RayEngine
 
 			pDXGIFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
 
-
-			CreateTextures();
+			CreateTextures(info.Buffer.Count);
 			return;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Swapchain::CreateTextures()
+		void DX12Swapchain::CreateTextures(int32 bufferCount)
 		{
 			using namespace Microsoft::WRL;
 
+			m_Textures.resize(bufferCount);
 			ComPtr<ID3D12Resource> buffer = nullptr;
-			for (int32 i = 0; i < m_BufferCount; i++)
+			for (int32 i = 0; i < bufferCount; i++)
 			{
 				if (SUCCEEDED(m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer))))
 				{
 					D3D12SetName(buffer.Get(), "Swapchain Buffer " + std::to_string(i));
 
-					m_Textures.emplace_back(DX12Texture(m_CommandQueue->GetDevice(), buffer.Get()));
+					m_Textures[i] = new DX12Texture(m_CommandQueue->GetDevice(), buffer.Get());
 				}
 			}
-
-			m_Textures.shrink_to_fit();
 		}
 	}
 }

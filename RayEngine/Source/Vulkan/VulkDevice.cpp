@@ -22,21 +22,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VulkDevice::VulkDevice(VulkDevice&& other)
-			: m_Factory(other.m_Factory),
-			m_Device(other.m_Device),
-			m_Adapter(other.m_Adapter),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Factory = nullptr;
-			other.m_Device = nullptr;
-			other.m_Adapter = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		VulkDevice::~VulkDevice()
 		{
 			if (m_Factory != nullptr)
@@ -122,39 +107,6 @@ namespace RayEngine
 		System::Log* VulkDevice::GetDeviceLog()
 		{
 			return &m_Log;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		VulkDevice& VulkDevice::operator=(VulkDevice&& other)
-		{
-			if (this != &other)
-			{
-				if (m_Factory != nullptr)
-				{
-					m_Factory->Release();
-					m_Factory = nullptr;
-				}
-
-				if (m_Device != nullptr)
-				{
-					vkDestroyDevice(m_Device, nullptr);
-					m_Device = nullptr;
-				}
-
-				m_Factory = other.m_Factory;
-				m_Device = other.m_Device;
-				m_Adapter = other.m_Adapter;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-				other.m_Factory = nullptr;
-				other.m_Device = nullptr;
-				other.m_Adapter = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

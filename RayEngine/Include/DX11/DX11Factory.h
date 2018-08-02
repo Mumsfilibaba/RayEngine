@@ -12,15 +12,16 @@ namespace RayEngine
 		public:
 			DX11Factory(const DX11Factory& other) = delete;
 			DX11Factory& operator=(const DX11Factory& other) = delete;
+			DX11Factory(DX11Factory&& other) = delete;
+			DX11Factory& operator=(DX11Factory&& other) = delete;
 
 		public:
 			DX11Factory(bool debugLayer);
-			DX11Factory(DX11Factory&& other);
 			~DX11Factory();
 
 			IDXGIFactory* GetDXGIFactory() const;
-			void EnumerateAdapters(AdapterList& list) const override final;
 
+			void EnumerateAdapters(AdapterList& list) const override final;
 			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
 			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;

@@ -27,21 +27,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11CommandQueue::DX11CommandQueue(DX11CommandQueue&& other)
-			: m_Device(other.m_Device),
-			m_DefferedContext(other.m_DefferedContext),
-			m_List(other.m_List),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_DefferedContext = nullptr;
-			other.m_List = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11CommandQueue::~DX11CommandQueue()
 		{
 			D3DRelease_S(m_DefferedContext);
@@ -67,37 +52,6 @@ namespace RayEngine
 		ID3D11DeviceContext* DX11CommandQueue::GetD3D11DefferedContext() const
 		{
 			return m_DefferedContext;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11CommandQueue& DX11CommandQueue::operator=(DX11CommandQueue&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_DefferedContext);
-				D3DRelease_S(m_List);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_DefferedContext = other.m_DefferedContext;
-				m_List = other.m_List;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_DefferedContext = nullptr;
-				other.m_List = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

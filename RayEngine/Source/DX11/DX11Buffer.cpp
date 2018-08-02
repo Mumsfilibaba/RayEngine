@@ -23,21 +23,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11Buffer::DX11Buffer(DX11Buffer&& other)
-			: m_Device(other.m_Device),
-			m_Resource(other.m_Resource),
-			m_ByteStride(other.m_ByteStride),
-			m_ReferenceCounter(other.m_ReferenceCounter)
-		{
-			other.m_Device = nullptr;
-			other.m_Resource = nullptr;
-			other.m_ByteStride = 0;
-			other.m_ReferenceCounter = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11Buffer::~DX11Buffer()
 		{
 			D3DRelease_S(m_Resource);
@@ -62,36 +47,6 @@ namespace RayEngine
 		int32 DX11Buffer::GetByteStride() const
 		{
 			return m_ByteStride;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11Buffer& DX11Buffer::operator=(DX11Buffer && other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Resource);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_Resource = other.m_Resource;
-				m_ByteStride = other.m_ByteStride;
-				m_ReferenceCounter = other.m_ReferenceCounter;
-
-
-				other.m_Device = nullptr;
-				other.m_Resource = nullptr;
-				other.m_ByteStride = 0;
-				other.m_ReferenceCounter = 0;
-			}
-
-			return *this;
 		}
 
 

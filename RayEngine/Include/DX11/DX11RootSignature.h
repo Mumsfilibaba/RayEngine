@@ -14,15 +14,14 @@ namespace RayEngine
 		public:
 			DX11RootSignature(const DX11RootSignature& other) = delete;
 			DX11RootSignature& operator=(const DX11RootSignature& other) = delete;
+			DX11RootSignature(DX11RootSignature&& other) = delete;
+			DX11RootSignature& operator=(DX11RootSignature&& other) = delete;
 
 		public:
 			DX11RootSignature(IDevice* pDevice, const RootSignatureInfo& info);
-			DX11RootSignature(DX11RootSignature&& other);
 			~DX11RootSignature();
 
 			IDevice* GetDevice() const override final;
-
-			DX11RootSignature& operator=(DX11RootSignature&& other);
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;

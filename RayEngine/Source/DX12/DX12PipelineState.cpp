@@ -25,21 +25,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12PipelineState::DX12PipelineState(DX12PipelineState&& other)
-			: m_Device(other.m_Device),
-			m_PipelineState(other.m_PipelineState),
-			m_Type(other.m_Type),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_PipelineState = nullptr;
-			other.m_Type = PIPELINE_TYPE_UNKNOWN;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12PipelineState::~DX12PipelineState()
 		{
 			D3DRelease_S(m_PipelineState);
@@ -72,36 +57,6 @@ namespace RayEngine
 		ID3D12PipelineState* DX12PipelineState::GetD3D12PipelineState() const
 		{
 			return m_PipelineState;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12PipelineState& DX12PipelineState::operator=(DX12PipelineState&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_PipelineState);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_PipelineState = other.m_PipelineState;
-				m_Type = other.m_Type;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_PipelineState = nullptr;
-				other.m_Type = PIPELINE_TYPE_UNKNOWN;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 
@@ -251,7 +206,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateInfo& info)
 		{
-			//TODO: Actually set the rasterizerdesc
 			desc.ConservativeRaster = info.ConservativeRasterizerEnable ? 
 				D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON : D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 			desc.AntialiasedLineEnable = info.AntialiasedLineEnable;
@@ -280,17 +234,20 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateInfo& info)
 		{
-			desc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-			desc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-			desc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-			desc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-			desc.FrontFace = desc.BackFace;
-			desc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-			desc.DepthEnable = true;
-			desc.StencilEnable = false;
-			desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-			desc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
-			desc.StencilWriteMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+			desc.DepthFunc = ReToDX12ComparisonFunc(info.DepthFunc);
+			desc.DepthEnable = info.DepthEnable;
+			desc.StencilEnable = info.StencilEnable;
+
+			if (info.DepthWriteMask == DEPTH_WRITE_MASK_ALL)
+				desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+			else if (info.DepthWriteMask == DEPTH_WRITE_MASK_ZERO)
+				desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+
+			desc.StencilReadMask = info.StencilReadMask;
+			desc.StencilWriteMask = info.StencilWriteMask;
+
+			desc.BackFace = ReToDX12StencilOpDesc(info.BackFace);
+			desc.FrontFace = ReToDX12StencilOpDesc(info.BackFace);
 		}
 
 
@@ -298,20 +255,37 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info)
 		{
-			//TODO: Actually set the blenddesc
-			desc.AlphaToCoverageEnable = false;
-			desc.IndependentBlendEnable = false;
+			desc.AlphaToCoverageEnable = info.AlphaToCoverageEnable;
+			desc.IndependentBlendEnable = info.IndependentBlendEnable;
 
-			desc.RenderTarget[0].BlendEnable = false;
-			desc.RenderTarget[0].LogicOpEnable = false;
-			desc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-			desc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
-			desc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
-			desc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-			desc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-			desc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
-			desc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
-			desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+			for (int32 i = 0; i < 8; i++)
+			{
+				desc.RenderTarget[i].BlendEnable = info.RenderTargets[i].BlendEnable;
+				desc.RenderTarget[i].LogicOpEnable = info.RenderTargets[i].LogicOpEnable;
+				desc.RenderTarget[i].SrcBlend = ReToDX12Blend(info.RenderTargets[i].SrcBlend);
+				desc.RenderTarget[i].DestBlend = ReToDX12Blend(info.RenderTargets[i].DstBlend);
+				desc.RenderTarget[i].BlendOp = ReToDX12BlendOp(info.RenderTargets[i].BlendOperation);
+				desc.RenderTarget[i].SrcBlendAlpha = ReToDX12Blend(info.RenderTargets[i].SrcAlphaBlend);
+				desc.RenderTarget[i].DestBlendAlpha = ReToDX12Blend(info.RenderTargets[i].DstAlphaBlend);
+				desc.RenderTarget[i].BlendOpAlpha = ReToDX12BlendOp(info.RenderTargets[i].AlphaBlendOperation);
+				desc.RenderTarget[i].LogicOp = D3D12_LOGIC_OP_NOOP;
+
+				if (info.RenderTargets[i].RenderTargetWriteMask == COLOR_WRITE_ENABLE_ALL)
+				{
+					desc.RenderTarget[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+				}
+				else
+				{
+					if (info.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_RED)
+						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_RED;
+					if (info.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_GREEN)
+						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_GREEN;
+					if (info.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_BLUE)
+						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_BLUE;
+					if (info.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_ALPHA)
+						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_ALPHA;
+				}
+			}
 		}
 	}
 }

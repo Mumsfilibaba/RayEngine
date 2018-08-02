@@ -8,18 +8,6 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX11Texture::DX11Texture()
-			: m_Device(nullptr),
-			m_Type(TEXTURE_TYPE_UNKNOWN),
-			m_ReferenceCount(0)
-		{
-			AddRef();
-			m_Texture2D = nullptr;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: m_Device(nullptr),
 			m_Type(TEXTURE_TYPE_UNKNOWN),
@@ -48,23 +36,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11Texture::DX11Texture(DX11Texture&& other)
-			: m_Device(other.m_Device),
-			m_Type(other.m_Type),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_Type = TEXTURE_TYPE_UNKNOWN;
-			m_ReferenceCount = 0;
-
-			//Pointers all point to same memory
-			m_Texture2D = other.m_Texture2D;
-			other.m_Texture2D = nullptr;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11Texture::~DX11Texture()
 		{
 			if (m_Type == TEXTURE_TYPE_1D) 
@@ -85,50 +56,6 @@ namespace RayEngine
 				m_Device->Release();
 				m_Device = nullptr;
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11Texture& DX11Texture::operator=(DX11Texture&& other)
-		{
-			if (this != &other)
-			{
-				if (m_Type == TEXTURE_TYPE_1D)
-				{
-					D3DRelease_S(m_Texture1D);
-				}
-				else if (m_Type == TEXTURE_TYPE_2D)
-				{
-					D3DRelease_S(m_Texture2D);
-				}
-				else if (m_Type == TEXTURE_TYPE_3D)
-				{
-					D3DRelease_S(m_Texture3D);
-				}
-
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_Type = other.m_Type;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_Type = TEXTURE_TYPE_UNKNOWN;
-				m_ReferenceCount = 0;
-
-				//Pointers all point to same memory
-				m_Texture2D = other.m_Texture2D;
-				other.m_Texture2D = nullptr;
-			}
-
-			return *this;
 		}
 
 

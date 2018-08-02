@@ -16,37 +16,15 @@ namespace RayEngine
 			m_Factory(nullptr),
 			m_CommandQueue(nullptr),
 			m_Swapchain(nullptr),
+			m_Texture(nullptr),
 			m_BufferCount(0),
 			m_CurrentBuffer(0),
-			m_ReferenceCount(0),
-			m_Texture()
+			m_ReferenceCount(0)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory);
 
 			Create(pFactory, info);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11Swapchain::DX11Swapchain(DX11Swapchain&& other)
-			: m_Device(other.m_Device),
-			m_Factory(other.m_Factory),
-			m_CommandQueue(other.m_CommandQueue),
-			m_Swapchain(other.m_Swapchain),
-			m_BufferCount(other.m_BufferCount),
-			m_CurrentBuffer(other.m_CurrentBuffer),
-			m_ReferenceCount(other.m_ReferenceCount),
-			m_Texture(std::move(other.m_Texture))
-		{
-			other.m_Device = nullptr;
-			other.m_Factory = nullptr;
-			other.m_CommandQueue = nullptr;
-			other.m_Swapchain = nullptr;
-			other.m_BufferCount = 0;
-			other.m_CurrentBuffer = 0;
-			other.m_ReferenceCount = 0;
 		}
 
 
@@ -72,54 +50,12 @@ namespace RayEngine
 				m_CommandQueue->Release();
 				m_CommandQueue = nullptr;
 			}
-		}
 
-
-
-		/////////////////////////////////////////////////////////////
-		DX11Swapchain& DX11Swapchain::operator=(DX11Swapchain&& other)
-		{
-			if (this != &other)
+			if (m_Texture != nullptr)
 			{
-				D3DRelease_S(m_Swapchain);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-				if (m_Factory != nullptr)
-				{
-					m_Factory->Release();
-					m_Factory = nullptr;
-				}
-
-				if (m_CommandQueue != nullptr)
-				{
-					m_CommandQueue->Release();
-					m_CommandQueue = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_Factory = other.m_Factory;
-				m_CommandQueue = other.m_CommandQueue;
-				m_Swapchain = other.m_Swapchain;
-				m_BufferCount = other.m_BufferCount;
-				m_CurrentBuffer = other.m_CurrentBuffer;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_Factory = nullptr;
-				other.m_CommandQueue = nullptr;
-				other.m_Swapchain = nullptr;
-				other.m_BufferCount = 0;
-				other.m_CurrentBuffer = 0;
-				other.m_ReferenceCount = 0;
+				m_Texture->Release();
+				m_Texture = nullptr;
 			}
-
-			return *this;
 		}
 
 
@@ -135,7 +71,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ITexture* DX11Swapchain::GetBuffer(int32 index)
 		{
-			return &m_Texture;
+			return m_Texture;
 		}
 
 
@@ -143,7 +79,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		const ITexture* DX11Swapchain::GetBuffer(int32 index) const
 		{
-			return &m_Texture;
+			return m_Texture;
 		}
 
 
@@ -270,7 +206,7 @@ namespace RayEngine
 				return;
 			}
 
-			m_Texture = DX11Texture(m_Device, pTexture.Get());
+			m_Texture = new DX11Texture(m_Device, pTexture.Get());
 		}
 	}
 }

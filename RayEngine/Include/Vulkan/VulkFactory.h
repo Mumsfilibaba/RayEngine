@@ -12,18 +12,16 @@ namespace RayEngine
 		public:
 			VulkFactory(const VulkFactory& other) = delete;
 			VulkFactory& operator=(const VulkFactory& other) = delete;
+			VulkFactory(VulkFactory&& other) = delete;
+			VulkFactory& operator=(VulkFactory&& other) = delete;
 
 		public:
 			VulkFactory(bool debugLayers);
-			VulkFactory(VulkFactory&& other);
 			~VulkFactory();
 
 			VkInstance GetVkInstance() const;
 
-			VulkFactory& operator=(VulkFactory&& other);
-
 			void EnumerateAdapters(AdapterList& list) const override final;
-
 			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
 			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo,

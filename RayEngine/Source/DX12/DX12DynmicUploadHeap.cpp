@@ -25,25 +25,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12DynamicUploadHeap::DX12DynamicUploadHeap(DX12DynamicUploadHeap&& other)
-			: m_Device(other.m_Device),
-			m_Resource(other.m_Resource),
-			m_Heap(other.m_Heap),
-			m_ReferenceCount(other.m_ReferenceCount),
-			m_SizeInBytes(other.m_SizeInBytes),
-			m_State(other.m_State)
-		{
-			other.m_Device = nullptr;
-			other.m_Resource = nullptr;
-			other.m_Heap = nullptr;
-			other.m_ReferenceCount = 0;
-			other.m_SizeInBytes = 0;
-			other.m_State = D3D12_RESOURCE_STATE_COMMON;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12DynamicUploadHeap::~DX12DynamicUploadHeap()
 		{
 			D3DRelease_S(m_Heap);
@@ -53,41 +34,6 @@ namespace RayEngine
 				m_Device->Release();
 				m_Device = nullptr;
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12DynamicUploadHeap& DX12DynamicUploadHeap::operator=(DX12DynamicUploadHeap && other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Heap);
-				D3DRelease_S(m_Resource);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_Resource = other.m_Resource;
-				m_Heap = other.m_Heap;
-				m_ReferenceCount = other.m_ReferenceCount;
-				m_SizeInBytes = other.m_SizeInBytes;
-				m_State = other.m_State;
-
-
-				other.m_Device = nullptr;
-				other.m_Resource = nullptr;
-				other.m_Heap = nullptr;
-				other.m_ReferenceCount = 0;
-				other.m_SizeInBytes = 0;
-				other.m_State = D3D12_RESOURCE_STATE_COMMON;
-			}
-
-			return *this;
 		}
 
 

@@ -12,16 +12,14 @@ namespace RayEngine
 		public:
 			DX11DepthStencilView(const DX11DepthStencilView& other) = delete;
 			DX11DepthStencilView& operator=(const DX11DepthStencilView& other) = delete;
+			DX11DepthStencilView(DX11DepthStencilView&& other);
+			DX11DepthStencilView& operator=(DX11DepthStencilView&& other);
 
 		public:
 			DX11DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info);
-			DX11DepthStencilView(DX11DepthStencilView&& other);
 			~DX11DepthStencilView();
 
 			ID3D11DepthStencilView* GetD3D11DepthStencilView() const;
-
-			DX11DepthStencilView& operator=(DX11DepthStencilView&& other);
-
 			IDevice* GetDevice() const override final;
 
 			IReferenceCounter* QueryReference() override final;

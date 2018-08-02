@@ -21,17 +21,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11RootSignature::DX11RootSignature(DX11RootSignature&& other)
-			: m_Device(other.m_Device),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11RootSignature::~DX11RootSignature()
 		{
 			if (m_Device != nullptr)
@@ -47,29 +36,6 @@ namespace RayEngine
 		IDevice* DX11RootSignature::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11RootSignature& DX11RootSignature::operator=(DX11RootSignature&& other)
-		{
-			if (this != &other)
-			{
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-				m_Device = other.m_Device;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-				other.m_Device = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

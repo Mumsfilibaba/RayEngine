@@ -24,23 +24,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11Shader::DX11Shader(DX11Shader&& other)
-			: m_Device(other.m_Device),
-			m_VertexShader(other.m_VertexShader),
-			m_Type(other.m_Type),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_VertexShader = nullptr;
-			other.m_Type = SHADER_TYPE_UNKNOWN;
-			other.m_ReferenceCount = 0;
-
-			m_ByteCode = std::move(other.m_ByteCode);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11Shader::~DX11Shader()
 		{
 			D3DRelease_S(m_VertexShader);
@@ -49,39 +32,6 @@ namespace RayEngine
 				m_Device->Release();
 				m_Device = nullptr;
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11Shader& DX11Shader::operator=(DX11Shader&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_VertexShader);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_VertexShader = other.m_VertexShader;
-				m_Type = other.m_Type;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_VertexShader = nullptr;
-				other.m_Type = SHADER_TYPE_UNKNOWN;
-				other.m_ReferenceCount = 0;
-
-				
-				m_ByteCode = std::move(other.m_ByteCode);
-			}
-
-			return *this;
 		}
 
 

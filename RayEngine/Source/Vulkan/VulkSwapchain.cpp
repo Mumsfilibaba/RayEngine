@@ -39,60 +39,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VulkSwapchain::VulkSwapchain(VulkSwapchain&& other)
-			: m_Factory(other.m_Factory),
-			m_Device(other.m_Device),
-			m_CommandQueue(other.m_CommandQueue),
-			m_Swapchain(other.m_Swapchain),
-			m_Surface(other.m_Surface),
-			m_Format(other.m_Format),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Factory = nullptr;
-			other.m_Device = nullptr;
-			other.m_CommandQueue = nullptr;
-			other.m_Swapchain = nullptr;
-			other.m_Surface = nullptr;
-			other.m_ReferenceCount = 0;
-
-			other.m_Format.colorSpace = VK_COLOR_SPACE_END_RANGE_KHR;
-			other.m_Format.format = VK_FORMAT_UNDEFINED;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		VulkSwapchain::~VulkSwapchain()
 		{
 			ReleaseObjects();
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		VulkSwapchain& VulkSwapchain::operator=(VulkSwapchain&& other)
-		{
-			if (this != &other)
-			{
-				ReleaseObjects();
-
-				m_Factory = other.m_Factory;
-				m_Device = other.m_Device;
-				m_CommandQueue = other.m_CommandQueue;
-				m_Surface = other.m_Surface;
-				m_Swapchain = other.m_Swapchain;
-				m_ReferenceCount = other.m_ReferenceCount;
-				m_Format = other.m_Format;
-
-				other.m_Factory = nullptr;
-				other.m_Device = nullptr;
-				other.m_CommandQueue = nullptr;
-				other.m_Surface = nullptr;
-				other.m_Swapchain = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 
@@ -233,6 +182,17 @@ namespace RayEngine
 				m_CommandQueue->Release();
 				m_CommandQueue = nullptr;
 			}
+
+			for (int32 i = 0; i < m_Textures.size(); i++)
+			{
+				if (m_Textures[i] != nullptr)
+				{
+					m_Textures[i]->InvalidateResource();
+
+					m_Textures[i]->Release();
+					m_Textures[i] = nullptr;
+				}
+			}
 		}
 
 
@@ -325,7 +285,7 @@ namespace RayEngine
 
 			m_Textures.resize(count);
 			for (int32 i = 0; i < swapchainImages.size(); i++)
-				m_Textures[i] = VulkTexture(pDevice, swapchainImages[i]);
+				m_Textures[i] = new VulkTexture(pDevice, swapchainImages[i]);
 		}
 
 

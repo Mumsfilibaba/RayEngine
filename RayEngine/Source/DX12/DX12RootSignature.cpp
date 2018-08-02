@@ -24,19 +24,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12RootSignature::DX12RootSignature(DX12RootSignature&& other)
-			: m_Device(other.m_Device),
-			m_RootSignature(other.m_RootSignature),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_RootSignature = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12RootSignature::~DX12RootSignature()
 		{
 			D3DRelease_S(m_RootSignature);
@@ -61,34 +48,6 @@ namespace RayEngine
 		IDevice* DX12RootSignature::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12RootSignature& DX12RootSignature::operator=(DX12RootSignature&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_RootSignature);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_RootSignature = other.m_RootSignature;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_RootSignature = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

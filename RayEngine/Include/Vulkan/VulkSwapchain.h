@@ -13,13 +13,12 @@ namespace RayEngine
 		public:
 			VulkSwapchain(const VulkSwapchain& other) = delete;
 			VulkSwapchain& operator=(const VulkSwapchain& other) = delete;
+			VulkSwapchain(VulkSwapchain&& other) = delete;
+			VulkSwapchain& operator=(VulkSwapchain&& other) = delete;
 
 		public:
 			VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
-			VulkSwapchain(VulkSwapchain&& other);
 			~VulkSwapchain();
-
-			VulkSwapchain& operator=(VulkSwapchain&& other);
 
 			VkSurfaceKHR GetVkSurfaceKHR() const;
 			VkSwapchainKHR GetVkSwapchainKHR() const;
@@ -55,7 +54,7 @@ namespace RayEngine
 			VkSurfaceFormatKHR m_Format;
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;
-			std::vector<VulkTexture> m_Textures;
+			std::vector<VulkTexture*> m_Textures;
 
 			mutable uint32 m_ReferenceCount;
 		};

@@ -4,26 +4,23 @@
 #include "..\Graphics\IRenderTargetView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12Common.h"
+#include "DX12View.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12RenderTargetView : public IRenderTargetView
+		class DX12RenderTargetView : public IRenderTargetView, public DX12View
 		{
 		public:
 			DX12RenderTargetView(const DX12RenderTargetView& other) = delete;
 			DX12RenderTargetView& operator=(const DX12RenderTargetView& other) = delete;
+			DX12RenderTargetView(DX12RenderTargetView&& other) = delete;
+			DX12RenderTargetView& operator=(DX12RenderTargetView&& other) = delete;
 
 		public:
 			DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info);
-			DX12RenderTargetView(DX12RenderTargetView&& other);
 			~DX12RenderTargetView();
-
-			DX12RenderTargetView& operator=(DX12RenderTargetView&& other);
-
-			D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const;
 
 			IDevice* GetDevice() const override final;
 
@@ -39,8 +36,6 @@ namespace RayEngine
 
 		private:
 			IDevice* m_Device;
-
-			D3D12_CPU_DESCRIPTOR_HANDLE m_View;
 
 			mutable uint32 m_ReferenceCount;
 		};

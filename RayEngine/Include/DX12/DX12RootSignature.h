@@ -15,17 +15,15 @@ namespace RayEngine
 		public:
 			DX12RootSignature(const DX12RootSignature& other) = delete;
 			DX12RootSignature& operator=(const DX12RootSignature& other) = delete;
+			DX12RootSignature(DX12RootSignature&& other) = delete;
+			DX12RootSignature& operator=(DX12RootSignature&& other) = delete;
 
 		public:
 			DX12RootSignature(IDevice* pDevice, const RootSignatureInfo& info);
-			DX12RootSignature(DX12RootSignature&& other);
 			~DX12RootSignature();
 
 			ID3D12RootSignature* GetD3D12RootSignature() const;
-
 			IDevice* GetDevice() const override final;
-
-			DX12RootSignature& operator=(DX12RootSignature&& other);
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;

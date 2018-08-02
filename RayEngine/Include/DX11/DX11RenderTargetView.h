@@ -14,16 +14,14 @@ namespace RayEngine
 		public:
 			DX11RenderTargetView(const DX11RenderTargetView& other) = delete;
 			DX11RenderTargetView& operator=(const DX11RenderTargetView& other) = delete;
+			DX11RenderTargetView(DX11RenderTargetView&& other) = delete;
+			DX11RenderTargetView& operator=(DX11RenderTargetView&& other) = delete;
 
 		public:
 			DX11RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info);
-			DX11RenderTargetView(DX11RenderTargetView&& other);
 			~DX11RenderTargetView();
 
-			DX11RenderTargetView& operator=(DX11RenderTargetView&& other);
-
 			ID3D11RenderTargetView* GetD3D11RenderTargetView() const;
-
 			IDevice* GetDevice() const override final;
 
 			IReferenceCounter* QueryReference() override final;

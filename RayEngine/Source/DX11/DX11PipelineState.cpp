@@ -34,41 +34,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11PipelineState::DX11PipelineState(DX11PipelineState&& other)
-			: m_Device(other.m_Device),
-			m_InputLayout(other.m_InputLayout),
-			m_BlendState(other.m_BlendState),
-			m_RasterizerState(other.m_RasterizerState),
-			m_DepthStencilState(other.m_DepthStencilState),
-			m_VertexShader(other.m_VertexShader),
-			m_HullShader(other.m_HullShader),
-			m_DomainShader(other.m_DomainShader),
-			m_GeometryShader(other.m_GeometryShader),
-			m_PixelShader(other.m_PixelShader),
-			m_ComputeShader(other.m_ComputeShader),
-			m_SampleMask(other.m_SampleMask),
-			m_Type(other.m_Type),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_InputLayout = nullptr;
-			other.m_BlendState = nullptr;
-			other.m_RasterizerState = nullptr;
-			other.m_DepthStencilState = nullptr;
-			other.m_VertexShader = nullptr;
-			other.m_HullShader = nullptr;
-			other.m_DomainShader = nullptr;
-			other.m_GeometryShader = nullptr;
-			other.m_PixelShader = nullptr;
-			other.m_ComputeShader = nullptr;
-			other.m_SampleMask = 0;
-			other.m_Type = PIPELINE_TYPE_UNKNOWN;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11PipelineState::~DX11PipelineState()
 		{
 			ReleaseInterfaces();
@@ -232,54 +197,6 @@ namespace RayEngine
 		IDevice* DX11PipelineState::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11PipelineState& DX11PipelineState::operator=(DX11PipelineState&& other)
-		{
-			if (this != &other)
-			{
-				ReleaseInterfaces();
-
-
-				m_Device = other.m_Device;
-				m_InputLayout = other.m_InputLayout;
-				m_BlendState = other.m_BlendState;
-				
-				memcpy(m_BlendFactor, other.m_BlendFactor, sizeof(float[4]));
-				
-				m_RasterizerState = other.m_RasterizerState;
-				m_DepthStencilState = other.m_DepthStencilState;
-				m_VertexShader = other.m_VertexShader;
-				m_HullShader = other.m_HullShader;
-				m_DomainShader = other.m_DomainShader;
-				m_GeometryShader = other.m_GeometryShader;
-				m_PixelShader = other.m_PixelShader;
-				m_ComputeShader = other.m_ComputeShader;
-				m_SampleMask = other.m_SampleMask;
-				m_Type = other.m_Type;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_InputLayout = nullptr;
-				other.m_BlendState = nullptr;
-				other.m_RasterizerState = nullptr;
-				other.m_DepthStencilState = nullptr;
-				other.m_VertexShader = nullptr;
-				other.m_HullShader = nullptr;
-				other.m_DomainShader = nullptr;
-				other.m_GeometryShader = nullptr;
-				other.m_PixelShader = nullptr;
-				other.m_ComputeShader = nullptr;
-				other.m_SampleMask = 0;
-				other.m_Type = PIPELINE_TYPE_UNKNOWN;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

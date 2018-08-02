@@ -48,7 +48,7 @@ int main(int args, char* argsv[])
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create(GRAPHICS_API_VULKAN, true);
+	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D12, true);
 	
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
@@ -81,7 +81,6 @@ int main(int args, char* argsv[])
 
 	SwapchainInfo scInfo = {};
 	scInfo.pWindow = &window;
-	scInfo.pCommandQueue = queue;
 	scInfo.Buffer.Count = bufferCount;
 	scInfo.Buffer.Format = FORMAT_B8G8R8A8_UNORM;
 	scInfo.Buffer.Width = window.GetWidth();
@@ -94,7 +93,8 @@ int main(int args, char* argsv[])
 		CommandQueueInfo qInfo = {};
 		qInfo.Name = "Main Queue";
 		device->CreateCommandQueue(&queue, qInfo);
-	
+		scInfo.pCommandQueue = queue;
+
 		factory->CreateSwapchain(&swapchain, scInfo);
 	}
 	else

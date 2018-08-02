@@ -14,16 +14,14 @@ namespace RayEngine
 		public:
 			DX12DescriptorHeap(const DX12DescriptorHeap& other) = delete;
 			DX12DescriptorHeap& operator=(const DX12DescriptorHeap& other) = delete;
+			DX12DescriptorHeap(DX12DescriptorHeap&& other) = delete;
+			DX12DescriptorHeap& operator=(DX12DescriptorHeap&& other) = delete;
 
 		public:
-			DX12DescriptorHeap();
 			DX12DescriptorHeap(IDevice* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
-			DX12DescriptorHeap(DX12DescriptorHeap&& other);
 			~DX12DescriptorHeap();
 
 			D3D12_CPU_DESCRIPTOR_HANDLE GetNext() const;
-
-			DX12DescriptorHeap& operator=(DX12DescriptorHeap&& other);
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;

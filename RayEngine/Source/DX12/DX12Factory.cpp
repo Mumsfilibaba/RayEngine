@@ -23,17 +23,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Factory::DX12Factory(DX12Factory&& other)
-			: m_Factory(other.m_Factory),
-			m_DebugController(other.m_DebugController)
-		{
-			other.m_Factory = nullptr;
-			other.m_DebugController = nullptr;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12Factory::~DX12Factory()
 		{
 			D3DRelease_S(m_Factory);
@@ -111,23 +100,6 @@ namespace RayEngine
 		GRAPHICS_API DX12Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D12;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12Factory& DX12Factory::operator=(DX12Factory&& other)
-		{
-			if (this != &other)
-			{
-				m_DebugController = other.m_DebugController;
-				m_Factory = other.m_Factory;
-
-				other.m_Factory = nullptr;
-				other.m_DebugController = nullptr;
-			}
-
-			return *this;
 		}
 
 

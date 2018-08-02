@@ -23,19 +23,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11Factory::DX11Factory(DX11Factory&& other)
-			: m_Factory(other.m_Factory),
-			m_ReferenceCounter(other.m_ReferenceCounter),
-			m_DebugLayer(other.m_DebugLayer)
-		{
-			other.m_Factory = nullptr;
-			other.m_ReferenceCounter = 0;
-			other.m_DebugLayer = false;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11Factory::~DX11Factory()
 		{
 			if (m_Factory != nullptr)

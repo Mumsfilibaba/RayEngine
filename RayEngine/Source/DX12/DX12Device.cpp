@@ -18,13 +18,14 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Device::DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
 			: m_Factory(nullptr),
-			m_Device(nullptr),
 			m_Adapter(nullptr),
+			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			m_UploadHeap(nullptr),
-			m_ResourceHeap(),
-			m_DsvHeap(),
-			m_RtvHeap(),
+			m_UploadQueue(nullptr),
+			m_ResourceHeap(nullptr),
+			m_DsvHeap(nullptr),
+			m_RtvHeap(nullptr),
 			m_ReferenceCount(0)
 		{
 			AddRef();
@@ -38,34 +39,42 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Device::DX12Device(DX12Device&& other)
-			: m_Factory(other.m_Factory),
-			m_Device(other.m_Device),
-			m_Adapter(other.m_Adapter),
-			m_DebugDevice(other.m_DebugDevice),
-			m_UploadHeap(other.m_UploadHeap),
-			m_ResourceHeap(std::move(other.m_ResourceHeap)),
-			m_DsvHeap(std::move(other.m_DsvHeap)),
-			m_RtvHeap(std::move(other.m_RtvHeap)),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Factory = nullptr;
-			other.m_Device = nullptr;
-			other.m_Adapter = nullptr;
-			other.m_DebugDevice = nullptr;
-			other.m_UploadHeap = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12Device::~DX12Device()
 		{
 			if (m_UploadHeap != nullptr)
 			{
-				delete m_UploadHeap;
+				m_UploadHeap->Release();
 				m_UploadHeap = nullptr;
+			}
+
+			if (m_Factory != nullptr)
+			{
+				m_Factory->Release();
+				m_Factory = nullptr;
+			}
+
+			if (m_DsvHeap != nullptr)
+			{
+				m_DsvHeap->Release();
+				m_DsvHeap = nullptr;
+			}
+
+			if (m_RtvHeap != nullptr)
+			{
+				m_RtvHeap->Release();
+				m_RtvHeap = nullptr;
+			}
+
+			if (m_ResourceHeap != nullptr)
+			{
+				m_ResourceHeap->Release();
+				m_ResourceHeap = nullptr;
+			}
+
+			if (m_UploadQueue != nullptr)
+			{
+				m_UploadQueue->Release();
+				m_UploadQueue = nullptr;
 			}
 
 			D3DRelease_S(m_Device);
@@ -75,12 +84,6 @@ namespace RayEngine
 			{
 				m_DebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL);
 				D3DRelease(m_DebugDevice);
-			}
-
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
 			}
 		}
 
@@ -167,52 +170,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Device& DX12Device::operator=(DX12Device&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Device);
-				D3DRelease_S(m_DebugDevice);
-				D3DRelease_S(m_Adapter);
-			
-				if (m_Factory != nullptr)
-				{
-					m_Factory->Release();
-					m_Factory = nullptr;
-				}
-
-				if (m_UploadHeap != nullptr)
-				{
-					delete m_UploadHeap;
-					m_UploadHeap = nullptr;
-				}
-
-
-				m_Factory = other.m_Factory;
-				m_Device = other.m_Device;
-				m_Adapter = other.m_Adapter;
-				m_DebugDevice = other.m_DebugDevice;
-				m_UploadHeap = other.m_UploadHeap;
-				m_ResourceHeap = std::move(other.m_ResourceHeap);
-				m_DsvHeap = std::move(other.m_DsvHeap);
-				m_RtvHeap = std::move(other.m_RtvHeap);
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Factory = nullptr;
-				other.m_Device = nullptr;
-				other.m_Adapter = nullptr;
-				other.m_DebugDevice = nullptr;
-				other.m_UploadHeap = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		ID3D12Device* DX12Device::GetD3D12Device() const
 		{
 			return m_Device;
@@ -221,33 +178,33 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		const DX12CommandQueue* DX12Device::GetDX12CommandQueue() const
+		DX12CommandQueue* DX12Device::GetDX12CommandQueue() const
 		{
-			return &m_UploadQueue;
+			return m_UploadQueue;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		const DX12DescriptorHeap* DX12Device::GetDX12DepthStencilViewHeap() const
+		DX12DescriptorHeap* DX12Device::GetDX12DepthStencilViewHeap() const
 		{
-			return &m_DsvHeap;
+			return m_DsvHeap;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		const DX12DescriptorHeap* DX12Device::GetDX12RenderTargetViewHeap() const
+		DX12DescriptorHeap* DX12Device::GetDX12RenderTargetViewHeap() const
 		{
-			return &m_RtvHeap;
+			return m_RtvHeap;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		const DX12DescriptorHeap* DX12Device::GetDX12ResourceHeap() const
+		DX12DescriptorHeap* DX12Device::GetDX12ResourceHeap() const
 		{
-			return &m_ResourceHeap;
+			return m_ResourceHeap;
 		}
 
 
@@ -316,14 +273,14 @@ namespace RayEngine
 
 					D3D12SetName(m_Device, info.Name);
 
-					m_DsvHeap = DX12DescriptorHeap(this, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap = DX12DescriptorHeap(this, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_ResourceHeap = DX12DescriptorHeap(this, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_DsvHeap = new DX12DescriptorHeap(this, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap = new DX12DescriptorHeap(this, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_ResourceHeap = new DX12DescriptorHeap(this, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
 
 					CommandQueueInfo queueInfo = {};
 					queueInfo.Name = "Device UploadQueue";
-					m_UploadQueue = DX12CommandQueue(this, queueInfo);
+					m_UploadQueue = new DX12CommandQueue(this, queueInfo);
 				}
 			}
 		}

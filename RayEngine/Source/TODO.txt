@@ -1,11 +1,11 @@
 TODO:
--Render triangle DX11
 -Render triangle Vulkan
 
 -DX12 - ImmediateContext
 -Seperate CommandList and commandQueue
 
 -Set names on resources (Even if vulkan may not support it)
+-Fix errormessages
 -DX12 - DescriptorHeapManager
 -DX12 - Different versions of the parametertype for the shader in the rootsignature
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
@@ -20,8 +20,6 @@ TODO:
 -Create rendertargets for swapchain during creation?
 
 -DX12 - DepthStencilState, RasterizerState, BlendState
--DX12 - DX12Resource Baseclass
--DX12 - DX12View Baseclass
 
 -DX11/DX12 - Bufferusage flags
 

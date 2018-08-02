@@ -23,19 +23,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11RenderTargetView::DX11RenderTargetView(DX11RenderTargetView&& other)
-			: m_Device(other.m_Device),
-			m_View(other.m_View),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_View = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11RenderTargetView::~DX11RenderTargetView()
 		{
 			D3DRelease_S(m_View);
@@ -44,34 +31,6 @@ namespace RayEngine
 				m_Device->Release();
 				m_Device = nullptr;
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11RenderTargetView& DX11RenderTargetView::operator=(DX11RenderTargetView&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_View);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_View = other.m_View;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_View = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

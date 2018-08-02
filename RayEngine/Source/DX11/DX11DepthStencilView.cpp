@@ -23,19 +23,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11DepthStencilView::DX11DepthStencilView(DX11DepthStencilView&& other)
-			: m_Device(other.m_Device),
-			m_View(other.m_View),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_View = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11DepthStencilView::~DX11DepthStencilView()
 		{
 			D3DRelease_S(m_View);
@@ -52,34 +39,6 @@ namespace RayEngine
 		ID3D11DepthStencilView* DX11DepthStencilView::GetD3D11DepthStencilView() const
 		{
 			return m_View;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11DepthStencilView& DX11DepthStencilView::operator=(DX11DepthStencilView && other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_View);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_View = other.m_View;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-
-				other.m_Device = nullptr;
-				other.m_View = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

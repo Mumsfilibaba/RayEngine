@@ -10,8 +10,8 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12RenderTargetView::DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
-			: m_Device(nullptr),
-			m_View(),
+			: DX12View(),
+			m_Device(nullptr),
 			m_ReferenceCount(0)
 		{
 			AddRef();
@@ -20,19 +20,7 @@ namespace RayEngine
 			Create(pDevice, info);
 		}
 
-
-
-		/////////////////////////////////////////////////////////////
-		DX12RenderTargetView::DX12RenderTargetView(DX12RenderTargetView&& other)
-			: m_Device(other.m_Device),
-			m_View(other.m_View),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Device = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
+		
 
 		/////////////////////////////////////////////////////////////
 		DX12RenderTargetView::~DX12RenderTargetView()
@@ -42,41 +30,6 @@ namespace RayEngine
 				m_Device->Release();
 				m_Device = nullptr;
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12RenderTargetView& DX12RenderTargetView::operator=(DX12RenderTargetView&& other)
-		{
-			if (this != &other)
-			{
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_ReferenceCount = other.m_ReferenceCount;
-				m_View = other.m_View;
-
-
-				other.m_Device = nullptr;
-				other.m_ReferenceCount = 0;
-				other.m_View.ptr = 0;
-			}
-
-			return *this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		D3D12_CPU_DESCRIPTOR_HANDLE DX12RenderTargetView::GetD3D12CpuDescriptorHandle() const
-		{
-			return m_View;
 		}
 
 

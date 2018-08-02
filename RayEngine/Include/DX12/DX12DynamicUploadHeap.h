@@ -14,13 +14,12 @@ namespace RayEngine
 		public:
 			DX12DynamicUploadHeap(const DX12DynamicUploadHeap& other) = delete;
 			DX12DynamicUploadHeap& operator=(const DX12DynamicUploadHeap& other) = delete;
+			DX12DynamicUploadHeap(DX12DynamicUploadHeap&& other) = delete;
+			DX12DynamicUploadHeap& operator=(DX12DynamicUploadHeap&& other) = delete;
 
 		public:
 			DX12DynamicUploadHeap(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes);
-			DX12DynamicUploadHeap(DX12DynamicUploadHeap&& other);
 			~DX12DynamicUploadHeap();
-
-			DX12DynamicUploadHeap& operator=(DX12DynamicUploadHeap&& other);
 
 			void SetData(const void* pData, int32 size);
 

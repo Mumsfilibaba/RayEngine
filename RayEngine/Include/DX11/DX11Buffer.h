@@ -14,21 +14,19 @@ namespace RayEngine
 		public:
 			DX11Buffer(const DX11Buffer& other) = delete;
 			DX11Buffer& operator=(const DX11Buffer& other) = delete;
+			DX11Buffer(DX11Buffer&& other) = delete;
+			DX11Buffer& operator=(DX11Buffer&& other) = delete;
 
 		public:
 			DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
-			DX11Buffer(DX11Buffer&& other);
 			~DX11Buffer();
 
-			ID3D11Buffer* GetD3D11Buffer() const;
 			int32 GetByteStride() const;
-
-			DX11Buffer& operator=(DX11Buffer&& other);
+			ID3D11Buffer* GetD3D11Buffer() const;
+			IDevice* GetDevice() const override final;
 
 			void* Map(int32 subresource) override final;
 			void Unmap() override final;
-
-			IDevice* GetDevice() const override final;
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;

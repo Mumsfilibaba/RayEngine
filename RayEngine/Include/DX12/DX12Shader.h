@@ -14,16 +14,14 @@ namespace RayEngine
 		public:
 			DX12Shader(const DX12Shader& other) = delete;
 			DX12Shader& operator=(const DX12Shader& other) = delete;
+			DX12Shader(DX12Shader&& other) = delete;
+			DX12Shader& operator=(DX12Shader&& other) = delete;
 
 		public:
 			DX12Shader(IDevice* pDevice, const ShaderByteCode& byteCode);
-			DX12Shader(DX12Shader&& other);
 			~DX12Shader();
 
-			DX12Shader& operator=(DX12Shader&& other);
-
 			const D3D12_SHADER_BYTECODE* GetD3D12ByteCode() const;
-			
 			SHADER_TYPE GetType() const override final;
 			IDevice* GetDevice() const override final;
 

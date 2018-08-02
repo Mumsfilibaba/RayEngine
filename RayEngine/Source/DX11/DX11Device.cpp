@@ -35,26 +35,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11Device::DX11Device(DX11Device&& other)
-			: m_Factory(other.m_Factory),
-			m_Adapter(other.m_Adapter),
-			m_Device(other.m_Device),
-			m_DebugDevice(other.m_DebugDevice),
-			m_ImmediateContext(other.m_ImmediateContext),
-			m_ReferenceCount(other.m_ReferenceCount),
-			m_FeatureLevel(other.m_FeatureLevel)
-		{
-			other.m_Factory = nullptr;
-			other.m_Adapter = nullptr;
-			other.m_Device = nullptr;
-			other.m_DebugDevice = nullptr;
-			other.m_ImmediateContext = nullptr;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX11Device::~DX11Device()
 		{
 			D3DRelease_S(m_Adapter);
@@ -69,45 +49,6 @@ namespace RayEngine
 
 			m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
 			D3DRelease_S(m_DebugDevice);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX11Device& DX11Device::operator=(DX11Device&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Adapter);
-				D3DRelease_S(m_Device);
-				D3DRelease_S(m_DebugDevice);
-				D3DRelease_S(m_ImmediateContext);
-
-				if (m_Factory != nullptr)
-				{
-					m_Factory->Release();
-					m_Factory = nullptr;
-				}
-
-
-				m_Factory = other.m_Factory;
-				m_Adapter = other.m_Adapter;
-				m_Device = other.m_Device;
-				m_DebugDevice = other.m_DebugDevice;
-				m_ImmediateContext = other.m_ImmediateContext;
-				m_ReferenceCount = other.m_ReferenceCount;
-				m_FeatureLevel = other.m_FeatureLevel;
-
-
-				other.m_Factory = nullptr;
-				other.m_Adapter = nullptr;
-				other.m_Device = nullptr;
-				other.m_DebugDevice = nullptr;
-				other.m_ImmediateContext = nullptr;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

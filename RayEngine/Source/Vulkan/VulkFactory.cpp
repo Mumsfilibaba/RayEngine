@@ -28,19 +28,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VulkFactory::VulkFactory(VulkFactory&& other)
-			: m_Instance(other.m_Instance),
-			m_DbgCallback(other.m_DbgCallback),
-			m_ReferenceCount(other.m_ReferenceCount)
-		{
-			other.m_Instance = nullptr;
-			other.m_DbgCallback = 0;
-			other.m_ReferenceCount = 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		VulkFactory::~VulkFactory()
 		{
 			if (m_DbgCallback != 0)
@@ -275,25 +262,6 @@ namespace RayEngine
 		GRAPHICS_API VulkFactory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_VULKAN;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		VulkFactory& VulkFactory::operator=(VulkFactory&& other)
-		{
-			if (this != &other)
-			{
-				m_Instance = other.m_Instance;
-				m_DbgCallback = other.m_DbgCallback;
-				m_ReferenceCount = other.m_ReferenceCount;
-
-				other.m_Instance = nullptr;
-				other.m_DbgCallback = 0;
-				other.m_ReferenceCount = 0;
-			}
-
-			return *this;
 		}
 
 

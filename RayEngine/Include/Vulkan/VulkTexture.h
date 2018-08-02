@@ -12,15 +12,15 @@ namespace RayEngine
 		public:
 			VulkTexture(const VulkTexture& other) = delete;
 			VulkTexture& operator=(const VulkTexture& other) = delete;
+			VulkTexture(VulkTexture&& other) = delete;
+			VulkTexture& operator=(VulkTexture&& other) = delete;
 
 		public:
 			VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
 			VulkTexture(IDevice* pDevice, VkImage image);
-			VulkTexture(VulkTexture&& other);
 			~VulkTexture();
 
-			VulkTexture& operator=(VulkTexture&& other);
-
+			void InvalidateResource();
 			VkImage GetVkImage() const;
 
 			RESOURCE_STATE GetResourceState() const override final;

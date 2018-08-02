@@ -15,19 +15,18 @@ namespace RayEngine
 		public:
 			DX11Swapchain(const DX11Swapchain& other) = delete;
 			DX11Swapchain& operator=(const DX11Swapchain& other) = delete;
+			DX11Swapchain(DX11Swapchain&& other) = delete;
+			DX11Swapchain& operator=(DX11Swapchain&& other) = delete;
 
 		public:
 			DX11Swapchain(IFactory* pFactory, const SwapchainInfo& info);
-			DX11Swapchain(DX11Swapchain&& other);
 			~DX11Swapchain();
 
-			DX11Swapchain& operator=(DX11Swapchain&& other);
-
 			int32 GetCurrentBuffer() const override final;
-			ITexture* GetBuffer(int32 index) override final;
-			const ITexture* GetBuffer(int32 index) const override final;
 			void Present() const override final;
 
+			ITexture* GetBuffer(int32 index) override final;
+			const ITexture* GetBuffer(int32 index) const override final;
 			IFactory* GetFactory() const override final;
 			ICommandQueue* GetCommandQueue() const override final;
 
@@ -48,8 +47,8 @@ namespace RayEngine
 			ICommandQueue* m_CommandQueue;
 
 			IDXGISwapChain* m_Swapchain;
+			DX11Texture* m_Texture;
 			int32 m_BufferCount;
-			DX11Texture m_Texture;
 			mutable int32 m_CurrentBuffer;
 
 			mutable uint32 m_ReferenceCount;

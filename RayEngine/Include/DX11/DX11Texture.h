@@ -14,15 +14,13 @@ namespace RayEngine
 		public:
 			DX11Texture(const DX11Texture& other) = delete;
 			DX11Texture& operator=(const DX11Texture& other) = delete;
+			DX11Texture(DX11Texture&& other) = delete;
+			DX11Texture& operator=(DX11Texture&& other) = delete;
 
 		public:
-			DX11Texture();
 			DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
 			DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource);
-			DX11Texture(DX11Texture&& other);
 			~DX11Texture();
-
-			DX11Texture& operator=(DX11Texture&& other);
 
 			ID3D11Texture1D* GetD3D11Texture1D() const;
 			ID3D11Texture2D* GetD3D11Texture2D() const;

@@ -10,10 +10,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
 			: m_Device(nullptr),
-			m_Resource(nullptr),
 			m_ReferenceCounter(0),
-			m_BufferType(BUFFER_USAGE_UNKNOWN),
-			m_State(D3D12_RESOURCE_STATE_COMMON)
+			m_BufferType(BUFFER_USAGE_UNKNOWN)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -24,26 +22,8 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12Buffer::DX12Buffer(DX12Buffer&& other)
-			: m_Device(other.m_Device),
-			m_Resource(other.m_Resource),
-			m_ReferenceCounter(other.m_ReferenceCounter),
-			m_BufferType(other.m_BufferType),
-			m_State(other.m_State)
-		{
-			other.m_Device = nullptr;
-			other.m_Resource = nullptr;
-			other.m_ReferenceCounter = 0;
-			other.m_BufferType = BUFFER_USAGE_UNKNOWN;
-			other.m_State = D3D12_RESOURCE_STATE_COMMON;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12Buffer::~DX12Buffer()
 		{
-			D3DRelease_S(m_Resource);
 			if (m_Device != nullptr)
 			{
 				m_Device->Release();
@@ -132,62 +112,6 @@ namespace RayEngine
 		D3D12_INDEX_BUFFER_VIEW DX12Buffer::GetD3D12IndexBufferView() const
 		{
 			return m_Views.Index;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12Buffer& DX12Buffer::operator=(DX12Buffer&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Resource);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_Resource = other.m_Resource;
-				m_ReferenceCounter = other.m_ReferenceCounter;
-				m_BufferType = other.m_BufferType;
-				m_State = other.m_State;
-
-
-				other.m_Device = nullptr;
-				other.m_Resource = nullptr;
-				other.m_ReferenceCounter = 0;
-				other.m_BufferType = BUFFER_USAGE_UNKNOWN;
-				other.m_State = D3D12_RESOURCE_STATE_COMMON;
-			}
-
-			return *this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		ID3D12Resource* DX12Buffer::GetD3D12Resource() const
-		{
-			return m_Resource;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		D3D12_RESOURCE_STATES DX12Buffer::GetD3D12State() const
-		{
-			return m_State;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Buffer::SetD3D12State(D3D12_RESOURCE_STATES state)
-		{
-			m_State = state;
 		}
 
 

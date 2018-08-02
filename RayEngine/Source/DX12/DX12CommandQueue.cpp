@@ -14,21 +14,6 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12CommandQueue::DX12CommandQueue()
-			: m_Device(nullptr),
-			m_Queue(nullptr),
-			m_Allocator(nullptr),
-			m_List(nullptr),
-			m_Fence(nullptr),
-			m_CurrentFence(0),
-			m_ReferenceCounter(0)
-		{
-			AddRef();
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12CommandQueue::DX12CommandQueue(IDevice* pDevice, const CommandQueueInfo& info)
 			: m_Device(nullptr),
 			m_Queue(nullptr),
@@ -42,27 +27,6 @@ namespace RayEngine
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 			
 			Create(pDevice, info);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12CommandQueue::DX12CommandQueue(DX12CommandQueue&& other)
-			: m_Device(other.m_Device),
-			m_Queue(other.m_Queue),
-			m_Allocator(other.m_Allocator),
-			m_List(other.m_List),
-			m_Fence(other.m_Fence),
-			m_CurrentFence(other.m_CurrentFence),
-			m_ReferenceCounter(other.m_ReferenceCounter)
-		{
-			other.m_Device = nullptr;
-			other.m_Queue = nullptr;
-			other.m_Allocator = nullptr;
-			other.m_List = nullptr;
-			other.m_Fence = nullptr;
-			other.m_CurrentFence = 0;
-			other.m_ReferenceCounter = 0;
 		}
 
 
@@ -354,45 +318,6 @@ namespace RayEngine
 		IDevice* DX12CommandQueue::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		DX12CommandQueue& DX12CommandQueue::operator=(DX12CommandQueue&& other)
-		{
-			if (this != &other)
-			{
-				D3DRelease_S(m_Queue);
-				D3DRelease_S(m_Allocator);
-				D3DRelease_S(m_List);
-				D3DRelease_S(m_Fence);
-				if (m_Device != nullptr)
-				{
-					m_Device->Release();
-					m_Device = nullptr;
-				}
-
-
-				m_Device = other.m_Device;
-				m_Queue = other.m_Queue;
-				m_Allocator = other.m_Allocator;
-				m_List = other.m_List;
-				m_Fence = other.m_Fence;
-				m_CurrentFence = other.m_CurrentFence;
-				m_ReferenceCounter = other.m_ReferenceCounter;
-
-
-				other.m_Device = nullptr;
-				other.m_Queue = nullptr;
-				other.m_Allocator = nullptr;
-				other.m_List = nullptr;
-				other.m_Fence = nullptr;
-				other.m_CurrentFence = 0;
-				other.m_ReferenceCounter = 0;
-			}
-
-			return *this;
 		}
 
 

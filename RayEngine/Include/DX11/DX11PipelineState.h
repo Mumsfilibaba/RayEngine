@@ -14,10 +14,11 @@ namespace RayEngine
 		public:
 			DX11PipelineState(const DX11PipelineState& other) = delete;
 			DX11PipelineState& operator=(const DX11PipelineState& other) = delete;
+			DX11PipelineState(DX11PipelineState&& other) = delete;
+			DX11PipelineState& operator=(DX11PipelineState&& other) = delete;
 
 		public:
 			DX11PipelineState(IDevice* pdevice, const PipelineStateInfo& info);
-			DX11PipelineState(DX11PipelineState&& other);
 			~DX11PipelineState();
 
 			ID3D11InputLayout* GetD3D11InputLayout() const;
@@ -41,8 +42,6 @@ namespace RayEngine
 
 			PIPELINE_TYPE GetPipelineType() const override final;
 			IDevice* GetDevice() const override final;
-
-			DX11PipelineState& operator=(DX11PipelineState&& other);
 
 			IReferenceCounter* QueryReference() override final;
 			uint32 GetReferenceCount() const override final;
