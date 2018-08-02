@@ -114,6 +114,25 @@ int main(int args, char* argsv[])
 	}
 
 
+	IShaderCompiler* compiler = nullptr;
+	factory->CreateShaderCompiler(&compiler);
+
+	ShaderCompileInfo sInfo = {};
+	sInfo.EntryPoint = "main";
+	sInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
+	sInfo.Type = SHADER_TYPE_VERTEX;
+	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo);
+
+	sInfo.Type = SHADER_TYPE_PIXEL;
+	ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo);
+
+	IShader* vs = nullptr;
+	device->CreateShader(&vs, vsCode);
+
+	IShader* ps = nullptr;
+	device->CreateShader(&ps, psCode);
+
+
 	TextureInfo dsInfo = {};
 	dsInfo.Name = "DepthStencil-Texture";
 	dsInfo.Flags = TEXTURE_FLAGS_DEPTHBUFFER;
@@ -162,25 +181,6 @@ int main(int args, char* argsv[])
 
 	IDepthStencilView* dsv = nullptr;
 	device->CreateDepthStencilView(&dsv, dsvInfo);
-
-
-	IShaderCompiler* compiler = nullptr;
-	factory->CreateShaderCompiler(&compiler);
-
-	ShaderCompileInfo sInfo = {};
-	sInfo.EntryPoint = "main";
-	sInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
-	sInfo.Type = SHADER_TYPE_VERTEX;
-	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo);
-
-	sInfo.Type = SHADER_TYPE_PIXEL;
-	ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo);
-
-	IShader* vs = nullptr;
-	device->CreateShader(&vs, vsCode);
-
-	IShader* ps = nullptr;
-	device->CreateShader(&ps, psCode);
 
 
 	IRootSignature* rootSignature = nullptr;
