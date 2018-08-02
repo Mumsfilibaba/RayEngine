@@ -186,7 +186,6 @@ int main(int args, char* argsv[])
 
 	device->CreateRootSignature(&rootSignature, rootInfo);
 
-
 	IPipelineState* pipelineState = nullptr;
 	PipelineStateInfo pipelineInfo = {};
 	pipelineInfo.Name = "PipelineState";
@@ -226,7 +225,7 @@ int main(int args, char* argsv[])
 	BufferInfo vbInfo = {};
 	vbInfo.Name = "VertexBuffer";
 	vbInfo.Count = 3;
-	vbInfo.Stride = sizeof(Vector3);
+	vbInfo.ByteStride = sizeof(Vector3);
 	vbInfo.Type = BUFFER_USAGE_VERTEX;
 	vbInfo.Usage = RESOURCE_USAGE_DEFAULT;
 

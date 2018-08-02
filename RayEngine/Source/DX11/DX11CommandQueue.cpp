@@ -2,6 +2,10 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11RenderTargetView.h"
+#include "..\..\Include\DX11\DX11DepthStencilView.h"
+#include "..\..\Include\DX11\DX11Buffer.h"
+#include "..\..\Include\DX11\DX11PipelineState.h"
 
 namespace RayEngine
 {
@@ -101,6 +105,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11CommandQueue::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
 		{
+			ID3D11RenderTargetView* pD3D11View = reinterpret_cast<DX11RenderTargetView*>(pView)->GetD3D11RenderTargetView();
+			m_DefferedContext->ClearRenderTargetView(pD3D11View, pColor);
 		}
 
 
@@ -108,6 +114,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11CommandQueue::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
 		{
+			ID3D11DepthStencilView* pD3D11View = reinterpret_cast<DX11DepthStencilView*>(pView)->GetD3D11DepthStencilView();
+			m_DefferedContext->ClearDepthStencilView(pD3D11View, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, stencil);
 		}
 
 
@@ -115,6 +123,20 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11CommandQueue::SetPipelineState(IPipelineState* pPipelineState) const
 		{
+			DX11PipelineState* pDX11PipelineState = reinterpret_cast<DX11PipelineState*>(pPipelineState);
+
+			m_DefferedContext->IASetInputLayout(pDX11PipelineState->GetD3D11InputLayout());
+			m_DefferedContext->OMSetDepthStencilState(pDX11PipelineState->GetD3D11DepthStencilState(), 0);
+			m_DefferedContext->OMSetBlendState(pDX11PipelineState->GetD3D11BlendState(),
+				pDX11PipelineState->GetBlendFactor(), pDX11PipelineState->GetSampleMask());
+			m_DefferedContext->RSSetState(pDX11PipelineState->GetD3D11RasterizerState());
+
+			m_DefferedContext->VSSetShader(pDX11PipelineState->GetD3D11VertexShader(), nullptr, 0);
+			m_DefferedContext->HSSetShader(pDX11PipelineState->GetD3D11HullShader(), nullptr, 0);
+			m_DefferedContext->DSSetShader(pDX11PipelineState->GetD3D11DomainShader(), nullptr, 0);
+			m_DefferedContext->GSSetShader(pDX11PipelineState->GetD3D11GeometryShader(), nullptr, 0);
+			m_DefferedContext->PSSetShader(pDX11PipelineState->GetD3D11PixelShader(), nullptr, 0);
+			m_DefferedContext->CSSetShader(pDX11PipelineState->GetD3D11ComputeShader(), nullptr, 0);
 		}
 
 
@@ -129,6 +151,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11CommandQueue::SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const
 		{
+			ID3D11Buffer* pD3D11Buffer = reinterpret_cast<DX11Buffer*>(pBuffer)->GetD3D11Buffer();
+			uint32 stride = reinterpret_cast<DX11Buffer*>(pBuffer)->GetByteStride();
+			uint32 offset = 0;
+
+			m_DefferedContext->IASetVertexBuffers(0, 1, &pD3D11Buffer, &stride, &offset);
 		}
 
 
@@ -136,6 +163,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11CommandQueue::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
+			ID3D11RenderTargetView* pD3D11RenderTarget = reinterpret_cast<DX11RenderTargetView*>(pRenderTarget)->GetD3D11RenderTargetView();
+			ID3D11DepthStencilView* pD3D11DepthStencil = reinterpret_cast<DX11DepthStencilView*>(pDepthStencil)->GetD3D11DepthStencilView();
+
+			m_DefferedContext->OMSetRenderTargets(1, &pD3D11RenderTarget, pD3D11DepthStencil);
 		}
 
 

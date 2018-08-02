@@ -252,17 +252,27 @@ namespace RayEngine
 		void DX12PipelineState::SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateInfo& info)
 		{
 			//TODO: Actually set the rasterizerdesc
-			desc.AntialiasedLineEnable = false;
-			desc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
-			desc.CullMode = D3D12_CULL_MODE_BACK;
-			desc.DepthBias = 0;
-			desc.DepthBiasClamp = 0.0f;
-			desc.DepthClipEnable = true;
-			desc.FillMode = D3D12_FILL_MODE_SOLID;
-			desc.ForcedSampleCount = 0;
+			desc.ConservativeRaster = info.ConservativeRasterizerEnable ? 
+				D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON : D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+			desc.AntialiasedLineEnable = info.AntialiasedLineEnable;
 			desc.FrontCounterClockwise = false;
 			desc.MultisampleEnable = false;
-			desc.SlopeScaledDepthBias = 0.0f;
+			desc.ForcedSampleCount = 0;
+		
+			if (info.CullMode == CULL_MODE_BACK)
+				desc.CullMode = D3D12_CULL_MODE_BACK;
+			else if (info.CullMode == CULL_MODE_FRONT)
+				desc.CullMode = D3D12_CULL_MODE_FRONT;
+			else if (info.CullMode == CULL_MODE_NONE)
+				desc.CullMode = D3D12_CULL_MODE_NONE;
+
+
+			desc.DepthBias = info.DepthBias;
+			desc.DepthBiasClamp = info.DepthBiasClamp;
+			desc.DepthClipEnable = info.DepthClipEnable;
+
+			desc.FillMode = (info.FillMode == FILL_MODE_SOLID) ? D3D12_FILL_MODE_SOLID : D3D12_FILL_MODE_WIREFRAME;
+			desc.SlopeScaledDepthBias = info.SlopeScaleDepthBias;
 		}
 
 
@@ -270,7 +280,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateInfo& info)
 		{
-			//TODO: Actually set the rasterizerdesc
 			desc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 			desc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
 			desc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;

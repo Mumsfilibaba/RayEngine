@@ -26,6 +26,12 @@ namespace RayEngine
 			ID3D11BlendState* GetD3D11BlendState() const;
 			const float* GetBlendFactor() const;
 			uint8 GetSampleMask() const;
+			ID3D11VertexShader* GetD3D11VertexShader() const;
+			ID3D11HullShader* GetD3D11HullShader() const;
+			ID3D11DomainShader* GetD3D11DomainShader() const;
+			ID3D11GeometryShader* GetD3D11GeometryShader() const;
+			ID3D11PixelShader* GetD3D11PixelShader() const;
+			ID3D11ComputeShader* GetD3D11ComputeShader() const;
 			DX11Shader* GetDX11VertexShader() const;
 			DX11Shader* GetDX11HullShader() const;
 			DX11Shader* GetDX11DomainShader() const;

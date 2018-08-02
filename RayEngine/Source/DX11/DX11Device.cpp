@@ -9,6 +9,7 @@
 #include "..\..\Include\DX11\DX11Shader.h"
 #include "..\..\Include\DX11\DX11RootSignature.h"
 #include "..\..\Include\DX11\DX11PipelineState.h"
+#include "..\..\Include\DX11\DX11Buffer.h"
 #include <d3dcommon.h>
 
 namespace RayEngine
@@ -170,7 +171,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
 		{
-			return false;
+			return ((*ppBuffer = new DX11Buffer(this, pInitialData, info)));
 		}
 
 

@@ -7,6 +7,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		class IDevice;
+
+
+
+		/////////////////////////////////////////////////////////////
 		enum BUFFER_USAGE : int32
 		{
 			BUFFER_USAGE_UNKNOWN = 0,
@@ -25,7 +30,7 @@ namespace RayEngine
 			CPU_ACCESS_FLAG CpuAccess = CPU_ACCESS_FLAG_NONE;
 			BUFFER_USAGE Type = BUFFER_USAGE_UNKNOWN;
 			int32 Count = 0;
-			int32 Stride = 0;
+			int32 ByteStride = 0;
 		};
 
 

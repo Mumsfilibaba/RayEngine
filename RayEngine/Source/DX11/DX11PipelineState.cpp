@@ -125,6 +125,54 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		ID3D11VertexShader* DX11PipelineState::GetD3D11VertexShader() const
+		{
+			return (m_VertexShader == nullptr) ? nullptr : m_VertexShader->GetD3D11VertexShader();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11HullShader* DX11PipelineState::GetD3D11HullShader() const
+		{
+			return (m_HullShader == nullptr) ? nullptr : m_HullShader->GetD3D11HullShader();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11DomainShader* DX11PipelineState::GetD3D11DomainShader() const
+		{
+			return (m_DomainShader == nullptr) ? nullptr : m_DomainShader->GetD3D11DomainShader();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11GeometryShader* DX11PipelineState::GetD3D11GeometryShader() const
+		{
+			return (m_GeometryShader == nullptr) ? nullptr : m_GeometryShader->GetD3D11GeometryShader();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11PixelShader* DX11PipelineState::GetD3D11PixelShader() const
+		{
+			return (m_PixelShader == nullptr) ? nullptr : m_PixelShader->GetD3D11PixelShader();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11ComputeShader* DX11PipelineState::GetD3D11ComputeShader() const
+		{
+			return (m_ComputeShader == nullptr) ? nullptr : m_ComputeShader->GetD3D11ComputeShader();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX11Shader* DX11PipelineState::GetDX11VertexShader() const
 		{
 			return m_VertexShader;
@@ -363,6 +411,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateComputeState(IDevice* pDevice, const PipelineStateInfo& info)
 		{
+			//TODO: Compute states
 		}
 
 

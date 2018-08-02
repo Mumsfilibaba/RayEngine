@@ -56,6 +56,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct RasterizerStateInfo
 		{
+			bool ConservativeRasterizerEnable = false;
+
 			FILL_MODE FillMode = FILL_MODE_SOLID;
 			CULL_MODE CullMode = CULL_MODE_BACK;
 			bool FrontCounterClockwise = false;
