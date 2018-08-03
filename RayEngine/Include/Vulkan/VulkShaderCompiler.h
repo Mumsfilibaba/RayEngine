@@ -32,6 +32,9 @@ namespace RayEngine
 			uint32 AddRef() override final;
 
 		private:
+			static EShLanguage GetShaderType(SHADER_TYPE type);
+
+		private:
 			IFactory* m_Factory;
 
 			int32 m_Flags;

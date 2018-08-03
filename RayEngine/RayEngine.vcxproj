@@ -117,7 +117,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;glslangd.lib;SPIRVd.lib;HLSLd.lib;OSDependentd.lib;OGLCompilerd.lib;SPIRV-Tools-optd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-linkd.lib;SPIRV-Tools-optd.lib</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;glslangd.lib;SPIRVd.lib;HLSLd.lib;OSDependentd.lib;OGLCompilerd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

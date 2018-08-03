@@ -61,63 +61,47 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ShaderByteCode VulkShaderCompiler::CompileFromString(const std::string& src, const ShaderCompileInfo& info) const
 		{
-			EShLanguage shaderType = EShLangCount;
-			if (info.Type == SHADER_TYPE_VERTEX)
-				shaderType = EShLangVertex;
-			else if (info.Type == SHADER_TYPE_HULL)
-				shaderType = EShLangTessControl;
-			else if (info.Type == SHADER_TYPE_DOMAIN)
-				shaderType = EShLangTessEvaluation;
-			else if (info.Type == SHADER_TYPE_GEOMETRY)
-				shaderType = EShLangGeometry;
-			else if (info.Type == SHADER_TYPE_PIXEL)
-				shaderType = EShLangFragment;
-			else if (info.Type == SHADER_TYPE_COMPUTE)
-				shaderType = EShLangCompute;
-
-
-			const char* srcString = src.c_str();
+			EShLanguage shaderType = GetShaderType(info.Type);
 			glslang::TShader shader(shaderType);
+			 
+			const char* srcString = src.c_str();
 			shader.setStrings(&srcString, 1);
 
-
-			glslang::EShSource source = static_cast<glslang::EShSource>(0);
-			EShMessages messages = static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
+			int32 messages = EShMsgSpvRules | EShMsgVulkanRules;
+			int32 clientInputSemanticsVersion = 100;
+			glslang::EShClient client = glslang::EShClientVulkan;
+			glslang::EShSource source = glslang::EShSourceNone;
+			glslang::EShTargetClientVersion vulkanVersion = glslang::EShTargetVulkan_1_0;
+			glslang::EShTargetLanguageVersion targetVersion = glslang::EShTargetSpv_1_0;
 
 			if (info.SrcLang == SHADER_SOURCE_LANG_HLSL)
 			{
 				shader.setEnvTargetHlslFunctionality1();
 				
 				source = glslang::EShSourceHlsl;
-				messages = static_cast<EShMessages>(messages | EShMsgReadHlsl);
+				messages |= EShMsgReadHlsl;
 			}
 			else if (info.SrcLang == SHADER_SOURCE_LANG_GLSL)
 			{
 				source = glslang::EShSourceGlsl;
 			}
 
-
-			int clientInputSemanticsVersion = 100;
-			shader.setEnvInput(source, shaderType, glslang::EShClientVulkan, clientInputSemanticsVersion);
-
-			glslang::EShTargetClientVersion vulkanVersion = glslang::EShTargetVulkan_1_0;
-			shader.setEnvClient(glslang::EShClientVulkan, vulkanVersion);
-
-			glslang::EShTargetLanguageVersion targetVersion = glslang::EShTargetSpv_1_0;
+			shader.setEnvInput(source, shaderType, client, clientInputSemanticsVersion);
+			shader.setEnvClient(client, vulkanVersion);
 			shader.setEnvTarget(glslang::EShTargetSpv, targetVersion);
 
 
 			const int defaultVersion = 100;
 			const TBuiltInResource defaultTBuiltInResource = {};
 
-
 			std::string localPath = "";
+			std::string preprocessed;
+
 			DirStackFileIncluder includer;
 			includer.pushExternalLocalDirectory(localPath);
 
-
-			std::string preprocessed;		
-			if (!shader.preprocess(&defaultTBuiltInResource, defaultVersion, ENoProfile, false, false, messages, &preprocessed, includer))
+			if (!shader.preprocess(&defaultTBuiltInResource, defaultVersion, ENoProfile, 
+				false, false, static_cast<EShMessages>(messages), &preprocessed, includer))
 			{
 				const char* err = shader.getInfoLog();
 				err = shader.getInfoDebugLog();
@@ -128,10 +112,8 @@ namespace RayEngine
 			const char*	preprocessedString = preprocessed.c_str();
 			shader.setStrings(&preprocessedString, 1);
 
-
-			if (!shader.parse(&defaultTBuiltInResource, defaultVersion, false, messages))
+			if (!shader.parse(&defaultTBuiltInResource, defaultVersion, false, static_cast<EShMessages>(messages)))
 			{
-				//std::cout << "GLSL Parsing Failed for: " << filename << std::endl;
 				const char* err = shader.getInfoLog();
 				err = shader.getInfoDebugLog();
 				return ShaderByteCode();
@@ -141,7 +123,7 @@ namespace RayEngine
 			glslang::TProgram program;
 			program.addShader(&shader);
 
-			if (!program.link(messages))
+			if (!program.link(static_cast<EShMessages>(messages)))
 			{
 				const char* err = shader.getInfoLog();
 				err = shader.getInfoDebugLog();
@@ -153,7 +135,6 @@ namespace RayEngine
 			spv::SpvBuildLogger logger;
 			glslang::SpvOptions spvOptions;
 			glslang::GlslangToSpv(*program.getIntermediate(shaderType), spirV, &logger, &spvOptions);
-
 
 			return ShaderByteCode(info.Type, info.SrcLang,
 				reinterpret_cast<int8*>(spirV.data()), static_cast<int32>(spirV.size()) * sizeof(uint32));
@@ -201,6 +182,27 @@ namespace RayEngine
 		{
 			m_ReferenceCount++;
 			return m_ReferenceCount;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		EShLanguage VulkShaderCompiler::GetShaderType(SHADER_TYPE type)
+		{
+			if (type == SHADER_TYPE_VERTEX)
+				return EShLangVertex;
+			else if (type == SHADER_TYPE_HULL)
+				return EShLangTessControl;
+			else if (type == SHADER_TYPE_DOMAIN)
+				return EShLangTessEvaluation;
+			else if (type == SHADER_TYPE_GEOMETRY)
+				return EShLangGeometry;
+			else if (type == SHADER_TYPE_PIXEL)
+				return EShLangFragment;
+			else if (type == SHADER_TYPE_COMPUTE)
+				return EShLangCompute;
+
+			return static_cast<EShLanguage>(0);
 		}
 	}
 }

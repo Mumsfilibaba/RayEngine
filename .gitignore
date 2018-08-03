@@ -15,7 +15,6 @@ TestApp/TestApp.Packaging/x86/Debug/Package/bin/TestApp.Packaging.ap_
 TestApp/TestApp.Packaging/x86/Debug/Package/build.xml
 TestApp/TestApp.Packaging/x86/Debug/Package/libs/x86/gdbserver
 *.obj
-*.lib
 .vs/RayEngine/DesignTimeBuild/.dtbcache
 *.idb
 *.pdb
@@ -27,3 +26,5 @@ Samples/CrossPlatform/AndroidApp/Tegra-Android/Debug/build/nsight_tegra_manifest
 .vs/RayEngine/DesignTimeBuild/.dtbcache
 *.gradle
 *.exe
+Debug/RayEngine.lib
+*.lib
