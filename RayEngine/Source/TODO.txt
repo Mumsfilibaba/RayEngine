@@ -20,6 +20,7 @@ TODO:
 -Create rendertargets for swapchain during creation?
 
 -ITexture - GetType
+-ShaderCompiler use ptr as input for output 
 -DX12 - RenderTargetView - Setup a desc
 -DX12 - DepthStencilView - Setup a desc
 -DX11/DX12 - Bufferusage flags

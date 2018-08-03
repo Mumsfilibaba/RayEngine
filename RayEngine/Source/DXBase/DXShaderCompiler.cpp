@@ -62,6 +62,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ShaderByteCode DXShaderCompiler::CompileFromString(const std::string& src, const ShaderCompileInfo& info) const
 		{
+			if (info.SrcLang == SHADER_SOURCE_LANG_GLSL)
+				return ShaderByteCode();
+
+
 			using namespace Microsoft::WRL;
 
 			ComPtr<ID3DBlob> shader;

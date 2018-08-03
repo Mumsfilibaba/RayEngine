@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\Graphics\IShaderCompiler.h"
+#include <glslang/Public/ShaderLang.h>
 
 namespace RayEngine
 {

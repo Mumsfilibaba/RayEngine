@@ -76,8 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\VulkanSDK\1.1.73.0\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Dependencies;C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.73.0\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -117,7 +117,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;glslangd.lib;SPIRVd.lib;HLSLd.lib;OSDependentd.lib;OGLCompilerd.lib;SPIRV-Tools-optd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-linkd.lib;SPIRV-Tools-optd.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
