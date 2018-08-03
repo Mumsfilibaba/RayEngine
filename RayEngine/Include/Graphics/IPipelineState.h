@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-#include "..\Defines.h"
-#include "..\Types.h"
 #include "IShader.h"
 #include "IRootSignature.h"
 
@@ -148,7 +146,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IPipelineState : public IReferenceCounter
+		class IPipelineState : public RefCounter
 		{
 		public:
 			IPipelineState(IPipelineState&& other) = delete;

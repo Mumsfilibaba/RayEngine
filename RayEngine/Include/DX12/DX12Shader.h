@@ -25,20 +25,10 @@ namespace RayEngine
 			SHADER_TYPE GetType() const override final;
 			IDevice* GetDevice() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			IDevice* m_Device;
-			
-			D3D12_SHADER_BYTECODE m_Shader;
 			SHADER_TYPE m_Type;
-
-			mutable uint32 m_ReferenceCount;
+			D3D12_SHADER_BYTECODE m_Shader;
 		};
 	}
 }

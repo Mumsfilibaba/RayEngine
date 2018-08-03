@@ -11,8 +11,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		VulkShaderCompiler::VulkShaderCompiler(IFactory* pFactory, bool debug)
-			: m_Factory(nullptr),
-			m_ReferenceCount(0)
+			: m_Factory(nullptr)
 		{
 			static bool glslangInitialized = false;
 			if (!glslangInitialized)
@@ -146,42 +145,6 @@ namespace RayEngine
 		IFactory* VulkShaderCompiler::GetFactory() const
 		{
 			return m_Factory;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* VulkShaderCompiler::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkShaderCompiler::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void VulkShaderCompiler::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkShaderCompiler::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

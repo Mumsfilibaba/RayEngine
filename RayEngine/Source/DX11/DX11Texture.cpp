@@ -10,8 +10,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: m_Device(nullptr),
-			m_Type(TEXTURE_TYPE_UNKNOWN),
-			m_ReferenceCount(0)
+			m_Type(TEXTURE_TYPE_UNKNOWN)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -24,8 +23,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Texture::DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource)
 			: m_Device(nullptr),
-			m_Type(TEXTURE_TYPE_2D),
-			m_ReferenceCount(0)
+			m_Type(TEXTURE_TYPE_2D)
 		{
 			AddRef();
 
@@ -96,42 +94,6 @@ namespace RayEngine
 		IDevice* DX11Texture::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11Texture::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Texture::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11Texture::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Texture::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

@@ -11,8 +11,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: DX12Resource(),
-			m_Device(nullptr),
-			m_ReferenceCount(0)
+			m_Device(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -26,8 +25,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(IDevice* pDevice, ID3D12Resource* pResource)
 			: DX12Resource(), 
-			m_Device(nullptr),
-			m_ReferenceCount(0)
+			m_Device(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -62,42 +60,6 @@ namespace RayEngine
 		IDevice* DX12Texture::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12Texture::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Texture::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Texture::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Texture::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

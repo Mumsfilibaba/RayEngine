@@ -29,13 +29,6 @@ namespace RayEngine
 			bool CreateShaderCompiler(IShaderCompiler** ppCompiler) override final;
 
 			GRAPHICS_API GetGraphicsApi() const override final;
-			
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
 
 		private:
 			void Create(bool debugLayers);
@@ -43,8 +36,6 @@ namespace RayEngine
 		private:
 			VkInstance m_Instance;
 			VkDebugReportCallbackEXT m_DbgCallback;
-
-			mutable uint32 m_ReferenceCount;
 
 		public:
 			static bool InstanceLayersSupported(const char* const * ppNeededLayers, int32 count);

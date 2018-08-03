@@ -33,24 +33,14 @@ namespace RayEngine
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
 			System::Log* GetDeviceLog() override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IFactory* pFactory, const DeviceInfo& deviceInfo);
 
 		private:
 			IFactory* m_Factory;
-
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
 			System::Log m_Log;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

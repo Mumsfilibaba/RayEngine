@@ -9,7 +9,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12DescriptorHeap : public IReferenceCounter
+		class DX12DescriptorHeap : public RefCounter
 		{
 		public:
 			DX12DescriptorHeap(const DX12DescriptorHeap& other) = delete;
@@ -23,24 +23,14 @@ namespace RayEngine
 
 			D3D12_CPU_DESCRIPTOR_HANDLE GetNext() const;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 
 		private:
 			IDevice* m_Device;
-			
 			ID3D12DescriptorHeap* m_Heap;
 			int32 m_DescriptorSize;
 			mutable int32 m_Count;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

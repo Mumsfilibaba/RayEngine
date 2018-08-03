@@ -42,19 +42,11 @@ namespace RayEngine
 			
 			IFactory* GetFactory() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
 		private:
 			IFactory* m_Factory;
-
 			IDXGIAdapter1* m_Adapter;
 			ID3D12Device* m_Device;
 			ID3D12DebugDevice* m_DebugDevice;
@@ -63,10 +55,7 @@ namespace RayEngine
 			DX12DescriptorHeap* m_ResourceHeap;
 			DX12DescriptorHeap* m_DsvHeap;
 			DX12DescriptorHeap* m_RtvHeap;
-
 			mutable System::Log m_Log;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

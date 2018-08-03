@@ -34,27 +34,17 @@ namespace RayEngine
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
 			System::Log* GetDeviceLog() override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
 		private:
 			IFactory* m_Factory;
-
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;
 			ID3D11DeviceContext* m_ImmediateContext;
 			ID3D11Debug* m_DebugDevice;
 			D3D_FEATURE_LEVEL m_FeatureLevel;
 			System::Log m_Log;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

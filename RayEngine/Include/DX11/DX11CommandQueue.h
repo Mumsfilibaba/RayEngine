@@ -49,13 +49,6 @@ namespace RayEngine
 
 			IDevice* GetDevice() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const CommandQueueInfo& info);
 
@@ -64,8 +57,6 @@ namespace RayEngine
 
 			ID3D11DeviceContext* m_DefferedContext;
 			mutable ID3D11CommandList* m_List;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

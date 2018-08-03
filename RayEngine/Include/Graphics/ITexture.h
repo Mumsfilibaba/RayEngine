@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\IReferenceCounter.h"
+#include "..\RefCounter.h"
 
 namespace RayEngine
 {
@@ -59,7 +59,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ITexture : public IReferenceCounter
+		class ITexture : public RefCounter
 		{
 		public:
 			ITexture(const ITexture& other) = delete;

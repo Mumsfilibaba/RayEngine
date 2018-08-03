@@ -32,7 +32,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ISwapchain : public IReferenceCounter
+		class ISwapchain : public RefCounter
 		{
 		public:
 			ISwapchain(ISwapchain&& other) = delete;

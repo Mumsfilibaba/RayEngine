@@ -9,7 +9,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12DynamicUploadHeap : IReferenceCounter
+		class DX12DynamicUploadHeap : public RefCounter
 		{
 		public:
 			DX12DynamicUploadHeap(const DX12DynamicUploadHeap& other) = delete;
@@ -27,25 +27,15 @@ namespace RayEngine
 			ID3D12Heap* GetD3D12Heap() const;
 			ID3D12Resource* GetD3D12Resource() const;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes);
 
 		private:
 			IDevice* m_Device;
-			
 			ID3D12Heap* m_Heap;
 			ID3D12Resource* m_Resource;
 			D3D12_RESOURCE_STATES m_State;
 			int32 m_SizeInBytes;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

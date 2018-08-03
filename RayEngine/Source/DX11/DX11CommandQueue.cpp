@@ -15,8 +15,7 @@ namespace RayEngine
 		DX11CommandQueue::DX11CommandQueue(IDevice* pDevice, const CommandQueueInfo& info)
 			: m_Device(nullptr),
 			m_DefferedContext(nullptr),
-			m_List(nullptr),
-			m_ReferenceCount(0)
+			m_List(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -254,42 +253,6 @@ namespace RayEngine
 		IDevice* DX11CommandQueue::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11CommandQueue::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11CommandQueue::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11CommandQueue::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11CommandQueue::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

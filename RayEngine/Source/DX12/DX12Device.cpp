@@ -25,8 +25,7 @@ namespace RayEngine
 			m_UploadQueue(nullptr),
 			m_ResourceHeap(nullptr),
 			m_DsvHeap(nullptr),
-			m_RtvHeap(nullptr),
-			m_ReferenceCount(0)
+			m_RtvHeap(nullptr)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory);
@@ -214,43 +213,7 @@ namespace RayEngine
 		{
 			return m_UploadHeap;
 		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12Device::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Device::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Device::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////s
-		uint32 DX12Device::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
-		}
-
+		
 
 
 		/////////////////////////////////////////////////////////////

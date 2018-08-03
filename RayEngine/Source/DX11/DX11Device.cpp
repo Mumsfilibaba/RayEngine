@@ -23,7 +23,6 @@ namespace RayEngine
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			m_ImmediateContext(nullptr),
-			m_ReferenceCount(0),
 			m_FeatureLevel()
 		{
 			AddRef();
@@ -145,42 +144,6 @@ namespace RayEngine
 		IFactory* DX11Device::GetFactory() const
 		{
 			return m_Factory;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11Device::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Device::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11Device::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Device::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

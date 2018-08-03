@@ -11,8 +11,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DepthStencilView::DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info)
 			: DX12View(),
-			m_Device(nullptr),
-			m_ReferenceCount(0)
+			m_Device(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice);
@@ -38,42 +37,6 @@ namespace RayEngine
 		IDevice* DX12DepthStencilView::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12DepthStencilView::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12DepthStencilView::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12DepthStencilView::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12DepthStencilView::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

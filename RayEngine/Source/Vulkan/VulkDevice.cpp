@@ -12,8 +12,7 @@ namespace RayEngine
 		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo)
 			: m_Factory(nullptr),
 			m_Device(nullptr),
-			m_Adapter(nullptr),
-			m_ReferenceCount(0)
+			m_Adapter(nullptr)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
@@ -133,42 +132,6 @@ namespace RayEngine
 		VkPhysicalDevice VulkDevice::GetVkPhysicalDevice() const
 		{
 			return m_Adapter;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* VulkDevice::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkDevice::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void VulkDevice::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkDevice::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

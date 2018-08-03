@@ -43,13 +43,6 @@ namespace RayEngine
 			PIPELINE_TYPE GetPipelineType() const override final;
 			IDevice* GetDevice() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void ReleaseInterfaces();
 			void Create(IDevice* pDevice, const PipelineStateInfo& info);
@@ -79,8 +72,6 @@ namespace RayEngine
 			DX11Shader* m_PixelShader;
 			DX11Shader* m_ComputeShader;
 			PIPELINE_TYPE m_Type;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

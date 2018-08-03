@@ -18,8 +18,7 @@ namespace RayEngine
 			m_Swapchain(nullptr),
 			m_Texture(nullptr),
 			m_BufferCount(0),
-			m_CurrentBuffer(0),
-			m_ReferenceCount(0)
+			m_CurrentBuffer(0)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory);
@@ -107,42 +106,6 @@ namespace RayEngine
 		ICommandQueue* DX11Swapchain::GetCommandQueue() const
 		{
 			return m_CommandQueue;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11Swapchain::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Swapchain::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11Swapchain::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Swapchain::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

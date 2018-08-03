@@ -26,13 +26,6 @@ namespace RayEngine
 			PIPELINE_TYPE GetPipelineType() const override final;
 			IDevice* GetDevice() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const PipelineStateInfo& info);
 			void CreateGraphicsState(IDevice* pDevice, ID3D12RootSignature* pRootSignature, const PipelineStateInfo& info);
@@ -47,11 +40,8 @@ namespace RayEngine
 
 		private:
 			IDevice* m_Device;
-			
 			ID3D12PipelineState* m_PipelineState;
 			PIPELINE_TYPE m_Type;
-			
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

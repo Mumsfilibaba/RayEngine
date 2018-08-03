@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\IReferenceCounter.h"
+#include "..\RefCounter.h"
 
 namespace RayEngine
 {
@@ -68,7 +68,7 @@ namespace RayEngine
 		
 
 		/////////////////////////////////////////////////////////////
-		class IShader : public IReferenceCounter
+		class IShader : public RefCounter
 		{
 		public:
 			IShader(IShader&& other) = delete;

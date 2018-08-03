@@ -32,6 +32,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IDXGIFactory5* DX12Factory::GetDXGIFactory() const
+		{
+			return m_Factory;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Factory::EnumerateAdapters(AdapterList& list) const
 		{
 			using namespace Microsoft::WRL;
@@ -100,50 +108,6 @@ namespace RayEngine
 		GRAPHICS_API DX12Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D12;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IDXGIFactory5* DX12Factory::GetDXGIFactory() const
-		{
-			return m_Factory;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12Factory::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Factory::GetReferenceCount() const
-		{
-			return m_ReferenceCounter;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Factory::Release() const
-		{
-			m_ReferenceCounter--;
-			if (m_ReferenceCounter < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Factory::AddRef()
-		{
-			m_ReferenceCounter++;
-			return m_ReferenceCounter;
 		}
 
 

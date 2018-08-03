@@ -22,8 +22,7 @@ namespace RayEngine
 			m_PixelShader(nullptr),
 			m_ComputeShader(nullptr),
 			m_SampleMask(0),
-			m_Type(PIPELINE_TYPE_UNKNOWN),
-			m_ReferenceCount(0)
+			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice->QueryReference());
@@ -197,42 +196,6 @@ namespace RayEngine
 		IDevice* DX11PipelineState::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11PipelineState::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11PipelineState::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11PipelineState::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

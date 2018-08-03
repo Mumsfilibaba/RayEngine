@@ -32,42 +32,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IReferenceCounter* VulkRenderTargetView::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkRenderTargetView::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void VulkRenderTargetView::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkRenderTargetView::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		void VulkRenderTargetView::Create(IDevice* pDevice, const RenderTargetViewInfo& info)
 		{
 			using namespace System;

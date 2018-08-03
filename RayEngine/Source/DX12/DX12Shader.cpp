@@ -11,8 +11,7 @@ namespace RayEngine
 		DX12Shader::DX12Shader(IDevice* pDevice, const ShaderByteCode& bytecode)
 			: m_Device(nullptr),
 			m_Type(bytecode.GetType()),
-			m_Shader(),
-			m_ReferenceCount(0)
+			m_Shader()
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -66,42 +65,6 @@ namespace RayEngine
 		const D3D12_SHADER_BYTECODE* DX12Shader::GetD3D12ByteCode() const
 		{
 			return &m_Shader;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12Shader::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Shader::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Shader::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Shader::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 	}
 }

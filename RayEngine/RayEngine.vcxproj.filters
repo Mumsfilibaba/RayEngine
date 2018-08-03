@@ -324,6 +324,9 @@
     <ClInclude Include="Include\Vulkan\VulkShaderCompiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\RefCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -600,6 +603,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Vulkan\VulkShaderCompiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RefCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

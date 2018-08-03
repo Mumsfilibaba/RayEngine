@@ -29,20 +29,12 @@ namespace RayEngine
 			void* Map(int32 subresource) override final;
 			void Unmap() override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
 			void CreateView(IDevice* pDevice, const BufferInfo& usage);
 
 		private:
 			IDevice* m_Device;
-			
 			BUFFER_USAGE m_BufferType;
 			union 
 			{
@@ -50,8 +42,6 @@ namespace RayEngine
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;
-
-			mutable uint32 m_ReferenceCounter;
 		};
 	}
 }

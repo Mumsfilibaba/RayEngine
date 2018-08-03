@@ -20,8 +20,7 @@ namespace RayEngine
 			m_Allocator(nullptr),
 			m_List(nullptr),
 			m_Fence(nullptr),
-			m_CurrentFence(0),
-			m_ReferenceCounter(0)
+			m_CurrentFence(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -326,42 +325,6 @@ namespace RayEngine
 		ID3D12CommandQueue* DX12CommandQueue::GetD3D12CommandQueue() const
 		{
 			return m_Queue;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12CommandQueue::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12CommandQueue::GetReferenceCount() const
-		{
-			return m_ReferenceCounter;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::Release() const
-		{
-			m_ReferenceCounter--;
-			if (m_ReferenceCounter < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12CommandQueue::AddRef()
-		{
-			m_ReferenceCounter++;
-			return m_ReferenceCounter;
 		}
 
 

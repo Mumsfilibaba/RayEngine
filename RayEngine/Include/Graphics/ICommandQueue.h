@@ -22,7 +22,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ICommandQueue : public IReferenceCounter
+		class ICommandQueue : public RefCounter
 		{
 		public:
 			ICommandQueue(ICommandQueue&& other) = delete;

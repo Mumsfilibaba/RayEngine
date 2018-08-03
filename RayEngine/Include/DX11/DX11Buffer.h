@@ -28,13 +28,6 @@ namespace RayEngine
 			void* Map(int32 subresource) override final;
 			void Unmap() override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
 
@@ -43,8 +36,6 @@ namespace RayEngine
 
 			ID3D11Buffer* m_Resource;
 			int32 m_ByteStride;
-
-			mutable uint32 m_ReferenceCounter;
 		};
 	}
 }

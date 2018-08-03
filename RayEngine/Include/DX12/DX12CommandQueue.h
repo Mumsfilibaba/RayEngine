@@ -53,26 +53,16 @@ namespace RayEngine
 			IDevice* GetDevice() const override final;
 			ID3D12CommandQueue* GetD3D12CommandQueue() const;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const CommandQueueInfo& info);
 
 		private:
 			IDevice* m_Device;
-			
 			ID3D12CommandQueue* m_Queue;
 			ID3D12CommandAllocator* m_Allocator;
 			ID3D12GraphicsCommandList* m_List;
 			ID3D12Fence* m_Fence;
 			mutable uint64 m_CurrentFence;
-			
-			mutable uint32 m_ReferenceCounter;
 		};
 	}
 }

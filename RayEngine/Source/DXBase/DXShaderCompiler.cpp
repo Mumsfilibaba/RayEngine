@@ -12,8 +12,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DXShaderCompiler::DXShaderCompiler(IFactory* pFactory, bool debug)
 			: m_Factory(nullptr),
-			m_Flags(0),
-			m_ReferenceCount(0)
+			m_Flags(0)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
@@ -88,42 +87,6 @@ namespace RayEngine
 		IFactory* DXShaderCompiler::GetFactory() const
 		{
 			return m_Factory;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DXShaderCompiler::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DXShaderCompiler::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DXShaderCompiler::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DXShaderCompiler::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

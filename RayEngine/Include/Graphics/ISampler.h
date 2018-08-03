@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\IReferenceCounter.h"
+#include "..\RefCounter.h"
 
 namespace RayEngine
 {
@@ -20,7 +20,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ISampler : public IReferenceCounter
+		class ISampler : public RefCounter
 		{
 		public:
 			ISampler(ISampler&& other) = delete;
@@ -32,7 +32,7 @@ namespace RayEngine
 			ISampler() {}
 			virtual ~ISampler() {}
 
-			virtual IDevice* 
+			virtual IDevice* GetDevice();
 		};
 	}
 }

@@ -13,8 +13,7 @@ namespace RayEngine
 		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateInfo& info)
 			: m_Device(nullptr),
 			m_PipelineState(nullptr),
-			m_Type(PIPELINE_TYPE_UNKNOWN),
-			m_ReferenceCount(0)
+			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -57,42 +56,6 @@ namespace RayEngine
 		ID3D12PipelineState* DX12PipelineState::GetD3D12PipelineState() const
 		{
 			return m_PipelineState;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12PipelineState::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12PipelineState::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12PipelineState::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12PipelineState::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

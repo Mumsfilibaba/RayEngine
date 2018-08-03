@@ -11,8 +11,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11RenderTargetView::DX11RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
 			: m_Device(nullptr),
-			m_View(nullptr),
-			m_ReferenceCount(0)
+			m_View(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -47,42 +46,6 @@ namespace RayEngine
 		IDevice* DX11RenderTargetView::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11RenderTargetView::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11RenderTargetView::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11RenderTargetView::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11RenderTargetView::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

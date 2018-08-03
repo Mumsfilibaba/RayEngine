@@ -17,7 +17,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDepthStencilView : public IReferenceCounter
+		class IDepthStencilView : public RefCounter
 		{
 		public:
 			IDepthStencilView(IDepthStencilView&& other) = delete;

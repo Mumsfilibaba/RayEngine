@@ -13,8 +13,7 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_Heap(nullptr),
 			m_Count(0),
-			m_DescriptorSize(0),
-			m_ReferenceCount(0)
+			m_DescriptorSize(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -44,42 +43,6 @@ namespace RayEngine
 
 			m_Count++;
 			return next;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12DescriptorHeap::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12DescriptorHeap::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12DescriptorHeap::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////s
-		uint32 DX12DescriptorHeap::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

@@ -13,7 +13,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Factory::DX11Factory(bool debugLayer)
 			: m_Factory(nullptr),
-			m_ReferenceCounter(0),
 			m_DebugLayer(debugLayer)
 		{
 			AddRef();
@@ -115,42 +114,6 @@ namespace RayEngine
 		GRAPHICS_API DX11Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D11;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11Factory::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Factory::GetReferenceCount() const
-		{
-			return m_ReferenceCounter;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11Factory::Release() const
-		{
-			m_ReferenceCounter--;
-			if (m_ReferenceCounter < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Factory::AddRef()
-		{
-			m_ReferenceCounter++;
-			return m_ReferenceCounter;
 		}
 
 

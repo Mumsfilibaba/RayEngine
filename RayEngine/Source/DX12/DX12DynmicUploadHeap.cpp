@@ -12,7 +12,6 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_Resource(nullptr),
 			m_Heap(nullptr),
-			m_ReferenceCount(0),
 			m_SizeInBytes(0),
 			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
@@ -73,42 +72,6 @@ namespace RayEngine
 		ID3D12Resource* DX12DynamicUploadHeap::GetD3D12Resource() const
 		{
 			return m_Resource;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12DynamicUploadHeap::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12DynamicUploadHeap::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12DynamicUploadHeap::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12DynamicUploadHeap::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

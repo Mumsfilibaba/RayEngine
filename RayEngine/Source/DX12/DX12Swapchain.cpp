@@ -15,8 +15,7 @@ namespace RayEngine
 			m_CommandQueue(nullptr),
 			m_Swapchain(nullptr),
 			m_CurrentBuffer(0),
-			m_Textures(),
-			m_ReferenceCount(0)
+			m_Textures()
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
@@ -101,42 +100,6 @@ namespace RayEngine
 		ICommandQueue* DX12Swapchain::GetCommandQueue() const
 		{
 			return m_CommandQueue;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12Swapchain::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Swapchain::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Swapchain::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12Swapchain::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

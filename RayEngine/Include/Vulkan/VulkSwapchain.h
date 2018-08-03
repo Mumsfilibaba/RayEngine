@@ -31,13 +31,6 @@ namespace RayEngine
 			IFactory* GetFactory() const override final;
 			ICommandQueue* GetCommandQueue() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void ReleaseObjects();
 			void Create(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
@@ -50,13 +43,10 @@ namespace RayEngine
 			IDevice* m_Device;
 			IFactory* m_Factory;
 			ICommandQueue* m_CommandQueue;
-
 			VkSurfaceFormatKHR m_Format;
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;
 			std::vector<VulkTexture*> m_Textures;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

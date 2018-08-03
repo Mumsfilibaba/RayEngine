@@ -29,13 +29,6 @@ namespace RayEngine
 			IFactory* GetFactory() const override final;
 			ICommandQueue* GetCommandQueue() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IFactory* pFactory, const SwapchainInfo& info);
 			void CreateTextures(int32 bufferCount);
@@ -43,12 +36,9 @@ namespace RayEngine
 		private:
 			IFactory* m_Factory;
 			ICommandQueue* m_CommandQueue;
-			
 			IDXGISwapChain1* m_Swapchain;
 			std::vector<DX12Texture*> m_Textures;
 			mutable int32 m_CurrentBuffer;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

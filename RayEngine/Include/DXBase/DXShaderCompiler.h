@@ -25,22 +25,12 @@ namespace RayEngine
 			
 			IFactory* GetFactory() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			std::string GetShaderModel(SHADER_TYPE type) const;
 
 		private:
 			IFactory* m_Factory;
-
 			int32 m_Flags;
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

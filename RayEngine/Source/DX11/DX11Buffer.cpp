@@ -11,8 +11,7 @@ namespace RayEngine
 		DX11Buffer::DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
 			: m_Device(nullptr),
 			m_Resource(nullptr),
-			m_ByteStride(0),
-			m_ReferenceCounter(0)
+			m_ByteStride(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -77,42 +76,6 @@ namespace RayEngine
 		IDevice* DX11Buffer::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11Buffer::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Buffer::GetReferenceCount() const
-		{
-			return m_ReferenceCounter;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11Buffer::Release() const
-		{
-			m_ReferenceCounter--;
-			if (m_ReferenceCounter < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Buffer::AddRef()
-		{
-			m_ReferenceCounter++;
-			return m_ReferenceCounter;
 		}
 
 

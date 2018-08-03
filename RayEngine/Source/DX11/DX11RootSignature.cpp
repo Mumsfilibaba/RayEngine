@@ -9,8 +9,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX11RootSignature::DX11RootSignature(IDevice* pDevice, const RootSignatureInfo& info)
-			: m_Device(nullptr),
-			m_ReferenceCount(0)
+			: m_Device(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -36,42 +35,6 @@ namespace RayEngine
 		IDevice* DX11RootSignature::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11RootSignature::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11RootSignature::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11RootSignature::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11RootSignature::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount++;;
 		}
 
 

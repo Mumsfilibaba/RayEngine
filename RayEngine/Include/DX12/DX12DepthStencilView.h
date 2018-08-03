@@ -24,20 +24,11 @@ namespace RayEngine
 
 			IDevice* GetDevice() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const DepthStencilViewInfo& info);
 
 		private:
 			IDevice* m_Device;
-			
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }

@@ -31,21 +31,12 @@ namespace RayEngine
 
 			GRAPHICS_API GetGraphicsApi() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(bool debugLayer);
 
 		private:
 			ID3D12Debug* m_DebugController;
 			IDXGIFactory5* m_Factory;
-
-			mutable uint32 m_ReferenceCounter;
 
 		private:
 			static void FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC1& desc);

@@ -25,8 +25,7 @@ namespace RayEngine
 			m_CommandQueue(nullptr),
 			m_Swapchain(0),
 			m_Surface(0),
-			m_Format(),
-			m_ReferenceCount(0)
+			m_Format()
 		{
 			AddRef();
 
@@ -110,42 +109,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IReferenceCounter* VulkSwapchain::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkSwapchain::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void VulkSwapchain::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 VulkSwapchain::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////s
 		void VulkSwapchain::ReleaseObjects()
 		{
 			if (m_Surface != 0)

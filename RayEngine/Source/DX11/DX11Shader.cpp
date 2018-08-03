@@ -12,7 +12,6 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_VertexShader(nullptr),
 			m_Type(SHADER_TYPE_UNKNOWN),
-			m_ReferenceCount(0),
 			m_ByteCode()
 		{
 			AddRef();
@@ -104,42 +103,6 @@ namespace RayEngine
 		IDevice* DX11Shader::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX11Shader::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Shader::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11Shader::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX11Shader::AddRef()
-		{
-			m_ReferenceCount++;
-			return m_ReferenceCount;
 		}
 
 

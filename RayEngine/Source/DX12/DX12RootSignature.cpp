@@ -12,8 +12,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12RootSignature::DX12RootSignature(IDevice* pDevice, const RootSignatureInfo& info)
 			: m_Device(nullptr),
-			m_RootSignature(nullptr),
-			m_ReferenceCount(0)
+			m_RootSignature(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -48,41 +47,6 @@ namespace RayEngine
 		IDevice* DX12RootSignature::GetDevice() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IReferenceCounter* DX12RootSignature::QueryReference()
-		{
-			AddRef();
-			return this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12RootSignature::GetReferenceCount() const
-		{
-			return m_ReferenceCount;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12RootSignature::Release() const
-		{
-			m_ReferenceCount--;
-			if (m_ReferenceCount < 1)
-				delete this;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		uint32 DX12RootSignature::AddRef()
-		{
-			return m_ReferenceCount;
 		}
 
 

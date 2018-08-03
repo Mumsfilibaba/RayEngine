@@ -29,13 +29,6 @@ namespace RayEngine
 			RESOURCE_STATE GetResourceState() const override final;
 			IDevice* GetDevice() const override final;
 
-			IReferenceCounter* QueryReference() override final;
-			uint32 GetReferenceCount() const override final;
-			void Release() const override final;
-
-		protected:
-			uint32 AddRef() override final;
-
 		private:
 			void Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
 
@@ -49,8 +42,6 @@ namespace RayEngine
 				ID3D11Texture2D* m_Texture2D;
 				ID3D11Texture3D* m_Texture3D;
 			};
-
-			mutable uint32 m_ReferenceCount;
 		};
 	}
 }
