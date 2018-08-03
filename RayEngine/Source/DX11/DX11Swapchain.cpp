@@ -21,7 +21,7 @@ namespace RayEngine
 			m_CurrentBuffer(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<IFactory*>(pFactory);
+			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
 
 			Create(pFactory, info);
 		}
