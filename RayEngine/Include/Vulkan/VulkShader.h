@@ -19,19 +19,19 @@ namespace RayEngine
 			VulkShader(IDevice* pDevice, const ShaderByteCode& byteCode);
 			~VulkShader();
 
-			//TODO: Need to store the name of the mainfunc
-
+			const std::string& GetEntryPoint() const;
 			VkShaderModule GetVkShaderModule() const;
 			SHADER_TYPE GetType() const override final;
 			IDevice* GetDevice() const override final;
 
 		private:
-			void Create(IDevice* pDevice, const ShaderByteCode& byeCode);
+			void Create(IDevice* pDevice, const ShaderByteCode& byteCode);
 
 		private:
 			IDevice* m_Device;
 			SHADER_TYPE m_Type;
 			VkShaderModule m_Module;
+			std::string m_EntryPoint;
 		};
 	}
 }

@@ -40,17 +40,18 @@ namespace RayEngine
 		{
 		public:
 			ShaderByteCode();
-			ShaderByteCode(SHADER_TYPE type, SHADER_SOURCE_LANG srcLang, int8* pBytes, int32 size);
+			ShaderByteCode(const std::string& entryPoint, SHADER_TYPE type, SHADER_SOURCE_LANG srcLang, int8* pBytes, int32 size);
 			ShaderByteCode(const ShaderByteCode& other);
 			ShaderByteCode(ShaderByteCode&& other);
 			~ShaderByteCode();
 
 			int8* Detach();
 
-			SHADER_SOURCE_LANG GetSourceLanguage() const;
-			SHADER_TYPE GetType() const;
-			const int8* GetBytes() const;
+			const std::string& GetEntryPoint() const;
 			int32 GetSize() const;
+			const int8* GetBytes() const;
+			SHADER_TYPE GetType() const;
+			SHADER_SOURCE_LANG GetSourceLanguage() const;
 
 			ShaderByteCode& operator=(const ShaderByteCode& other);
 			ShaderByteCode& operator=(ShaderByteCode&& other);
@@ -63,6 +64,7 @@ namespace RayEngine
 			SHADER_TYPE m_Type;
 			int8* m_Bytes;
 			int32 m_Size;
+			std::string m_EntryPoint;
 		};
 
 		

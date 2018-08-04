@@ -77,5 +77,63 @@ namespace RayEngine
 
 			return VK_FORMAT_UNDEFINED;
 		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkPrimitiveTopology ReToVkPrimitiveTopology(PRIMITIVE_TOPOLOGY topology)
+		{
+			switch (topology)
+			{
+			case PRIMITIVE_TOPOLOGY_TRIANGLELIST: return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+			case PRIMITIVE_TOPOLOGY_TRIANGLESTRIP: return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			case PRIMITIVE_TOPOLOGY_LINELIST: return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+			case PRIMITIVE_TOPOLOGY_LINESTRIP: return VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+			case PRIMITIVE_TOPOLOGY_POINTS: return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+			default: return static_cast<VkPrimitiveTopology>(-1);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkBlendOp ReToVkBlendOp(BLEND_OPERATION operation)
+		{
+			switch (operation)
+			{
+			case BLEND_OPERATION_SUBTRACT: return VK_BLEND_OP_SUBTRACT;
+			case BLEND_OPERATION_REV_SUBTRACT: return VK_BLEND_OP_REVERSE_SUBTRACT;
+			case BLEND_OPERATION_MIN: return VK_BLEND_OP_MIN;
+			case BLEND_OPERATION_MAX: return VK_BLEND_OP_MAX;
+			case BLEND_OPERATION_ADD:
+			case BLEND_OPERATION_UNKNOWN:
+			default: return VK_BLEND_OP_ADD;
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkBlendFactor ReToVkBlendFactor(BLEND_TYPE type)
+		{
+			switch (type)
+			{
+			case BLEND_TYPE_ONE: return VK_BLEND_FACTOR_ONE;
+			case BLEND_TYPE_SRC_COLOR: return VK_BLEND_FACTOR_SRC_COLOR;
+			case BLEND_TYPE_INV_SRC_COLOR: return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+			case BLEND_TYPE_SRC_ALPHA: return VK_BLEND_FACTOR_SRC_ALPHA;
+			case BLEND_TYPE_INV_SRC_ALPHA: return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+			case BLEND_TYPE_DEST_ALPHA: return VK_BLEND_FACTOR_DST_ALPHA;
+			case BLEND_TYPE_INV_DEST_ALPHA: return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+			case BLEND_TYPE_DEST_COLOR: return VK_BLEND_FACTOR_DST_COLOR;
+			case BLEND_TYPE_INV_DEST_COLOR: return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
+			case BLEND_TYPE_SRC_ALPHA_SAT: return VK_BLEND_FACTOR_SRC_ALPHA_SATURATE;
+			case BLEND_TYPE_BLEND_FACTOR: return VK_BLEND_FACTOR_CONSTANT_COLOR;
+			case BLEND_TYPE_INV_BLEND_FACTOR: return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
+			case BLEND_TYPE_ZERO:
+			case BLEND_TYPE_UNKNOWN:
+			default: return VK_BLEND_FACTOR_ZERO;
+			}
+		}
 	}
 }

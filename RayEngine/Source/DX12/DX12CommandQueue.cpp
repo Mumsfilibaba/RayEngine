@@ -143,19 +143,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12CommandQueue::SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const
 		{
-			D3D_PRIMITIVE_TOPOLOGY dxTopology;
-
-			switch (topology)
-			{
-			case PRIMITIVE_TOPOLOGY_TRIANGLELIST: dxTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST; break;
-			case PRIMITIVE_TOPOLOGY_TRIANGLESTRIP: dxTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP; break;
-			case PRIMITIVE_TOPOLOGY_LINELIST: dxTopology = D3D_PRIMITIVE_TOPOLOGY_LINELIST; break;
-			case PRIMITIVE_TOPOLOGY_LINESTRIP: dxTopology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP; break;
-			case PRIMITIVE_TOPOLOGY_POINTS: dxTopology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST; break;
-			default: dxTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED; break;
-			}
-
-			m_List->IASetPrimitiveTopology(dxTopology);
+			m_List->IASetPrimitiveTopology(ReToDXTopology(topology));
 		}
 
 

@@ -38,6 +38,7 @@ namespace RayEngine
 			int32 DataStepRate = 0;
 			int32 InputSlot = 0;
 			int32 ElementOffset = 0;
+			int32 StrideBytes = 0;
 		};
 
 
@@ -91,26 +92,28 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		struct RenderTargetBlendInfo
+		{
+			bool BlendEnable = false;
+			BLEND_TYPE SrcBlend = BLEND_TYPE_ONE;
+			BLEND_TYPE DstBlend = BLEND_TYPE_ZERO;
+			BLEND_OPERATION BlendOperation = BLEND_OPERATION_ADD;
+			BLEND_TYPE SrcAlphaBlend = BLEND_TYPE_ONE;
+			BLEND_TYPE DstAlphaBlend = BLEND_TYPE_ZERO;
+			BLEND_OPERATION AlphaBlendOperation = BLEND_OPERATION_ADD;
+			uint8 RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL;
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
 		struct BlendStateInfo
 		{
 			bool AlphaToCoverageEnable = false;
 			bool IndependentBlendEnable = false;
+			bool LogicOpEnable = false;
 			const float BlendFactor[4];
-			uint32 SampleMask = -1;
-			
-			struct
-			{
-				bool BlendEnable = false;
-				bool LogicOpEnable = false;
-				BLEND_TYPE SrcBlend = BLEND_TYPE_ONE;
-				BLEND_TYPE DstBlend = BLEND_TYPE_ZERO;
-				BLEND_OPERATION BlendOperation = BLEND_OPERATION_ADD;
-				BLEND_TYPE SrcAlphaBlend = BLEND_TYPE_ONE;
-				BLEND_TYPE DstAlphaBlend = BLEND_TYPE_ZERO;
-				BLEND_OPERATION AlphaBlendOperation = BLEND_OPERATION_ADD;
-				uint8 RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL;
-
-			} RenderTargets[8];
+			RenderTargetBlendInfo RenderTargets[8];
 		};
 
 
@@ -121,7 +124,6 @@ namespace RayEngine
 			std::string Name = "";
 			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
 			IRootSignature* pRootSignature = nullptr;
-
 			//TODO: Maybe use a union
 
 			struct
@@ -131,10 +133,21 @@ namespace RayEngine
 				
 			struct
 			{
+				int32 RenderTargetCount = 0;
+				FORMAT RenderTargetFormats[8];
+				FORMAT DepthStencilFormat = FORMAT_UNKNOWN;
+				int32 SampleCount = 1;
+
 				InputLayoutInfo InputLayout;
 				RasterizerStateInfo RasterizerState;
 				DepthStencilStateInfo DepthStencilState;
 				BlendStateInfo BlendState;
+				
+				uint32 SampleMask = -1;
+
+				PRIMITIVE_TOPOLOGY Topology = PRIMITIVE_TOPOLOGY_UNKNOWN;
+				bool StripCutEnable = false;
+				
 				IShader* pVertexShader = nullptr;
 				IShader* pHullShader = nullptr;
 				IShader* pDomainShader = nullptr;

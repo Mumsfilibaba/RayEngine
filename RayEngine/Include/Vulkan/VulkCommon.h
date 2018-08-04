@@ -18,5 +18,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* pSurface, const System::IWindowImpl* pWindow);
 		VkFormat ReToVkFormat(FORMAT format);
+		VkPrimitiveTopology ReToVkPrimitiveTopology(PRIMITIVE_TOPOLOGY topology);
+		VkBlendOp ReToVkBlendOp(BLEND_OPERATION operation);
+		VkBlendFactor ReToVkBlendFactor(BLEND_TYPE type);
 	}
 }

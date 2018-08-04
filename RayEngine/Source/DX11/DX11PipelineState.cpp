@@ -409,7 +409,7 @@ namespace RayEngine
 			m_BlendFactor[1] = info.GraphicsPipeline.BlendState.BlendFactor[1];
 			m_BlendFactor[2] = info.GraphicsPipeline.BlendState.BlendFactor[2];
 			m_BlendFactor[3] = info.GraphicsPipeline.BlendState.BlendFactor[3];
-			m_SampleMask = info.GraphicsPipeline.BlendState.SampleMask;
+			m_SampleMask = info.GraphicsPipeline.SampleMask;
 
 
 			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();

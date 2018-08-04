@@ -144,6 +144,17 @@ int main(int args, char* argsv[])
 
 	device->CreateRootSignature(&rootSignature, rootInfo);
 
+	InputElementInfo elementinfo = { 
+		"POSITION",
+		0,
+		FORMAT_R32G32B32_FLOAT,
+		ELEMENT_STEP_TYPE_VERTEX,
+		0,
+		0,
+		0,
+		sizeof(Math::Vector3)
+	};
+
 	IPipelineState* pipelineState = nullptr;
 	PipelineStateInfo pipelineInfo = {};
 	pipelineInfo.Name = "PipelineState";
@@ -151,8 +162,13 @@ int main(int args, char* argsv[])
 	pipelineInfo.pRootSignature = rootSignature;
 	pipelineInfo.GraphicsPipeline.pVertexShader = vs;
 	pipelineInfo.GraphicsPipeline.pPixelShader = ps;
-
-	InputElementInfo elementinfo = { "POSITION", 0, FORMAT_R32G32B32_FLOAT, ELEMENT_STEP_TYPE_VERTEX, 0, 0, 0 };
+	pipelineInfo.GraphicsPipeline.DepthStencilFormat = FORMAT_D16_UNORM;
+	pipelineInfo.GraphicsPipeline.RenderTargetCount = 1;
+	pipelineInfo.GraphicsPipeline.RenderTargetFormats[0] = scInfo.Buffer.Format;
+	pipelineInfo.GraphicsPipeline.SampleCount = 1;
+	pipelineInfo.GraphicsPipeline.SampleMask = -1;
+	pipelineInfo.GraphicsPipeline.StripCutEnable = false;
+	pipelineInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	pipelineInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
 	pipelineInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
 

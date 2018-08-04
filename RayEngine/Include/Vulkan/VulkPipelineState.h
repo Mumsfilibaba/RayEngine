@@ -1,12 +1,18 @@
 #pragma once
 
 #include "..\Graphics\IPipelineState.h"
-#include "VulkCommon.h"
+#include "VulkShader.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		typedef std::pair<VkVertexInputAttributeDescription, VkVertexInputBindingDescription> VkInputElement;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class VulkPipelineState : public IPipelineState
 		{
 		public:
@@ -26,6 +32,16 @@ namespace RayEngine
 
 		private:
 			void Create(IDevice* pDevice, const PipelineStateInfo& info);
+			void CreateComputePipeline(IDevice* pDevice, const PipelineStateInfo& info);
+			void CreateGraphicsPipeline(IDevice* pDevice, const PipelineStateInfo& info);
+			bool CreateRenderPass(IDevice* pDevice, const PipelineStateInfo& info);
+
+		private:
+			static VkPipelineShaderStageCreateInfo CreateVkPipelineShaderStageCreateInfo(const IShader* pShader);
+			static VkInputElement CreateVkInputElement(const InputElementInfo& info, int32 location);
+			static void CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateInfo& info);
+			static void SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendInfo& info);
+			static void SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateInfo& info);
 
 		private:
 			IDevice * m_Device;

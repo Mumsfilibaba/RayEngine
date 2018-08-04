@@ -36,6 +36,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		const std::string& VulkShader::GetEntryPoint() const
+		{
+			return m_EntryPoint;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VkShaderModule VulkShader::GetVkShaderModule() const
 		{
 			return m_Module;
@@ -81,6 +89,7 @@ namespace RayEngine
 			else
 			{
 				m_Type = byteCode.GetType();
+				m_EntryPoint = byteCode.GetEntryPoint();
 			}
 		}
 	}

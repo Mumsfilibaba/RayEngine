@@ -9,18 +9,20 @@ namespace RayEngine
 			: m_Lang(SHADER_SOURCE_LANG_UNKNOWN),
 			m_Type(SHADER_TYPE_UNKNOWN),
 			m_Bytes(nullptr),
-			m_Size(0)
+			m_Size(0),
+			m_EntryPoint()
 		{
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		ShaderByteCode::ShaderByteCode(SHADER_TYPE type, SHADER_SOURCE_LANG srcLang, int8* bytes, int32 size)
+		ShaderByteCode::ShaderByteCode(const std::string& entryPoint, SHADER_TYPE type, SHADER_SOURCE_LANG srcLang, int8* bytes, int32 size)
 			: m_Lang(srcLang),
 			m_Type(type),
 			m_Bytes(nullptr),
-			m_Size(size)
+			m_Size(size),
+			m_EntryPoint(entryPoint)
 		{
 			m_Bytes = new int8[m_Size];
 			memcpy(m_Bytes, bytes, m_Size);
@@ -33,7 +35,8 @@ namespace RayEngine
 			: m_Lang(other.m_Lang),
 			m_Type(other.m_Type),
 			m_Bytes(nullptr),
-			m_Size(other.m_Size)
+			m_Size(other.m_Size),
+			m_EntryPoint(other.m_EntryPoint)
 		{
 			m_Bytes = new int8[m_Size];
 			memcpy(m_Bytes, other.m_Bytes, m_Size);
@@ -46,7 +49,8 @@ namespace RayEngine
 			: m_Lang(other.m_Lang),
 			m_Type(other.m_Type),
 			m_Bytes(other.m_Bytes),
-			m_Size(other.m_Size)
+			m_Size(other.m_Size),
+			m_EntryPoint(std::move(other.m_EntryPoint))
 		{
 			other.m_Bytes = nullptr;
 			other.m_Lang = SHADER_SOURCE_LANG_UNKNOWN;
@@ -71,6 +75,7 @@ namespace RayEngine
 			m_Type = SHADER_TYPE_UNKNOWN;
 			m_Lang = SHADER_SOURCE_LANG_UNKNOWN;
 			m_Size = 0;
+			m_EntryPoint.clear();
 
 			return bytes;
 		}
@@ -102,6 +107,13 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		const std::string& ShaderByteCode::GetEntryPoint() const
+		{
+			return m_EntryPoint;
+		}
+
+
+		/////////////////////////////////////////////////////////////
 		int32 ShaderByteCode::GetSize() const
 		{
 			return m_Size;
@@ -119,6 +131,7 @@ namespace RayEngine
 				m_Lang = other.m_Lang;
 				m_Type = other.m_Type;
 				m_Size = other.m_Size;
+				m_EntryPoint = other.m_EntryPoint;
 
 				m_Bytes = new int8[m_Size];
 				memcpy(m_Bytes, other.m_Bytes, m_Size);
@@ -145,6 +158,8 @@ namespace RayEngine
 				other.m_Size = 0;
 				other.m_Lang = SHADER_SOURCE_LANG_UNKNOWN;
 				other.m_Type = SHADER_TYPE_UNKNOWN;
+
+				m_EntryPoint.swap(m_EntryPoint);
 			}
 
 			return *this;

@@ -17,7 +17,7 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-#ifdef UNICODE
+#if defined(UNICODE)
 	typedef wchar_t Tchar;
 #else
 	typedef char Tchar;

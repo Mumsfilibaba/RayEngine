@@ -73,7 +73,8 @@ namespace RayEngine
 				return ShaderByteCode();
 			}
 
-			return ShaderByteCode(info.Type, info.SrcLang, reinterpret_cast<int8*>(shader->GetBufferPointer()),
+			return ShaderByteCode(info.EntryPoint, info.Type, info.SrcLang, 
+				reinterpret_cast<int8*>(shader->GetBufferPointer()),
 				static_cast<int32>(shader->GetBufferSize()));
 		}
 
