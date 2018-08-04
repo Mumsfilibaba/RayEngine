@@ -27,11 +27,8 @@ namespace RayEngine
 		DX12PipelineState::~DX12PipelineState()
 		{
 			D3DRelease_S(m_PipelineState);
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			
+			ReRelease_S(m_Device);
 		}
 
 

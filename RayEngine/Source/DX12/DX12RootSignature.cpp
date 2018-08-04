@@ -26,11 +26,8 @@ namespace RayEngine
 		DX12RootSignature::~DX12RootSignature()
 		{
 			D3DRelease_S(m_RootSignature);
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			
+			ReRelease_S(m_Device);
 		}
 
 

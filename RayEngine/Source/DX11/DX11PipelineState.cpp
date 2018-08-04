@@ -208,47 +208,13 @@ namespace RayEngine
 			D3DRelease_S(m_DepthStencilState);
 			D3DRelease_S(m_RasterizerState);
 
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
-
-			if (m_VertexShader != nullptr)
-			{
-				m_VertexShader->Release();
-				m_VertexShader = nullptr;
-			}
-
-			if (m_HullShader != nullptr)
-			{
-				m_HullShader->Release();
-				m_HullShader = nullptr;
-			}
-
-			if (m_DomainShader != nullptr)
-			{
-				m_DomainShader->Release();
-				m_DomainShader = nullptr;
-			}
-
-			if (m_GeometryShader != nullptr)
-			{
-				m_GeometryShader->Release();
-				m_GeometryShader = nullptr;
-			}
-
-			if (m_PixelShader != nullptr)
-			{
-				m_PixelShader->Release();
-				m_PixelShader = nullptr;
-			}
-
-			if (m_ComputeShader != nullptr)
-			{
-				m_ComputeShader->Release();
-				m_ComputeShader = nullptr;
-			}
+			ReRelease_S(m_Device);
+			ReRelease_S(m_VertexShader);
+			ReRelease_S(m_HullShader);
+			ReRelease_S(m_DomainShader);
+			ReRelease_S(m_GeometryShader);
+			ReRelease_S(m_PixelShader);
+			ReRelease_S(m_ComputeShader);
 		}
 
 

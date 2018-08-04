@@ -26,11 +26,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkShaderCompiler::~VulkShaderCompiler()
 		{
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
+			ReRelease_S(m_Factory);
 		}
 
 

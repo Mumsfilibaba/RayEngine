@@ -26,12 +26,7 @@ namespace RayEngine
 				m_View = nullptr;
 			}
 
-
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			ReRelease_S(m_Device);
 		}
 
 

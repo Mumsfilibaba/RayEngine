@@ -23,11 +23,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Buffer::~DX12Buffer()
 		{
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			ReRelease_S(m_Device);
 		}
 
 

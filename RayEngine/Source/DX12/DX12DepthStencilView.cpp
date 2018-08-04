@@ -24,11 +24,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DepthStencilView::~DX12DepthStencilView()
 		{
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			ReRelease_S(m_Device);
 		}
 
 

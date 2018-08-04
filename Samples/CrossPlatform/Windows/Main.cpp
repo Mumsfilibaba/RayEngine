@@ -48,7 +48,7 @@ int main(int args, char* argsv[])
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create(GRAPHICS_API_D3D11, true);
+	IFactory* factory = IFactory::Create(GRAPHICS_API_VULKAN, true);
 	
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
@@ -132,6 +132,32 @@ int main(int args, char* argsv[])
 	IShader* ps = nullptr;
 	device->CreateShader(&ps, psCode);
 
+	IRootSignature* rootSignature = nullptr;
+	RootSignatureInfo rootInfo = {};
+	rootInfo.Name = "RootSignature";
+	rootInfo.ParameterCount = 0;
+	rootInfo.pParameters = nullptr;
+	rootInfo.RootSignatureVisibility =
+		ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT |
+		ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER |
+		ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER;
+
+	device->CreateRootSignature(&rootSignature, rootInfo);
+
+	IPipelineState* pipelineState = nullptr;
+	PipelineStateInfo pipelineInfo = {};
+	pipelineInfo.Name = "PipelineState";
+	pipelineInfo.Type = PIPELINE_TYPE_GRAPHICS;
+	pipelineInfo.pRootSignature = rootSignature;
+	pipelineInfo.GraphicsPipeline.pVertexShader = vs;
+	pipelineInfo.GraphicsPipeline.pPixelShader = ps;
+
+	InputElementInfo elementinfo = { "POSITION", 0, FORMAT_R32G32B32_FLOAT, ELEMENT_STEP_TYPE_VERTEX, 0, 0, 0 };
+	pipelineInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
+	pipelineInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
+
+	device->CreatePipelineState(&pipelineState, pipelineInfo);
+
 
 	TextureInfo dsInfo = {};
 	dsInfo.Name = "DepthStencil-Texture";
@@ -181,33 +207,6 @@ int main(int args, char* argsv[])
 
 	IDepthStencilView* dsv = nullptr;
 	device->CreateDepthStencilView(&dsv, dsvInfo);
-
-
-	IRootSignature* rootSignature = nullptr;
-	RootSignatureInfo rootInfo = {};
-	rootInfo.Name = "RootSignature";
-	rootInfo.ParameterCount = 0;
-	rootInfo.pParameters = nullptr;
-	rootInfo.RootSignatureVisibility =
-		ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT | 
-		ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER | 
-		ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER;
-
-	device->CreateRootSignature(&rootSignature, rootInfo);
-
-	IPipelineState* pipelineState = nullptr;
-	PipelineStateInfo pipelineInfo = {};
-	pipelineInfo.Name = "PipelineState";
-	pipelineInfo.Type = PIPELINE_TYPE_GRAPHICS;
-	pipelineInfo.pRootSignature = rootSignature;
-	pipelineInfo.GraphicsPipeline.pVertexShader = vs;
-	pipelineInfo.GraphicsPipeline.pPixelShader = ps;
-
-	InputElementInfo elementinfo = { "POSITION", 0, FORMAT_R32G32B32_FLOAT, ELEMENT_STEP_TYPE_VERTEX, 0, 0, 0 };
-	pipelineInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
-	pipelineInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
-
-	device->CreatePipelineState(&pipelineState, pipelineInfo);
 
 	queue->Reset();
 	
@@ -388,26 +387,28 @@ int main(int args, char* argsv[])
 
 	queue->Flush();
 
-	texture->Release();
+	ReRelease_S(texture);
 	delete textureData.pData;
 
-	vs->Release();
-	ps->Release();
-	vertexBuffer->Release();
-	dsv->Release();
-	rootSignature->Release();
-	pipelineState->Release();
-	compiler->Release();
-	depthStencil->Release();
+	ReRelease_S(vs);
+	ReRelease_S(ps);
+	ReRelease_S(vertexBuffer);
+	ReRelease_S(dsv);
+	ReRelease_S(rootSignature);
+	ReRelease_S(pipelineState);
+	ReRelease_S(compiler);
+	ReRelease_S(depthStencil);
 
 	for (int32 i = 0; i < bufferCount; i++)
-		rtvs[i]->Release();
+	{
+		ReRelease_S(rtvs[i]);
+	}
 
-	swapchain->Release();
-	queue->Release();
+	ReRelease_S(swapchain);
+	ReRelease_S(queue);
 
-	device->Release();
-	factory->Release();
+	ReRelease_S(device);
+	ReRelease_S(factory);
 
 	return 0;
 }

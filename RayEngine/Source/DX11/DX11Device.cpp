@@ -40,11 +40,7 @@ namespace RayEngine
 			D3DRelease_S(m_Device);
 			D3DRelease_S(m_ImmediateContext);
 
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
+			ReRelease_S(m_Factory);
 
 			m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
 			D3DRelease_S(m_DebugDevice);

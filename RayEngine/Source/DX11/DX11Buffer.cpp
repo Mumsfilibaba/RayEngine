@@ -25,11 +25,8 @@ namespace RayEngine
 		DX11Buffer::~DX11Buffer()
 		{
 			D3DRelease_S(m_Resource);
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			
+			ReRelease_S(m_Device);
 		}
 
 

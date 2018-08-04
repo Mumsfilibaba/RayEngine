@@ -32,29 +32,11 @@ namespace RayEngine
 		DX11Swapchain::~DX11Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
 			
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
-
-			if (m_CommandQueue != nullptr)
-			{
-				m_CommandQueue->Release();
-				m_CommandQueue = nullptr;
-			}
-
-			if (m_Texture != nullptr)
-			{
-				m_Texture->Release();
-				m_Texture = nullptr;
-			}
+			ReRelease_S(m_Device);
+			ReRelease_S(m_Factory);
+			ReRelease_S(m_CommandQueue);
+			ReRelease_S(m_Texture);
 		}
 
 

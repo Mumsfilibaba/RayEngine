@@ -29,12 +29,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Shader::~DX12Shader()
 		{
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
-
+			ReRelease_S(m_Device);
 
 			if (m_Shader.pShaderBytecode != nullptr)
 			{

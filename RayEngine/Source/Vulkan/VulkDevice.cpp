@@ -3,6 +3,9 @@
 #include "..\..\Include\Vulkan\VulkFactory.h"
 #include "..\..\Include\Vulkan\VulkTexture.h"
 #include "..\..\Include\Vulkan\VulkRenderTargetView.h"
+#include "..\..\Include\Vulkan\VulkShader.h"
+#include "..\..\Include\Vulkan\VulkPipelineState.h"
+#include "..\..\Include\Vulkan\VulkRootSignature.h"
 
 namespace RayEngine
 {
@@ -25,11 +28,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkDevice::~VulkDevice()
 		{
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
+			ReRelease_S(m_Factory);
 
 			if (m_Device != nullptr)
 			{
@@ -51,7 +50,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderByteCode& byteCode)
 		{
-			return false;
+			return ((*ppShader = new VulkShader(this, byteCode)));
 		}
 
 
@@ -91,7 +90,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool VulkDevice::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info)
 		{
-			return false;
+			return ((*ppRootSignature = new VulkRootSignature(this, info)));
 		}
 
 
@@ -99,7 +98,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
 		{
-			return false;
+			return ((*ppPipelineState = new VulkPipelineState(this, info)));
 		}
 
 

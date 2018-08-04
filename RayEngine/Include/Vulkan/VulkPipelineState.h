@@ -20,6 +20,7 @@ namespace RayEngine
 			~VulkPipelineState();
 
 			VkPipeline GetVkPipeline() const;
+			VkRenderPass GetVkRenderPass() const;
 			PIPELINE_TYPE GetPipelineType() const override final;
 			IDevice* GetDevice() const override final;
 
@@ -29,6 +30,7 @@ namespace RayEngine
 		private:
 			IDevice * m_Device;
 			VkPipeline m_Pipeline;
+			VkRenderPass m_RenderPass;
 			PIPELINE_TYPE m_Type;
 		};
 	}

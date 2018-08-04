@@ -22,11 +22,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11RootSignature::~DX11RootSignature()
 		{
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			ReRelease_S(m_Device);
 		}
 
 

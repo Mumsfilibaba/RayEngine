@@ -40,11 +40,7 @@ namespace RayEngine
 				m_Image = nullptr;
 			}
 
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			ReRelease_S(m_Device);
 		}
 
 
@@ -122,6 +118,7 @@ namespace RayEngine
 			VkResult result = vkCreateImage(vkDevice, &desc, nullptr, &m_Image);
 			if (result != VK_SUCCESS)
 			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create image.");
 				return;
 			}
 		}

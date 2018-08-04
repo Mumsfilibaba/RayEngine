@@ -26,6 +26,9 @@ namespace RayEngine
 			IDevice* GetDevice() const override final;
 
 		private:
+			void Create(IDevice* pDevice, const ShaderByteCode& byeCode);
+
+		private:
 			IDevice* m_Device;
 			SHADER_TYPE m_Type;
 			VkShaderModule m_Module;

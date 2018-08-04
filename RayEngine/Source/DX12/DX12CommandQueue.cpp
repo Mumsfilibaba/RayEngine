@@ -38,11 +38,7 @@ namespace RayEngine
 			D3DRelease_S(m_List);
 			D3DRelease_S(m_Fence);
 
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			ReRelease_S(m_Device);
 		}
 
 

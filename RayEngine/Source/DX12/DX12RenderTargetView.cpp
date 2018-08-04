@@ -24,13 +24,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12RenderTargetView::~DX12RenderTargetView()
 		{
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			ReRelease_S(m_Device);
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
 		IDevice* DX12RenderTargetView::GetDevice() const
 		{
 			return m_Device;

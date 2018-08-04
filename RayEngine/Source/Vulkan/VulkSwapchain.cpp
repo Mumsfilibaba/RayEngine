@@ -128,23 +128,9 @@ namespace RayEngine
 			}
 
 
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
-
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
-
-			if (m_CommandQueue != nullptr)
-			{
-				m_CommandQueue->Release();
-				m_CommandQueue = nullptr;
-			}
+			ReRelease_S(m_Factory);
+			ReRelease_S(m_Device);
+			ReRelease_S(m_CommandQueue);
 
 			for (int32 i = 0; i < m_Textures.size(); i++)
 			{
@@ -152,8 +138,7 @@ namespace RayEngine
 				{
 					m_Textures[i]->InvalidateResource();
 
-					m_Textures[i]->Release();
-					m_Textures[i] = nullptr;
+					ReRelease(m_Textures[i]);
 				}
 			}
 		}

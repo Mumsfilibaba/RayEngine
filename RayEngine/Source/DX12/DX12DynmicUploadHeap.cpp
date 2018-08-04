@@ -28,11 +28,8 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Heap);
 			D3DRelease_S(m_Resource);
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			
+			ReRelease_S(m_Device);
 		}
 
 

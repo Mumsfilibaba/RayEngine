@@ -27,8 +27,7 @@ namespace RayEngine
 
 		private:
 			IDevice* m_Device;
-			VkRenderPass m_RenderPass;
-			VkPipelineLayout m_RootSignature;
+			VkPipelineLayout m_Layout;
 		};
 	}
 }

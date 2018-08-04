@@ -26,11 +26,8 @@ namespace RayEngine
 		DX11Shader::~DX11Shader()
 		{
 			D3DRelease_S(m_VertexShader);
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			
+			ReRelease_S(m_Device);
 		}
 
 

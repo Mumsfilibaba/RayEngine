@@ -1,5 +1,8 @@
 TODO:
 -Render triangle Vulkan
+-Constantbuffer, Sampler, Textures DX11, DX12, Vulkan
+-Implement OpenGL
+-Swapchain Resize
 
 -DX12 - ImmediateContext
 -Seperate CommandList and commandQueue
@@ -15,7 +18,6 @@ TODO:
 -DX12 - Dynamic uploadheap - Resize when needed
 -DX12 - Resource-Transitions when views get bound
 -DX12 - How resources are used needs refining
--Swapchain Resize
 -Swapchain Fullscreen
 -Create rendertargets for swapchain during creation?
 
@@ -31,12 +33,12 @@ TODO:
 -AdapterInfo.cpp
 -Controller support
 
+-Virtual Filesystem
 -Parent interfaces should be queried instead of just returned
 -Aquire pointers for native window etc
 -Check if system supports vulkan in factory
 -ANativeWindow pointer in AndroidWindowImpl
 -Save current windowpointer (AndroidWindowImpl*) so events can be sent directly to it
--Virtual Filesystem
 
 
 For later:

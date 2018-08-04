@@ -29,25 +29,13 @@ namespace RayEngine
 		DX12Swapchain::~DX12Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
 			
-			if (m_CommandQueue != nullptr)
-			{
-				m_CommandQueue->Release();
-				m_CommandQueue = nullptr;
-			}
+			ReRelease_S(m_Factory);
+			ReRelease_S(m_CommandQueue);
 
 			for (int32 i = 0; i < m_Textures.size(); i++)
 			{
-				if (m_Textures[i] != nullptr)
-				{
-					m_Textures[i]->Release();
-					m_Textures[i] = nullptr;
-				}
+				ReRelease_S(m_Textures[i]);
 			}
 		}
 

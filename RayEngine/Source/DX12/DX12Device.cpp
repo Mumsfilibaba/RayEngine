@@ -40,41 +40,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Device::~DX12Device()
 		{
-			if (m_UploadHeap != nullptr)
-			{
-				m_UploadHeap->Release();
-				m_UploadHeap = nullptr;
-			}
-
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
-
-			if (m_DsvHeap != nullptr)
-			{
-				m_DsvHeap->Release();
-				m_DsvHeap = nullptr;
-			}
-
-			if (m_RtvHeap != nullptr)
-			{
-				m_RtvHeap->Release();
-				m_RtvHeap = nullptr;
-			}
-
-			if (m_ResourceHeap != nullptr)
-			{
-				m_ResourceHeap->Release();
-				m_ResourceHeap = nullptr;
-			}
-
-			if (m_UploadQueue != nullptr)
-			{
-				m_UploadQueue->Release();
-				m_UploadQueue = nullptr;
-			}
+			ReRelease_S(m_Factory);
+			ReRelease_S(m_DsvHeap);
+			ReRelease_S(m_RtvHeap);
+			ReRelease_S(m_ResourceHeap);
+			ReRelease_S(m_UploadQueue);
+			ReRelease_S(m_UploadHeap);
 
 			D3DRelease_S(m_Device);
 			D3DRelease_S(m_Adapter);

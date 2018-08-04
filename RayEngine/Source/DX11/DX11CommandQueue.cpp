@@ -30,11 +30,8 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_DefferedContext);
 			D3DRelease_S(m_List);
-			if (m_Device != nullptr)
-			{
-				m_Device->Release();
-				m_Device = nullptr;
-			}
+			
+			ReRelease_S(m_Device);
 		}
 
 

@@ -2,6 +2,14 @@
 
 #include "IReferenceCounter.h"
 
+#if !defined(ReRelease)
+#define ReRelease(IReferenceCounter) IReferenceCounter->Release(); IReferenceCounter = nullptr
+#endif
+
+#if !defined(ReRelease_S)
+#define ReRelease_S(IReferenceCounter) if (IReferenceCounter != nullptr) { ReRelease(IReferenceCounter); }
+#endif
+
 namespace RayEngine
 {
 	namespace Graphics
