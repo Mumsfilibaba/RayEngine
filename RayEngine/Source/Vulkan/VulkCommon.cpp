@@ -135,5 +135,79 @@ namespace RayEngine
 			default: return VK_BLEND_FACTOR_ZERO;
 			}
 		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkSampleCountFlagBits ReToVkSampleCount(MSAA_SAMPLE_COUNT sampleCount)
+		{
+			switch (sampleCount)
+			{
+			case MSAA_SAMPLE_COUNT_2: return VK_SAMPLE_COUNT_2_BIT;
+			case MSAA_SAMPLE_COUNT_4: return VK_SAMPLE_COUNT_4_BIT;
+			case MSAA_SAMPLE_COUNT_8: return VK_SAMPLE_COUNT_8_BIT;
+			case MSAA_SAMPLE_COUNT_16: return VK_SAMPLE_COUNT_16_BIT;
+			case MSAA_SAMPLE_COUNT_1:
+			default: return VK_SAMPLE_COUNT_1_BIT;
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkCompareOp ReToVkCompareOp(COMPARISON_FUNC comparison)
+		{
+			switch (comparison)
+			{
+			case COMPARISON_FUNC_NEVER: return VK_COMPARE_OP_NEVER;
+			case COMPARISON_FUNC_LESS: return VK_COMPARE_OP_LESS;
+			case COMPARISON_FUNC_EQUAL: return VK_COMPARE_OP_EQUAL;
+			case COMPARISON_FUNC_LESS_EQUAL: return VK_COMPARE_OP_LESS_OR_EQUAL;
+			case COMPARISON_FUNC_GREATER: return VK_COMPARE_OP_GREATER;
+			case COMPARISON_FUNC_NOT_EQUAL: return VK_COMPARE_OP_NOT_EQUAL;
+			case COMPARISON_FUNC_GREATER_EQUAL: return VK_COMPARE_OP_GREATER_OR_EQUAL;
+			case COMPARISON_FUNC_ALWAYS:
+			case COMPARISON_FUNC_UNKNOWN:
+			default: return VK_COMPARE_OP_ALWAYS;
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkStencilOp ReToVkStencilOp(STENCIL_OPERATION operation)
+		{
+			switch (operation)
+			{
+			case STENCIL_OPERATION_ZERO: return VK_STENCIL_OP_ZERO;
+			case STENCIL_OPERATION_REPLACE: return VK_STENCIL_OP_REPLACE;
+			case STENCIL_OPERATION_INVERT: return VK_STENCIL_OP_INVERT;
+			case STENCIL_OPERATION_INCR: return VK_STENCIL_OP_INCREMENT_AND_CLAMP;
+			case STENCIL_OPERATION_DECR: return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
+			case STENCIL_OPERATION_KEEP:
+			case STENCIL_OPERATION_UNKNOWN:
+			default: return VK_STENCIL_OP_KEEP;
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		VkStencilOpState ReToVkStencilOpState(const StencilOperationInfo& info)
+		{
+			VkStencilOpState state = {};
+			state.failOp = ReToVkStencilOp(info.StencilFailOperation);
+			state.passOp = ReToVkStencilOp(info.StencilPassoperation);
+			state.depthFailOp = ReToVkStencilOp(info.StencilDepthFailOperation);
+			state.compareOp = ReToVkCompareOp(info.StencilFunc);
+			
+			//TODO: Fix this
+			state.compareMask = 0xFFFFFFFF;
+			state.writeMask = state.compareMask;
+
+			state.reference = 0;
+
+			return state;
+		}
 	}
 }

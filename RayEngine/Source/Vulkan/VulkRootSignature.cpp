@@ -53,6 +53,25 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkRootSignature::Create(IDevice* pDevice, const RootSignatureInfo& info)
 		{
+			using namespace System;
+
+			VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+			pipelineLayoutInfo.pNext = nullptr;
+			pipelineLayoutInfo.flags = 0;
+
+			pipelineLayoutInfo.setLayoutCount = 0;
+			pipelineLayoutInfo.pSetLayouts = nullptr;
+			pipelineLayoutInfo.pushConstantRangeCount = 0;
+			pipelineLayoutInfo.pPushConstantRanges = nullptr;
+
+			VkDevice vkDevice = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
+			VkResult result = vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &m_Layout);
+			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipelinelayout");
+				return;
+			}
 		}
 	}
 }

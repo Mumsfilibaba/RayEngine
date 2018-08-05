@@ -10,6 +10,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkPipelineState::VulkPipelineState(IDevice* pDevice, const PipelineStateInfo& info)
 			: m_Device(nullptr),
+			m_RootSignature(nullptr),
 			m_RenderPass(nullptr),
 			m_Pipeline(nullptr),
 			m_Type(PIPELINE_TYPE_UNKNOWN)
@@ -39,6 +40,7 @@ namespace RayEngine
 			}
 
 			ReRelease_S(m_Device);
+			ReRelease_S(m_RootSignature);
 		}
 
 
@@ -121,6 +123,30 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void VulkPipelineState::SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateInfo& info)
+		{
+			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+			desc.pNext = nullptr;
+			desc.flags = 0;
+
+			desc.depthTestEnable = info.DepthEnable ? VK_TRUE : VK_FALSE;
+			desc.depthWriteEnable = desc.depthTestEnable;
+
+			desc.depthCompareOp = ReToVkCompareOp(info.DepthFunc);
+			desc.depthBoundsTestEnable = VK_FALSE; //Maybe?
+
+			desc.stencilTestEnable = info.StencilEnable ? VK_TRUE : VK_FALSE;
+
+			desc.front = ReToVkStencilOpState(info.Frontface);
+			desc.back = ReToVkStencilOpState(info.BackFace);
+			
+			desc.minDepthBounds = 0.0f;
+			desc.maxDepthBounds = 0.0f;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void VulkPipelineState::CreateComputePipeline(IDevice* pDevice, const PipelineStateInfo& info)
 		{
 		}
@@ -130,6 +156,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkPipelineState::CreateGraphicsPipeline(IDevice* pDevice, const PipelineStateInfo& info)
 		{
+			using namespace System;
+
 			std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 			if (info.GraphicsPipeline.pVertexShader != nullptr)
 				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(info.GraphicsPipeline.pVertexShader));
@@ -167,14 +195,17 @@ namespace RayEngine
 			inputState.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			inputState.pNext = nullptr;
 			inputState.flags = 0;
+
 			inputState.vertexBindingDescriptionCount = elementCount;
 			inputState.pVertexBindingDescriptions = vertexBindings.data();
 			inputState.vertexAttributeDescriptionCount = elementCount;
 			inputState.pVertexAttributeDescriptions = vertexAttributes.data();
 
 
+
 			VkPipelineInputAssemblyStateCreateInfo inputAssemblyState = {};
 			CreateInputAssemblyStateInfo(inputAssemblyState, info);
+
 
 
 			VkPipelineViewportStateCreateInfo viewportState = {};
@@ -196,8 +227,12 @@ namespace RayEngine
 
 			VkPipelineDynamicStateCreateInfo dynamicState = {};
 			dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+			dynamicState.pNext = nullptr;
+			dynamicState.flags = 0;
+
 			dynamicState.dynamicStateCount = 2;
 			dynamicState.pDynamicStates = dynamicStates;
+
 
 
 			std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments;
@@ -206,21 +241,20 @@ namespace RayEngine
 			for (int32 i = 0; i < info.GraphicsPipeline.RenderTargetCount; i++)
 				SetColorBlendAttachmentState(colorBlendAttachments[i], info.GraphicsPipeline.BlendState.RenderTargets[i]);
 
+			VkPipelineColorBlendStateCreateInfo blendState = {};
+			blendState.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+			blendState.pNext = nullptr;
+			blendState.flags = 0;
 
-			VkPipelineColorBlendStateCreateInfo colorBlending = {};
-			colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-			colorBlending.pNext = nullptr;
-			colorBlending.flags = 0;
+			blendState.logicOpEnable = info.GraphicsPipeline.BlendState.LogicOpEnable ? VK_TRUE : VK_FALSE;
+			blendState.logicOp = VK_LOGIC_OP_NO_OP;
+			blendState.attachmentCount = info.GraphicsPipeline.RenderTargetCount;
+			blendState.pAttachments = colorBlendAttachments.data();
 
-			colorBlending.logicOpEnable = info.GraphicsPipeline.BlendState.LogicOpEnable ? VK_TRUE : VK_FALSE;
-			colorBlending.logicOp = VK_LOGIC_OP_NO_OP;
-			colorBlending.attachmentCount = info.GraphicsPipeline.RenderTargetCount;
-			colorBlending.pAttachments = colorBlendAttachments.data();
-
-			colorBlending.blendConstants[0] = info.GraphicsPipeline.BlendState.BlendFactor[0];
-			colorBlending.blendConstants[1] = info.GraphicsPipeline.BlendState.BlendFactor[1];
-			colorBlending.blendConstants[2] = info.GraphicsPipeline.BlendState.BlendFactor[2];
-			colorBlending.blendConstants[3] = info.GraphicsPipeline.BlendState.BlendFactor[3];
+			blendState.blendConstants[0] = info.GraphicsPipeline.BlendState.BlendFactor[0];
+			blendState.blendConstants[1] = info.GraphicsPipeline.BlendState.BlendFactor[1];
+			blendState.blendConstants[2] = info.GraphicsPipeline.BlendState.BlendFactor[2];
+			blendState.blendConstants[3] = info.GraphicsPipeline.BlendState.BlendFactor[3];
 
 
 
@@ -228,27 +262,72 @@ namespace RayEngine
 			SetRasterizerState(rasterizerState, info.GraphicsPipeline.RasterizerState);
 
 
+
 			VkPipelineMultisampleStateCreateInfo multisamplingState = {};
 			multisamplingState.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 			multisamplingState.flags = 0;
 			multisamplingState.pNext = nullptr;
 
-			//TODO: Look this up
 			multisamplingState.sampleShadingEnable = VK_FALSE;
 			multisamplingState.minSampleShading = 1.0f;
 
 			multisamplingState.alphaToCoverageEnable = VK_FALSE;
 			multisamplingState.alphaToOneEnable = VK_FALSE;
-			multisamplingState.pSampleMask = nullptr;
-			//TODO: Proper multisampling
+
+			//TODO: Fix msaa here
 			multisamplingState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+			VkSampleMask sampleMask = 0xFFFFFFFF;
+			multisamplingState.pSampleMask = &sampleMask;
+			//multisamplingState.rasterizationSamples = ReToVkSampleCount(info.GraphicsPipeline.SampleCount);
 
 
-			//TODO: DepthStencilState
+			
+			VkPipelineDepthStencilStateCreateInfo depthStencilState = {};
+			SetDepthStencilState(depthStencilState, info.GraphicsPipeline.DepthStencilState);
 
 
-			if (CreateRenderPass(pDevice, info))
+			if (!CreateRenderPass(pDevice, info))
 				return;
+
+
+			VkGraphicsPipelineCreateInfo desc = {};
+			desc.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+			desc.pNext = nullptr;
+			desc.flags = 0;
+
+			desc.stageCount = static_cast<uint32_t>(shaderStages.size());
+			desc.pStages = shaderStages.data();
+
+			desc.pVertexInputState = &inputState;
+			desc.pInputAssemblyState = &inputAssemblyState;
+			//TODO: Enable tesselation
+			desc.pTessellationState = nullptr;
+			desc.pViewportState = &viewportState;
+			desc.pRasterizationState = &rasterizerState;
+			desc.pMultisampleState = &multisamplingState;
+			desc.pDepthStencilState = &depthStencilState;
+			desc.pColorBlendState = &blendState;
+			desc.pDynamicState = &dynamicState;
+
+			m_RootSignature = reinterpret_cast<const VulkRootSignature*>(info.pRootSignature->QueryReference());
+			VkPipelineLayout vkLayout = m_RootSignature->GetVkPipelineLayout();
+			desc.layout = vkLayout;
+
+			//TODO: Multiple subpasses?
+			desc.renderPass = m_RenderPass;
+			desc.subpass = 0;
+
+			desc.basePipelineHandle = VK_NULL_HANDLE;
+			desc.basePipelineIndex = -1;
+
+
+			VkDevice vkDevice = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
+			VkResult result = vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &desc, nullptr, &m_Pipeline);
+			if (result != VK_SUCCESS)
+			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipeline");
+				return;
+			}
 		}
 
 
@@ -264,24 +343,20 @@ namespace RayEngine
 			std::vector<VkAttachmentReference> attachmentsRefs;
 			attachmentsRefs.resize(info.GraphicsPipeline.RenderTargetCount);
 
-
 			for (int32 i = 0; i < info.GraphicsPipeline.RenderTargetCount; i++)
 			{
 				VkAttachmentDescription& desc = attachments[i];
 				desc.format = ReToVkFormat(info.GraphicsPipeline.RenderTargetFormats[i]);
 
-				//TODO: FIX PROPER MULTISAMPLE
-				desc.samples = VK_SAMPLE_COUNT_1_BIT;
+				desc.samples = ReToVkSampleCount(info.GraphicsPipeline.SampleCount);
 
-				//QUE?
+				//TODO: Fix operation based on if it is a color or depth/stencil attachment
 				desc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 				desc.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-				//QUE?
 				desc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 				desc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-				//QUE?
 				desc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-				desc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+				desc.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 
 				VkAttachmentReference& ref = attachmentsRefs[i];
@@ -290,8 +365,36 @@ namespace RayEngine
 			}
 
 
+
+			if (info.GraphicsPipeline.DepthStencilFormat != FORMAT_UNKNOWN)
+			{
+				VkAttachmentDescription attachment = {};
+				attachment.format = ReToVkFormat(info.GraphicsPipeline.DepthStencilFormat);
+				attachment.samples = ReToVkSampleCount(info.GraphicsPipeline.SampleCount);
+
+				//TODO: Fix operation based on if it is a color or depth/stencil attachment
+				attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+				attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+				attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+				attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+				attachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+
+				VkAttachmentReference ref = {};
+				ref.attachment = attachments.size();
+				ref.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+				
+				attachments.push_back(attachment);
+				attachmentsRefs.push_back(ref);
+			}
+
+
+
 			VkSubpassDescription subpass = {};
 			subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+			subpass.flags = 0;
+
 			subpass.colorAttachmentCount = static_cast<uint32_t>(attachmentsRefs.size());
 			subpass.pColorAttachments = attachmentsRefs.data();
 
@@ -333,6 +436,7 @@ namespace RayEngine
 			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 			desc.pNext = nullptr;
 			desc.flags = 0;
+
 			desc.pSpecializationInfo = nullptr;
 			desc.module = module;
 			desc.pName = pVulkShader->GetEntryPoint().c_str();

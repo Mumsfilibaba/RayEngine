@@ -165,7 +165,7 @@ int main(int args, char* argsv[])
 	pipelineInfo.GraphicsPipeline.DepthStencilFormat = FORMAT_D16_UNORM;
 	pipelineInfo.GraphicsPipeline.RenderTargetCount = 1;
 	pipelineInfo.GraphicsPipeline.RenderTargetFormats[0] = scInfo.Buffer.Format;
-	pipelineInfo.GraphicsPipeline.SampleCount = 1;
+	pipelineInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
 	pipelineInfo.GraphicsPipeline.SampleMask = -1;
 	pipelineInfo.GraphicsPipeline.StripCutEnable = false;
 	pipelineInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;

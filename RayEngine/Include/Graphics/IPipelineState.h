@@ -136,7 +136,7 @@ namespace RayEngine
 				int32 RenderTargetCount = 0;
 				FORMAT RenderTargetFormats[8];
 				FORMAT DepthStencilFormat = FORMAT_UNKNOWN;
-				int32 SampleCount = 1;
+				MSAA_SAMPLE_COUNT SampleCount = MSAA_SAMPLE_COUNT_1;
 
 				InputLayoutInfo InputLayout;
 				RasterizerStateInfo RasterizerState;

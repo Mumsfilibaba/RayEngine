@@ -41,7 +41,7 @@ namespace RayEngine
 		void DX12DepthStencilView::Create(IDevice* pDevice, const DepthStencilViewInfo& info)
 		{
 			const DX12DescriptorHeap* pHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12DepthStencilViewHeap();
-			m_View= pHeap->GetNext();
+			m_View = pHeap->GetNext();
 			
 			//TODO: Use a Desc
 

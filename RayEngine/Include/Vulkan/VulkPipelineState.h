@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\Graphics\IPipelineState.h"
+#include "VulkRootSignature.h"
 #include "VulkShader.h"
 
 namespace RayEngine
@@ -42,9 +43,11 @@ namespace RayEngine
 			static void CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateInfo& info);
 			static void SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendInfo& info);
 			static void SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateInfo& info);
+			static void SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateInfo& info);
 
 		private:
-			IDevice * m_Device;
+			IDevice* m_Device;
+			const VulkRootSignature* m_RootSignature;
 			VkPipeline m_Pipeline;
 			VkRenderPass m_RenderPass;
 			PIPELINE_TYPE m_Type;
