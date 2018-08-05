@@ -272,6 +272,31 @@ namespace RayEngine
 
 
 
+
+	/////////////////////////////////////////////////////////////
+	enum SHADER_VISIBILITY : int32
+	{
+		SHADER_VISIBILITY_UNKNOWN = 0,
+		SHADER_VISIBILITY_INPUT_LAYOUT = (1 << 0),
+		SHADER_VISIBILITY_VERTEX_SHADER = (1 << 1),
+		SHADER_VISIBILITY_HULL_SHADER = (1 << 2),
+		SHADER_VISIBILITY_DOMAIN_SHADER = (1 << 3),
+		SHADER_VISIBILITY_GEOMETRY_SHADER = (1 << 4),
+		SHADER_VISIBILITY_PIXEL_SHADER = (1 << 5),
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum PIPELINE_TYPE : int32
+	{
+		PIPELINE_TYPE_UNKNOWN = 0,
+		PIPELINE_TYPE_GRAPHICS = 1,
+		PIPELINE_TYPE_COMPUTE = 2,
+	};
+
+
+
 	/////////////////////////////////////////////////////////////
 	struct ResourceData
 	{

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "..\RefCounter.h"
+#include "IBuffer.h"
+#include "ITexture.h"
+#include "ISampler.h"
 
 namespace RayEngine
 {
@@ -37,25 +39,33 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		enum ROOT_SIGNATURE_VISIBILITY : int32
+		enum SHADER_USAGE : int32
 		{
-			ROOT_SIGNATURE_VISIBILITY_UNKNOWN = 0,
-			ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT = (1 << 0),
-			ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER = (1 << 1),
-			ROOT_SIGNATURE_VISIBILITY_HULL_SHADER = (1 << 2),
-			ROOT_SIGNATURE_VISIBILITY_DOMAIN_SHADER = (1 << 3),
-			ROOT_SIGNATURE_VISIBILITY_GEOMETRY_SHADER = (1 << 4),
-			ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER = (1 << 5),
+			SHADER_USAGE_UNKNOWN = 0,
+			SHADER_USAGE_DYNAMIC = 1,
+			SHADER_USAGE_STATIC = 2,
 		};
 
 
 
 		/////////////////////////////////////////////////////////////
-		struct ShaderParameter
+		/*
+		ShaderVariables defines a variable in the shader. This can be a texture 
+		*/
+		/////////////////////////////////////////////////////////////
+		struct ShaderVariable
 		{
+			VIEW_TYPE ViewType = VIEW_TYPE_UNKNOWN;
+			SHADER_USAGE ShaderUsage = SHADER_USAGE_UNKNOWN;
 			SHADER_VISIBILITY ShaderVisibility = SHADER_VISIBILITY_UNKNOWN;
 			int32 ShaderRegister = 0;
-			VIEW_TYPE ViewType = VIEW_TYPE_UNKNOWN;
+
+			union
+			{
+				IBuffer* pBuffer = nullptr;
+				ITexture* pTexture;
+				ISampler* pSampler;
+			};
 		};
 
 
@@ -64,9 +74,10 @@ namespace RayEngine
 		struct RootSignatureInfo
 		{
 			std::string Name = "";
-			ShaderParameter* pParameters = nullptr;
+			PIPELINE_TYPE PipelineType = PIPELINE_TYPE_UNKNOWN;
+			int32 RootSignatureVisibility = SHADER_VISIBILITY_UNKNOWN;
 			int32 ParameterCount = 0;
-			int32 RootSignatureVisibility = ROOT_SIGNATURE_VISIBILITY_UNKNOWN;
+			ShaderVariable* pParameters = nullptr;
 		};
 
 

@@ -9,16 +9,6 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		enum PIPELINE_TYPE : int32
-		{
-			PIPELINE_TYPE_UNKNOWN = 0,
-			PIPELINE_TYPE_GRAPHICS = 1,
-			PIPELINE_TYPE_COMPUTE = 2,
-		};
-
-
-
-		/////////////////////////////////////////////////////////////
 		enum ELEMENT_STEP_TYPE : int32
 		{
 			ELEMENT_STEP_TYPE_UNKNOWN = 0,

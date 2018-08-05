@@ -32,7 +32,7 @@ namespace RayEngine
 			ISampler() {}
 			virtual ~ISampler() {}
 
-			virtual IDevice* GetDevice();
+			virtual IDevice* GetDevice() = 0;
 		};
 	}
 }
