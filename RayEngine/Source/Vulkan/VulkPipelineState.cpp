@@ -382,7 +382,7 @@ namespace RayEngine
 
 
 				VkAttachmentReference ref = {};
-				ref.attachment = attachments.size();
+				ref.attachment = static_cast<uint32_t>(attachments.size());
 				ref.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 				
 				attachments.push_back(attachment);
@@ -496,7 +496,7 @@ namespace RayEngine
 			desc.pNext = nullptr;
 			desc.flags = 0;
 			desc.topology = ReToVkPrimitiveTopology(info.GraphicsPipeline.Topology);
-			desc.primitiveRestartEnable = info.GraphicsPipeline.StripCutEnable;
+			desc.primitiveRestartEnable = info.GraphicsPipeline.StripCutEnable ? VK_TRUE : VK_FALSE;
 		}
 
 
