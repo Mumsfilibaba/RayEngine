@@ -68,6 +68,13 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool ShaderByteCode::IsValid() const
+		{
+			return (m_Bytes != nullptr);
+		}
+
+
+		/////////////////////////////////////////////////////////////
 		int8* ShaderByteCode::Detach()
 		{
 			int8* bytes = m_Bytes;

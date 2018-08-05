@@ -33,7 +33,7 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		ShaderByteCode DXShaderCompiler::CompileFromFile(const std::string& fName, const std::string& fPath,
-			const ShaderCompileInfo& info) const
+			const ShaderCompileInfo& info, std::string& errorString) const
 		{
 			std::ifstream file(fPath + fName, std::ios::in);
 			if (file.is_open())
@@ -46,7 +46,7 @@ namespace RayEngine
 				//Close
 				file.close();
 
-				return CompileFromString(src, info);
+				return CompileFromString(src, info, errorString);
 			}
 
 			return ShaderByteCode();
@@ -55,7 +55,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		ShaderByteCode DXShaderCompiler::CompileFromString(const std::string& src, const ShaderCompileInfo& info) const
+		ShaderByteCode DXShaderCompiler::CompileFromString(const std::string& src, const ShaderCompileInfo& info, std::string& errorString) const
 		{
 			if (info.SrcLang == SHADER_SOURCE_LANG_GLSL)
 				return ShaderByteCode();
@@ -69,7 +69,7 @@ namespace RayEngine
 			if (FAILED(D3DCompile(src.c_str(), src.size(), 0, nullptr, nullptr, info.EntryPoint.c_str(), 
 				GetShaderModel(info.Type).c_str(), m_Flags, 0, &shader, &error)))
 			{
-				std::string err = reinterpret_cast<const char*>(error->GetBufferPointer());
+				errorString = reinterpret_cast<const char*>(error->GetBufferPointer());
 				return ShaderByteCode();
 			}
 

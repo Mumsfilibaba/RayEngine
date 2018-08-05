@@ -29,9 +29,9 @@ namespace RayEngine
 			virtual ~IShaderCompiler() {}
 
 			//Compiles shader source code from a file
-			virtual ShaderByteCode CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info) const = 0;
+			virtual ShaderByteCode CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info, std::string& errorString) const = 0;
 			//Compiles shader source code from a string
-			virtual ShaderByteCode CompileFromString(const std::string& src, const ShaderCompileInfo& info) const = 0;
+			virtual ShaderByteCode CompileFromString(const std::string& src, const ShaderCompileInfo& info, std::string& errorString) const = 0;
 			//Retrives the Factory that created the compiler
 			virtual IFactory* GetFactory() const = 0;
 		};

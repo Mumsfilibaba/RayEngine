@@ -19,8 +19,8 @@ namespace RayEngine
 			VulkShaderCompiler(IFactory* pFactory, bool debug);
 			~VulkShaderCompiler();
 
-			ShaderByteCode CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info) const override final;
-			ShaderByteCode CompileFromString(const std::string& src, const ShaderCompileInfo& info) const override final;
+			ShaderByteCode CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info, std::string& errorString) const override final;
+			ShaderByteCode CompileFromString(const std::string& src, const ShaderCompileInfo& info, std::string& errorString) const override final;
 
 			IFactory* GetFactory() const override final;
 

@@ -45,6 +45,7 @@ namespace RayEngine
 			ShaderByteCode(ShaderByteCode&& other);
 			~ShaderByteCode();
 
+			bool IsValid() const;
 			int8* Detach();
 
 			const std::string& GetEntryPoint() const;

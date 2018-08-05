@@ -117,14 +117,23 @@ int main(int args, char* argsv[])
 	IShaderCompiler* compiler = nullptr;
 	factory->CreateShaderCompiler(&compiler);
 
+	std::string errorString;
 	ShaderCompileInfo sInfo = {};
 	sInfo.EntryPoint = "main";
-	sInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
+	sInfo.SrcLang = SHADER_SOURCE_LANG_GLSL;
 	sInfo.Type = SHADER_TYPE_VERTEX;
-	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo);
+	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo, errorString);
+	if (!vsCode.IsValid())
+	{
+		log.Write(LOG_SEVERITY_ERROR, errorString);
+	}
 
 	sInfo.Type = SHADER_TYPE_PIXEL;
-	ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo);
+	ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo, errorString);
+	if (!psCode.IsValid())
+	{
+		log.Write(LOG_SEVERITY_ERROR, errorString);
+	}
 
 	IShader* vs = nullptr;
 	device->CreateShader(&vs, vsCode);

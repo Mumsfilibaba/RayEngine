@@ -32,7 +32,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		ShaderByteCode VulkShaderCompiler::CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info) const
+		ShaderByteCode VulkShaderCompiler::CompileFromFile(const std::string& fName, const std::string& fPath, const ShaderCompileInfo& info, std::string& errorString) const
 		{
 			std::ifstream file(fPath + fName, std::ios::in);
 			if (file.is_open())
@@ -45,7 +45,7 @@ namespace RayEngine
 				//Close
 				file.close();
 
-				return CompileFromString(src, info);
+				return CompileFromString(src, info, errorString);
 			}
 
 			return ShaderByteCode();
@@ -54,7 +54,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		ShaderByteCode VulkShaderCompiler::CompileFromString(const std::string& src, const ShaderCompileInfo& info) const
+		ShaderByteCode VulkShaderCompiler::CompileFromString(const std::string& src, const ShaderCompileInfo& info, std::string& errorString) const
 		{
 			EShLanguage shaderType = GetShaderType(info.Type);
 			glslang::TShader shader(shaderType);
@@ -98,8 +98,8 @@ namespace RayEngine
 			if (!shader.preprocess(&defaultTBuiltInResource, defaultVersion, ENoProfile, 
 				false, false, static_cast<EShMessages>(messages), &preprocessed, includer))
 			{
-				const char* err = shader.getInfoLog();
-				err = shader.getInfoDebugLog();
+				errorString = shader.getInfoLog();
+				errorString += shader.getInfoDebugLog();
 				return ShaderByteCode();
 			}
 
@@ -109,8 +109,8 @@ namespace RayEngine
 
 			if (!shader.parse(&defaultTBuiltInResource, defaultVersion, false, static_cast<EShMessages>(messages)))
 			{
-				const char* err = shader.getInfoLog();
-				err = shader.getInfoDebugLog();
+				errorString = shader.getInfoLog();
+				errorString += shader.getInfoDebugLog();
 				return ShaderByteCode();
 			}
 
@@ -120,8 +120,8 @@ namespace RayEngine
 
 			if (!program.link(static_cast<EShMessages>(messages)))
 			{
-				const char* err = shader.getInfoLog();
-				err = shader.getInfoDebugLog();
+				errorString = shader.getInfoLog();
+				errorString += shader.getInfoDebugLog();
 				return ShaderByteCode();
 			}
 
