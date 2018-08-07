@@ -44,7 +44,7 @@ namespace RayEngine
 			//Create a queue for graphics- and computecommands
 			virtual bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) = 0;
 			//Creates a shader module for use in a pipelinestate
-			virtual bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) = 0;
+			virtual bool CreateShader(IShader** ppShader, const ShaderInfo& info) = 0;
 			//Creates a rendertargetview for using a texture as a rendertarget
 			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) = 0;
 			//Creates a rendertargetview for using a texture as a rendertarget

@@ -113,43 +113,57 @@ int main(int args, char* argsv[])
 		device->CreateRenderTargetView(&(rtvs[i]), rtvInfo);
 	}
 
+	//IShaderCompiler* compiler = nullptr;
+	//factory->CreateShaderCompiler(&compiler);
 
-	IShaderCompiler* compiler = nullptr;
-	factory->CreateShaderCompiler(&compiler);
+	ShaderInfo shaderInfo = {};
+	shaderInfo.Name = "VertexShader";
+	shaderInfo.Source = "vs.hlsl";
+	shaderInfo.FilePath = "Shaders/";
+	shaderInfo.EntryPoint = "main";
+	shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
+	shaderInfo.Type = SHADER_TYPE_VERTEX;
+	shaderInfo.pVariables = nullptr;
+	shaderInfo.VariableCount = 0;
+	shaderInfo.pSamplers = nullptr;
+	shaderInfo.SamplerCount = 0;
 
 	std::string errorString;
-	ShaderCompileInfo sInfo = {};
-	sInfo.EntryPoint = "main";
-	sInfo.SrcLang = SHADER_SOURCE_LANG_GLSL;
-	sInfo.Type = SHADER_TYPE_VERTEX;
-	ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo, errorString);
-	if (!vsCode.IsValid())
-	{
-		log.Write(LOG_SEVERITY_ERROR, errorString);
-	}
+	//ShaderCompileInfo sInfo = {};
+	//sInfo.EntryPoint = "main";
+	//sInfo.SrcLang = SHADER_SOURCE_LANG_GLSL;
+	//sInfo.Type = SHADER_TYPE_VERTEX;
+	//ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo, errorString);
+	//if (!vsCode.IsValid())
+	//{
+	//	log.Write(LOG_SEVERITY_ERROR, errorString);
+	//}
 
-	sInfo.Type = SHADER_TYPE_PIXEL;
-	ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo, errorString);
-	if (!psCode.IsValid())
-	{
-		log.Write(LOG_SEVERITY_ERROR, errorString);
-	}
+	//ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo, errorString);
+	//if (!psCode.IsValid())
+	//{
+	//	log.Write(LOG_SEVERITY_ERROR, errorString);
+	//}
 
 	IShader* vs = nullptr;
-	device->CreateShader(&vs, vsCode);
+	device->CreateShader(&vs, shaderInfo);
+
+	shaderInfo.Name = "PixelShader";
+	shaderInfo.Source = "ps.hlsl";
+	shaderInfo.Type = SHADER_TYPE_PIXEL;
 
 	IShader* ps = nullptr;
-	device->CreateShader(&ps, psCode);
+	device->CreateShader(&ps, shaderInfo);
 
 	IRootSignature* rootSignature = nullptr;
 	RootSignatureInfo rootInfo = {};
 	rootInfo.Name = "RootSignature";
 	rootInfo.ParameterCount = 0;
 	rootInfo.pParameters = nullptr;
-	rootInfo.RootSignatureVisibility =
-		ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT |
-		ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER |
-		ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER;
+	//rootInfo.RootSignatureVisibility =
+	//	ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT |
+	//	ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER |
+	//	ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER;
 
 	device->CreateRootSignature(&rootSignature, rootInfo);
 

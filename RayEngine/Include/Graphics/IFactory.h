@@ -28,8 +28,9 @@ namespace RayEngine
 			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) = 0;
 			//Create a device for interaction with the graphicscard and a swapchain for presenting images to the window
 			virtual bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) = 0;
-			//Create a object for creation of shaders
-			virtual bool CreateShaderCompiler(IShaderCompiler** ppCompiler) = 0;
+	
+			////Create a object for creation of shaders
+			//virtual bool CreateShaderCompiler(IShaderCompiler** ppCompiler) = 0;
 
 			virtual GRAPHICS_API GetGraphicsApi() const = 0;
 

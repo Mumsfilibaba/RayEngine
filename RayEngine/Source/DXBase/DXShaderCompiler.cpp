@@ -91,17 +91,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		std::string DXShaderCompiler::GetShaderModel(SHADER_TYPE type) const
 		{
-			switch (type)
-			{
-			case SHADER_TYPE_VERTEX: return "vs_5_0";
-			case SHADER_TYPE_HULL: return "hs_5_0";
-			case SHADER_TYPE_DOMAIN: return "ds_5_0";
-			case SHADER_TYPE_GEOMETRY: return "gs_5_0";
-			case SHADER_TYPE_PIXEL: return "ps_5_0";
-			case SHADER_TYPE_COMPUTE: return "cs_5_0";
-			}
 
-			return std::string();
 		}
 	}
 }

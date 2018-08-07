@@ -14,7 +14,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		enum VIEW_TYPE : int32
+		enum VARIABLE_TYPE : int32
 		{
 			VIEW_TYPE_UNKNOWN = 0,
 			VIEW_TYPE_UNIFORMBUFFER = 1,
@@ -55,7 +55,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct ShaderVariable
 		{
-			VIEW_TYPE ViewType = VIEW_TYPE_UNKNOWN;
+			VARIABLE_TYPE ViewType = VIEW_TYPE_UNKNOWN;
 			SHADER_USAGE ShaderUsage = SHADER_USAGE_UNKNOWN;
 			SHADER_VISIBILITY ShaderVisibility = SHADER_VISIBILITY_UNKNOWN;
 			int32 ShaderRegister = 0;

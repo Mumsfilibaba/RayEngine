@@ -288,6 +288,20 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
+	enum SHADER_TYPE : int32
+	{
+		SHADER_TYPE_UNKNOWN = 0,
+		SHADER_TYPE_VERTEX = 1,
+		SHADER_TYPE_HULL = 2,
+		SHADER_TYPE_DOMAIN = 3,
+		SHADER_TYPE_GEOMETRY = 4,
+		SHADER_TYPE_PIXEL = 5,
+		SHADER_TYPE_COMPUTE = 6,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
 	enum PIPELINE_TYPE : int32
 	{
 		PIPELINE_TYPE_UNKNOWN = 0,

@@ -18,10 +18,9 @@ namespace RayEngine
 			DX11Shader& operator=(DX11Shader&& other) = delete;
 
 		public:
-			DX11Shader(IDevice* pDevice, const ShaderByteCode& byteCode);
+			DX11Shader(IDevice* pDevice, const ShaderInfo& byteCode);
 			~DX11Shader();
 
-			const ShaderByteCode& GetByteCode() const;
 			ID3D11VertexShader* GetD3D11VertexShader() const;
 			ID3D11HullShader* GetD3D11HullShader() const;
 			ID3D11DomainShader* GetD3D11DomainShader() const;
@@ -33,12 +32,11 @@ namespace RayEngine
 			IDevice* GetDevice() const override final;
 
 		private:
-			void Create(IDevice* pDevice, const ShaderByteCode& byteCode);
+			void Create(IDevice* pDevice, const ShaderInfo& byteCode);
 
 		private:
 			IDevice* m_Device;
-			ShaderByteCode m_ByteCode;
-			SHADER_TYPE m_Type;
+			ID3DBlob* m_ShaderBlob;
 			union
 			{
 				ID3D11VertexShader* m_VertexShader;
@@ -48,6 +46,8 @@ namespace RayEngine
 				ID3D11PixelShader* m_PixelShader;
 				ID3D11ComputeShader* m_ComputeShader;
 			};
+
+			SHADER_TYPE m_Type;
 		};
 	}
 }
