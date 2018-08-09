@@ -8,11 +8,10 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderByteCode& byteCode)
-			: m_Device(nullptr),
-			m_VertexShader(nullptr),
-			m_Type(SHADER_TYPE_UNKNOWN),
-			m_ByteCode()
+		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderInfo& byteCode)
+			: DXShaderBase(),
+			m_Device(nullptr),
+			m_VertexShader(nullptr)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
@@ -28,14 +27,6 @@ namespace RayEngine
 			D3DRelease_S(m_VertexShader);
 			
 			ReRelease_S(m_Device);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		const ShaderByteCode& DX11Shader::GetByteCode() const
-		{
-			return m_ByteCode;
 		}
 
 
@@ -105,34 +96,44 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Shader::Create(IDevice* pDevice, const ShaderByteCode& byteCode)
+		void DX11Shader::Create(IDevice* pDevice, const ShaderInfo& info)
 		{
 			using namespace System;
+
+			int32 flags = 0;
+			if (info.Flags & SHADER_FLAGS_DEBUG)
+				flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+
+			bool result = false;
+			if (info.FilePath.size() < 1)
+				CompileFromString(info.Source, info.EntryPoint, info.Type, );
+			else
+				CompileFromFile(info.Source, info.FilePath, info.EntryPoint);
 
 			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
 			HRESULT hr = 0;
 
-			if (byteCode.GetType() == SHADER_TYPE_VERTEX)
-				hr = pD3D11Device->CreateVertexShader(byteCode.GetBytes(), byteCode.GetSize(), nullptr, &m_VertexShader);
-			else if (byteCode.GetType() == SHADER_TYPE_HULL)
-				hr = pD3D11Device->CreateHullShader(byteCode.GetBytes(), byteCode.GetSize(), nullptr, &m_HullShader);
-			else if (byteCode.GetType() == SHADER_TYPE_DOMAIN)
-				hr = pD3D11Device->CreateDomainShader(byteCode.GetBytes(), byteCode.GetSize(), nullptr, &m_DomainShader);
-			else if (byteCode.GetType() == SHADER_TYPE_GEOMETRY)
-				hr = pD3D11Device->CreateGeometryShader(byteCode.GetBytes(), byteCode.GetSize(), nullptr, &m_GeometryShader);
-			else if (byteCode.GetType() == SHADER_TYPE_PIXEL)
-				hr = pD3D11Device->CreatePixelShader(byteCode.GetBytes(), byteCode.GetSize(), nullptr, &m_PixelShader);
-			else if (byteCode.GetType() == SHADER_TYPE_COMPUTE)
-				hr = pD3D11Device->CreateComputeShader(byteCode.GetBytes(), byteCode.GetSize(), nullptr, &m_ComputeShader);
+			const void* buffer = m_ShaderBlob->GetBufferPointer();
+			int32 size = m_ShaderBlob->GetBufferSize();
+
+			if (m_Type == SHADER_TYPE_VERTEX)
+				hr = pD3D11Device->CreateVertexShader(m_ShaderBlob->GetBufferPointer(), size, nullptr, &m_VertexShader);
+			else if (m_Type == SHADER_TYPE_HULL)
+				hr = pD3D11Device->CreateHullShader(buffer, size, nullptr, &m_HullShader);
+			else if (m_Type == SHADER_TYPE_DOMAIN)
+				hr = pD3D11Device->CreateDomainShader(buffer, size, nullptr, &m_DomainShader);
+			else if (m_Type == SHADER_TYPE_GEOMETRY)
+				hr = pD3D11Device->CreateGeometryShader(buffer, size, nullptr, &m_GeometryShader);
+			else if (m_Type == SHADER_TYPE_PIXEL)
+				hr = pD3D11Device->CreatePixelShader(buffer, size, nullptr, &m_PixelShader);
+			else if (m_Type == SHADER_TYPE_COMPUTE)
+				hr = pD3D11Device->CreateComputeShader(buffer, size, nullptr, &m_ComputeShader);
 
 			if (FAILED(hr))
 			{
 				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create shader" + DXErrorString(hr));
 				return;
 			}
-
-			m_Type = byteCode.GetType();
-			m_ByteCode = byteCode;
 		}
 	}
 }

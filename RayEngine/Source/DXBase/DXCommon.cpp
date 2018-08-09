@@ -17,24 +17,6 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	std::string GetShaderModel(SHADER_TYPE shaderType)
-	{
-		switch (shaderType)
-		{
-		case SHADER_TYPE_VERTEX: return "vs_5_0";
-		case SHADER_TYPE_HULL: return "hs_5_0";
-		case SHADER_TYPE_DOMAIN: return "ds_5_0";
-		case SHADER_TYPE_GEOMETRY: return "gs_5_0";
-		case SHADER_TYPE_PIXEL: return "ps_5_0";
-		case SHADER_TYPE_COMPUTE: return "cs_5_0";
-		}
-
-		return std::string();
-	}
-
-
-
-	/////////////////////////////////////////////////////////////
 	DXGI_FORMAT ReToDXFormat(FORMAT format)
 	{
 		switch (format)
@@ -104,36 +86,6 @@ namespace RayEngine
 		case PRIMITIVE_TOPOLOGY_POINTS: return D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
 		default: return D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 		}
-	}
-
-
-
-	/////////////////////////////////////////////////////////////
-	bool CompileFromFile(const std::string& filename, const std::string& filepath, const std::string& entryPoint, SHADER_TYPE type, int32 flags, ID3DBlob** ppShaderBlob, std::string& errorString)
-	{
-		std::string source = ReadFullFile(filename, filepath);
-		if (source == "")
-			return false;
-
-		return CompileFromString(source, entryPoint, type, flags, ppShaderBlob, errorString);
-	}
-
-
-
-	/////////////////////////////////////////////////////////////
-	bool CompileFromString(const std::string& src, const std::string& entryPoint, SHADER_TYPE type, int32 flags, ID3DBlob** ppShaderBlob, std::string& errorString)
-	{
-		using namespace Microsoft::WRL;
-
-		ComPtr<ID3DBlob> error;
-		if (FAILED(D3DCompile(src.c_str(), src.size(), 0, nullptr, nullptr, entryPoint.c_str(),
-			GetShaderModel(type).c_str(), flags, 0, ppShaderBlob, &error)))
-		{
-			errorString = reinterpret_cast<const char*>(error->GetBufferPointer());
-			return false;
-		}
-
-		return true;
 	}
 }
 

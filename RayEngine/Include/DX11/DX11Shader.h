@@ -4,12 +4,13 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
+#include "..\DXBase\DXShaderBase.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11Shader : public IShader
+		class DX11Shader : public IShader, public DXShaderBase
 		{ 
 		public:
 			DX11Shader(const DX11Shader& other) = delete;
@@ -36,7 +37,6 @@ namespace RayEngine
 
 		private:
 			IDevice* m_Device;
-			ID3DBlob* m_ShaderBlob;
 			union
 			{
 				ID3D11VertexShader* m_VertexShader;
@@ -46,8 +46,6 @@ namespace RayEngine
 				ID3D11PixelShader* m_PixelShader;
 				ID3D11ComputeShader* m_ComputeShader;
 			};
-
-			SHADER_TYPE m_Type;
 		};
 	}
 }

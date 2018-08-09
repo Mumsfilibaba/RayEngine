@@ -336,6 +336,9 @@
     <ClInclude Include="Include\Utilities\EngineUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\DXBase\DXShaderBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -627,6 +630,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utilities\EngineUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DXBase\DXShaderBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

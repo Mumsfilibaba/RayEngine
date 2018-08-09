@@ -203,6 +203,7 @@
     <ClInclude Include="Include\DX12\DX12Texture.h" />
     <ClInclude Include="Include\DX12\DX12View.h" />
     <ClInclude Include="Include\DXBase\DXCommon.h" />
+    <ClInclude Include="Include\DXBase\DXShaderBase.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
     <ClInclude Include="Include\Graphics\IBuffer.h" />
     <ClInclude Include="Include\Graphics\ICommandQueue.h" />
@@ -319,6 +320,7 @@
     <ClCompile Include="Source\DX12\DX12Texture.cpp" />
     <ClCompile Include="Source\DX12\DX12View.cpp" />
     <ClCompile Include="Source\DXBase\DXCommon.cpp" />
+    <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderCompiler.cpp" />
     <ClCompile Include="Source\Graphics\ShaderByteCode.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />

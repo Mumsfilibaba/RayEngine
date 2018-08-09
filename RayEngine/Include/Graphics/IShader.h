@@ -43,6 +43,15 @@ namespace RayEngine
 
 
 
+		/////////////////////////////////////////////////////////////
+		enum SHADER_FLAGS : int32
+		{
+			SHADER_FLAGS_NONE = 0,
+			SHADER_FLAGS_DEBUG = 1,
+		};
+
+
+
 		/*////////////////////////////////////////////////////////////
 			ShaderVariables defines a variable in the shader. This 
 			can be a texture, buffer or sampler.
@@ -136,6 +145,12 @@ namespace RayEngine
 			std::string EntryPoint = "main";
 			SHADER_TYPE Type = SHADER_TYPE_UNKNOWN;
 			SHADER_SOURCE_LANG SrcLang = SHADER_SOURCE_LANG_UNKNOWN;
+			int32 Flags =
+#if defined(RE_DEBUG)
+				SHADER_FLAGS_DEBUG;
+#else
+				SHADER_FLAGS_NONE;
+#endif
 			ShaderVariable* pVariables = nullptr;
 			int32 VariableCount = 0;
 			StaticSampler* pSamplers = nullptr;

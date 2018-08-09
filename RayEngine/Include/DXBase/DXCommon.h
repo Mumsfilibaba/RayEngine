@@ -20,10 +20,7 @@
 namespace RayEngine
 {
 	std::string DXErrorString(HRESULT hr);
-	std::string GetShaderModel(SHADER_TYPE shaderType);
 	DXGI_FORMAT ReToDXFormat(FORMAT format);
 	D3D_PRIMITIVE_TOPOLOGY ReToDXTopology(PRIMITIVE_TOPOLOGY topology);
-	bool CompileFromFile(const std::string& filename, const std::string& filepath, const std::string& entryPoint, SHADER_TYPE type, int32 flags, ID3DBlob** ppShaderBlob, std::string& errorString);
-	bool CompileFromString(const std::string& src, const std::string& entryPoint, SHADER_TYPE type, int32 flags, ID3DBlob** ppShaderBlob, std::string& errorString);
 }
 #endif
