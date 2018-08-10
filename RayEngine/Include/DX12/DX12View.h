@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DX12Common.h"
+#if defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
 {
@@ -26,3 +27,5 @@ namespace RayEngine
 		};
 	}
 }
+
+#endif

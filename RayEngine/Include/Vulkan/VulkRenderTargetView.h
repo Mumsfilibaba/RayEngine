@@ -19,10 +19,10 @@ namespace RayEngine
 			VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info);
 			~VulkRenderTargetView();
 
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const RenderTargetViewInfo& info);
+			void Create(const RenderTargetViewInfo& info);
 		};
 	}
 }

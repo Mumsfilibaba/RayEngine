@@ -14,9 +14,9 @@ namespace RayEngine
 			m_Device(nullptr)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX12Device(pDevice);
 
-			Create(pDevice, pInitialData, info);
+			Create(pInitialData, info);
 		}
 
 
@@ -28,7 +28,7 @@ namespace RayEngine
 			m_Device(nullptr)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX12Device(pDevice);
 
 			m_Resource = pResource;
 			pResource->AddRef();
@@ -53,16 +53,18 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX12Texture::GetDevice() const
+		void DX12Texture::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX12Device(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Texture::Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		void DX12Texture::Create(const ResourceData* const pInitialData, const TextureInfo& info)
 		{
+			using namespace System;
+
 			DXGI_FORMAT format = ReToDXFormat(info.Format);
 
 			D3D12_CLEAR_VALUE* pClearValue = nullptr;
@@ -77,16 +79,23 @@ namespace RayEngine
 			clearValue.DepthStencil.Stencil = info.DepthStencil.OptimizedStencil;
 
 			D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
-			if (info.Flags == TEXTURE_FLAGS_RENDERTARGET)
+			if (info.Flags & TEXTURE_FLAGS_RENDERTARGET)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 				pClearValue = &clearValue;
 			}
-			if (info.Flags == TEXTURE_FLAGS_DEPTHBUFFER)
+
+			if (info.Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 				pClearValue = &clearValue;
 			}
+
+			if (info.Flags & TEXTURE_FLAGS_UNORDERED_ACCESS)
+			{
+				flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+			}
+
 
 
 			D3D12_RESOURCE_DESC desc = {};
@@ -128,24 +137,27 @@ namespace RayEngine
 				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 
-			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
-			const DX12CommandQueue* pQueue = reinterpret_cast<const DX12Device*>(pDevice)->GetDX12CommandQueue();
-			if (FAILED(pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc,
-				D3D12_RESOURCE_STATE_COMMON, pClearValue, IID_PPV_ARGS(&m_Resource))))
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+			D3D12_RESOURCE_STATES startingState = D3D12_RESOURCE_STATE_COMMON;
+
+			HRESULT hr = pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc, startingState, pClearValue, IID_PPV_ARGS(&m_Resource));
+			if (FAILED(hr))
 			{
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Texture. " + DXErrorString(hr));
 				return;
 			}
 			else
 			{
+				m_State = startingState;
 				D3D12SetName(m_Resource, info.Name);
 			}
-
-			m_State = D3D12_RESOURCE_STATE_COMMON;
 
 
 			if (pInitialData != nullptr)
 			{
-				DX12DynamicUploadHeap* uploadHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12UploadHeap();
+				const DX12CommandQueue* pQueue = m_Device->GetDX12CommandQueue();
+				
+				DX12DynamicUploadHeap* uploadHeap = m_Device->GetDX12UploadHeap();
 				uploadHeap->SetData(pInitialData->pData, pInitialData->ByteStride * pInitialData->WidthOrCount);
 
 				pQueue->Reset();

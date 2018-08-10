@@ -51,6 +51,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12RootSignature::Create(IDevice* pDevice, const RootSignatureInfo& info)
 		{
+			using namespace System;
 			using namespace Microsoft::WRL;
 
 			D3D12_FEATURE_DATA_ROOT_SIGNATURE feature = {};
@@ -78,11 +79,11 @@ namespace RayEngine
 
 				range.BaseShaderRegister = info.pParameters[i].ShaderRegister;
 				
-				if (info.pParameters[i].ViewType == VIEW_TYPE_UNIFORMBUFFER)
+				if (info.pParameters[i].Type == VARIABLE_TYPE_UNIFORMBUFFER)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-				else if (info.pParameters[i].ViewType == VIEW_TYPE_TEXTURE)
+				else if (info.pParameters[i].Type == VARIABLE_TYPE_TEXTURE)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-				else if (info.pParameters[i].ViewType == VIEW_TYPE_SAMPLER)
+				else if (info.pParameters[i].Type == VARIABLE_TYPE_SAMPLER)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
 
 
@@ -91,18 +92,18 @@ namespace RayEngine
 				parameter.DescriptorTable = { 1, &range };
 
 
-				if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_ALL)
-					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_VERTEX)
-					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_HULL)
-					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_HULL;
-				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_DOMAIN)
-					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_DOMAIN;
-				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_GEOMETRY)
-					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_GEOMETRY;
-				else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_PIXEL)
-					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+				parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+				//if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_ALL)
+				//else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_VERTEX)
+				//	parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+				//else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_HULL)
+				//	parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_HULL;
+				//else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_DOMAIN)
+				//	parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_DOMAIN;
+				//else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_GEOMETRY)
+				//	parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_GEOMETRY;
+				//else if (info.pParameters[i].ShaderVisibility == SHADER_VISIBILITY_PIXEL)
+				//	parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 
 				params.push_back(parameter);
@@ -117,23 +118,24 @@ namespace RayEngine
 
 			//TODO: Static samplers
 
-			if (info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT)
-				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+			rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+			//if (info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT)
+			//	
 
-			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER))
-				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS;
+			//if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER))
+			//	rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS;
 
-			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_HULL_SHADER))
-				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
+			//if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_HULL_SHADER))
+			//	rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
 
-			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_DOMAIN_SHADER))
-				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
+			//if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_DOMAIN_SHADER))
+			//	rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 
-			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_GEOMETRY_SHADER))
-				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+			//if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_GEOMETRY_SHADER))
+			//	rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-			if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER))
-				rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+			//if (!(info.RootSignatureVisibility & ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER))
+			//	rDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
 
 			
 			D3D12_VERSIONED_ROOT_SIGNATURE_DESC vrsDesc = {};
@@ -143,16 +145,19 @@ namespace RayEngine
 
 			ComPtr<ID3DBlob> error;
 			ComPtr<ID3DBlob> rSign;
-			if (FAILED(D3D12SerializeVersionedRootSignature(&vrsDesc, &rSign, &error)))
+			HRESULT hr = D3D12SerializeVersionedRootSignature(&vrsDesc, &rSign, &error);
+			if (FAILED(hr))
 			{
 				std::string err = reinterpret_cast<char*>(error->GetBufferPointer());
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not serialize RootSignature" + err);
 				return;
 			}
 
 
-			if (FAILED(pD3D12Device->CreateRootSignature(0, rSign->GetBufferPointer(), 
-				rSign->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature))))
+			hr = pD3D12Device->CreateRootSignature(0, rSign->GetBufferPointer(), rSign->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
+			if (FAILED(hr))
 			{
+				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create RootSignature" + DXErrorString(hr));
 				return;
 			}
 			else

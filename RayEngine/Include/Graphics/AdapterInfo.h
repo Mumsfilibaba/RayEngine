@@ -1,9 +1,9 @@
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
 #include <string>
 #include <cassert>
+#include "..\Defines.h"
+#include "..\Types.h"
 
 namespace RayEngine
 {
@@ -73,20 +73,7 @@ namespace RayEngine
 			static constexpr int32 MicrosoftVendorID = 0x1414;
 
 		public:
-			inline static std::string GetVendorString(int32 vendorID)
-			{
-				switch (vendorID)
-				{
-				case AdapterInfo::AMDVendorID:			return "AMD";
-				case AdapterInfo::ImgTecVendorID:		return "ImgTec";
-				case AdapterInfo::NVIDIAVendorID:		return "NVIDIA";
-				case AdapterInfo::ARMVendorID:			return "ARM";
-				case AdapterInfo::QualcommVendorID:		return "Qualcomm";
-				case AdapterInfo::INTELVendorID:		return "INTEL";
-				case AdapterInfo::MicrosoftVendorID:	return "Microsoft";
-				default: return "Unknown Vendor";
-				}
-			}
+			static std::string GetVendorString(int32 vendorID);
 		};
 
 
@@ -98,77 +85,17 @@ namespace RayEngine
 			AdapterList(const AdapterList& other) = delete;
 			AdapterList& operator=(const AdapterList& other) = delete;
 
+		public:
+			AdapterList();
+			AdapterList(int32 count);
+			AdapterList(AdapterList&& other);
+			~AdapterList();
+
+			AdapterInfo& operator[](int32 index);
+			AdapterList& operator=(AdapterList&& other);
 
 		public:
-			/////////////////////////////////////////////////////////////
-			inline AdapterList()
-				: Adapters(nullptr),
-				Count(0)
-			{
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline AdapterList(int32 count)
-				: Adapters(nullptr),
-				Count(count)
-			{
-				Adapters = new AdapterInfo[count];
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline AdapterList(AdapterList&& other)
-				: Adapters(other.Adapters),
-				Count(other.Count)
-			{
-				other.Adapters = nullptr;
-				other.Count = 0;
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			~AdapterList()
-			{
-				if (Adapters != nullptr)
-				{
-					delete[] Adapters;
-					Adapters = nullptr;
-				}
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline AdapterInfo& operator[](int32 index)
-			{
-				assert(index < Count);
-				return Adapters[index];
-			}
-
-
-
-			/////////////////////////////////////////////////////////////
-			inline AdapterList& operator=(AdapterList&& other)
-			{
-				if (this != &other)
-				{
-					Adapters = other.Adapters;
-					Count = other.Count;
-
-					other.Adapters = nullptr;
-					other.Count = 0;
-				}
-
-				return *this;
-			}
-
-
-		public:
-			AdapterInfo* Adapters = nullptr;
+			AdapterInfo* pAdapters = nullptr;
 			int32 Count = 0;
 		};
 	}

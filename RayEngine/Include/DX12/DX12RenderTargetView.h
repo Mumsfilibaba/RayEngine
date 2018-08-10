@@ -5,12 +5,13 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
+#include "DX12Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12RenderTargetView : public IRenderTargetView, public DX12View
+		class DX12RenderTargetView final : public IRenderTargetView, public DX12View
 		{
 		public:
 			DX12RenderTargetView(const DX12RenderTargetView& other) = delete;
@@ -22,13 +23,13 @@ namespace RayEngine
 			DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info);
 			~DX12RenderTargetView();
 
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const RenderTargetViewInfo& info);
+			void Create(const RenderTargetViewInfo& info);
 
 		private:
-			IDevice* m_Device;
+			DX12Device* m_Device;
 		};
 	}
 }

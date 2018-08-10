@@ -5,6 +5,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
+#include "DX12Device.h"
 
 namespace RayEngine
 {
@@ -22,13 +23,13 @@ namespace RayEngine
 			DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info);
 			~DX12DepthStencilView();
 
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const DepthStencilViewInfo& info);
+			void Create(const DepthStencilViewInfo& info);
 
 		private:
-			IDevice* m_Device;
+			DX12Device* m_Device;
 		};
 	}
 }

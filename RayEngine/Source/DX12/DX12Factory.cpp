@@ -3,7 +3,6 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include <vector>
 #include <cstdlib>
-#include "..\..\Include\DXBase\DXShaderCompiler.h"
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12Swapchain.h"
 
@@ -12,12 +11,12 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Factory::DX12Factory(bool debugLayer)
+		DX12Factory::DX12Factory(const std::string& name, bool debugLayer)
 			: m_Factory(nullptr),
 			m_DebugController(nullptr)
 		{
 			AddRef();
-			Create(debugLayer);
+			Create(name, debugLayer);
 		}
 
 
@@ -97,14 +96,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateShaderCompiler(IShaderCompiler** ppCompiler)
-		{
-			return (*ppCompiler) = new DXShaderCompiler(this, (m_DebugController != nullptr));
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		GRAPHICS_API DX12Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D12;
@@ -113,23 +104,31 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Factory::Create(bool debugLayer)
+		void DX12Factory::Create(const std::string& name, bool debugLayer)
 		{
 			uint32 factoryFlags = 0;
 			if (debugLayer)
 			{
 				factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
-
 				if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&m_DebugController))))
+				{
 					return;
-
-				m_DebugController->EnableDebugLayer();
+				}
+				else
+				{
+					m_DebugController->EnableDebugLayer();
+				}
 			}
 
-			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
-				return;
 
-			return;
+			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
+			{
+				return;
+			}
+			else
+			{
+				m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+			}
 		}
 
 

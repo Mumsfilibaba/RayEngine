@@ -4,19 +4,18 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
 #include "..\..\Include\DX11\DX11Swapchain.h"
-#include "..\..\Include\DXBase\DXShaderCompiler.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX11Factory::DX11Factory(bool debugLayer)
+		DX11Factory::DX11Factory(const std::string& name, bool debugLayer)
 			: m_Factory(nullptr),
 			m_DebugLayer(debugLayer)
 		{
 			AddRef();
-			Create();
+			Create(name);
 		}
 
 
@@ -103,14 +102,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateShaderCompiler(IShaderCompiler** ppCompiler)
-		{
-			return ((*ppCompiler = new DXShaderCompiler(this, m_DebugLayer)));
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		GRAPHICS_API DX11Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D11;
@@ -119,12 +110,16 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Factory::Create()
+		void DX11Factory::Create(const std::string& name)
 		{
 			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory))))
+			{
 				return;
-
-			return;
+			}
+			else
+			{
+				m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+			}
 		}
 
 

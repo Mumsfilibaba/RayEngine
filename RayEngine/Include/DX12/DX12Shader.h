@@ -1,15 +1,17 @@
 #pragma once
 
+#include <vector>
 #include "..\Graphics\IShader.h"
-#include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Device.h"
+#include "..\DXBase\DXShaderBase.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12Shader : public IShader
+		class DX12Shader final : public IShader, public DXShaderBase
 		{
 		public:
 			DX12Shader(const DX12Shader& other) = delete;
@@ -18,17 +20,27 @@ namespace RayEngine
 			DX12Shader& operator=(DX12Shader&& other) = delete;
 
 		public:
-			DX12Shader(IDevice* pDevice, const ShaderByteCode& byteCode);
+			DX12Shader(IDevice* pDevice, const ShaderInfo& info);
 			~DX12Shader();
 
-			const D3D12_SHADER_BYTECODE* GetD3D12ByteCode() const;
+			D3D12_SHADER_BYTECODE GetD3D12ByteCode() const;
+			const D3D12_STATIC_SAMPLER_DESC* GetStaticSamplers() const;
+			int32 GetStaticSamplerCount() const;
+			const D3D12_ROOT_PARAMETER1* GetVariables() const;
+			int32 GetVariableCount() const;
+
 			SHADER_TYPE GetType() const override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			IDevice* m_Device;
-			SHADER_TYPE m_Type;
-			D3D12_SHADER_BYTECODE m_Shader;
+			void Create(const ShaderInfo& info);
+			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariable& variable);
+			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSampler& sampler);
+
+		private:
+			DX12Device* m_Device;
+			std::vector<D3D12_ROOT_PARAMETER1> m_Variables;
+			std::vector<D3D12_STATIC_SAMPLER_DESC> m_StaticSamplers;
 		};
 	}
 }

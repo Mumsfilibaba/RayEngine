@@ -28,11 +28,10 @@ namespace RayEngine
 			m_Format()
 		{
 			AddRef();
+			m_Factory = reinterpret_cast<VulkFactory*>(pFactory->QueryReference());
+			m_Device = QueryVulkDevice(pDevice);
 
-			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
-
-			Create(pFactory, pDevice, info);
+			Create(info);
 		}
 
 
@@ -93,17 +92,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IFactory* VulkSwapchain::GetFactory() const
+		void VulkSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			return m_Factory;
+			(*ppFactory) = reinterpret_cast<VulkFactory*>(m_Factory->QueryReference());
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		ICommandQueue* VulkSwapchain::GetCommandQueue() const
+		void VulkSwapchain::QueryCommandQueue(ICommandQueue** ppCommandQueue) const
 		{
-			return m_CommandQueue;
+			(*ppCommandQueue) = reinterpret_cast<ICommandQueue*>(m_CommandQueue->QueryReference());
 		}
 
 
@@ -146,25 +145,25 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkSwapchain::Create(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+		void VulkSwapchain::Create(const SwapchainInfo& info)
 		{
 			using namespace System;
 
-			VkInstance instance = reinterpret_cast<VulkFactory*>(pFactory)->GetVkInstance();
+			VkInstance instance = m_Factory->GetVkInstance();
 			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, info.pWindow->GetImplementation());
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
 				return;
 			}
 
 
-			VkPhysicalDevice adapter = reinterpret_cast<VulkDevice*>(pDevice)->GetVkPhysicalDevice();
+			VkPhysicalDevice adapter = m_Device->GetVkPhysicalDevice();
 			VkSurfaceCapabilitiesKHR capabilities = {};
 			result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(adapter, m_Surface, &capabilities);
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
 				return;
 			}
 
@@ -173,7 +172,7 @@ namespace RayEngine
 			result = vkGetPhysicalDeviceSurfacePresentModesKHR(adapter, m_Surface, &count, nullptr);
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
 				return;
 			}
 
@@ -182,15 +181,15 @@ namespace RayEngine
 			result = vkGetPhysicalDeviceSurfacePresentModesKHR(adapter, m_Surface, &count, presentModes.data());
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
 				return;
 			}
 
 
-			m_Format = GetSupportedFormat(pDevice, m_Surface, ReToVkFormat(info.Buffer.Format));
+			m_Format = GetSupportedFormat(m_Device, m_Surface, ReToVkFormat(info.Buffer.Format));
 			if (m_Format.format == VK_FORMAT_UNDEFINED)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Format is not supported.");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Format is not supported.");
 				return;
 			}
 
@@ -216,11 +215,11 @@ namespace RayEngine
 			scInfo.clipped = VK_TRUE;
 			scInfo.preTransform = capabilities.currentTransform;
 
-			VkDevice device = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
+			VkDevice device = m_Device->GetVkDevice();
 			result = vkCreateSwapchainKHR(device, &scInfo, nullptr, &m_Swapchain);
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create swapchain.");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create swapchain.");
 				return;
 			}
 
@@ -233,7 +232,7 @@ namespace RayEngine
 
 			m_Textures.resize(count);
 			for (int32 i = 0; i < swapchainImages.size(); i++)
-				m_Textures[i] = new VulkTexture(pDevice, swapchainImages[i]);
+				m_Textures[i] = new VulkTexture(m_Device, swapchainImages[i]);
 		}
 
 
@@ -257,14 +256,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		VkSurfaceFormatKHR VulkSwapchain::GetSupportedFormat(IDevice* pDevice, VkSurfaceKHR surface, VkFormat desiredFormat)
+		VkSurfaceFormatKHR VulkSwapchain::GetSupportedFormat(VulkDevice* pDevice, VkSurfaceKHR surface, VkFormat desiredFormat)
 		{
 			using namespace System;
 
 			VkSurfaceFormatKHR format = {};
 			format.format = VK_FORMAT_UNDEFINED;
 
-			VkPhysicalDevice adapter = reinterpret_cast<VulkDevice*>(pDevice)->GetVkPhysicalDevice();
+			VkPhysicalDevice adapter = pDevice->GetVkPhysicalDevice();
 
 			uint32 count = 0;
 			VkResult result = vkGetPhysicalDeviceSurfaceFormatsKHR(adapter, surface, &count, nullptr);

@@ -1,13 +1,15 @@
 #pragma once
 
 #include "..\..\Include\Graphics\ICommandQueue.h"
-#include "DX11Common.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+#include "DX11Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11CommandQueue : public ICommandQueue
+		class DX11CommandQueue final : public ICommandQueue
 		{
 		public:
 			DX11CommandQueue(const DX11CommandQueue& other) = delete;
@@ -47,16 +49,17 @@ namespace RayEngine
 			bool Reset() const override final;
 			bool Close() const override final;
 
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const CommandQueueInfo& info);
+			void Create(const CommandQueueInfo& info);
 
 		private:
-			IDevice* m_Device;
-
+			DX11Device* m_Device;
 			ID3D11DeviceContext* m_DefferedContext;
 			mutable ID3D11CommandList* m_List;
 		};
 	}
 }
+
+#endif

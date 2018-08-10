@@ -48,7 +48,7 @@ int main(int args, char* argsv[])
 
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create(GRAPHICS_API_VULKAN, true);
+	IFactory* factory = IFactory::Create("Factory", GRAPHICS_API_D3D11, true);
 	
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
@@ -112,9 +112,8 @@ int main(int args, char* argsv[])
 		rtvInfo.pResource = swapchain->GetBuffer(i);
 		device->CreateRenderTargetView(&(rtvs[i]), rtvInfo);
 	}
+	
 
-	//IShaderCompiler* compiler = nullptr;
-	//factory->CreateShaderCompiler(&compiler);
 
 	ShaderInfo shaderInfo = {};
 	shaderInfo.Name = "VertexShader";
@@ -128,42 +127,75 @@ int main(int args, char* argsv[])
 	shaderInfo.pSamplers = nullptr;
 	shaderInfo.SamplerCount = 0;
 
-	std::string errorString;
-	//ShaderCompileInfo sInfo = {};
-	//sInfo.EntryPoint = "main";
-	//sInfo.SrcLang = SHADER_SOURCE_LANG_GLSL;
-	//sInfo.Type = SHADER_TYPE_VERTEX;
-	//ShaderByteCode vsCode = compiler->CompileFromFile("vs.hlsl", "Shaders/", sInfo, errorString);
-	//if (!vsCode.IsValid())
-	//{
-	//	log.Write(LOG_SEVERITY_ERROR, errorString);
-	//}
-
-	//ShaderByteCode psCode = compiler->CompileFromFile("ps.hlsl", "Shaders/", sInfo, errorString);
-	//if (!psCode.IsValid())
-	//{
-	//	log.Write(LOG_SEVERITY_ERROR, errorString);
-	//}
-
 	IShader* vs = nullptr;
 	device->CreateShader(&vs, shaderInfo);
 
+	ShaderVariable variable = {};
+	variable.Type = VARIABLE_TYPE_UNIFORMBUFFER;
+	variable.ShaderRegister = 0;
+	variable.ShaderSpace = 0;
+	variable.ShaderUsage = SHADER_USAGE_DYNAMIC;
+
 	shaderInfo.Name = "PixelShader";
 	shaderInfo.Source = "ps.hlsl";
+	shaderInfo.VariableCount = 1;
+	shaderInfo.pVariables = &variable;
 	shaderInfo.Type = SHADER_TYPE_PIXEL;
 
 	IShader* ps = nullptr;
 	device->CreateShader(&ps, shaderInfo);
+
+
+
+	IBuffer* colorbuffer = nullptr;
+	BufferInfo colorBufferInfo = {};
+	colorBufferInfo.Name = "ColorBuffer";
+	colorBufferInfo.ByteStride = sizeof(ColorF);
+	colorBufferInfo.Count = 1;
+	colorBufferInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
+	colorBufferInfo.Type = BUFFER_USAGE_UNIFORM;
+	colorBufferInfo.Usage = RESOURCE_USAGE_DEFAULT;
+
+	ResourceData colorData = {};
+	colorData.ByteStride = sizeof(ColorF);
+	colorData.WidthOrCount = 1;
+	colorData.pData = &ColorF::CORNFLOWERBLUE;
+
+	device->CreateBuffer(&colorbuffer, &colorData, colorBufferInfo);
+
+
+
+	TextureInfo textureInfo = {};
+	textureInfo.Name = "Chess - Texture";
+	textureInfo.Flags = TEXTURE_FLAGS_SHADER_RESOURCE;
+	textureInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
+	textureInfo.Usage = RESOURCE_USAGE_DEFAULT;
+	textureInfo.Format = FORMAT_R8G8B8A8_UNORM;
+	textureInfo.Type = TEXTURE_TYPE_2D;
+	textureInfo.Width = 512;
+	textureInfo.Height = 512;
+	textureInfo.DepthOrArraySize = 1;
+	textureInfo.MipLevels = 1;
+	textureInfo.SampleCount = 1;
+
+	ResourceData textureData = {};
+	textureData.ByteStride = sizeof(uint8) * 4;
+	textureData.WidthOrCount = 512;
+	textureData.Height = 512;
+
+	TextureLoader::LoadFromFile("chess.jpg", "Textures/", &textureData.pData,
+		textureData.WidthOrCount, textureData.Height, FORMAT_R8G8B8A8_UNORM);
+
+	ITexture* texture = nullptr;
+	device->CreateTexture(&texture, &textureData, textureInfo);
+
+
 
 	IRootSignature* rootSignature = nullptr;
 	RootSignatureInfo rootInfo = {};
 	rootInfo.Name = "RootSignature";
 	rootInfo.ParameterCount = 0;
 	rootInfo.pParameters = nullptr;
-	//rootInfo.RootSignatureVisibility =
-	//	ROOT_SIGNATURE_VISIBILITY_INPUT_LAYOUT |
-	//	ROOT_SIGNATURE_VISIBILITY_VERTEX_SHADER |
-	//	ROOT_SIGNATURE_VISIBILITY_PIXEL_SHADER;
 
 	device->CreateRootSignature(&rootSignature, rootInfo);
 
@@ -200,7 +232,7 @@ int main(int args, char* argsv[])
 
 	TextureInfo dsInfo = {};
 	dsInfo.Name = "DepthStencil-Texture";
-	dsInfo.Flags = TEXTURE_FLAGS_DEPTHBUFFER;
+	dsInfo.Flags = TEXTURE_FLAGS_DEPTH_STENCIL;
 	dsInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
 	dsInfo.Usage = RESOURCE_USAGE_DEFAULT;
 	dsInfo.Format = FORMAT_D16_UNORM;
@@ -213,32 +245,6 @@ int main(int args, char* argsv[])
 
 	ITexture* depthStencil = nullptr;
 	device->CreateTexture(&depthStencil, nullptr, dsInfo);
-
-
-	TextureInfo textureInfo = {};
-	textureInfo.Name = "Texture";
-	textureInfo.Flags = TEXTURE_FLAGS_TEXTURE;
-	textureInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
-	textureInfo.Usage = RESOURCE_USAGE_DEFAULT;
-	textureInfo.Format = FORMAT_R8G8B8A8_UNORM;
-	textureInfo.Type = TEXTURE_TYPE_2D;
-	textureInfo.Width = 512;
-	textureInfo.Height = 512;
-	textureInfo.DepthOrArraySize = 1;
-	textureInfo.MipLevels = 1;
-	textureInfo.SampleCount = 1;
-
-	ResourceData textureData = {};
-	textureData.ByteStride = sizeof(uint8) * 4;
-	textureData.WidthOrCount = 512;
-	textureData.Height = 512;
-
-
-	TextureLoader::LoadFromFile("chess.jpg", "Textures/", &textureData.pData, 
-		textureData.WidthOrCount, textureData.Height, FORMAT_R8G8B8A8_UNORM);
-	
-	ITexture* texture = nullptr;
-	device->CreateTexture(&texture, &textureData, textureInfo);
 
 
 	DepthStencilViewInfo dsvInfo = {};
@@ -426,6 +432,7 @@ int main(int args, char* argsv[])
 
 	queue->Flush();
 
+	ReRelease_S(colorbuffer);
 	ReRelease_S(texture);
 	delete textureData.pData;
 
@@ -435,7 +442,6 @@ int main(int args, char* argsv[])
 	ReRelease_S(dsv);
 	ReRelease_S(rootSignature);
 	ReRelease_S(pipelineState);
-	ReRelease_S(compiler);
 	ReRelease_S(depthStencil);
 
 	for (int32 i = 0; i < bufferCount; i++)

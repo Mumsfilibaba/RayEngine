@@ -7,6 +7,12 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class VulkDevice;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class VulkTexture : public ITexture
 		{
 		public:
@@ -24,13 +30,13 @@ namespace RayEngine
 			VkImage GetVkImage() const;
 
 			RESOURCE_STATE GetResourceState() const override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
 
 		private:
-			IDevice* m_Device;
+			VulkDevice* m_Device;
 			VkImage m_Image;
 		};
 	}

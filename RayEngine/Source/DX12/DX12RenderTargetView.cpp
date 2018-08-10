@@ -14,9 +14,9 @@ namespace RayEngine
 			m_Device(nullptr)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice);
+			m_Device = QueryDX12Device(pDevice);
 
-			Create(pDevice, info);
+			Create(info);
 		}
 
 		
@@ -30,24 +30,29 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX12RenderTargetView::GetDevice() const
+		void DX12RenderTargetView::QueryDevice(IDevice ** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX12Device(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12RenderTargetView::Create(IDevice* pDevice, const RenderTargetViewInfo& info)
+		void DX12RenderTargetView::Create(const RenderTargetViewInfo& info)
 		{
-			const DX12DescriptorHeap* pHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12RenderTargetViewHeap();
+			const DX12DescriptorHeap* pHeap = m_Device->GetDX12RenderTargetViewHeap();
 			m_View = pHeap->GetNext();
 
-			//TODO: Use a Desc
+			//TODO: More than texture2D
+			D3D12_RENDER_TARGET_VIEW_DESC desc = {};
+			desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+			desc.Texture2D.MipSlice = 0;
+			desc.Texture2D.PlaneSlice = 0;
 
-			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
+
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.pResource)->GetD3D12Resource();
-			pD3D12Device->CreateRenderTargetView(pD3D12Resource, nullptr, m_View);
+			pD3D12Device->CreateRenderTargetView(pD3D12Resource, &desc, m_View);
 		}
 	}
 }

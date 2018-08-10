@@ -17,7 +17,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDepthStencilView : public RefCounter
+		class IDepthStencilView : public IDeviceObject
 		{
 		public:
 			IDepthStencilView(IDepthStencilView&& other) = delete;
@@ -28,9 +28,6 @@ namespace RayEngine
 		public:
 			IDepthStencilView() {}
 			virtual ~IDepthStencilView() {}
-
-			//Returns the device that created the object
-			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

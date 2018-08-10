@@ -26,7 +26,6 @@ namespace RayEngine
 			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo,
 				ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
-			bool CreateShaderCompiler(IShaderCompiler** ppCompiler) override final;
 
 			GRAPHICS_API GetGraphicsApi() const override final;
 

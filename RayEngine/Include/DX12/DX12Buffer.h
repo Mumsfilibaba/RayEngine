@@ -1,15 +1,15 @@
 #pragma once
 
 #include "..\..\Include\Graphics\IBuffer.h"
-#include "DX12Resource.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Resource.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12Buffer : public IBuffer, public DX12Resource
+		class DX12Buffer final : public IBuffer, public DX12Resource
 		{
 		public:
 			DX12Buffer(const DX12Buffer& other) = delete;
@@ -25,16 +25,17 @@ namespace RayEngine
 			D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const;
 			D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const;
 
-			IDevice* GetDevice() const override final;
 			void* Map(int32 subresource) override final;
 			void Unmap() override final;
 
-		private:
-			void Create(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
-			void CreateView(IDevice* pDevice, const BufferInfo& usage);
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			IDevice* m_Device;
+			void Create(const ResourceData* pInitalData, const BufferInfo& info);
+			void CreateView(const BufferInfo& usage);
+
+		private:
+			DX12Device* m_Device;
 			BUFFER_USAGE m_BufferType;
 			union 
 			{

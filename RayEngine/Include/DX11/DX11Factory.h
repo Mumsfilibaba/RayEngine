@@ -7,7 +7,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11Factory : public IFactory
+		class DX11Factory final : public IFactory
 		{
 		public:
 			DX11Factory(const DX11Factory& other) = delete;
@@ -16,7 +16,7 @@ namespace RayEngine
 			DX11Factory& operator=(DX11Factory&& other) = delete;
 
 		public:
-			DX11Factory(bool debugLayer);
+			DX11Factory(const std::string& name, bool debugLayer);
 			~DX11Factory();
 
 			IDXGIFactory* GetDXGIFactory() const;
@@ -25,12 +25,11 @@ namespace RayEngine
 			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
 			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
-			bool CreateShaderCompiler(IShaderCompiler** ppCompiler) override final;
 
 			GRAPHICS_API GetGraphicsApi() const override final;
 
 		private:
-			void Create();
+			void Create(const std::string& name);
 
 		private:
 			IDXGIFactory* m_Factory;

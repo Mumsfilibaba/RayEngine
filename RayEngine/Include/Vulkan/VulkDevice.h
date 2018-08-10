@@ -3,6 +3,8 @@
 #include "..\Graphics\IDevice.h"
 #include "VulkSwapchain.h"
 
+#define QueryVulkDevice(pDevice) reinterpret_cast<VulkDevice*>(pDevice->QueryReference())
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -19,25 +21,25 @@ namespace RayEngine
 			VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo);
 			~VulkDevice();
 
-			IFactory* GetFactory() const;
 			VkDevice GetVkDevice() const;
 			VkPhysicalDevice GetVkPhysicalDevice() const;
 
 			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) override final;
-			bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) override final;
+			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
 			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
 			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
 			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+			void QueryFactory(IFactory** ppFactory) const override final;
 			System::Log* GetDeviceLog() override final;
 
 		private:
-			void Create(IFactory* pFactory, const DeviceInfo& deviceInfo);
+			void Create(const DeviceInfo& deviceInfo);
 
 		private:
-			IFactory* m_Factory;
+			VulkFactory* m_Factory;
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
 			System::Log m_Log;

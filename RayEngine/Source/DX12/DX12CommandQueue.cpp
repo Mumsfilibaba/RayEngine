@@ -23,9 +23,9 @@ namespace RayEngine
 			m_CurrentFence(0)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
-			
-			Create(pDevice, info);
+			m_Device = QueryDX12Device(pDevice);
+
+			Create(info);
 		}
 
 
@@ -298,9 +298,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX12CommandQueue::GetDevice() const
+		void DX12CommandQueue::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX12Device(m_Device);
 		}
 
 
@@ -314,9 +314,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12CommandQueue::Create(IDevice* pDevice, const CommandQueueInfo& info)
+		void DX12CommandQueue::Create(const CommandQueueInfo& info)
 		{
-			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 
 			//TODO: different types of commandqueues
 
@@ -330,7 +330,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandQueue");
+				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandQueue");
 				return;
 			}
 			else
@@ -342,7 +342,7 @@ namespace RayEngine
 			hr = pD3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_Allocator));
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandAllocator");
+				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandAllocator");
 				return;
 			}
 			else
@@ -354,7 +354,7 @@ namespace RayEngine
 			hr = pD3D12Device->CreateCommandList(qDesc.NodeMask, D3D12_COMMAND_LIST_TYPE_DIRECT, m_Allocator, nullptr, IID_PPV_ARGS(&m_List));
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandList");
+				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandList");
 				return;
 			}
 			else
@@ -366,13 +366,12 @@ namespace RayEngine
 			hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
-				return;
+				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
 			}
-
-
-			Close();
-			return;
+			else
+			{
+				Close();
+			}
 		}
 	}
 }

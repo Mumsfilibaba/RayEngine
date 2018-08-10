@@ -1,13 +1,15 @@
 #pragma once
 
 #include "..\Graphics\IDepthStencilView.h"
-#include "DX11Common.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+#include "DX11Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11DepthStencilView : public IDepthStencilView
+		class DX11DepthStencilView final : public IDepthStencilView
 		{
 		public:
 			DX11DepthStencilView(const DX11DepthStencilView& other) = delete;
@@ -20,15 +22,17 @@ namespace RayEngine
 			~DX11DepthStencilView();
 
 			ID3D11DepthStencilView* GetD3D11DepthStencilView() const;
-			IDevice* GetDevice() const override final;
+
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const DepthStencilViewInfo& info);
+			void Create(const DepthStencilViewInfo& info);
 
 		private:
-			IDevice* m_Device;
+			DX11Device* m_Device;
 			ID3D11DepthStencilView* m_View;
 		};
 	}
-
 }
+
+#endif

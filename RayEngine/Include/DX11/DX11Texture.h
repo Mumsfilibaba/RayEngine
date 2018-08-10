@@ -3,13 +3,13 @@
 #include "..\..\Include\Graphics\ITexture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Common.h"
+#include "DX11Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11Texture : public ITexture
+		class DX11Texture final : public ITexture
 		{
 		public:
 			DX11Texture(const DX11Texture& other) = delete;
@@ -27,14 +27,13 @@ namespace RayEngine
 			ID3D11Texture3D* GetD3D11Texture3D() const;
 
 			RESOURCE_STATE GetResourceState() const override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
 
 		private:
-			IDevice* m_Device;
-
+			DX11Device* m_Device;
 			TEXTURE_TYPE m_Type;
 			union
 			{

@@ -1,0 +1,85 @@
+#include "..\..\Include\DX11\DX11Sampler.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11Texture.h"
+
+namespace RayEngine
+{
+	namespace Graphics
+	{
+		/////////////////////////////////////////////////////////////
+		DX11Sampler::DX11Sampler(IDevice* pDevice, const SamplerInfo& info)
+			: m_Device(nullptr),
+			m_SamplerState(nullptr)
+		{
+			AddRef();
+			m_Device = QueryDX11Device(pDevice);
+			
+			Create(info);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX11Sampler::~DX11Sampler()
+		{
+			D3DRelease_S(m_SamplerState);
+
+			ReRelease_S(m_Device);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11SamplerState* DX11Sampler::GetD3D11SamplerState() const
+		{
+			return m_SamplerState;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11Sampler::QueryDevice(IDevice** ppDevice) const
+		{
+			(*ppDevice) = QueryDX11Device(m_Device);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11Sampler::Create(const SamplerInfo& info)
+		{
+			using namespace System;
+
+			D3D11_SAMPLER_DESC desc = {};
+			desc.AddressU = ReToDX11TextureAdressMode(info.AdressU);
+			desc.AddressV = ReToDX11TextureAdressMode(info.AdressV);
+			desc.AddressW = ReToDX11TextureAdressMode(info.AdressW);
+			desc.ComparisonFunc = ReToDX11ComparisonFunc(info.ComparisonFunc);
+			desc.Filter = ReToDX11Filter(info.FilterMode);
+			desc.MaxAnisotropy = info.MaxAnistropy;
+			desc.MinLOD = info.MinLOD;
+			desc.MaxLOD = info.MaxLOD;
+			desc.MipLODBias = info.MipLODBias;
+			desc.BorderColor[0] = info.BorderColor.R;
+			desc.BorderColor[1] = info.BorderColor.G;
+			desc.BorderColor[2] = info.BorderColor.B;
+			desc.BorderColor[3] = info.BorderColor.A;
+
+
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
+			HRESULT hr = pD3D11Device->CreateSamplerState(&desc, &m_SamplerState);
+			if (FAILED(hr))
+			{
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create SamplerState. " + DXErrorString(hr));
+			}
+			else
+			{
+				m_SamplerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+			}
+		}
+	}
+}
+
+#endif

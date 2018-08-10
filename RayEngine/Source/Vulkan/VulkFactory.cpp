@@ -2,7 +2,6 @@
 #include "..\..\Include\System\Log.h"
 #include "..\..\Include\Vulkan\VulkFactory.h"
 #include "..\..\Include\Vulkan\VulKDevice.h"
-#include "..\..\Include\Vulkan\VulkShaderCompiler.h"
 
 #define VULKAN_EXTENSION_COUNT 3
 #if defined(RE_PLATFORM_ANDROID)
@@ -247,15 +246,7 @@ namespace RayEngine
 
 			return pVulkSwapchain != nullptr;
 		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateShaderCompiler(IShaderCompiler** ppCompiler)
-		{
-			return ((*ppCompiler = new VulkShaderCompiler(this, m_DbgCallback != nullptr)));
-		}
-
+		
 
 
 		/////////////////////////////////////////////////////////////

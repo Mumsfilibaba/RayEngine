@@ -8,13 +8,22 @@
 namespace RayEngine
 {
 	namespace Graphics
-	{
+	{	
+		/////////////////////////////////////////////////////////////
 		IFactory* IFactory::Create(GRAPHICS_API api, bool debugLayers)
 		{
+			return Create("<Unnamed-Factory>", api, debugLayers);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IFactory* IFactory::Create(const std::string& name, GRAPHICS_API api, bool debugLayers)
+		{
 			if (api == GRAPHICS_API_D3D12)
-				return new DX12Factory(debugLayers);
+				return new DX12Factory(name, debugLayers);
 			else if (api == GRAPHICS_API_D3D11)
-				return new DX11Factory(debugLayers);
+				return new DX11Factory(name, debugLayers);
 			else if (api == GRAPHICS_API_VULKAN)
 				return new VulkFactory(debugLayers);
 

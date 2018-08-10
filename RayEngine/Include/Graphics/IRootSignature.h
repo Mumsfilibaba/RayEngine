@@ -1,8 +1,6 @@
 #pragma once
 
-#include "IBuffer.h"
-#include "ITexture.h"
-#include "ISampler.h"
+#include "IShader.h"
 
 namespace RayEngine
 {
@@ -10,17 +8,9 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class IDevice;
-
-
-
-		/////////////////////////////////////////////////////////////
-		enum VARIABLE_TYPE : int32
-		{
-			VIEW_TYPE_UNKNOWN = 0,
-			VIEW_TYPE_UNIFORMBUFFER = 1,
-			VIEW_TYPE_TEXTURE = 2,
-			VIEW_TYPE_SAMPLER = 3,
-		};
+		class IBuffer;
+		class ITexture;
+		class ISampler;
 
 
 
@@ -34,38 +24,6 @@ namespace RayEngine
 			SHADER_VISIBILITY_GEOMETRY = 4,
 			SHADER_VISIBILITY_PIXEL = 5,
 			SHADER_VISIBILITY_ALL = 6,
-		};
-
-
-
-		/////////////////////////////////////////////////////////////
-		enum SHADER_USAGE : int32
-		{
-			SHADER_USAGE_UNKNOWN = 0,
-			SHADER_USAGE_DYNAMIC = 1,
-			SHADER_USAGE_STATIC = 2,
-		};
-
-
-
-		/////////////////////////////////////////////////////////////
-		/*
-		ShaderVariables defines a variable in the shader. This can be a texture 
-		*/
-		/////////////////////////////////////////////////////////////
-		struct ShaderVariable
-		{
-			VARIABLE_TYPE ViewType = VIEW_TYPE_UNKNOWN;
-			SHADER_USAGE ShaderUsage = SHADER_USAGE_UNKNOWN;
-			SHADER_VISIBILITY ShaderVisibility = SHADER_VISIBILITY_UNKNOWN;
-			int32 ShaderRegister = 0;
-
-			union
-			{
-				IBuffer* pBuffer = nullptr;
-				ITexture* pTexture;
-				ISampler* pSampler;
-			};
 		};
 
 

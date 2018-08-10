@@ -9,7 +9,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11PipelineState : public IPipelineState
+		class DX11PipelineState final : public IPipelineState
 		{
 		public:
 			DX11PipelineState(const DX11PipelineState& other) = delete;
@@ -41,24 +41,23 @@ namespace RayEngine
 			DX11Shader* GetDX11ComputeShader() const;
 
 			PIPELINE_TYPE GetPipelineType() const override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
 			void ReleaseInterfaces();
-			void Create(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateGraphicsState(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateComputeState(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateInputLayout(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateRasterizerState(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateDepthStencilState(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateBlendState(IDevice* pDevice, const PipelineStateInfo& info);
+			void Create(const PipelineStateInfo& info);
+			void CreateGraphicsState(const PipelineStateInfo& info);
+			void CreateComputeState(const PipelineStateInfo& info);
+			void CreateInputLayout(const PipelineStateInfo& info);
+			void CreateRasterizerState(const PipelineStateInfo& info);
+			void CreateDepthStencilState(const PipelineStateInfo& info);
+			void CreateBlendState(const PipelineStateInfo& info);
 
 		private:
 			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC& desc, const InputElementInfo& info);
 
 		private:
-			IDevice* m_Device;
-
+			DX11Device* m_Device;
 			ID3D11InputLayout* m_InputLayout;
 			ID3D11BlendState* m_BlendState;
 			float m_BlendFactor[4];

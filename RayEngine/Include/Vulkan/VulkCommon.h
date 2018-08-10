@@ -10,7 +10,6 @@
 #include <vulkan/vulkan.h>
 #endif
 
-
 namespace RayEngine
 {
 	namespace Graphics

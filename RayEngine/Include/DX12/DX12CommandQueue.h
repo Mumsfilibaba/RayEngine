@@ -1,15 +1,21 @@
 #pragma once
 
 #include "..\Graphics\IDevice.h"
-#include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Common.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12CommandQueue : public ICommandQueue
+		/////////////////////////////////////////////////////////////
+		class DX12Device;
+
+
+
+		/////////////////////////////////////////////////////////////
+		class DX12CommandQueue final : public ICommandQueue
 		{
 		public:
 			DX12CommandQueue(const DX12CommandQueue& other) = delete;
@@ -20,6 +26,8 @@ namespace RayEngine
 		public:
 			DX12CommandQueue(IDevice* pDevice, const CommandQueueInfo& info);
 			~DX12CommandQueue();
+
+			ID3D12CommandQueue* GetD3D12CommandQueue() const;
 
 			void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const override final;
 			void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const override final;
@@ -50,14 +58,13 @@ namespace RayEngine
 			bool Reset() const override final;
 			bool Close() const override final;
 
-			IDevice* GetDevice() const override final;
-			ID3D12CommandQueue* GetD3D12CommandQueue() const;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const CommandQueueInfo& info);
+			void Create(const CommandQueueInfo& info);
 
 		private:
-			IDevice* m_Device;
+			DX12Device* m_Device;
 			ID3D12CommandQueue* m_Queue;
 			ID3D12CommandAllocator* m_Allocator;
 			ID3D12GraphicsCommandList* m_List;

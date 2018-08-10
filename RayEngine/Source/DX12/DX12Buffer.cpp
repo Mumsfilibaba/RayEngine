@@ -13,9 +13,9 @@ namespace RayEngine
 			m_BufferType(BUFFER_USAGE_UNKNOWN)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX12Device(pDevice);
 
-			Create(pDevice, pInitalData, info);
+			Create(pInitalData, info);
 		}
 
 
@@ -44,9 +44,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX12Buffer::GetDevice() const
+		void DX12Buffer::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX12Device(m_Device);
 		}
 
 
@@ -76,11 +76,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Buffer::Create(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
+		void DX12Buffer::Create(const ResourceData* pInitalData, const BufferInfo& info)
 		{
-			ID3D12Device* pD3D12Device = reinterpret_cast<const DX12Device*>(pDevice)->GetD3D12Device();
-			const DX12CommandQueue* pQueue = reinterpret_cast<const DX12Device*>(pDevice)->GetDX12CommandQueue();
-
+			using namespace System;
 
 			D3D12_RESOURCE_DESC desc = {};
 			desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
@@ -107,26 +105,32 @@ namespace RayEngine
 				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 
-			if (FAILED(pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc,
-				D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&m_Resource))))
+			D3D12_RESOURCE_STATES startingState = D3D12_RESOURCE_STATE_COMMON;
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+			
+			HRESULT hr = pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc, startingState, nullptr, IID_PPV_ARGS(&m_Resource));
+			if (FAILED(hr))
 			{
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Buffer. " + DXErrorString(hr));
 				return;
 			}
 			else
 			{
+				CreateView(info);
+				
+				m_State = startingState;
+				m_BufferType = info.Type;
+
 				D3D12SetName(m_Resource, info.Name);
 			}
-
-
-			m_State = D3D12_RESOURCE_STATE_COMMON;
-			CreateView(pDevice, info);
 
 
 			if (pInitalData != nullptr)
 			{
 				//TODO: Should be changed later to take different CPU_ACCESS into account??
+				const DX12CommandQueue* pQueue = m_Device->GetDX12CommandQueue();
 
-				DX12DynamicUploadHeap* uploadHeap = reinterpret_cast<DX12Device*>(pDevice)->GetDX12UploadHeap();
+				DX12DynamicUploadHeap* uploadHeap = m_Device->GetDX12UploadHeap();
 				uploadHeap->SetData(pInitalData->pData, pInitalData->ByteStride * pInitalData->WidthOrCount);
 
 				pQueue->Reset();
@@ -149,9 +153,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Buffer::CreateView(IDevice* pDevice, const BufferInfo& info)
+		void DX12Buffer::CreateView(const BufferInfo& info)
 		{
-			const DX12Device* pDX12Device = reinterpret_cast<const DX12Device*>(pDevice);
+			const DX12Device* pDX12Device = m_Device;
 			if (info.Usage == BUFFER_USAGE_UNIFORM)
 			{
 				m_Views.Constant = pDX12Device->GetDX12ResourceHeap()->GetNext();

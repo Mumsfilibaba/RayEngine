@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\RefCounter.h"
+#include "IDeviceObject.h"
 
 namespace RayEngine
 {
@@ -26,9 +26,12 @@ namespace RayEngine
 		enum TEXTURE_FLAGS : int32
 		{
 			TEXTURE_FLAGS_NONE = 0,
-			TEXTURE_FLAGS_RENDERTARGET = 1,
-			TEXTURE_FLAGS_TEXTURE = 2,
-			TEXTURE_FLAGS_DEPTHBUFFER = 3,
+			TEXTURE_FLAGS_RENDERTARGET = (1 << 0),
+			TEXTURE_FLAGS_SHADER_RESOURCE = (1 << 1),
+			TEXTURE_FLAGS_DEPTH_STENCIL = (1 << 2),
+			TEXTURE_FLAGS_UNORDERED_ACCESS = (1 << 2),
+			TEXTURE_FLAGS_CUBEMAP = (1 << 3),
+			TEXTURE_FLAGS_GENERATE_MIPLEVELS = (1 << 4),
 		};
 
 
@@ -37,11 +40,11 @@ namespace RayEngine
 		struct TextureInfo
 		{
 			std::string Name = "";
-			TEXTURE_FLAGS Flags = TEXTURE_FLAGS_NONE;
-			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
-			CPU_ACCESS_FLAG CpuAccess = CPU_ACCESS_FLAG_NONE;
 			TEXTURE_TYPE Type = TEXTURE_TYPE_2D;
 			FORMAT Format = FORMAT_UNKNOWN;
+			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
+			int32 Flags = TEXTURE_FLAGS_NONE;
+			int32 CpuAccess = CPU_ACCESS_FLAG_NONE;
 			int32 Width = 0;
 			int32 Height = 0;
 			int32 DepthOrArraySize = 0;
@@ -59,7 +62,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ITexture : public RefCounter
+		class ITexture : public IDeviceObject
 		{
 		public:
 			ITexture(const ITexture& other) = delete;
@@ -73,8 +76,6 @@ namespace RayEngine
 
 			//Returns the current state of the resource
 			virtual RESOURCE_STATE GetResourceState() const = 0;
-			//Get the Device that created the texture
-			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

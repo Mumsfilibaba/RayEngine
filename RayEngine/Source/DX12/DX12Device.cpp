@@ -25,14 +25,15 @@ namespace RayEngine
 			m_UploadQueue(nullptr),
 			m_ResourceHeap(nullptr),
 			m_DsvHeap(nullptr),
-			m_RtvHeap(nullptr)
+			m_RtvHeap(nullptr),
+			m_SamplerHeap(nullptr)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<IFactory*>(pFactory);
+			m_Factory = reinterpret_cast<DX12Factory*>(pFactory->QueryReference());
 			
-			Create(pFactory, info, debugLayer);
+			m_UploadHeap = new DX12DynamicUploadHeap(this, info.Name + ": Dynamic Upload-Heap", D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
 
-			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
+			Create(pFactory, info, debugLayer);
 		}
 
 
@@ -46,6 +47,7 @@ namespace RayEngine
 			ReRelease_S(m_ResourceHeap);
 			ReRelease_S(m_UploadQueue);
 			ReRelease_S(m_UploadHeap);
+			ReRelease_S(m_SamplerHeap);
 
 			D3DRelease_S(m_Device);
 			D3DRelease_S(m_Adapter);
@@ -68,9 +70,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateShader(IShader** ppShader, const ShaderByteCode& byteCode)
+		bool DX12Device::CreateShader(IShader** ppShader, const ShaderInfo& info)
 		{
-			return ((*ppShader = new DX12Shader(this, byteCode)) != nullptr);
+			return ((*ppShader = new DX12Shader(this, info)) != nullptr);
 		}
 
 
@@ -124,19 +126,18 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		System::Log* DX12Device::GetDeviceLog()
+		void DX12Device::QueryFactory(IFactory** ppFactory) const
 		{
-			return &m_Log;
+			(*ppFactory) = reinterpret_cast<DX12Factory*>(m_Factory->QueryReference());
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		IFactory* DX12Device::GetFactory() const
+		System::Log* DX12Device::GetDeviceLog()
 		{
-			return m_Factory;
+			return &m_Log;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -180,6 +181,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		DX12DescriptorHeap* DX12Device::GetDX12SamplerHeap() const
+		{
+			return m_SamplerHeap;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX12DynamicUploadHeap* DX12Device::GetDX12UploadHeap() const
 		{
 			return m_UploadHeap;
@@ -190,32 +199,47 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Device::Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
 		{
-			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
+			using namespace System;
 
-			if (SUCCEEDED(pDXGIFactory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter)))
+			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
+			HRESULT hr = pDXGIFactory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter);
+			if (SUCCEEDED(hr))
 			{
-				if (SUCCEEDED(D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device))))
+				hr = D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
+				if (SUCCEEDED(hr))
 				{
 					if (debugLayer)
 					{
-						if (FAILED(m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice)))
+						hr = m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice);
+						if (FAILED(hr))
 						{
+							m_Log.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DebugDevice. " + DXErrorString(hr));
 							return;
 						}
 					}
 
 
-					D3D12SetName(m_Device, info.Name);
-
-					m_DsvHeap = new DX12DescriptorHeap(this, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap = new DX12DescriptorHeap(this, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 10, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_ResourceHeap = new DX12DescriptorHeap(this, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 20, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_DsvHeap = new DX12DescriptorHeap(this, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 8, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap = new DX12DescriptorHeap(this, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 64, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_ResourceHeap = new DX12DescriptorHeap(this, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_SamplerHeap = new DX12DescriptorHeap(this, info.Name + ": Sampler-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, 128, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
 
 					CommandQueueInfo queueInfo = {};
 					queueInfo.Name = "Device UploadQueue";
 					m_UploadQueue = new DX12CommandQueue(this, queueInfo);
+					
+
+					D3D12SetName(m_Device, info.Name);
 				}
+				else
+				{
+					m_Log.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Device. " + DXErrorString(hr));
+				}
+			}
+			else
+			{
+				m_Log.Write(LOG_SEVERITY_ERROR, "D3D12: Could not enumerate adapters. " + DXErrorString(hr));
 			}
 		}
 	}

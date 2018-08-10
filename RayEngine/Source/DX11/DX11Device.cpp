@@ -26,7 +26,7 @@ namespace RayEngine
 			m_FeatureLevel()
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
+			m_Factory = reinterpret_cast<DX11Factory*>(pFactory->QueryReference());
 			
 			Create(pFactory, info, debugLayer);
 		}
@@ -65,6 +65,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11Device::QueryFactory(IFactory** ppFactory) const
+		{
+			(*ppFactory) = reinterpret_cast<DX11Factory*>(m_Factory->QueryReference());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info)
 		{
 			return ((*ppCommandQueue = new DX11CommandQueue(this, info)) != nullptr);
@@ -73,9 +81,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX11Device::CreateShader(IShader** ppShader, const ShaderByteCode& byteCode)
+		bool DX11Device::CreateShader(IShader** ppShader, const ShaderInfo& info)
 		{
-			return ((*ppShader = new DX11Shader(this, byteCode)));
+			return ((*ppShader = new DX11Shader(this, info)));
 		}
 
 
@@ -137,14 +145,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IFactory* DX11Device::GetFactory() const
-		{
-			return m_Factory;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		void DX11Device::Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
 		{
 			using namespace System;
@@ -170,20 +170,20 @@ namespace RayEngine
 				m_Log.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
 				return;
 			}
+			else
+			{
+				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+			}
 
 
-			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 			if (debugLayer)
 			{
 				hr = m_Device->QueryInterface<ID3D11Debug>(&m_DebugDevice);
 				if (FAILED(hr))
 				{
 					m_Log.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DebugDevice. " + DXErrorString(hr));
-					return;
 				}
 			}
-
-			return;
 		}
 	}
 }

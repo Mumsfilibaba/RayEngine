@@ -18,9 +18,9 @@ namespace RayEngine
 			m_Adapter(nullptr)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
+			m_Factory = reinterpret_cast<VulkFactory*>(pFactory->QueryReference());
 
-			Create(pFactory, deviceInfo);
+			Create(deviceInfo);
 		}
 
 
@@ -48,9 +48,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderByteCode& byteCode)
+		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderInfo& info)
 		{
-			return ((*ppShader = new VulkShader(this, byteCode)));
+			return ((*ppShader = new VulkShader(this, info)));
 		}
 
 
@@ -104,17 +104,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		System::Log* VulkDevice::GetDeviceLog()
+		void VulkDevice::QueryFactory(IFactory** ppFactory) const
 		{
-			return &m_Log;
+			(*ppFactory) = reinterpret_cast<VulkFactory*>(m_Factory->QueryReference());
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		IFactory* VulkDevice::GetFactory() const
+		System::Log* VulkDevice::GetDeviceLog()
 		{
-			return m_Factory;
+			return &m_Log;
 		}
 
 
@@ -136,11 +136,11 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkDevice::Create(IFactory* pFactory, const DeviceInfo& deviceInfo)
+		void VulkDevice::Create(const DeviceInfo& deviceInfo)
 		{
 			using namespace System;
 
-			VkInstance instance = reinterpret_cast<VulkFactory*>(pFactory)->GetVkInstance();
+			VkInstance instance = m_Factory->GetVkInstance();
 
 			uint32 adapterCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(instance, &adapterCount, nullptr);

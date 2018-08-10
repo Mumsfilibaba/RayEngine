@@ -21,9 +21,11 @@ namespace RayEngine
 			m_CurrentBuffer(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<IFactory*>(pFactory->QueryReference());
+			m_Factory = reinterpret_cast<DX11Factory*>(pFactory->QueryReference());
+			m_CommandQueue = reinterpret_cast<DX11CommandQueue*>(info.pCommandQueue->QueryReference());
+			m_CommandQueue->QueryDevice(reinterpret_cast<IDevice**>(&m_Device));
 
-			Create(pFactory, info);
+			Create(info);
 		}
 
 
@@ -66,6 +68,22 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11Swapchain::QueryCommandQueue(ICommandQueue** ppCommandQueue) const
+		{
+			(*ppCommandQueue) = reinterpret_cast<DX11CommandQueue*>(m_CommandQueue->QueryReference());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11Swapchain::QueryFactory(IFactory ** ppFactory) const
+		{
+			(*ppFactory) = reinterpret_cast<DX11Factory*>(m_Factory->QueryReference());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11Swapchain::Present() const
 		{
 			m_Swapchain->Present(0, 0);
@@ -77,23 +95,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IFactory* DX11Swapchain::GetFactory() const
-		{
-			return m_Factory;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		ICommandQueue* DX11Swapchain::GetCommandQueue() const
-		{
-			return m_CommandQueue;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11Swapchain::Create(IFactory* pFactory, const SwapchainInfo& info)
+		void DX11Swapchain::Create(const SwapchainInfo& info)
 		{
 			using namespace System;
 
@@ -119,10 +121,9 @@ namespace RayEngine
 			HWND hWnd = reinterpret_cast<const Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
 			desc.OutputWindow = hWnd;
 
-			m_CommandQueue = reinterpret_cast<ICommandQueue*>(info.pCommandQueue->QueryReference());
-			m_Device = reinterpret_cast<IDevice*>(m_CommandQueue->GetDevice()->QueryReference());
-			IDXGIFactory* pDXGIFactory = reinterpret_cast<DX11Factory*>(pFactory)->GetDXGIFactory();
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(m_Device)->GetD3D11Device();
+
+			IDXGIFactory* pDXGIFactory = m_Factory->GetDXGIFactory();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			
 			HRESULT hr = pDXGIFactory->CreateSwapChain(pD3D11Device, &desc, &m_Swapchain);
 			if (FAILED(hr))
@@ -130,15 +131,19 @@ namespace RayEngine
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create SwapChain. " + DXErrorString(hr));
 				return;
 			}
+			else
+			{
+				m_BufferCount = info.Buffer.Count;
+				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+			}
 
-			m_BufferCount = info.Buffer.Count;
-			CreateTextures();
+			CreateTextures(info);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Swapchain::CreateTextures()
+		void DX11Swapchain::CreateTextures(const SwapchainInfo& info)
 		{
 			using namespace Microsoft::WRL;
 			using namespace System;
@@ -147,11 +152,15 @@ namespace RayEngine
 			HRESULT hr = m_Swapchain->GetBuffer(0, IID_PPV_ARGS(&pTexture));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not get backbuffer" + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not get backbuffer. " + DXErrorString(hr));
 			}
+			else
+			{
+				std::string name = info.Name + ": BackBuffer";
+				pTexture->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 
-			m_Texture = new DX11Texture(m_Device, pTexture.Get());
+				m_Texture = new DX11Texture(m_Device, pTexture.Get());
+			}
 		}
 	}
 }

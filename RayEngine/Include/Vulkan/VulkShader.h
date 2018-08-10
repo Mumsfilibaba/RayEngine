@@ -2,6 +2,7 @@
 
 #include "..\Graphics\IShader.h"
 #include "VulkCommon.h"
+#include "VulkDevice.h"
 
 namespace RayEngine
 {
@@ -16,21 +17,22 @@ namespace RayEngine
 			VulkShader& operator=(VulkShader&& other) = delete;
 
 		public:
-			VulkShader(IDevice* pDevice, const ShaderByteCode& byteCode);
+			VulkShader(IDevice* pDevice, const ShaderInfo& info);
 			~VulkShader();
 
 			const std::string& GetEntryPoint() const;
 			VkShaderModule GetVkShaderModule() const;
+			
 			SHADER_TYPE GetType() const override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const ShaderByteCode& byteCode);
+			void Create(const ShaderInfo& info);
 
 		private:
-			IDevice* m_Device;
-			SHADER_TYPE m_Type;
+			VulkDevice* m_Device;
 			VkShaderModule m_Module;
+			SHADER_TYPE m_Type;
 			std::string m_EntryPoint;
 		};
 	}

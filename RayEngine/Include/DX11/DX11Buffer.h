@@ -3,13 +3,13 @@
 #include "..\Graphics\IBuffer.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Common.h"
+#include "DX11Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11Buffer : public IBuffer
+		class DX11Buffer final : public IBuffer
 		{
 		public:
 			DX11Buffer(const DX11Buffer& other) = delete;
@@ -23,17 +23,17 @@ namespace RayEngine
 
 			int32 GetByteStride() const;
 			ID3D11Buffer* GetD3D11Buffer() const;
-			IDevice* GetDevice() const override final;
 
 			void* Map(int32 subresource) override final;
 			void Unmap() override final;
 
-		private:
-			void Create(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			IDevice* m_Device;
+			void Create(const ResourceData* pInitalData, const BufferInfo& info);
 
+		private:
+			DX11Device* m_Device;
 			ID3D11Buffer* m_Resource;
 			int32 m_ByteStride;
 		};

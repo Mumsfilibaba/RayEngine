@@ -16,9 +16,9 @@ namespace RayEngine
 			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryVulkDevice(pDevice);
 
-			Create(pDevice, info);
+			Create(info);
 		}
 
 
@@ -69,20 +69,20 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* VulkPipelineState::GetDevice() const
+		void VulkPipelineState::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryVulkDevice(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkPipelineState::Create(IDevice* pDevice, const PipelineStateInfo& info)
+		void VulkPipelineState::Create(const PipelineStateInfo& info)
 		{
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsPipeline(pDevice, info);
+				CreateGraphicsPipeline(info);
 			else if (info.Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputePipeline(pDevice, info);
+				CreateComputePipeline(info);
 		}
 
 
@@ -147,14 +147,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateComputePipeline(IDevice* pDevice, const PipelineStateInfo& info)
+		void VulkPipelineState::CreateComputePipeline(const PipelineStateInfo& info)
 		{
+			//TODO: Implement ComputeShaders
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateGraphicsPipeline(IDevice* pDevice, const PipelineStateInfo& info)
+		void VulkPipelineState::CreateGraphicsPipeline(const PipelineStateInfo& info)
 		{
 			using namespace System;
 
@@ -286,7 +287,7 @@ namespace RayEngine
 			SetDepthStencilState(depthStencilState, info.GraphicsPipeline.DepthStencilState);
 
 
-			if (!CreateRenderPass(pDevice, info))
+			if (!CreateRenderPass(info))
 				return;
 
 
@@ -321,19 +322,18 @@ namespace RayEngine
 			desc.basePipelineIndex = -1;
 
 
-			VkDevice vkDevice = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
+			VkDevice vkDevice = m_Device->GetVkDevice();
 			VkResult result = vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &desc, nullptr, &m_Pipeline);
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipeline");
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipeline");
 			}
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool VulkPipelineState::CreateRenderPass(IDevice* pDevice, const PipelineStateInfo& info)
+		bool VulkPipelineState::CreateRenderPass(const PipelineStateInfo& info)
 		{
 			using namespace System;
 
@@ -413,11 +413,11 @@ namespace RayEngine
 			desc.pDependencies = nullptr;
 
 
-			VkDevice vkDevice = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
+			VkDevice vkDevice = m_Device->GetVkDevice();
 			VkResult result = vkCreateRenderPass(vkDevice, &desc, nullptr, &m_RenderPass);
 			if (result != VK_SUCCESS) 
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create renderpass");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create renderpass");
 				return false;
 			}
 

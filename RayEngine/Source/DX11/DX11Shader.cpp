@@ -8,15 +8,16 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderInfo& byteCode)
+		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderInfo& info)
 			: DXShaderBase(),
 			m_Device(nullptr),
-			m_VertexShader(nullptr)
+			m_VertexShader(nullptr),
+			m_StaticSamplers()
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX11Device(pDevice);
 
-			Create(pDevice, byteCode);
+			Create(info);
 		}
 
 
@@ -25,8 +26,28 @@ namespace RayEngine
 		DX11Shader::~DX11Shader()
 		{
 			D3DRelease_S(m_VertexShader);
-			
+			for (int32 i = 0; i < m_StaticSamplers.size(); i++)
+			{
+				D3DRelease_S(m_StaticSamplers[i]);
+			}
+
 			ReRelease_S(m_Device);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11SamplerState* const * DX11Shader::GetStaticSamplers() const
+		{
+			return m_StaticSamplers.data();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		int32 DX11Shader::GetStaticSamplerCount() const
+		{
+			return static_cast<int32>(m_StaticSamplers.size());
 		}
 
 
@@ -88,15 +109,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX11Shader::GetDevice() const
+		void DX11Shader::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX11Device(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Shader::Create(IDevice* pDevice, const ShaderInfo& info)
+		void DX11Shader::Create(const ShaderInfo& info)
 		{
 			using namespace System;
 
@@ -105,17 +126,26 @@ namespace RayEngine
 				flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
 			bool result = false;
-			if (info.FilePath.size() < 1)
-				CompileFromString(info.Source, info.EntryPoint, info.Type, );
-			else
-				CompileFromFile(info.Source, info.FilePath, info.EntryPoint);
+			std::string errorString;
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
-			HRESULT hr = 0;
+			if (info.FilePath.size() < 2)
+				result = CompileFromString(info.Source, info.EntryPoint, info.Type, flags, errorString);
+			else
+				result = CompileFromFile(info.Source, info.FilePath, info.EntryPoint, info.Type, flags, errorString);
+
+			if (!result)
+			{
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not compile shader. " + errorString);
+				return;
+			}
+
+
 
 			const void* buffer = m_ShaderBlob->GetBufferPointer();
-			int32 size = m_ShaderBlob->GetBufferSize();
+			int32 size = static_cast<int32>(m_ShaderBlob->GetBufferSize());
 
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
+			HRESULT hr = 0;
 			if (m_Type == SHADER_TYPE_VERTEX)
 				hr = pD3D11Device->CreateVertexShader(m_ShaderBlob->GetBufferPointer(), size, nullptr, &m_VertexShader);
 			else if (m_Type == SHADER_TYPE_HULL)
@@ -131,9 +161,85 @@ namespace RayEngine
 
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create shader" + DXErrorString(hr));
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create shader" + DXErrorString(hr));
 				return;
 			}
+			else
+			{
+				ID3D11DeviceChild* pD3D11DeviceChild = reinterpret_cast<ID3D11DeviceChild*>(m_VertexShader);
+				pD3D11DeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+			}
+
+
+
+			for (int32 i = 0; i < info.SamplerCount; i++)
+			{
+				ID3D11SamplerState* sampler = CreateSampler(info.pSamplers[i]);
+				if (sampler == nullptr)
+				{
+					return;
+				}
+				else 
+				{
+					std::string name = info.Name + ": Static SamplerState " + std::to_string(i + 1);
+					sampler->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+
+					m_StaticSamplers.push_back(sampler);
+				}
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11SamplerState* DX11Shader::CreateSampler(const StaticSampler& sampler)
+		{
+			using namespace System;
+
+			D3D11_SAMPLER_DESC desc = {};
+			desc.AddressU = ReToDX11TextureAdressMode(sampler.AdressU);
+			desc.AddressV = ReToDX11TextureAdressMode(sampler.AdressV);
+			desc.AddressW = ReToDX11TextureAdressMode(sampler.AdressW);
+			desc.ComparisonFunc = ReToDX11ComparisonFunc(sampler.ComparisonFunc);
+			desc.Filter = ReToDX11Filter(sampler.FilterMode);
+			desc.MaxAnisotropy = sampler.MaxAnistropy;
+			desc.MinLOD = sampler.MinLOD;
+			desc.MaxLOD = sampler.MaxLOD;
+			desc.MipLODBias = sampler.MipLODBias;
+			
+			if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_TRANSPARENT_BLACK)
+			{
+				desc.BorderColor[0] = 0.0f;
+				desc.BorderColor[1] = 0.0f;
+				desc.BorderColor[2] = 0.0f;
+				desc.BorderColor[3] = 0.0f;
+			}
+			else if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_BLACK)
+			{
+				desc.BorderColor[0] = 0.0f;
+				desc.BorderColor[1] = 0.0f;
+				desc.BorderColor[2] = 0.0f;
+				desc.BorderColor[3] = 1.0f;
+			}
+			else if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_WHITE)
+			{
+				desc.BorderColor[0] = 1.0f;
+				desc.BorderColor[1] = 1.0f;
+				desc.BorderColor[2] = 1.0f;
+				desc.BorderColor[3] = 1.0f;
+			}
+
+
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
+			ID3D11SamplerState* pD3D11Sampler = nullptr;
+			HRESULT hr = pD3D11Device->CreateSamplerState(&desc, &pD3D11Sampler);
+			if (FAILED(hr))
+			{
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create static SamplerState." + DXErrorString(hr));
+				return nullptr;
+			}
+
+			return pD3D11Sampler;
 		}
 	}
 }

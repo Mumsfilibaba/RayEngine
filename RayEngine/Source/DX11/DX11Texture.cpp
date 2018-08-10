@@ -13,9 +13,9 @@ namespace RayEngine
 			m_Type(TEXTURE_TYPE_UNKNOWN)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX11Device(pDevice);
 
-			Create(pDevice, pInitialData, info);
+			Create(pInitialData, info);
 		}
 
 
@@ -26,6 +26,7 @@ namespace RayEngine
 			m_Type(TEXTURE_TYPE_2D)
 		{
 			AddRef();
+			m_Device = QueryDX11Device(pDevice);
 
 			pResource->AddRef();
 			m_Texture2D = pResource;
@@ -87,32 +88,36 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX11Texture::GetDevice() const
+		void DX11Texture::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX11Device(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Texture::Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		void DX11Texture::Create(const ResourceData* const pInitialData, const TextureInfo& info)
 		{
 			using namespace System;
 			DXGI_FORMAT format = ReToDXFormat(info.Format);
 
 			uint32 bindFlags = 0;
-			if (info.Flags == TEXTURE_FLAGS_DEPTHBUFFER)
+			if (info.Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
 				bindFlags = D3D11_BIND_DEPTH_STENCIL;
-			else if (info.Flags == TEXTURE_FLAGS_DEPTHBUFFER)
-				bindFlags = D3D11_BIND_DEPTH_STENCIL;
-			else if (info.Flags == TEXTURE_FLAGS_DEPTHBUFFER)
-				bindFlags = D3D11_BIND_DEPTH_STENCIL;
+			else if (info.Flags & TEXTURE_FLAGS_RENDERTARGET)
+				bindFlags = D3D11_BIND_RENDER_TARGET;
+			else if (info.Flags == TEXTURE_FLAGS_SHADER_RESOURCE)
+				bindFlags = D3D11_BIND_SHADER_RESOURCE;
+			else if (info.Flags == TEXTURE_FLAGS_UNORDERED_ACCESS)
+				bindFlags = D3D11_BIND_UNORDERED_ACCESS;
+
 
 			uint32 cpuAccessFlags = 0;
 			if (info.CpuAccess & CPU_ACCESS_FLAG_WRITE)
 				cpuAccessFlags |= D3D11_CPU_ACCESS_WRITE;
 			if (info.CpuAccess & CPU_ACCESS_FLAG_READ)
 				cpuAccessFlags |= D3D11_CPU_ACCESS_READ;
+
 
 			D3D11_USAGE usage;
 			if (info.Usage == RESOURCE_USAGE_DEFAULT)
@@ -121,6 +126,7 @@ namespace RayEngine
 				usage = D3D11_USAGE_DYNAMIC;
 			else if (info.Usage == RESOURCE_USAGE_STATIC)
 				usage = D3D11_USAGE_IMMUTABLE;
+
 
 			uint32 miscFlags = 0;
 
@@ -138,7 +144,8 @@ namespace RayEngine
 
 
 			HRESULT hr = 0;
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
+			ID3D11DeviceChild* pD3D11DeviceChild = nullptr;
 
 			if (info.Type == TEXTURE_TYPE_1D)
 			{
@@ -153,6 +160,7 @@ namespace RayEngine
 				desc.ArraySize = info.DepthOrArraySize;
 
 				hr = pD3D11Device->CreateTexture1D(&desc, pInitData, &m_Texture1D);
+				pD3D11DeviceChild = m_Texture1D;
 			}
 			else if (info.Type == TEXTURE_TYPE_2D)
 			{
@@ -170,6 +178,7 @@ namespace RayEngine
 				desc.ArraySize = info.DepthOrArraySize;
 
 				hr = pD3D11Device->CreateTexture2D(&desc, pInitData, &m_Texture2D);
+				pD3D11DeviceChild = m_Texture2D;
 			}
 			else if (info.Type == TEXTURE_TYPE_3D)
 			{
@@ -185,13 +194,17 @@ namespace RayEngine
 				desc.Depth = info.DepthOrArraySize;
 
 				hr = pD3D11Device->CreateTexture3D(&desc, pInitData, &m_Texture3D);
+				pD3D11DeviceChild = m_Texture3D;
 			}
 
 
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create texture. " + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create texture. " + DXErrorString(hr));
+			}
+			else
+			{
+				pD3D11DeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 			}
 		}
 	}

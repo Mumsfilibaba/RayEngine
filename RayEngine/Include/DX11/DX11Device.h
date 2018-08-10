@@ -2,13 +2,15 @@
 
 #include "..\Graphics\IDevice.h"
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Common.h"
+#include "DX11Factory.h"
+
+#define QueryDX11Device(pDevice) reinterpret_cast<DX11Device*>(pDevice->QueryReference())
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11Device : public IDevice
+		class DX11Device final : public IDevice
 		{
 		public:
 			DX11Device(const DX11Device& other) = delete;
@@ -22,23 +24,23 @@ namespace RayEngine
 
 			ID3D11Device* GetD3D11Device() const;
 			ID3D11DeviceContext* GetD3D11DeviceContext() const;
-			IFactory* GetFactory() const override final;
 
 			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) override final;
-			bool CreateShader(IShader** ppShader, const ShaderByteCode& byteCode) override final;
+			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
 			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
 			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
 			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+			void QueryFactory(IFactory** ppFactory) const override final;
 			System::Log* GetDeviceLog() override final;
 
 		private:
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
 		private:
-			IFactory* m_Factory;
+			DX11Factory* m_Factory;
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;
 			ID3D11DeviceContext* m_ImmediateContext;

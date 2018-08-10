@@ -25,9 +25,9 @@ namespace RayEngine
 			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<DX11Device*>(pDevice->QueryReference());
+			m_Device = QueryDX11Device(pDevice);
 
-			Create(pDevice, info);
+			Create(info);
 		}
 
 
@@ -193,9 +193,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX11PipelineState::GetDevice() const
+		void DX11PipelineState::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX11Device(m_Device);
 		}
 
 
@@ -220,19 +220,19 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::Create(IDevice* pDevice, const PipelineStateInfo& info)
+		void DX11PipelineState::Create(const PipelineStateInfo& info)
 		{
 			m_Type = info.Type;
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsState(pDevice, info);
+				CreateGraphicsState(info);
 			else if (info.Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputeState(pDevice, info);
+				CreateComputeState(info);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateGraphicsState(IDevice* pDevice, const PipelineStateInfo& info)
+		void DX11PipelineState::CreateGraphicsState(const PipelineStateInfo& info)
 		{
 			if (info.GraphicsPipeline.pVertexShader != nullptr)
 				m_VertexShader = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pVertexShader->QueryReference());
@@ -246,16 +246,16 @@ namespace RayEngine
 				m_PixelShader = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pPixelShader->QueryReference());
 
 
-			CreateInputLayout(pDevice, info);
-			CreateBlendState(pDevice, info);
-			CreateRasterizerState(pDevice, info);
-			CreateDepthStencilState(pDevice, info);
+			CreateInputLayout(info);
+			CreateBlendState(info);
+			CreateRasterizerState(info);
+			CreateDepthStencilState(info);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateComputeState(IDevice* pDevice, const PipelineStateInfo& info)
+		void DX11PipelineState::CreateComputeState(const PipelineStateInfo& info)
 		{
 			//TODO: Compute states
 		}
@@ -263,7 +263,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateInputLayout(IDevice* pDevice, const PipelineStateInfo& info)
+		void DX11PipelineState::CreateInputLayout(const PipelineStateInfo& info)
 		{
 			using namespace System;
 
@@ -273,9 +273,10 @@ namespace RayEngine
 
 			if (m_VertexShader == nullptr)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Cannot create a inputlayout without a VertexShader.");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Cannot create a inputlayout without a VertexShader.");
 				return;
 			}
+
 
 
 			std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout;
@@ -284,20 +285,28 @@ namespace RayEngine
 			for (int32 i = 0; i < info.GraphicsPipeline.InputLayout.ElementCount; i++)
 				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.pElements[i]);
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+
+
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
+			ID3DBlob* pD3DBlob = m_VertexShader->GetBlob();
+			
 			HRESULT hr = pD3D11Device->CreateInputLayout(inputLayout.data(), static_cast<uint32>(inputLayout.size()), 
-				m_VertexShader->GetByteCode().GetBytes(), static_cast<size_t>(m_VertexShader->GetByteCode().GetSize()), &m_InputLayout);
+				pD3DBlob->GetBufferPointer(), static_cast<size_t>(pD3DBlob->GetBufferSize()), &m_InputLayout);
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create InputLayout" + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create InputLayout. " + DXErrorString(hr));
+			}
+			else
+			{
+				std::string name = info.Name + ": InputLayout";
+				m_InputLayout->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateRasterizerState(IDevice* pDevice, const PipelineStateInfo& info)
+		void DX11PipelineState::CreateRasterizerState(const PipelineStateInfo& info)
 		{
 			using namespace System;
 
@@ -323,19 +332,23 @@ namespace RayEngine
 			desc.MultisampleEnable = info.GraphicsPipeline.RasterizerState.MultisampleEnable;
 			desc.AntialiasedLineEnable = info.GraphicsPipeline.RasterizerState.AntialiasedLineEnable;
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateRasterizerState(&desc, &m_RasterizerState);
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create RasterizerState" + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create RasterizerState." + DXErrorString(hr));
+			}
+			else
+			{
+				std::string name = info.Name + ": RasterizerState";
+				m_RasterizerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateDepthStencilState(IDevice* pDevice, const PipelineStateInfo& info)
+		void DX11PipelineState::CreateDepthStencilState(const PipelineStateInfo& info)
 		{
 			using namespace System;
 
@@ -353,19 +366,23 @@ namespace RayEngine
 			desc.FrontFace = ReToDX11StencilOpDesc(info.GraphicsPipeline.DepthStencilState.Frontface);
 
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateDepthStencilState(&desc, &m_DepthStencilState);
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilState" + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilState" + DXErrorString(hr));
+			}
+			else
+			{
+				std::string name = info.Name + ": DepthStencilState";
+				m_DepthStencilState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateBlendState(IDevice* pDevice, const PipelineStateInfo& info)
+		void DX11PipelineState::CreateBlendState(const PipelineStateInfo& info)
 		{
 			using namespace System;
 
@@ -412,13 +429,16 @@ namespace RayEngine
 			m_SampleMask = info.GraphicsPipeline.SampleMask;
 
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateBlendState(&desc, &m_BlendState);
-			
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create BlendState" + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create BlendState" + DXErrorString(hr));
+			}
+			else
+			{
+				std::string name = info.Name + ": BlendState";
+				m_BlendState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
@@ -430,8 +450,7 @@ namespace RayEngine
 			desc.AlignedByteOffset = static_cast<uint32>(info.ElementOffset);
 			desc.Format = ReToDXFormat(info.Format);
 			desc.InputSlot = static_cast<uint32>(info.InputSlot);
-			desc.InputSlotClass = (info.StepType == ELEMENT_STEP_TYPE_VERTEX) 
-				? D3D11_INPUT_PER_VERTEX_DATA : D3D11_INPUT_PER_INSTANCE_DATA;
+			desc.InputSlotClass = (info.StepType == ELEMENT_STEP_TYPE_VERTEX) ? D3D11_INPUT_PER_VERTEX_DATA : D3D11_INPUT_PER_INSTANCE_DATA;
 			desc.InstanceDataStepRate = static_cast<uint32>(info.DataStepRate);
 			desc.SemanticName = info.Semantic.c_str();
 			desc.SemanticIndex = info.SemanticIndex;

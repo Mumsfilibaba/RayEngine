@@ -48,9 +48,11 @@ namespace RayEngine
 				errorString = reinterpret_cast<const char*>(error->GetBufferPointer());
 				return false;
 			}
+			else
+			{
+				m_Type = type;
+			}
 
-
-			m_Type = type;
 			return true;
 		}
 

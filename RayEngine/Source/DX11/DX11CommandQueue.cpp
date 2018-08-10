@@ -18,9 +18,9 @@ namespace RayEngine
 			m_List(nullptr)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX11Device(pDevice);
 
-			Create(pDevice, info);
+			Create(info);
 		}
 
 
@@ -30,7 +30,7 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_DefferedContext);
 			D3DRelease_S(m_List);
-			
+
 			ReRelease_S(m_Device);
 		}
 
@@ -235,28 +235,28 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX11CommandQueue::GetDevice() const
+		void DX11CommandQueue::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX11Device(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11CommandQueue::Create(IDevice* pDevice, const CommandQueueInfo& info)
+		void DX11CommandQueue::Create(const CommandQueueInfo& info)
 		{
 			using namespace System;
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateDeferredContext(0, &m_DefferedContext);
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Deffered Context");
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Deffered Context. " + DXErrorString(hr));
 			}
-
-			hr = m_DefferedContext->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
-			return;
+			else
+			{
+				m_DefferedContext->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+			}
 		}
 	}
 }

@@ -2,15 +2,16 @@
 
 #include "..\Graphics\ITexture.h"
 #include "..\Graphics\IDevice.h"
-#include "DX12Resource.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Resource.h"
+#include "DX12Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12Texture : public ITexture, public DX12Resource
+		class DX12Texture final : public ITexture, public DX12Resource
 		{
 		public:
 			DX12Texture(const DX12Texture& other) = delete;
@@ -24,13 +25,13 @@ namespace RayEngine
 			~DX12Texture();
 			
 			RESOURCE_STATE GetResourceState() const override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
 
 		private:
-			IDevice* m_Device;
+			DX12Device* m_Device;
 		};
 	}
 }

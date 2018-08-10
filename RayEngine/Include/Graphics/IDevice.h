@@ -8,6 +8,7 @@
 #include "IPipelineState.h"
 #include "IBuffer.h"
 #include "AdapterInfo.h"
+#include "..\RefCounter.h"
 #include "..\System\Log.h"
 
 namespace RayEngine
@@ -60,7 +61,7 @@ namespace RayEngine
 			//Gets the device log
 			virtual System::Log* GetDeviceLog() = 0;
 			//Gets the factory that created the device
-			virtual IFactory* GetFactory() const = 0;
+			virtual void QueryFactory(IFactory** ppFactory) const = 0;
 		};
 	}
 }

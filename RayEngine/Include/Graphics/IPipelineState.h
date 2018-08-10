@@ -36,6 +36,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct InputLayoutInfo
 		{
+		public:
+			InputLayoutInfo() {};
+			~InputLayoutInfo() {};
+
+		public:
 			InputElementInfo* pElements = nullptr;
 			int32 ElementCount = 0;
 		};
@@ -102,7 +107,7 @@ namespace RayEngine
 			bool AlphaToCoverageEnable = false;
 			bool IndependentBlendEnable = false;
 			bool LogicOpEnable = false;
-			const float BlendFactor[4];
+			float BlendFactor[4];
 			RenderTargetBlendInfo RenderTargets[8];
 		};
 
@@ -111,18 +116,24 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct PipelineStateInfo
 		{
-			std::string Name = "";
-			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
-			IRootSignature* pRootSignature = nullptr;
-			//TODO: Maybe use a union
+		public:
+			struct ComputePipelineInfo
+			{
+			public:
+				ComputePipelineInfo() {};
+				~ComputePipelineInfo() {};
 
-			struct
-			{
+			public:
 				IShader* pComputeShader = nullptr;
-			} ComputePipeline;
-				
-			struct
+			};
+
+			struct GraphicsPipelineInfo
 			{
+			public:
+				GraphicsPipelineInfo() {};
+				~GraphicsPipelineInfo() {};
+
+			public:
 				int32 RenderTargetCount = 0;
 				FORMAT RenderTargetFormats[8];
 				FORMAT DepthStencilFormat = FORMAT_UNKNOWN;
@@ -132,24 +143,34 @@ namespace RayEngine
 				RasterizerStateInfo RasterizerState;
 				DepthStencilStateInfo DepthStencilState;
 				BlendStateInfo BlendState;
-				
+
 				uint32 SampleMask = -1;
 
 				PRIMITIVE_TOPOLOGY Topology = PRIMITIVE_TOPOLOGY_UNKNOWN;
 				bool StripCutEnable = false;
-				
+
 				IShader* pVertexShader = nullptr;
 				IShader* pHullShader = nullptr;
 				IShader* pDomainShader = nullptr;
 				IShader* pGeometryShader = nullptr;
 				IShader* pPixelShader = nullptr;
-			} GraphicsPipeline;
+			};
+		public:
+			PipelineStateInfo() {}
+			~PipelineStateInfo() {}
+
+		public:
+			std::string Name = "";
+			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
+			IRootSignature* pRootSignature = nullptr;
+			GraphicsPipelineInfo GraphicsPipeline;
+			ComputePipelineInfo ComputePipeline;
 		};
 
 
 
 		/////////////////////////////////////////////////////////////
-		class IPipelineState : public RefCounter
+		class IPipelineState : public IDeviceObject
 		{
 		public:
 			IPipelineState(IPipelineState&& other) = delete;
@@ -163,8 +184,6 @@ namespace RayEngine
 
 			//Get type
 			virtual PIPELINE_TYPE GetPipelineType() const = 0;
-			//Get the device that created the pipelinestate
-			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

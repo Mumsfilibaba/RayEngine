@@ -14,9 +14,9 @@ namespace RayEngine
 			m_View(nullptr)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX11Device(pDevice);
 
-			Create(pDevice, info);
+			Create(info);
 		}
 
 
@@ -25,7 +25,7 @@ namespace RayEngine
 		DX11DepthStencilView::~DX11DepthStencilView()
 		{
 			D3DRelease_S(m_View);
-		
+
 			ReRelease_S(m_Device);
 		}
 
@@ -40,19 +40,19 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX11DepthStencilView::GetDevice() const
+		void DX11DepthStencilView::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX11Device(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11DepthStencilView::Create(IDevice* pDevice, const DepthStencilViewInfo& info)
+		void DX11DepthStencilView::Create(const DepthStencilViewInfo& info)
 		{
 			using namespace System;
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			ID3D11Texture2D* pD3D11Texture = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
 
 			D3D11_DEPTH_STENCIL_VIEW_DESC desc = {};
@@ -63,8 +63,11 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateDepthStencilView(pD3D11Texture, &desc, &m_View);
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilView" + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilView" + DXErrorString(hr));
+			}
+			else
+			{
+				m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 			}
 		}
 	}

@@ -28,14 +28,15 @@ namespace RayEngine
 
 			VkPipeline GetVkPipeline() const;
 			VkRenderPass GetVkRenderPass() const;
+
 			PIPELINE_TYPE GetPipelineType() const override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateComputePipeline(IDevice* pDevice, const PipelineStateInfo& info);
-			void CreateGraphicsPipeline(IDevice* pDevice, const PipelineStateInfo& info);
-			bool CreateRenderPass(IDevice* pDevice, const PipelineStateInfo& info);
+			void Create(const PipelineStateInfo& info);
+			void CreateComputePipeline(const PipelineStateInfo& info);
+			void CreateGraphicsPipeline(const PipelineStateInfo& info);
+			bool CreateRenderPass(const PipelineStateInfo& info);
 
 		private:
 			static VkPipelineShaderStageCreateInfo CreateVkPipelineShaderStageCreateInfo(const IShader* pShader);
@@ -46,7 +47,7 @@ namespace RayEngine
 			static void SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateInfo& info);
 
 		private:
-			IDevice* m_Device;
+			VulkDevice* m_Device;
 			const VulkRootSignature* m_RootSignature;
 			VkPipeline m_Pipeline;
 			VkRenderPass m_RenderPass;

@@ -1,15 +1,15 @@
 #pragma once
 
 #include "..\Graphics\IFactory.h"
-#include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Common.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12Factory : public IFactory
+		class DX12Factory final : public IFactory
 		{
 		public:
 			DX12Factory(const DX12Factory& other) = delete;
@@ -18,7 +18,7 @@ namespace RayEngine
 			DX12Factory& operator=(DX12Factory&& other) = delete;
 
 		public:
-			DX12Factory(bool debugLayer);
+			DX12Factory(const std::string& name, bool debugLayer);
 			~DX12Factory();
 
 			IDXGIFactory5* GetDXGIFactory() const;
@@ -27,12 +27,11 @@ namespace RayEngine
 			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
 			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
-			bool CreateShaderCompiler(IShaderCompiler** ppCompiler) override final;
 
 			GRAPHICS_API GetGraphicsApi() const override final;
 
 		private:
-			void Create(bool debugLayer);
+			void Create(const std::string& name, bool debugLayer);
 
 		private:
 			ID3D12Debug* m_DebugController;

@@ -2,12 +2,18 @@
 
 #include "ISampler.h"
 
+#if defined(max)
+#undef max
+#endif
+
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
 		class IDevice;
+		class IBuffer;
+		class ITexture;
 
 
 
@@ -52,6 +58,17 @@ namespace RayEngine
 
 
 
+		/////////////////////////////////////////////////////////////
+		enum STATIC_SAMPLER_BORDER_COLOR : int32
+		{
+			STATIC_SAMPLER_BORDER_COLOR_UNKNOWN = 0,
+			STATIC_SAMPLER_BORDER_COLOR_TRANSPARENT_BLACK = 1,
+			STATIC_SAMPLER_BORDER_COLOR_OPAQUE_BLACK = 2,
+			STATIC_SAMPLER_BORDER_COLOR_OPAQUE_WHITE = 3,
+		};
+
+
+
 		/*////////////////////////////////////////////////////////////
 			ShaderVariables defines a variable in the shader. This 
 			can be a texture, buffer or sampler.
@@ -71,7 +88,7 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct ShaderVariable
 		{
-			VARIABLE_TYPE VariableType = VARIABLE_TYPE_UNKNOWN;
+			VARIABLE_TYPE Type = VARIABLE_TYPE_UNKNOWN;
 			SHADER_USAGE ShaderUsage = SHADER_USAGE_UNKNOWN;
 			int32 ShaderRegister = 0;
 			int32 ShaderSpace = 0;
@@ -101,13 +118,7 @@ namespace RayEngine
 			float MaxLOD = std::numeric_limits<float>::max();
 			uint32 MaxAnistropy = 16;
 			COMPARISON_FUNC ComparisonFunc = COMPARISON_FUNC_UNKNOWN;
-			struct
-			{
-				float R = 0.0f;
-				float G = 0.0f;
-				float B = 0.0f;
-				float A = 0.0f;
-			} BorderColor;
+			STATIC_SAMPLER_BORDER_COLOR BorderColor = STATIC_SAMPLER_BORDER_COLOR_UNKNOWN;
 			int32 ShaderRegister = 0;
 			int32 ShaderSpace = 0;
 		};
@@ -160,7 +171,7 @@ namespace RayEngine
 		
 
 		/////////////////////////////////////////////////////////////
-		class IShader : public RefCounter
+		class IShader : public IDeviceObject
 		{
 		public:
 			IShader(IShader&& other) = delete;
@@ -174,41 +185,6 @@ namespace RayEngine
 
 			//Retrives the shadertype
 			virtual SHADER_TYPE GetType() const = 0;
-			//Retrives the device that created the shader
-			virtual IDevice* GetDevice() const = 0;
 		};
-
-		///////////////////////////////////////////////////////////////
-		//class ShaderByteCode
-		//{
-		//public:
-		//	ShaderByteCode();
-		//	ShaderByteCode(const std::string& entryPoint, SHADER_TYPE type, SHADER_SOURCE_LANG srcLang, int8* pBytes, int32 size);
-		//	ShaderByteCode(const ShaderByteCode& other);
-		//	ShaderByteCode(ShaderByteCode&& other);
-		//	~ShaderByteCode();
-
-		//	bool IsValid() const;
-		//	int8* Detach();
-
-		//	const std::string& GetEntryPoint() const;
-		//	int32 GetSize() const;
-		//	const int8* GetBytes() const;
-		//	SHADER_TYPE GetType() const;
-		//	SHADER_SOURCE_LANG GetSourceLanguage() const;
-
-		//	ShaderByteCode& operator=(const ShaderByteCode& other);
-		//	ShaderByteCode& operator=(ShaderByteCode&& other);
-
-		//private:
-		//	void Release();
-
-		//private:
-		//	SHADER_SOURCE_LANG m_Lang;
-		//	SHADER_TYPE m_Type;
-		//	int8* m_Bytes;
-		//	int32 m_Size;
-		//	std::string m_EntryPoint;
-		//};
 	}
 }

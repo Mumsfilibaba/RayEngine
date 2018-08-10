@@ -11,7 +11,7 @@ namespace RayEngine
 			: VulkImageView(pDevice)
 		{
 			AddRef();
-			Create(pDevice, info);
+			Create(info);
 		}
 
 
@@ -24,15 +24,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* VulkRenderTargetView::GetDevice() const
+		void VulkRenderTargetView::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryVulkDevice(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkRenderTargetView::Create(IDevice* pDevice, const RenderTargetViewInfo& info)
+		void VulkRenderTargetView::Create(const RenderTargetViewInfo& info)
 		{
 			using namespace System;
 
@@ -63,8 +63,7 @@ namespace RayEngine
 			VkResult result = vkCreateImageView(vkDevice, &desc, nullptr, &m_View);
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ImageView");
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ImageView. ");
 			}
 		}
 	}

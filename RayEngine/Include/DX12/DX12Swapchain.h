@@ -1,15 +1,15 @@
 #pragma once
 
 #include "..\Graphics\ISwapchain.h"
-#include "DX12Texture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Texture.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX12Swapchain : public ISwapchain
+		class DX12Swapchain final : public ISwapchain
 		{
 		public:
 			DX12Swapchain(const DX12Swapchain& other) = delete;
@@ -26,16 +26,16 @@ namespace RayEngine
 			
 			ITexture* GetBuffer(int32 index) override final;
 			const ITexture* GetBuffer(int32 index) const override final;
-			IFactory* GetFactory() const override final;
-			ICommandQueue* GetCommandQueue() const override final;
+			void QueryFactory(IFactory** ppFactory) const override final;
+			void QueryCommandQueue(ICommandQueue** ppCommandQueue) const override final;
 
 		private:
-			void Create(IFactory* pFactory, const SwapchainInfo& info);
-			void CreateTextures(int32 bufferCount);
+			void Create(const SwapchainInfo& info);
+			void CreateTextures(const SwapchainInfo& info);
 
 		private:
-			IFactory* m_Factory;
-			ICommandQueue* m_CommandQueue;
+			DX12Factory* m_Factory;
+			DX12CommandQueue* m_CommandQueue;
 			IDXGISwapChain1* m_Swapchain;
 			std::vector<DX12Texture*> m_Textures;
 			mutable int32 m_CurrentBuffer;

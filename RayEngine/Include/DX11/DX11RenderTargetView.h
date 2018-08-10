@@ -3,13 +3,13 @@
 #include "..\Graphics\IRenderTargetView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Common.h"
+#include "DX11Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DX11RenderTargetView : public IRenderTargetView
+		class DX11RenderTargetView final : public IRenderTargetView
 		{
 		public:
 			DX11RenderTargetView(const DX11RenderTargetView& other) = delete;
@@ -22,13 +22,14 @@ namespace RayEngine
 			~DX11RenderTargetView();
 
 			ID3D11RenderTargetView* GetD3D11RenderTargetView() const;
-			IDevice* GetDevice() const override final;
+			
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(IDevice* pDevice, const RenderTargetViewInfo& info);
+			void Create(const RenderTargetViewInfo& info);
 
 		private:
-			IDevice* m_Device;
+			DX11Device* m_Device;
 			ID3D11RenderTargetView* m_View;
 		};
 	}

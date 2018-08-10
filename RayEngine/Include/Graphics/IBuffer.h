@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\RefCounter.h"
+#include "IDeviceObject.h"
 
 namespace RayEngine
 {
@@ -36,7 +36,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IBuffer : public RefCounter
+		class IBuffer : public IDeviceObject
 		{
 		public:
 			IBuffer(IBuffer&& other) = delete;
@@ -52,8 +52,6 @@ namespace RayEngine
 			virtual void* Map(int32 subresource) = 0;
 			//Unmaps the buffer from the GPU to CPU
 			virtual void Unmap() = 0;
-			//Returns the device that created the buffer
-			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

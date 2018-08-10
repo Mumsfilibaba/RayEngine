@@ -6,15 +6,15 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		VulkShader::VulkShader(IDevice* pDevice, const ShaderByteCode& byteCode)
+		VulkShader::VulkShader(IDevice* pDevice, const ShaderInfo& info)
 			: m_Device(nullptr),
 			m_Module(nullptr),
 			m_Type(SHADER_TYPE_UNKNOWN)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryVulkDevice(pDevice);
 
-			Create(pDevice, byteCode);
+			Create(info);
 		}
 
 
@@ -60,36 +60,37 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* VulkShader::GetDevice() const
+		void VulkShader::QueryDevice(IDevice** ppDevice) const
 		{
-			return nullptr;
+			(*ppDevice) = QueryVulkDevice(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkShader::Create(IDevice* pDevice, const ShaderByteCode& byteCode)
+		void VulkShader::Create(const ShaderInfo& info)
 		{
 			using namespace System;
+
+			//TODO: Compile Shader here
 
 			VkShaderModuleCreateInfo desc = {};
 			desc.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 			desc.pNext = nullptr;
 			desc.flags = 0;
-			desc.codeSize = byteCode.GetSize();
-			desc.pCode = reinterpret_cast<const uint32*>(byteCode.GetBytes());
+			//desc.codeSize = byteCode.GetSize();
+			//desc.pCode = reinterpret_cast<const uint32*>(byteCode.GetBytes());
 
-			VkDevice vkDevice = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
+			VkDevice vkDevice = m_Device->GetVkDevice();
 			VkResult result = vkCreateShaderModule(vkDevice, &desc, nullptr, &m_Module);
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ShaderModule");
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ShaderModule.");
 			}
 			else
 			{
-				m_Type = byteCode.GetType();
-				m_EntryPoint = byteCode.GetEntryPoint();
+				m_Type = info.Type;
+				m_EntryPoint = info.EntryPoint;
 			}
 		}
 	}

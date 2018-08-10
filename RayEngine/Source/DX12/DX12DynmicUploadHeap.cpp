@@ -8,7 +8,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12DynamicUploadHeap::DX12DynamicUploadHeap(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes)
+		DX12DynamicUploadHeap::DX12DynamicUploadHeap(IDevice* pDevice, const std::string& name, uint32 alignment, uint32 sizeInBytes)
 			: m_Device(nullptr),
 			m_Resource(nullptr),
 			m_Heap(nullptr),
@@ -16,9 +16,9 @@ namespace RayEngine
 			m_State(D3D12_RESOURCE_STATE_COMMON)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX12Device(pDevice);
 
-			Create(pDevice, alignment, sizeInBytes);
+			Create(name, alignment, sizeInBytes);
 		}
 
 
@@ -74,7 +74,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DynamicUploadHeap::Create(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes)
+		void DX12DynamicUploadHeap::QueryDevice(IDevice** ppDevice) const
+		{
+			(*ppDevice) = QueryDX12Device(m_Device);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DynamicUploadHeap::Create(const std::string& name, uint32 alignment, uint32 sizeInBytes)
 		{
 			using namespace System;
 
@@ -88,12 +96,16 @@ namespace RayEngine
 			hDesc.Properties.CreationNodeMask = 1;
 			hDesc.Properties.VisibleNodeMask = 1;
 
-			ID3D12Device* pD3D12Device = reinterpret_cast<DX12Device*>(pDevice)->GetD3D12Device();
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			HRESULT hr = pD3D12Device->CreateHeap(&hDesc, IID_PPV_ARGS(&m_Heap));
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Heap." + DXErrorString(hr));
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Heap." + DXErrorString(hr));
 				return;
+			}
+			else
+			{
+				D3D12SetName(m_Heap, name + ": Heap");
 			}
 
 
@@ -113,13 +125,13 @@ namespace RayEngine
 			hr = pD3D12Device->CreatePlacedResource(m_Heap, 0, &rDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Resource." + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Resource." + DXErrorString(hr));
 			}
-
-
-			m_SizeInBytes = sizeInBytes;
-			return;
+			else
+			{
+				m_SizeInBytes = sizeInBytes;
+				D3D12SetName(m_Resource, name + ": Resource");
+			}
 		}
 	}
 }

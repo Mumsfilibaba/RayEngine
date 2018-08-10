@@ -1,14 +1,12 @@
 TODO:
--Render triangle Vulkan
 -Constantbuffer, Sampler, Textures DX11, DX12, Vulkan
+-DX12 - ImmediateContext (Seperate CommandList and commandQueue)
+-Render triangle Vulkan
 -Implement OpenGL
 -Swapchain Resize
 
--DX12 - ImmediateContext
--Seperate CommandList and commandQueue
 
--Set names on resources (Even if vulkan may not support it)
--Fix errormessages
+-Factory-Log
 -DX12 - DescriptorHeapManager
 -DX12 - Different versions of the parametertype for the shader in the rootsignature
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
@@ -22,19 +20,15 @@ TODO:
 -Create rendertargets for swapchain during creation?
 
 -ITexture - GetType
--ShaderCompiler use ptr as input for output 
--DX12 - RenderTargetView - Setup a desc
--DX12 - DepthStencilView - Setup a desc
 -DX11/DX12 - Bufferusage flags
+-DX11 - Static Samplers must be bound from 0 to n (in a single range), should be possible to not do this (DX11StaticSamplerRange)
 
 -Vk - Create dummy surface and search for correct formats etc
 -TextureLoader needs to be updated with the new formats
 -Add p for pointers
--AdapterInfo.cpp
 -Controller support
 
 -Virtual Filesystem
--Parent interfaces should be queried instead of just returned
 -Aquire pointers for native window etc
 -Check if system supports vulkan in factory
 -ANativeWindow pointer in AndroidWindowImpl

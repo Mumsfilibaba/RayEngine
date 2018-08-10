@@ -17,7 +17,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IRenderTargetView : public RefCounter
+		class IRenderTargetView : public IDeviceObject
 		{
 		public:
 			IRenderTargetView(IRenderTargetView&& other) = delete;
@@ -28,9 +28,6 @@ namespace RayEngine
 		public:
 			IRenderTargetView() {}
 			virtual ~IRenderTargetView() {}
-
-			//Get the device that created the view
-			virtual IDevice* GetDevice() const = 0;
 		};
 	}
 }

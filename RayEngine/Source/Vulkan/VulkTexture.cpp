@@ -11,9 +11,9 @@ namespace RayEngine
 			m_Image(nullptr)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryVulkDevice(pDevice);
 
-			Create(pDevice, pInitialData, info);
+			Create(pInitialData, info);
 		}
 
 
@@ -24,7 +24,7 @@ namespace RayEngine
 			m_Image(image)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryVulkDevice(pDevice);
 		}
 
 
@@ -70,15 +70,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* VulkTexture::GetDevice() const
+		void VulkTexture::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryVulkDevice(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void VulkTexture::Create(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		void VulkTexture::Create(const ResourceData* const pInitialData, const TextureInfo& info)
 		{
 			using namespace System;
 			
@@ -114,12 +114,11 @@ namespace RayEngine
 			desc.extent.height = info.Height;
 			desc.extent.depth = info.DepthOrArraySize;
 
-			VkDevice vkDevice = reinterpret_cast<VulkDevice*>(pDevice)->GetVkDevice();
+			VkDevice vkDevice = m_Device->GetVkDevice();
 			VkResult result = vkCreateImage(vkDevice, &desc, nullptr, &m_Image);
 			if (result != VK_SUCCESS)
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create image.");
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create image.");
 			}
 		}
 	}

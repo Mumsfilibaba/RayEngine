@@ -201,9 +201,6 @@
     <ClInclude Include="Include\Graphics\IShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Graphics\IShaderCompiler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DX12\DX12Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -318,9 +315,6 @@
     <ClInclude Include="Include\Vulkan\VulkImageView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Vulkan\VulkShaderCompiler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\RefCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -337,6 +331,36 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DXBase\DXShaderBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Graphics\IShaderResourceView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11Sampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Graphics\IUnorderedAccessView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11ShaderResourceView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX11\DX11UnorderedAccessView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX12\DX12Sampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX12\DX12ShaderResourceView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX12\DX12UnorderedAccessView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Utilities\StringUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Graphics\IDeviceObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -515,9 +539,6 @@
     <ClCompile Include="Source\DX12\DX12Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\ShaderByteCode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DX12\DX12Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -564,9 +585,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX11\DX11Common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DXBase\DXShaderCompiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DXBase\DXCommon.cpp">
@@ -633,6 +651,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11Sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11ShaderResourceView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX11\DX11UnorderedAccessView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX12\DX12Sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX12\DX12ShaderResourceView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX12\DX12UnorderedAccessView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utilities\StringUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\AdapterInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

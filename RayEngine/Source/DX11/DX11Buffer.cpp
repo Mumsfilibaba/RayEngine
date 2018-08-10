@@ -14,9 +14,9 @@ namespace RayEngine
 			m_ByteStride(0)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = QueryDX11Device(pDevice);
 
-			Create(pDevice, pInitalData, info);
+			Create(pInitalData, info);
 		}
 
 
@@ -25,7 +25,7 @@ namespace RayEngine
 		DX11Buffer::~DX11Buffer()
 		{
 			D3DRelease_S(m_Resource);
-			
+
 			ReRelease_S(m_Device);
 		}
 
@@ -70,15 +70,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX11Buffer::GetDevice() const
+		void DX11Buffer::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX11Device(m_Device);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Buffer::Create(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
+		void DX11Buffer::Create(const ResourceData* pInitalData, const BufferInfo& info)
 		{
 			using namespace System;
 
@@ -119,12 +119,15 @@ namespace RayEngine
 			}
 
 
-			ID3D11Device* pD3D11Device = reinterpret_cast<DX11Device*>(pDevice)->GetD3D11Device();
+			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateBuffer(&desc, pInitData, &m_Resource);
 			if (FAILED(hr))
 			{
-				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create buffer. " + DXErrorString(hr));
-				return;
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create buffer. " + DXErrorString(hr));
+			}
+			else
+			{
+				m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 			}
 		}
 	}

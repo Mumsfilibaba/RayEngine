@@ -16,6 +16,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		struct SwapchainInfo
 		{
+			std::string Name = "";
 			System::Window* pWindow = nullptr;
 			
 			ICommandQueue* pCommandQueue = nullptr;
@@ -52,9 +53,9 @@ namespace RayEngine
 			//Present next backbuffer to the front
 			virtual void Present() const = 0;
 			//Get the CommandQueue that created the swapchain
-			virtual ICommandQueue* GetCommandQueue() const = 0;
+			virtual void QueryCommandQueue(ICommandQueue** ppCommandQueue) const = 0;
 			//Get the factory that created the swapchain 
-			virtual IFactory* GetFactory() const = 0;
+			virtual void QueryFactory(IFactory** ppFactory) const = 0;
 		};
 	}
 }
