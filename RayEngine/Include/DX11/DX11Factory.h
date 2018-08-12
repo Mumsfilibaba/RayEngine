@@ -1,6 +1,8 @@
 #pragma once
 
 #include "..\Graphics\IFactory.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
 
 namespace RayEngine
@@ -40,3 +42,5 @@ namespace RayEngine
 		};
 	}
 }
+
+#endif

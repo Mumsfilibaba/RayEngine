@@ -25,15 +25,19 @@ namespace RayEngine
 			ID3D11Device* GetD3D11Device() const;
 			ID3D11DeviceContext* GetD3D11DeviceContext() const;
 
-			bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) override final;
 			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
 			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) override final;
 			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
-			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) override final;
+			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info) override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+		
 			void QueryFactory(IFactory** ppFactory) const override final;
+			
 			System::Log* GetDeviceLog() override final;
 
 		private:

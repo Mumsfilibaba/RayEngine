@@ -3,12 +3,18 @@
 #include "..\Graphics\IDepthStencilView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Device.h"
+#include "DX11Common.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX11Device;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX11DepthStencilView final : public IDepthStencilView
 		{
 		public:

@@ -4,13 +4,20 @@
 #include "..\Graphics\IShader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Device.h"
+#include "DX11Common.h"
 #include "..\DXBase\DXShaderBase.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX11Device;
+		class DX11ShaderConstantBlock;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX11Shader final : public IShader, public DXShaderBase
 		{ 
 		public:
@@ -22,9 +29,6 @@ namespace RayEngine
 		public:
 			DX11Shader(IDevice* pDevice, const ShaderInfo& info);
 			~DX11Shader();
-
-			ID3D11SamplerState* const * GetStaticSamplers() const;
-			int32 GetStaticSamplerCount() const;
 
 			ID3D11VertexShader* GetD3D11VertexShader() const;
 			ID3D11HullShader* GetD3D11HullShader() const;
@@ -38,11 +42,9 @@ namespace RayEngine
 
 		private:
 			void Create(const ShaderInfo& info);
-			ID3D11SamplerState* CreateSampler(const StaticSampler& sampler);
 
 		private:
 			DX11Device* m_Device;
-			std::vector<ID3D11SamplerState*> m_StaticSamplers;
 			union
 			{
 				ID3D11VertexShader* m_VertexShader;

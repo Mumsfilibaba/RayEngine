@@ -3,12 +3,19 @@
 #include "..\Graphics\IPipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\DX11\DX11Shader.h"
+#include "..\DX11\DX11Common.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX11Device;
+		class DX11Shader;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX11PipelineState final : public IPipelineState
 		{
 		public:

@@ -8,7 +8,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX11RootSignature::DX11RootSignature(IDevice* pDevice, const RootSignatureInfo& info)
+		DX11RootLayout::DX11RootLayout(IDevice* pDevice, const RootSignatureInfo& info)
 			: m_Device(nullptr)
 		{
 			AddRef();
@@ -20,7 +20,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX11RootSignature::~DX11RootSignature()
+		DX11RootLayout::~DX11RootLayout()
 		{
 			ReRelease_S(m_Device);
 		}
@@ -28,7 +28,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX11RootSignature::GetDevice() const
+		IDevice* DX11RootLayout::GetDevice() const
 		{
 			return m_Device;
 		}
@@ -36,7 +36,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11RootSignature::Create(IDevice* pDevice, const RootSignatureInfo& info)
+		void DX11RootLayout::Create(IDevice* pDevice, const RootSignatureInfo& info)
 		{
 		}
 	}

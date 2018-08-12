@@ -1,10 +1,13 @@
 #pragma once
 
 #include "ICommandQueue.h"
+#include "IDeviceContext.h"
 #include "IShader.h"
 #include "IRenderTargetView.h"
 #include "IDepthStencilView.h"
-#include "IRootSignature.h"
+#include "IShaderResourceView.h"
+#include "IUnorderedAccessView.h"
+#include "IRootLayout.h"
 #include "IPipelineState.h"
 #include "IBuffer.h"
 #include "AdapterInfo.h"
@@ -25,6 +28,10 @@ namespace RayEngine
 		{
 			std::string Name = "";
 			AdapterInfo* pAdapter = nullptr;
+			int32 DepthStencilDescriptors = 16;
+			int32 RendertargetDescriptors = 64;
+			int32 ResourceDescriptors = 128;
+			int32 SamplerDescriptors = 128;
 		};
 
 
@@ -42,20 +49,28 @@ namespace RayEngine
 			IDevice() {}
 			virtual ~IDevice() {}
 
-			//Create a queue for graphics- and computecommands
-			virtual bool CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info) = 0;
+			//Gets the immediate context
+			virtual bool GetImmediateContext(IDeviceContext** ppContext) = 0;
+			//Creates an deffered context
+			virtual bool CreateDefferedContext(IDeviceContext** ppContext) = 0;
 			//Creates a shader module for use in a pipelinestate
 			virtual bool CreateShader(IShader** ppShader, const ShaderInfo& info) = 0;
-			//Creates a rendertargetview for using a texture as a rendertarget
+			//Creates a rendertargetview for using a resource as a rendertarget
 			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) = 0;
-			//Creates a rendertargetview for using a texture as a rendertarget
+			//Creates a depthstencilview for using a resource as a depthstencil
 			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) = 0;
+			//Creates a shaderresourceview for using a resource as a shaderresource
+			virtual bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) = 0;
+			//Creates a unorderedaccessview for using a resource in a compute as an unordered resource
+			virtual bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) = 0;
+			//Creates a sampler
+			virtual bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) = 0;
 			//Creates a texture resource on the GPU
 			virtual bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) = 0;
 			//Creates a buffer resource on the GPU
 			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) = 0;
 			//Creates a shader rootsignature
-			virtual bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) = 0;
+			virtual bool CreateRootLayout(IRootLayout** ppRootSignature, const RootLayoutInfo& info) = 0;
 			//Create a pipelinestate
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) = 0;
 			//Gets the device log

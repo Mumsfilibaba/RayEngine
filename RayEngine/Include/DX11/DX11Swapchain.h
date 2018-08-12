@@ -4,14 +4,22 @@
 #include "..\..\Include\Graphics\ISwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Factory.h"
-#include "DX11Texture.h"
+#include "DX11Common.h"
 #include "DX11CommandQueue.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX11Factory;
+		class DX11Device;
+		class DX11DeviceContext;
+		class DX11Texture;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX11Swapchain final : public ISwapchain
 		{
 		public:

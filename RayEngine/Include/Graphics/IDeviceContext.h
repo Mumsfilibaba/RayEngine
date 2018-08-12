@@ -1,49 +1,54 @@
 #pragma once
 
-#include "ITexture.h"
-#include "IRenderTargetView.h"
-#include "IDepthStencilView.h"
-#include "IPipelineState.h"
-#include "IRootLayout.h"
-#include "IBuffer.h"
+#include "IDeviceObject.h"
 #include "Viewport.h"
 #include "..\Math\Rectangle.h"
 
 namespace RayEngine
 {
 	namespace Graphics
-	{
+	{	
 		/////////////////////////////////////////////////////////////
-		struct CommandQueueInfo
-		{
-			std::string Name = "";
-		};
+		class ITexture;
+		class IBuffer;
+		class IRenderTargetView;
+		class IDepthStencilView;
+		class IShaderResourceView;
+		class IUnorderedAccessView;
+		class IRootLayout;
+		class IPipelineState;
 
 
 
 		/////////////////////////////////////////////////////////////
-		class ICommandQueue : public IDeviceObject
+		class IDeviceContext : public IDeviceObject
 		{
 		public:
-			ICommandQueue(ICommandQueue&& other) = delete;
-			ICommandQueue(const ICommandQueue& other) = delete;
-			ICommandQueue& operator=(ICommandQueue&& other) = delete;
-			ICommandQueue& operator=(const ICommandQueue& other) = delete;
+			IDeviceContext(IDeviceContext&& other) = delete;
+			IDeviceContext(const IDeviceContext& other) = delete;
+			IDeviceContext& operator=(IDeviceContext&& other) = delete;
+			IDeviceContext& operator=(const IDeviceContext& other) = delete;
 
 		public:
-			ICommandQueue() {}
-			virtual ~ICommandQueue() {}
+			IDeviceContext() {}
+			virtual ~IDeviceContext() {}
 
-			//Clears a rendertarget
+			//Clears a rendertargetview
 			virtual void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const = 0;
 			//Clears a depthstncilview
 			virtual void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const = 0;
 			//Sets rendertargets- and depthstencilview
 			virtual void SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const = 0;
+			//Sets an array of ShaderResourceViews
+			virtual void SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const = 0;
+			//Sets an array of UnorderedAccessView
+			virtual void SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const = 0;
+			//Sets an array of constantbuffers
+			virtual void SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const = 0;
 			//Sets a pipelinestate
 			virtual void SetPipelineState(IPipelineState* pPipelineState) const = 0;
-			//Sets a rootsignature
-			virtual void SetRootSignature(IRootLayout* pRootLayout) const = 0;
+			//Sets a rootlayout
+			virtual void SetRootLayout(IRootLayout* pRootLayout) const = 0;
 			//Sets vertexbuffers to the pipeline
 			virtual void SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const = 0;
 			//Sets the viewport of the screen
@@ -68,8 +73,8 @@ namespace RayEngine
 			virtual bool Reset() const = 0;
 			//Close list for commandsubmission
 			virtual bool Close() const = 0;
-			//Execute the commandqueue
-			virtual void Execute() const = 0;
+			//Execure a DeviceContext that is created as deffered
+			virtual void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const = 0;
 		};
 	}
 }

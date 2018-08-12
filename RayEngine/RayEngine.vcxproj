@@ -179,10 +179,12 @@
     <ClInclude Include="Include\DX11\DX11Common.h" />
     <ClInclude Include="Include\DX11\DX11DepthStencilView.h" />
     <ClInclude Include="Include\DX11\DX11Device.h" />
+    <ClInclude Include="Include\DX11\DX11DeviceContext.h" />
     <ClInclude Include="Include\DX11\DX11Factory.h" />
     <ClInclude Include="Include\DX11\DX11PipelineState.h" />
     <ClInclude Include="Include\DX11\DX11RenderTargetView.h" />
-    <ClInclude Include="Include\DX11\DX11RootSignature.h" />
+    <ClInclude Include="Include\DX11\DX11RootLayout.h" />
+    <ClInclude Include="Include\DX11\DX11RootVariableSlot.h" />
     <ClInclude Include="Include\DX11\DX11Sampler.h" />
     <ClInclude Include="Include\DX11\DX11Shader.h" />
     <ClInclude Include="Include\DX11\DX11ShaderResourceView.h" />
@@ -211,6 +213,7 @@
     <ClInclude Include="Include\DXBase\DXCommon.h" />
     <ClInclude Include="Include\DXBase\DXShaderBase.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />
+    <ClInclude Include="Include\Graphics\IDeviceContext.h" />
     <ClInclude Include="Include\Graphics\IDeviceObject.h" />
     <ClInclude Include="Include\Graphics\IBuffer.h" />
     <ClInclude Include="Include\Graphics\ICommandQueue.h" />
@@ -219,7 +222,9 @@
     <ClInclude Include="Include\Graphics\IFactory.h" />
     <ClInclude Include="Include\Graphics\IPipelineState.h" />
     <ClInclude Include="Include\Graphics\IRenderTargetView.h" />
-    <ClInclude Include="Include\Graphics\IRootSignature.h" />
+    <ClInclude Include="Include\Graphics\IResource.h" />
+    <ClInclude Include="Include\Graphics\IRootLayout.h" />
+    <ClInclude Include="Include\Graphics\IRootVariableSlot.h" />
     <ClInclude Include="Include\Graphics\ISampler.h" />
     <ClInclude Include="Include\Graphics\IShader.h" />
     <ClInclude Include="Include\Graphics\IShaderResourceView.h" />
@@ -279,14 +284,17 @@
     <ClInclude Include="Include\Win32\Win32BitmapImpl.h" />
     <ClInclude Include="Source\Android\AndroidKeycodes.h" />
     <ClInclude Include="Source\Android\AndroidSensor.h" />
+    <ClInclude Include="Include\DX11\DX11ShaderConstantBlock.h" />
     <ClInclude Include="Source\Win32\Win32KeyCodes.h" />
     <ClInclude Include="Source\Win32\WndclassCache.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DX12\DX12Device.h" />
     <ClCompile Include="Source\DX11\DX11Buffer.cpp" />
+    <ClCompile Include="Source\DX11\DX11DeviceContext.cpp" />
     <ClCompile Include="Source\DX11\DX11PipelineState.cpp" />
     <ClCompile Include="Source\DX11\DX11RootSignature.cpp" />
+    <ClCompile Include="Source\DX11\DX11RootVariableSlot.cpp" />
     <ClCompile Include="Source\DX11\DX11Sampler.cpp" />
     <ClCompile Include="Source\DX11\DX11Shader.cpp" />
     <ClCompile Include="Source\Android\Android.cpp" />
@@ -310,6 +318,7 @@
     <ClCompile Include="Source\DX11\DX11Device.cpp" />
     <ClCompile Include="Source\DX11\DX11Factory.cpp" />
     <ClCompile Include="Source\DX11\DX11RenderTargetView.cpp" />
+    <ClCompile Include="Source\DX11\DX11ShaderConstantBlock.cpp" />
     <ClCompile Include="Source\DX11\DX11ShaderResourceView.cpp" />
     <ClCompile Include="Source\DX11\DX11Swapchain.cpp" />
     <ClCompile Include="Source\DX11\DX11Texture.cpp" />

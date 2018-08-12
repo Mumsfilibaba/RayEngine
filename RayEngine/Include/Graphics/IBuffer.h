@@ -1,21 +1,16 @@
 #pragma once
 
-#include "IDeviceObject.h"
+#include "IResource.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		class IDevice;
-
-
-
-		/////////////////////////////////////////////////////////////
 		enum BUFFER_USAGE : int32
 		{
 			BUFFER_USAGE_UNKNOWN = 0,
-			BUFFER_USAGE_UNIFORM = 1,
+			BUFFER_USAGE_CONSTANT = 1,
 			BUFFER_USAGE_VERTEX = 2,
 			BUFFER_USAGE_INDEX = 3,
 		};
@@ -36,7 +31,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IBuffer : public IDeviceObject
+		class IBuffer : public IResource
 		{
 		public:
 			IBuffer(IBuffer&& other) = delete;

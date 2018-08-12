@@ -17,12 +17,14 @@ namespace RayEngine
 		IReferenceCounter() {}
 		virtual ~IReferenceCounter() {}
 
+
 		//Gets a pointer to the object
 		virtual IReferenceCounter* QueryReference() = 0;
 		//Decreases the reference counter and releases the object
 		virtual void Release() const = 0;
 		//Returns the reference count
 		virtual uint32 GetReferenceCount() const = 0;
+
 	protected:
 		//Adds a reference to the object
 		virtual uint32 AddRef() = 0;

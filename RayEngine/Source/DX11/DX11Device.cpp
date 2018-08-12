@@ -7,7 +7,8 @@
 #include "..\..\Include\DX11\DX11Texture.h"
 #include "..\..\Include\DX11\DX11DepthStencilView.h"
 #include "..\..\Include\DX11\DX11Shader.h"
-#include "..\..\Include\DX11\DX11RootSignature.h"
+#include "..\..\Include\DX11\DX11Sampler.h"
+#include "..\..\Include\DX11\DX11RootLayout.h"
 #include "..\..\Include\DX11\DX11PipelineState.h"
 #include "..\..\Include\DX11\DX11Buffer.h"
 #include <d3dcommon.h>
@@ -73,14 +74,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX11Device::CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info)
-		{
-			return ((*ppCommandQueue = new DX11CommandQueue(this, info)) != nullptr);
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateShader(IShader** ppShader, const ShaderInfo& info)
 		{
 			return ((*ppShader = new DX11Shader(this, info)));
@@ -105,6 +98,30 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		bool DX11Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX11Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info)
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX11Device::CreateSampler(ISampler** ppSampler, const SamplerInfo& info)
+		{
+			return ((*ppSampler = new DX11Sampler(this, info)));;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
 			return ((*ppTexture = new DX11Texture(this, pInitialData, info)) != nullptr);
@@ -121,9 +138,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX11Device::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info)
+		bool DX11Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info)
 		{
-			return ((*ppRootSignature = new DX11RootSignature(this, info)));
+			return ((*ppRootLayout = new DX11RootLayout(this, info)));
 		}
 
 

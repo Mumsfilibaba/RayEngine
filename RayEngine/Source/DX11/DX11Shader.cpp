@@ -2,6 +2,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11ShaderConstantBlock.h"
 
 namespace RayEngine
 {
@@ -12,6 +13,7 @@ namespace RayEngine
 			: DXShaderBase(),
 			m_Device(nullptr),
 			m_VertexShader(nullptr),
+			m_ConstantBlock(nullptr),
 			m_StaticSamplers()
 		{
 			AddRef();
@@ -31,6 +33,7 @@ namespace RayEngine
 				D3DRelease_S(m_StaticSamplers[i]);
 			}
 
+			ReRelease_S(m_ConstantBlock);
 			ReRelease_S(m_Device);
 		}
 
@@ -48,6 +51,14 @@ namespace RayEngine
 		int32 DX11Shader::GetStaticSamplerCount() const
 		{
 			return static_cast<int32>(m_StaticSamplers.size());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX11ShaderConstantBlock* DX11Shader::GetConstantBlock() const
+		{
+			return m_ConstantBlock;
 		}
 
 
@@ -168,6 +179,8 @@ namespace RayEngine
 			{
 				ID3D11DeviceChild* pD3D11DeviceChild = reinterpret_cast<ID3D11DeviceChild*>(m_VertexShader);
 				pD3D11DeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+
+				CreateConstantBlock(info);
 			}
 
 
@@ -187,6 +200,25 @@ namespace RayEngine
 					m_StaticSamplers.push_back(sampler);
 				}
 			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11Shader::CreateConstantBlock(const ShaderInfo& info)
+		{
+			int32 numConstants = 0;
+			for (int32 i = 0; i < info.VariableCount; i++)
+			{
+				if (info.pVariables[i].Type == VARIABLE_TYPE_SHADER_CONSTANTS)
+				{
+					numConstants = info.pVariables[i].ConstantCount;
+					break;
+				}
+			}
+
+
+			m_ConstantBlock = new DX11ShaderConstantBlock(m_Device, numConstants);
 		}
 
 

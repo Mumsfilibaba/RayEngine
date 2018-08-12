@@ -1,16 +1,11 @@
 #pragma once
 
-#include "IDeviceObject.h"
+#include "IResource.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		/////////////////////////////////////////////////////////////
-		class IDevice;
-
-
-
 		/////////////////////////////////////////////////////////////
 		enum TEXTURE_TYPE : int32
 		{
@@ -62,7 +57,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ITexture : public IDeviceObject
+		class ITexture : public IResource
 		{
 		public:
 			ITexture(const ITexture& other) = delete;
