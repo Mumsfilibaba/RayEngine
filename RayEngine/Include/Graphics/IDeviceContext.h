@@ -57,8 +57,6 @@ namespace RayEngine
 			virtual void SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const = 0;
 			//Sets the scissorrect of the screen
 			virtual void SetScissorRects(const Math::Rectangle& rect) const = 0;
-			//Transition a resource from one state to another
-			virtual void TransitionResource(ITexture* resource, RESOURCE_STATE to, int32 subresource) const = 0;
 			//Draws the current vertexbuffer
 			virtual void Draw(int32 startVertex, int32 vertexCount) const = 0;
 			//Draws the current vertexbuffer indexed

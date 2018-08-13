@@ -2,7 +2,7 @@
 
 #include <string>
 #include "IShader.h"
-#include "IRootSignature.h"
+#include "IRootLayout.h"
 
 namespace RayEngine
 {
@@ -162,7 +162,7 @@ namespace RayEngine
 		public:
 			std::string Name = "";
 			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
-			IRootSignature* pRootSignature = nullptr;
+			IRootLayout* pRootSignature = nullptr;
 			GraphicsPipelineInfo GraphicsPipeline;
 			ComputePipelineInfo ComputePipeline;
 		};

@@ -27,6 +27,9 @@ namespace RayEngine
 			DX11DeviceContext(IDevice* pDevice, bool isDeffered);
 			~DX11DeviceContext();
 
+			ID3D11DeviceContext* GetD3D11DeviceContext() const;
+			ID3D11CommandList* GetD3D11CommandList() const;
+
 			void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const override final;
 			void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const override final;
 			
@@ -40,8 +43,6 @@ namespace RayEngine
 			void SetViewports(const Viewport& viewport) const override final;
 			void SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const override final;
 			void SetScissorRects(const Math::Rectangle& rect) const override final;
-			
-			void TransitionResource(ITexture* resource, RESOURCE_STATE to, int32 subresource) const override final;
 			
 			void Draw(int32 startVertex, int32 vertexCount) const override final;
 			void DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const override final;
@@ -62,7 +63,7 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			ID3D11DeviceContext* m_Context;
-			ID3D11CommandList* m_CommandList;
+			mutable ID3D11CommandList* m_CommandList;
 			bool m_IsDeffered;
 		};
 	}

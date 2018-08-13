@@ -10,6 +10,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class IFactory;
+		class ITexture;
 
 
 

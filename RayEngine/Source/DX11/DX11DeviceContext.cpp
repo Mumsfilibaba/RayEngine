@@ -2,6 +2,9 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11RenderTargetView.h"
+#include "..\..\Include\DX11\DX11DepthStencilView.h"
+#include "..\..\Include\DX11\DX11PipelineState.h"
 
 namespace RayEngine
 {
@@ -34,8 +37,26 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		ID3D11DeviceContext* DX11DeviceContext::GetD3D11DeviceContext() const
+		{
+			return m_Context;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		ID3D11CommandList* DX11DeviceContext::GetD3D11CommandList() const
+		{
+			return m_CommandList;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
 		{
+			ID3D11RenderTargetView* pD3D11View = reinterpret_cast<DX11RenderTargetView*>(pView)->GetD3D11RenderTargetView();
+			m_Context->ClearRenderTargetView(pD3D11View, pColor);
 		}
 
 
@@ -43,6 +64,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
 		{
+			ID3D11DepthStencilView* pD3D11View = reinterpret_cast<DX11DepthStencilView*>(pView)->GetD3D11DepthStencilView();
+			m_Context->ClearDepthStencilView(pD3D11View, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, stencil);
 		}
 
 
@@ -50,6 +73,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
+			ID3D11RenderTargetView* pD3D11RenderTarget = reinterpret_cast<DX11RenderTargetView*>(pRenderTarget)->GetD3D11RenderTargetView();
+			ID3D11DepthStencilView* pD3D11DepthStencil = reinterpret_cast<DX11DepthStencilView*>(pDepthStencil)->GetD3D11DepthStencilView();
+
+			m_Context->OMSetRenderTargets(1, &pD3D11RenderTarget, pD3D11DepthStencil);
 		}
 
 
@@ -78,6 +105,20 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
 		{
+			DX11PipelineState* pDX11PipelineState = reinterpret_cast<DX11PipelineState*>(pPipelineState);
+
+			m_Context->IASetInputLayout(pDX11PipelineState->GetD3D11InputLayout());
+			m_Context->OMSetDepthStencilState(pDX11PipelineState->GetD3D11DepthStencilState(), 0);
+			m_Context->OMSetBlendState(pDX11PipelineState->GetD3D11BlendState(),
+				pDX11PipelineState->GetBlendFactor(), pDX11PipelineState->GetSampleMask());
+			m_Context->RSSetState(pDX11PipelineState->GetD3D11RasterizerState());
+
+			m_Context->VSSetShader(pDX11PipelineState->GetD3D11VertexShader(), nullptr, 0);
+			m_Context->HSSetShader(pDX11PipelineState->GetD3D11HullShader(), nullptr, 0);
+			m_Context->DSSetShader(pDX11PipelineState->GetD3D11DomainShader(), nullptr, 0);
+			m_Context->GSSetShader(pDX11PipelineState->GetD3D11GeometryShader(), nullptr, 0);
+			m_Context->PSSetShader(pDX11PipelineState->GetD3D11PixelShader(), nullptr, 0);
+			m_Context->CSSetShader(pDX11PipelineState->GetD3D11ComputeShader(), nullptr, 0);
 		}
 
 
@@ -99,6 +140,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetViewports(const Viewport& viewport) const
 		{
+			D3D11_VIEWPORT port = {};
+			port.Width = viewport.Width;
+			port.Height = viewport.Height;
+			port.TopLeftX = viewport.TopLeftX;
+			port.TopLeftY = viewport.TopLeftY;
+			port.MaxDepth = viewport.MaxDepth;
+			port.MinDepth = viewport.MinDepth;
+
+			m_Context->RSSetViewports(1, &port);
 		}
 
 
@@ -106,6 +156,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const
 		{
+			m_Context->IASetPrimitiveTopology(ReToDXTopology(topology));
 		}
 
 
@@ -113,13 +164,13 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetScissorRects(const Math::Rectangle& rect) const
 		{
-		}
+			D3D11_RECT dxRect = {};
+			dxRect.top = static_cast<LONG>(rect.TopLeft.y);
+			dxRect.left = static_cast<LONG>(rect.TopLeft.x);
+			dxRect.bottom = static_cast<LONG>(rect.BottomRight.y);
+			dxRect.right = static_cast<LONG>(rect.BottomRight.x);
 
-
-
-		/////////////////////////////////////////////////////////////
-		void DX11DeviceContext::TransitionResource(ITexture* resource, RESOURCE_STATE to, int32 subresource) const
-		{
+			m_Context->RSSetScissorRects(1, &dxRect);
 		}
 
 
@@ -127,6 +178,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
+			m_Context->Draw(vertexCount, startVertex);
 		}
 
 
@@ -134,6 +186,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
 		{
+			m_Context->DrawIndexed(indexCount, startIndex, startVertex);
 		}
 
 
@@ -141,6 +194,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const
 		{
+			m_Context->DrawInstanced(vertexCount, instanceCount, startVertex, startInstance);
 		}
 
 
@@ -148,6 +202,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
 		{
+			m_Context->DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
 		}
 
 
@@ -155,6 +210,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Flush() const
 		{
+			//NOT RELEVANTv
 		}
 
 
@@ -162,7 +218,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11DeviceContext::Reset() const
 		{
-			return false;
+			D3DRelease_S(m_CommandList);
+			return true;
 		}
 
 
@@ -170,7 +227,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11DeviceContext::Close() const
 		{
-			return false;
+			if (!m_IsDeffered)
+				return false;
+
+			HRESULT hr = m_Context->FinishCommandList(FALSE, &m_CommandList);
+			return SUCCEEDED(hr);
 		}
 
 
@@ -178,6 +239,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::ExecuteDefferedContext(IDeviceContext* pDefferedContext) const
 		{
+			if (m_IsDeffered)
+				return;
+
+			ID3D11CommandList* pD3D11CommandList = reinterpret_cast<DX11DeviceContext*>(pDefferedContext)->GetD3D11CommandList();
+			m_Context->ExecuteCommandList(pD3D11CommandList, TRUE);
 		}
 
 
@@ -193,6 +259,24 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Create(bool isDeffered)
 		{
+			using namespace System;
+
+			if (isDeffered)
+			{
+				ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
+				HRESULT hr = pD3D11Device->CreateDeferredContext(0, &m_Context);
+				if (FAILED(hr))
+				{
+					m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Deffered Context. " + DXErrorString(hr));
+				}
+			}
+			else
+			{
+				ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
+				pD3D11Device->GetImmediateContext(&m_Context);
+			}
+
+			m_IsDeffered = isDeffered;
 		}
 	}
 }

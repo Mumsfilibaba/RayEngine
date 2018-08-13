@@ -1,13 +1,18 @@
 #pragma once
 
 #include "AdapterInfo.h"
-#include "IDevice.h"
-#include "ISwapchain.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class IDevice;
+		class ISwapchain;
+		
+
+
+		/////////////////////////////////////////////////////////////
 		class IFactory : public RefCounter
 		{
 			IFactory(IFactory&& other) = delete;

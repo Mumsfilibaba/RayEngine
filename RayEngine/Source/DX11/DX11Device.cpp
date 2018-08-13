@@ -2,7 +2,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Factory.h"
-#include "..\..\Include\DX11\DX11CommandQueue.h"
+#include "..\..\Include\DX11\DX11DeviceContext.h"
 #include "..\..\Include\DX11\DX11RenderTargetView.h"
 #include "..\..\Include\DX11\DX11Texture.h"
 #include "..\..\Include\DX11\DX11DepthStencilView.h"
@@ -39,8 +39,8 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Adapter);
 			D3DRelease_S(m_Device);
-			D3DRelease_S(m_ImmediateContext);
 
+			ReRelease_S(m_ImmediateContext);
 			ReRelease_S(m_Factory);
 
 			m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
@@ -61,6 +61,26 @@ namespace RayEngine
 		ID3D11DeviceContext* DX11Device::GetD3D11DeviceContext() const
 		{
 			return m_ImmediateContext;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX11Device::GetImmediateContext(IDeviceContext** ppContext)
+		{
+			if (ppContext == nullptr)
+				return false;
+
+			*ppContext = reinterpret_cast<DX11DeviceContext*>(m_ImmediateContext->QueryReference());
+			return (*ppContext) != nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX11Device::CreateDefferedContext(IDeviceContext** ppContext)
+		{
+			return ((*ppContext) = new DX11DeviceContext(this, true));
 		}
 
 
@@ -181,7 +201,7 @@ namespace RayEngine
 
 			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1,
-				D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, &m_ImmediateContext);
+				D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
 			if (FAILED(hr))
 			{
 				m_Log.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
@@ -190,6 +210,8 @@ namespace RayEngine
 			else
 			{
 				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+
+				m_ImmediateContext = new DX11DeviceContext(this, false);
 			}
 
 

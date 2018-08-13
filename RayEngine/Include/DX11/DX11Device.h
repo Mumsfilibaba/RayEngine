@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\Graphics\IDevice.h"
+
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Factory.h"
 
@@ -10,6 +11,12 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class IDeviceContext;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX11Device final : public IDevice
 		{
 		public:
@@ -25,6 +32,8 @@ namespace RayEngine
 			ID3D11Device* GetD3D11Device() const;
 			ID3D11DeviceContext* GetD3D11DeviceContext() const;
 
+			bool GetImmediateContext(IDeviceContext** ppContext) override final;
+			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
 			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
 			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
@@ -45,9 +54,9 @@ namespace RayEngine
 
 		private:
 			DX11Factory* m_Factory;
+			DX11DeviceContext* m_ImmediateContext;
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;
-			ID3D11DeviceContext* m_ImmediateContext;
 			ID3D11Debug* m_DebugDevice;
 			D3D_FEATURE_LEVEL m_FeatureLevel;
 			System::Log m_Log;
