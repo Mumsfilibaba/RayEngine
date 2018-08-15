@@ -71,12 +71,12 @@ namespace RayEngine
 			uint32 m_SampleMask;
 			ID3D11RasterizerState* m_RasterizerState;
 			ID3D11DepthStencilState* m_DepthStencilState;
-			DX11Shader* m_VertexShader;
-			DX11Shader* m_HullShader;
-			DX11Shader* m_DomainShader;
-			DX11Shader* m_GeometryShader;
-			DX11Shader* m_PixelShader;
-			DX11Shader* m_ComputeShader;
+			DX11Shader* m_VS;
+			DX11Shader* m_HS;
+			DX11Shader* m_DS;
+			DX11Shader* m_GS;
+			DX11Shader* m_PS;
+			DX11Shader* m_CS;
 			PIPELINE_TYPE m_Type;
 		};
 	}

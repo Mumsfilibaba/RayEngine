@@ -5,9 +5,6 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 
-#define D3DRelease(IObject) IObject->Release(); IObject = nullptr
-#define D3DRelease_S(IObject) if (IObject != nullptr) { D3DRelease(IObject); }
-
 
 
 /////////////////////////////////////////////////////////////

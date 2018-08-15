@@ -396,4 +396,22 @@ namespace RayEngine
 		STENCIL_OPERATION StencilPassoperation = STENCIL_OPERATION_KEEP;
 		COMPARISON_FUNC StencilFunc = COMPARISON_FUNC_ALWAYS;
 	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	namespace Type
+	{
+		template<typename T, typename U> struct IsSameType { static constexpr bool Value = false; };
+		template<typename T> struct IsSameType<T, T> { static constexpr bool Value = true; };
+
+
+
+		/////////////////////////////////////////////////////////////
+		template<typename T, typename U>
+		constexpr bool IsSame()
+		{
+			return IsSameType<T, U>::Value;
+		}
+	}
 }

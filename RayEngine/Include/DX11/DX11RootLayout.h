@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "..\Graphics\IRootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -12,6 +13,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Device;
 		class IDX11RootVariableSlot;
+		class DX11ShaderConstantBlock;
 
 
 
@@ -28,6 +30,8 @@ namespace RayEngine
 			DX11RootLayout(IDevice* pDevice, const RootLayoutInfo& info);
 			~DX11RootLayout();
 
+			IDX11RootVariableSlot* GetDX11VariableSlot(int32 slotSndex) const;
+
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
@@ -39,7 +43,7 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			std::vector<DX11ShaderConstantBlock*> m_ConstantBlocks;
-			std::vector<ID3D11SamplerState*> m_StaticSampler;
+			std::vector<ID3D11SamplerState*> m_StaticSamplers;
 			std::vector<IDX11RootVariableSlot*> m_VariableSlots;
 		};
 	}

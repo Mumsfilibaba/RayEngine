@@ -2,6 +2,10 @@
 
 #include "IShader.h"
 
+#if defined(max)
+#undef max
+#endif
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -11,20 +15,6 @@ namespace RayEngine
 		class IBuffer;
 		class ITexture;
 		class ISampler;
-
-
-
-		/////////////////////////////////////////////////////////////
-		enum SHADER_VISIBILITY : int32
-		{
-			SHADER_VISIBILITY_UNKNOWN = 0,
-			SHADER_VISIBILITY_VERTEX = 1,
-			SHADER_VISIBILITY_HULL = 2,
-			SHADER_VISIBILITY_DOMAIN = 3,
-			SHADER_VISIBILITY_GEOMETRY = 4,
-			SHADER_VISIBILITY_PIXEL = 5,
-			SHADER_VISIBILITY_ALL = 6,
-		};
 
 
 
@@ -58,6 +48,7 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct ShaderVariable
 		{
+			SHADER_TYPE ShaderStage = SHADER_TYPE_UNKNOWN;
 			VARIABLE_TYPE Type = VARIABLE_TYPE_UNKNOWN;
 			SHADER_USAGE ShaderUsage = SHADER_USAGE_UNKNOWN;
 			int32 ShaderRegister = 0;
@@ -101,7 +92,7 @@ namespace RayEngine
 			int32 RootSignatureVisibility = SHADER_VISIBILITY_UNKNOWN;
 			ShaderVariable* pVariables = nullptr;
 			int32 VariableCount = 0;
-			StaticSampler* pSamplers = nullptr;
+			StaticSampler* pStaticSamplers = nullptr;
 			int32 SamplerCount = 0;
 		};
 

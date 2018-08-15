@@ -11,6 +11,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class DX11Device;
+		class DX11RootLayout;
 
 
 
@@ -37,6 +38,7 @@ namespace RayEngine
 			void SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const override final;
 			void SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const override final;
 			void SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const override final;
+			void SetSamplers(ISampler* pSampler, int32 startRootIndex) const override final;
 			void SetPipelineState(IPipelineState* pPipelineState) const override final;
 			void SetRootLayout(IRootLayout* pRootLayout) const override final;
 			void SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const override final;
@@ -62,6 +64,7 @@ namespace RayEngine
 
 		private:
 			DX11Device* m_Device;
+			mutable DX11RootLayout* m_CurrentRootLayout;
 			ID3D11DeviceContext* m_Context;
 			mutable ID3D11CommandList* m_CommandList;
 			bool m_IsDeffered;

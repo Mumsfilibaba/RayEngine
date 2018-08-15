@@ -4,7 +4,13 @@
 #include "..\..\Include\DX11\DX11Device.h"
 #include "..\..\Include\DX11\DX11RenderTargetView.h"
 #include "..\..\Include\DX11\DX11DepthStencilView.h"
+#include "..\..\Include\DX11\DX11ShaderResourceView.h"
+#include "..\..\Include\DX11\DX11UnorderedAccessView.h"
 #include "..\..\Include\DX11\DX11PipelineState.h"
+#include "..\..\Include\DX11\DX11Buffer.h"
+#include "..\..\Include\DX11\DX11Sampler.h"
+#include "..\..\Include\DX11\DX11RootLayout.h"
+#include "..\..\Include\DX11\DX11RootVariableSlot.h"
 
 namespace RayEngine
 {
@@ -13,6 +19,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11DeviceContext::DX11DeviceContext(IDevice* pDevice, bool isDeffered)
 			: m_Device(nullptr),
+			m_CurrentRootLayout(nullptr),
 			m_Context(nullptr),
 			m_CommandList(nullptr),
 			m_IsDeffered(false)
@@ -31,6 +38,7 @@ namespace RayEngine
 			D3DRelease_S(m_Context);
 			D3DRelease_S(m_CommandList);
 			
+			ReRelease_S(m_CurrentRootLayout);
 			ReRelease_S(m_Device);
 		}
 
@@ -84,6 +92,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const
 		{
+			ID3D11ShaderResourceView* pD3D11View = reinterpret_cast<DX11ShaderResourceView*>(pShaderResourceView)->GetD3D11ShaderResourceView();
+			m_CurrentRootLayout->GetDX11VariableSlot(startRootIndex)->SetShaderResourceViews(m_Context, &pD3D11View, 1);
 		}
 
 
@@ -91,6 +101,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const
 		{
+			ID3D11UnorderedAccessView* pD3D11View = reinterpret_cast<DX11UnorderedAccessView*>(pUnorderedAccessView)->GetD3D11UnorderedAccessView();
+			m_CurrentRootLayout->GetDX11VariableSlot(startRootIndex)->SetUnorderedAccessViews(m_Context, &pD3D11View, 1);
 		}
 
 
@@ -98,6 +110,17 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const
 		{
+			ID3D11Buffer* pD3D11Buffer = reinterpret_cast<DX11Buffer*>(pBuffer)->GetD3D11Buffer();
+			m_CurrentRootLayout->GetDX11VariableSlot(startRootIndex)->SetConstantBuffers(m_Context, &pD3D11Buffer, 1);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11DeviceContext::SetSamplers(ISampler* pSampler, int32 startRootIndex) const
+		{
+			ID3D11SamplerState* pD3D11Sampler = reinterpret_cast<DX11Sampler*>(pSampler)->GetD3D11SamplerState();
+			m_CurrentRootLayout->GetDX11VariableSlot(startRootIndex)->SetSamplers(m_Context, &pD3D11Sampler, 1);
 		}
 
 
@@ -126,6 +149,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetRootLayout(IRootLayout* pRootLayout) const
 		{
+			ReRelease_S(m_CurrentRootLayout);
+			m_CurrentRootLayout = reinterpret_cast<DX11RootLayout*>(pRootLayout->QueryReference());
 		}
 
 
@@ -133,8 +158,13 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const
 		{
-		}
+			ID3D11Buffer* pD3D11Buffer = reinterpret_cast<DX11Buffer*>(pBuffer)->GetD3D11Buffer();
+			uint32 stride = reinterpret_cast<DX11Buffer*>(pBuffer)->GetByteStride();
+			uint32 offset = 0;
 
+			m_Context->IASetVertexBuffers(0, 1, &pD3D11Buffer, &stride, &offset);
+		}
+		
 
 
 		/////////////////////////////////////////////////////////////
@@ -210,7 +240,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Flush() const
 		{
-			//NOT RELEVANTv
+			//NOT RELEVANT
 		}
 
 

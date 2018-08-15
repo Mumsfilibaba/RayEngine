@@ -18,6 +18,22 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		template<typename T>
+		constexpr bool IsD3D11Shader()
+		{
+			using namespace Type;
+
+			return IsSame<ID3D11VertexShader, T>() ||
+				IsSame<ID3D11HullShader, T>() ||
+				IsSame<ID3D11DomainShader, T>() ||
+				IsSame<ID3D11GeometryShader, T>() || 
+				IsSame<ID3D11PixelShader, T>() || 
+				IsSame<ID3D11ComputeShader, T>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX11Shader final : public IShader, public DXShaderBase
 		{ 
 		public:
@@ -30,12 +46,12 @@ namespace RayEngine
 			DX11Shader(IDevice* pDevice, const ShaderInfo& info);
 			~DX11Shader();
 
-			ID3D11VertexShader* GetD3D11VertexShader() const;
-			ID3D11HullShader* GetD3D11HullShader() const;
-			ID3D11DomainShader* GetD3D11DomainShader() const;
-			ID3D11GeometryShader* GetD3D11GeometryShader() const;
-			ID3D11PixelShader* GetD3D11PixelShader() const;
-			ID3D11ComputeShader* GetD3D11ComputeShader() const;
+			template<typename D3D11ShaderType>
+			inline D3D11ShaderType* GetD3D11Shader() const
+			{
+				static_assert(IsD3D11Shader<D3D11ShaderType>(), "GetD3D11Shader() - T must be a valid D3D11 shadertype. For example ID3D11VertexShader");
+				return reinterpret_cast<D3D11ShaderType*>(m_Shader);
+			}
 
 			SHADER_TYPE GetType() const override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
@@ -45,15 +61,7 @@ namespace RayEngine
 
 		private:
 			DX11Device* m_Device;
-			union
-			{
-				ID3D11VertexShader* m_VertexShader;
-				ID3D11HullShader* m_HullShader;
-				ID3D11DomainShader* m_DomainShader;
-				ID3D11GeometryShader* m_GeometryShader;
-				ID3D11PixelShader* m_PixelShader;
-				ID3D11ComputeShader* m_ComputeShader;
-			};
+			ID3D11DeviceChild* m_Shader;
 		};
 	}
 }

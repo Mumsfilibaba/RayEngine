@@ -32,7 +32,7 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		template<typename TShader>
-		class DX11RootVariableSlotImpl final : IDX11RootVariableSlot
+		class DX11RootVariableSlotImpl final : public IDX11RootVariableSlot
 		{
 		public:
 			DX11RootVariableSlotImpl(const DX11RootVariableSlotImpl& other) = delete;

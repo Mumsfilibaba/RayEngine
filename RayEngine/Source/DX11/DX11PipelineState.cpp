@@ -3,6 +3,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11Shader.h"
 
 namespace RayEngine
 {
@@ -15,12 +16,12 @@ namespace RayEngine
 			m_BlendState(nullptr),
 			m_RasterizerState(nullptr),
 			m_DepthStencilState(nullptr),
-			m_VertexShader(nullptr),
-			m_HullShader(nullptr),
-			m_DomainShader(nullptr),
-			m_GeometryShader(nullptr),
-			m_PixelShader(nullptr),
-			m_ComputeShader(nullptr),
+			m_VS(nullptr),
+			m_HS(nullptr),
+			m_DS(nullptr),
+			m_GS(nullptr),
+			m_PS(nullptr),
+			m_CS(nullptr),
 			m_SampleMask(0),
 			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
@@ -91,7 +92,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ID3D11VertexShader* DX11PipelineState::GetD3D11VertexShader() const
 		{
-			return (m_VertexShader == nullptr) ? nullptr : m_VertexShader->GetD3D11VertexShader();
+			return (m_VS == nullptr) ? nullptr : m_VS->GetD3D11Shader<ID3D11VertexShader>();
 		}
 
 
@@ -99,7 +100,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ID3D11HullShader* DX11PipelineState::GetD3D11HullShader() const
 		{
-			return (m_HullShader == nullptr) ? nullptr : m_HullShader->GetD3D11HullShader();
+			return (m_HS == nullptr) ? nullptr : m_HS->GetD3D11Shader<ID3D11HullShader>();
 		}
 
 
@@ -107,7 +108,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ID3D11DomainShader* DX11PipelineState::GetD3D11DomainShader() const
 		{
-			return (m_DomainShader == nullptr) ? nullptr : m_DomainShader->GetD3D11DomainShader();
+			return (m_DS == nullptr) ? nullptr : m_DS->GetD3D11Shader<ID3D11DomainShader>();
 		}
 
 
@@ -115,7 +116,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ID3D11GeometryShader* DX11PipelineState::GetD3D11GeometryShader() const
 		{
-			return (m_GeometryShader == nullptr) ? nullptr : m_GeometryShader->GetD3D11GeometryShader();
+			return (m_GS == nullptr) ? nullptr : m_GS->GetD3D11Shader<ID3D11GeometryShader>();
 		}
 
 
@@ -123,7 +124,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ID3D11PixelShader* DX11PipelineState::GetD3D11PixelShader() const
 		{
-			return (m_PixelShader == nullptr) ? nullptr : m_PixelShader->GetD3D11PixelShader();
+			return (m_PS == nullptr) ? nullptr : m_PS->GetD3D11Shader<ID3D11PixelShader>();
 		}
 
 
@@ -131,7 +132,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		ID3D11ComputeShader* DX11PipelineState::GetD3D11ComputeShader() const
 		{
-			return (m_ComputeShader == nullptr) ? nullptr : m_ComputeShader->GetD3D11ComputeShader();
+			return (m_CS == nullptr) ? nullptr : m_CS->GetD3D11Shader<ID3D11ComputeShader>();
 		}
 
 
@@ -139,7 +140,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Shader* DX11PipelineState::GetDX11VertexShader() const
 		{
-			return m_VertexShader;
+			return m_VS;
 		}
 
 
@@ -147,7 +148,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Shader* DX11PipelineState::GetDX11HullShader() const
 		{
-			return m_HullShader;
+			return m_HS;
 		}
 
 
@@ -155,7 +156,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Shader* DX11PipelineState::GetDX11DomainShader() const
 		{
-			return m_DomainShader;
+			return m_DS;
 		}
 
 
@@ -163,7 +164,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Shader* DX11PipelineState::GetDX11GeometryShader() const
 		{
-			return m_GeometryShader;
+			return m_GS;
 		}
 
 
@@ -171,7 +172,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Shader* DX11PipelineState::GetDX11PixelShader() const
 		{
-			return m_PixelShader;
+			return m_PS;
 		}
 
 
@@ -179,7 +180,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Shader* DX11PipelineState::GetDX11ComputeShader() const
 		{
-			return m_ComputeShader;
+			return m_CS;
 		}
 
 
@@ -209,12 +210,12 @@ namespace RayEngine
 			D3DRelease_S(m_RasterizerState);
 
 			ReRelease_S(m_Device);
-			ReRelease_S(m_VertexShader);
-			ReRelease_S(m_HullShader);
-			ReRelease_S(m_DomainShader);
-			ReRelease_S(m_GeometryShader);
-			ReRelease_S(m_PixelShader);
-			ReRelease_S(m_ComputeShader);
+			ReRelease_S(m_VS);
+			ReRelease_S(m_HS);
+			ReRelease_S(m_DS);
+			ReRelease_S(m_GS);
+			ReRelease_S(m_PS);
+			ReRelease_S(m_CS);
 		}
 
 
@@ -235,15 +236,15 @@ namespace RayEngine
 		void DX11PipelineState::CreateGraphicsState(const PipelineStateInfo& info)
 		{
 			if (info.GraphicsPipeline.pVertexShader != nullptr)
-				m_VertexShader = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pVertexShader->QueryReference());
+				m_VS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pVertexShader->QueryReference());
 			if (info.GraphicsPipeline.pHullShader != nullptr)
-				m_HullShader = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pHullShader->QueryReference());
+				m_HS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pHullShader->QueryReference());
 			if (info.GraphicsPipeline.pDomainShader != nullptr)
-				m_DomainShader = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pDomainShader->QueryReference());
+				m_DS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pDomainShader->QueryReference());
 			if (info.GraphicsPipeline.pGeometryShader != nullptr)
-				m_GeometryShader = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pGeometryShader->QueryReference());
+				m_GS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pGeometryShader->QueryReference());
 			if (info.GraphicsPipeline.pPixelShader != nullptr)
-				m_PixelShader = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pPixelShader->QueryReference());
+				m_PS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pPixelShader->QueryReference());
 
 
 			CreateInputLayout(info);
@@ -271,7 +272,7 @@ namespace RayEngine
 				return;
 
 
-			if (m_VertexShader == nullptr)
+			if (m_VS == nullptr)
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Cannot create a inputlayout without a VertexShader.");
 				return;
@@ -288,7 +289,7 @@ namespace RayEngine
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
-			ID3DBlob* pD3DBlob = m_VertexShader->GetBlob();
+			ID3DBlob* pD3DBlob = m_VS->GetBlob();
 			
 			HRESULT hr = pD3D11Device->CreateInputLayout(inputLayout.data(), static_cast<uint32>(inputLayout.size()), 
 				pD3DBlob->GetBufferPointer(), static_cast<size_t>(pD3DBlob->GetBufferSize()), &m_InputLayout);

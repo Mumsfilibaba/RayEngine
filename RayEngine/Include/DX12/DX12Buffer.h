@@ -9,6 +9,12 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX12Device;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX12Buffer final : public IBuffer, public DX12Resource
 		{
 		public:

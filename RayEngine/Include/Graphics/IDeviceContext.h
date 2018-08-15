@@ -11,6 +11,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class ITexture;
 		class IBuffer;
+		class ISampler;
 		class IRenderTargetView;
 		class IDepthStencilView;
 		class IShaderResourceView;
@@ -45,6 +46,8 @@ namespace RayEngine
 			virtual void SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const = 0;
 			//Sets an array of constantbuffers
 			virtual void SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const = 0;
+			//Sets an array of samplers
+			virtual void SetSamplers(ISampler* pSampler, int32 startRootIndex) const = 0;
 			//Sets a pipelinestate
 			virtual void SetPipelineState(IPipelineState* pPipelineState) const = 0;
 			//Sets a rootlayout

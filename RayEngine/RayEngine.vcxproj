@@ -175,7 +175,6 @@
     <ClInclude Include="Include\Android\AndroidVulkanWrapper.h" />
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
     <ClInclude Include="Include\DX11\DX11Buffer.h" />
-    <ClInclude Include="Include\DX11\DX11CommandQueue.h" />
     <ClInclude Include="Include\DX11\DX11Common.h" />
     <ClInclude Include="Include\DX11\DX11DepthStencilView.h" />
     <ClInclude Include="Include\DX11\DX11Device.h" />
@@ -196,13 +195,14 @@
     <ClInclude Include="Include\DX12\DX12Common.h" />
     <ClInclude Include="Include\DX12\DX12DepthStencilView.h" />
     <ClInclude Include="Include\DX12\DX12DescriptorHeap.h" />
+    <ClInclude Include="Include\DX12\DX12DeviceContext.h" />
     <ClInclude Include="Include\DX12\DX12DynamicUploadHeap.h" />
     <ClInclude Include="Include\DX12\DX12Factory.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\DX12\DX12PipelineState.h" />
     <ClInclude Include="Include\DX12\DX12RenderTargetView.h" />
     <ClInclude Include="Include\DX12\DX12Resource.h" />
-    <ClInclude Include="Include\DX12\DX12RootSignature.h" />
+    <ClInclude Include="Include\DX12\DX12RootLayout.h" />
     <ClInclude Include="Include\DX12\DX12Sampler.h" />
     <ClInclude Include="Include\DX12\DX12Shader.h" />
     <ClInclude Include="Include\DX12\DX12ShaderResourceView.h" />
@@ -293,7 +293,7 @@
     <ClCompile Include="Source\DX11\DX11Buffer.cpp" />
     <ClCompile Include="Source\DX11\DX11DeviceContext.cpp" />
     <ClCompile Include="Source\DX11\DX11PipelineState.cpp" />
-    <ClCompile Include="Source\DX11\DX11RootSignature.cpp" />
+    <ClCompile Include="Source\DX11\DX11RootLayout.cpp" />
     <ClCompile Include="Source\DX11\DX11RootVariableSlot.cpp" />
     <ClCompile Include="Source\DX11\DX11Sampler.cpp" />
     <ClCompile Include="Source\DX11\DX11Shader.cpp" />
@@ -312,7 +312,6 @@
     <ClCompile Include="Source\Android\AndroidVulkanCommon.cpp" />
     <ClCompile Include="Source\Android\AndroidVulkanWrapper.cpp" />
     <ClCompile Include="Source\Android\AndroidWindowImpl.cpp" />
-    <ClCompile Include="Source\DX11\DX11CommandQueue.cpp" />
     <ClCompile Include="Source\DX11\DX11Common.cpp" />
     <ClCompile Include="Source\DX11\DX11DepthStencilView.cpp" />
     <ClCompile Include="Source\DX11\DX11Device.cpp" />
@@ -329,12 +328,13 @@
     <ClCompile Include="Source\DX12\DX12DepthStencilView.cpp" />
     <ClCompile Include="Source\DX12\DX12DescriptorHeap.cpp" />
     <ClCompile Include="Source\DX12\DX12Device.cpp" />
+    <ClCompile Include="Source\DX12\DX12DeviceContext.cpp" />
     <ClCompile Include="Source\DX12\DX12DynmicUploadHeap.cpp" />
     <ClCompile Include="Source\DX12\DX12Factory.cpp" />
     <ClCompile Include="Source\DX12\DX12PipelineState.cpp" />
     <ClCompile Include="Source\DX12\DX12RenderTargetView.cpp" />
     <ClCompile Include="Source\DX12\DX12Resource.cpp" />
-    <ClCompile Include="Source\DX12\DX12RootSignature.cpp" />
+    <ClCompile Include="Source\DX12\DX12RootLayout.cpp" />
     <ClCompile Include="Source\DX12\DX12Sampler.cpp" />
     <ClCompile Include="Source\DX12\DX12Shader.cpp" />
     <ClCompile Include="Source\DX12\DX12ShaderResourceView.cpp" />

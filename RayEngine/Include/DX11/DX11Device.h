@@ -13,6 +13,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class IDeviceContext;
+		class DX11DeviceContext;
 
 
 
