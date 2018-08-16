@@ -1,9 +1,9 @@
 #include <vector>
-#include "..\..\Include\DX12\DX12RootSignature.h"
 #include "..\..\Include\DX12\DX12PipelineState.h"
-#include "..\..\Include\DX12\DX12Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12RootLayout.h"
 
 namespace RayEngine
 {

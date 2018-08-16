@@ -2,6 +2,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12DescriptorHeap.h"
 
 namespace RayEngine
 {

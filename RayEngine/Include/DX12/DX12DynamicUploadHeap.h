@@ -3,7 +3,7 @@
 #include "..\Graphics\IDeviceObject.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12Common.h"
+#include "DX12Resource.h"
 
 namespace RayEngine
 {
@@ -15,7 +15,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class DX12DynamicUploadHeap final : public IDeviceObject
+		class DX12DynamicUploadHeap final : public DX12Resource, public IDeviceObject
 		{
 		public:
 			DX12DynamicUploadHeap(const DX12DynamicUploadHeap& other) = delete;
@@ -31,7 +31,6 @@ namespace RayEngine
 
 			IDevice* GetDevice() const;
 			ID3D12Heap* GetD3D12Heap() const;
-			ID3D12Resource* GetD3D12Resource() const;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 
@@ -41,8 +40,6 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			ID3D12Heap* m_Heap;
-			ID3D12Resource* m_Resource;
-			D3D12_RESOURCE_STATES m_State;
 			int32 m_SizeInBytes;
 		};
 	}

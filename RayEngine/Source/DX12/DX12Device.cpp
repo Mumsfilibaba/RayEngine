@@ -1,15 +1,17 @@
 #include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12CommandQueue.h"
-#include "..\..\Include\DX12\DX12Shader.h"
-#include "..\..\Include\DX12\DX12RenderTargetView.h"
-#include "..\..\Include\DX12\DX12DepthStencilView.h"
-#include "..\..\Include\DX12\DX12RootSignature.h"
-#include "..\..\Include\DX12\DX12PipelineState.h"
-#include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12Buffer.h"
-#include "..\..\Include\DX12\DX12Factory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Factory.h"
+#include "..\..\Include\DX12\DX12Buffer.h"
+#include "..\..\Include\DX12\DX12Shader.h"
+#include "..\..\Include\DX12\DX12Texture.h"
+#include "..\..\Include\DX12\DX12CommandQueue.h"
+#include "..\..\Include\DX12\DX12PipelineState.h"
+#include "..\..\Include\DX12\DX12RootLayout.h"
+#include "..\..\Include\DX12\DX12DepthStencilView.h"
+#include "..\..\Include\DX12\DX12RenderTargetView.h"
+#include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
+#include "..\..\Include\DX12\DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -96,7 +98,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
 		{
-			return ((*ppTexture = new DX12Texture(this, pInitialData, info)) != nullptr);
+			return ((*ppTexture) = new DX12Texture(this, pInitialData, info)) != nullptr;
 		}
 
 
@@ -104,15 +106,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
 		{
-			return ((*ppBuffer = new DX12Buffer(this, pInitialData, info)));
+			return ((*ppBuffer) = new DX12Buffer(this, pInitialData, info));
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info)
+		bool DX12Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info)
 		{
-			return ((*ppRootSignature = new DX12RootSignature(this, info)));
+			return ((*ppRootLayout) = new DX12RootLayout(this, info));
 		}
 
 

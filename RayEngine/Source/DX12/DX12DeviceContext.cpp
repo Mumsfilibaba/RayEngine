@@ -25,7 +25,7 @@ namespace RayEngine
 			m_CommandList(nullptr),
 			m_CurrentFence(0),
 			m_NumCommands(0),
-			m_MaxCommands(0),
+			m_MaxCommands(15),
 			m_IsDeffered(false)
 		{
 			AddRef();
@@ -305,6 +305,8 @@ namespace RayEngine
 				return;
 			}
 
+
+
 			if (m_Fence->GetCompletedValue() < m_CurrentFence)
 			{
 				HANDLE ev = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
@@ -340,6 +342,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12DeviceContext::Close() const
 		{
+			if (!m_IsDeffered)
+				return;
+
 			HRESULT hr = m_CommandList->Close();
 			return SUCCEEDED(hr);
 		}
@@ -352,7 +357,11 @@ namespace RayEngine
 			if (m_IsDeffered)
 				return;
 
+			DX12DeviceContext* pDX12DeviceContext = reinterpret_cast<DX12DeviceContext*>(pDefferedContext);
+			ID3D12CommandList* lists[] = { pDX12DeviceContext->GetD3D12CommandList() };
+			m_Queue->ExecuteCommandLists(1, lists);
 
+			pDX12DeviceContext->Flush();
 		}
 
 
@@ -368,7 +377,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::Create(bool isDeffered)
 		{
-			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+			using namespace System;
 
 			//TODO: different types of commandqueues
 
@@ -379,22 +388,29 @@ namespace RayEngine
 			qDesc.NodeMask = 0;
 
 
-			HRESULT hr = pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
-			if (FAILED(hr))
+			HRESULT hr = 0;
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+
+			if (isDeffered)
 			{
-				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandQueue");
-				return;
+				pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
+				if (FAILED(hr))
+				{
+					m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandQueue. " + DXErrorString(hr));
+					return;
+				}
+				else
+				{
+					D3D12SetName(m_Queue, "DeviceContext");
+				}
 			}
-			else
-			{
-				D3D12SetName(m_Queue, "DeviceContext");
-			}
+
 
 
 			hr = pD3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_Allocator));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandAllocator");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandAllocator. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -403,16 +419,18 @@ namespace RayEngine
 			}
 
 
+
 			hr = pD3D12Device->CreateCommandList(qDesc.NodeMask, D3D12_COMMAND_LIST_TYPE_DIRECT, m_Allocator, nullptr, IID_PPV_ARGS(&m_CommandList));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create CommandList");
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandList. " + DXErrorString(hr));
 				return;
 			}
 			else
 			{
 				D3D12SetName(m_CommandList, "DeviceContext : List");
 			}
+
 
 
 			hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
@@ -424,6 +442,10 @@ namespace RayEngine
 			{
 				Close();
 			}
+
+
+
+			m_IsDeffered = isDeffered;
 		}
 
 

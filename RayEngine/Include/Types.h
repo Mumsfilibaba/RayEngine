@@ -369,6 +369,24 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
+	enum VIEWDIMENSION : int32
+	{
+		VIEWDIMENSION_UNKNOWN = 0,
+		VIEWDIMENSION_BUFFER = 1,
+		VIEWDIMENSION_TEXTURE1D = 2,
+		VIEWDIMENSION_TEXTURE1D_ARRAY = 3,
+		VIEWDIMENSION_TEXTURE2D = 4,
+		VIEWDIMENSION_TEXTURE2DMS = 5,
+		VIEWDIMENSION_TEXTURE2D_ARRAY = 6,
+		VIEWDIMENSION_TEXTURE2DMS_ARRAY = 7,
+		VIEWDIMENSION_TEXTURE3D = 8,
+		VIEWDIMENSION_TEXTURE_CUBEMAP= 12,
+		VIEWDIMENSION_TEXTURE_CUBEMAP_ARRAY = 13
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
 	struct ResourceData
 	{
 		//pData - Data that is meant to be submitted to the graphics card

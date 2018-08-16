@@ -9,11 +9,10 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12DynamicUploadHeap::DX12DynamicUploadHeap(IDevice* pDevice, const std::string& name, uint32 alignment, uint32 sizeInBytes)
-			: m_Device(nullptr),
-			m_Resource(nullptr),
+			: DX12Resource(),
+			m_Device(nullptr),
 			m_Heap(nullptr),
-			m_SizeInBytes(0),
-			m_State(D3D12_RESOURCE_STATE_COMMON)
+			m_SizeInBytes(0)
 		{
 			AddRef();
 			m_Device = QueryDX12Device(pDevice);
@@ -61,14 +60,6 @@ namespace RayEngine
 		ID3D12Heap* DX12DynamicUploadHeap::GetD3D12Heap() const
 		{
 			return m_Heap;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		ID3D12Resource* DX12DynamicUploadHeap::GetD3D12Resource() const
-		{
-			return m_Resource;
 		}
 
 

@@ -1,8 +1,9 @@
 #include "..\..\Include\DX12\DX12DepthStencilView.h"
-#include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12Texture.h"
+#include "..\..\Include\DX12\DX12DescriptorHeap.h"
 
 namespace RayEngine
 {

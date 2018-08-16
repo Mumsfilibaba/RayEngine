@@ -10,8 +10,56 @@ namespace RayEngine
 		struct DepthStencilViewInfo
 		{
 			std::string Name = "";
-			const ITexture* pResource = nullptr;
 			FORMAT Format = FORMAT_UNKNOWN;
+			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
+			const IResource* pResource = nullptr;
+
+			union
+			{
+				struct
+				{
+				} Buffer;
+
+				struct
+				{
+				} Texture1D;
+
+				struct
+				{
+				} Texture1DArray;
+
+				struct
+				{
+				} Texture2D;
+
+				struct
+				{
+				} Texture2DMS;
+
+				struct
+				{
+				} Texture2DArray;
+
+				struct
+				{
+				} Texture2DMSArray;
+
+				struct
+				{
+				} Texture3D;
+
+				struct
+				{
+				} Texture3DMS;
+
+				struct
+				{
+				} Texture3DArray;
+
+				struct
+				{
+				} Texture3DMSArray;
+			};
 		};
 
 

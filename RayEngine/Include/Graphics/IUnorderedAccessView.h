@@ -7,7 +7,7 @@ namespace RayEngine
 	namespace Graphics
 	{	/////////////////////////////////////////////////////////////
 		class IDevice;
-		class ITexture;
+		class IResource;
 
 
 
@@ -16,7 +16,35 @@ namespace RayEngine
 		{
 			std::string Name = "";
 			FORMAT Format = FORMAT_UNKNOWN;
-			ITexture* pResource = nullptr;
+			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
+			IResource* pResource = nullptr;
+
+			union
+			{
+				struct
+				{
+				} Buffer;
+
+				struct
+				{
+				} Texture1D;
+
+				struct
+				{
+				} Texture1DArray;
+
+				struct
+				{
+				} Texture2D;
+
+				struct
+				{
+				} Texture2DArray;
+
+				struct
+				{
+				} Texture3D;
+			};
 		};
 
 
