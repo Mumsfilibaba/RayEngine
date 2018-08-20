@@ -31,7 +31,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		D3D12_CPU_DESCRIPTOR_HANDLE DX12Sampler::GetD3D12CpuDescriptorHandle() const
 		{
-			return m_SamplerState;
+			return m_SamplerState.Cpu;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		D3D12_GPU_DESCRIPTOR_HANDLE DX12Sampler::GetD3D12GpuDescriptorHandle() const
+		{
+			return m_SamplerState.Gpu;
 		}
 
 
@@ -47,7 +55,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Sampler::Create(const SamplerInfo& info)
 		{
-			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12ResourceHeap();
+			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12SamplerHeap();
 			m_SamplerState = pDX12Heap->GetNext();
 
 
@@ -67,7 +75,7 @@ namespace RayEngine
 			desc.BorderColor[3] = info.BorderColor.A;
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			pD3D12Device->CreateSampler(&desc, m_SamplerState);
+			pD3D12Device->CreateSampler(&desc, m_SamplerState.Cpu);
 		}
 	}
 }

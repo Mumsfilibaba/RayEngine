@@ -1,5 +1,7 @@
 #include "..\..\Include\DX12\DX12Resource.h"
 
+#if defined(RE_PLAFORM_WINDOWS)
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -44,3 +46,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

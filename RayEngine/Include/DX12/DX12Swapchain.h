@@ -9,6 +9,13 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX12Factory;
+		class DX12Texture;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX12Swapchain final : public ISwapchain
 		{
 		public:
@@ -35,7 +42,7 @@ namespace RayEngine
 
 		private:
 			DX12Factory* m_Factory;
-			DX12CommandQueue* m_CommandQueue;
+			DX12DeviceContext* m_Context;
 			IDXGISwapChain1* m_Swapchain;
 			std::vector<DX12Texture*> m_Textures;
 			mutable int32 m_CurrentBuffer;

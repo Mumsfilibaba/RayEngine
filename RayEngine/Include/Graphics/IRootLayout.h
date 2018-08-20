@@ -53,14 +53,7 @@ namespace RayEngine
 			SHADER_USAGE ShaderUsage = SHADER_USAGE_UNKNOWN;
 			int32 ShaderRegister = 0;
 			int32 ShaderSpace = 0;
-
-			union
-			{
-				IBuffer* pBuffer = nullptr;
-				ITexture* pTexture;
-				ISampler* pSampler;
-				int32 ConstantCount;
-			};
+			int32 ConstantCount = 0;
 		};
 
 

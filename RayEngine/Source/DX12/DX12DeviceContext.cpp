@@ -190,6 +190,9 @@ namespace RayEngine
 			DX12RootLayout* pDX12RootLayout = reinterpret_cast<DX12RootLayout*>(pRootLayout);
 			m_CommandList->SetGraphicsRootSignature(pDX12RootLayout->GetD3D12RootSignature());
 
+			ReRelease_S(m_CurrentRootLayout);
+			m_CurrentRootLayout = reinterpret_cast<DX12RootLayout*>(pRootLayout->GetReferenceCount());
+
 			AddCommand();
 		}
 

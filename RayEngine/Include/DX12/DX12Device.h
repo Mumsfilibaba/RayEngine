@@ -33,7 +33,6 @@ namespace RayEngine
 			~DX12Device();
 
 			ID3D12Device* GetD3D12Device() const;
-			DX12CommandQueue* GetDX12CommandQueue() const;
 			DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const;
 			DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const;
 			DX12DescriptorHeap* GetDX12ResourceHeap() const;
@@ -45,6 +44,9 @@ namespace RayEngine
 			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
 			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) override final;
 			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
 			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info) override final;
@@ -63,7 +65,6 @@ namespace RayEngine
 			ID3D12DebugDevice* m_DebugDevice;
 			DX12DeviceContext* m_ImmediateContext;
 			DX12DynamicUploadHeap* m_UploadHeap;
-			DX12CommandQueue* m_UploadQueue;
 			DX12DescriptorHeap* m_ResourceHeap;
 			DX12DescriptorHeap* m_DsvHeap;
 			DX12DescriptorHeap* m_RtvHeap;

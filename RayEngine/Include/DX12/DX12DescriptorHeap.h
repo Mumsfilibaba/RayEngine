@@ -3,7 +3,7 @@
 #include "..\Graphics\IDeviceObject.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12Common.h"
+#include "DX12ViewHandle.h"
 
 namespace RayEngine
 {
@@ -29,7 +29,7 @@ namespace RayEngine
 			~DX12DescriptorHeap();
 
 			int32 GetDescriptorsLeft() const;
-			D3D12_CPU_DESCRIPTOR_HANDLE GetNext() const;
+			DX12DescriptorHandle GetNext() const;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

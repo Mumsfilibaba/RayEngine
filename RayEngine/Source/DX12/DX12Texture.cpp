@@ -1,8 +1,8 @@
-#include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12Device.h"
 #include <utility>
+#include "..\..\Include\DX12\DX12Texture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Device.h"
 
 namespace RayEngine
 {

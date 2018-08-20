@@ -4,10 +4,12 @@
 #include "..\..\Include\DX11\DX11Factory.h"
 #include "..\..\Include\DX11\DX11DeviceContext.h"
 #include "..\..\Include\DX11\DX11RenderTargetView.h"
-#include "..\..\Include\DX11\DX11Texture.h"
 #include "..\..\Include\DX11\DX11DepthStencilView.h"
+#include "..\..\Include\DX11\DX11Texture.h"
 #include "..\..\Include\DX11\DX11Shader.h"
 #include "..\..\Include\DX11\DX11Sampler.h"
+#include "..\..\Include\DX11\DX11ShaderResourceView.h"
+#include "..\..\Include\DX11\DX11UnorderedAccessView.h"
 #include "..\..\Include\DX11\DX11RootLayout.h"
 #include "..\..\Include\DX11\DX11PipelineState.h"
 #include "..\..\Include\DX11\DX11Buffer.h"
@@ -53,14 +55,6 @@ namespace RayEngine
 		ID3D11Device* DX11Device::GetD3D11Device() const
 		{
 			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		ID3D11DeviceContext* DX11Device::GetD3D11DeviceContext() const
-		{
-			return m_ImmediateContext;
 		}
 
 
@@ -112,7 +106,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
 		{
-			return ((*ppView = new DX11DepthStencilView(this, info)));
+			return ((*ppView = new DX11DepthStencilView(this, info)) != nullptr);
 		}
 
 
@@ -120,7 +114,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
 		{
-			return false;
+			return ((*ppView = new DX11ShaderResourceView(this, info)) != nullptr);
 		}
 
 
@@ -128,7 +122,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info)
 		{
-			return false;
+			return ((*ppView = new DX11UnorderedAccessView(this, info)) != nullptr);
 		}
 
 

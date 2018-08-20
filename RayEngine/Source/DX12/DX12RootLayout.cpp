@@ -42,9 +42,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX12RootLayout::GetDevice() const
+		void DX12RootLayout::QueryDevice(IDevice** ppDevice) const
 		{
-			return m_Device;
+			(*ppDevice) = QueryDX12Device(m_Device);
 		}
 
 

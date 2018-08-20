@@ -1,9 +1,9 @@
-#include "..\..\Include\Win32\Win32WindowImpl.h"
-#include "..\..\Include\DX12\DX12CommandQueue.h"
 #include "..\..\Include\DX12\DX12Swapchain.h"
-#include "..\..\Include\DX12\DX12Factory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Factory.h"
+#include "..\..\Include\DX12\DX12CommandQueue.h"
+#include "..\..\Include\Win32\Win32WindowImpl.h"
 
 namespace RayEngine
 {

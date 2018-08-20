@@ -162,7 +162,7 @@ namespace RayEngine
 		public:
 			std::string Name = "";
 			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
-			IRootLayout* pRootSignature = nullptr;
+			IRootLayout* pRootLayout = nullptr;
 			GraphicsPipelineInfo GraphicsPipeline;
 			ComputePipelineInfo ComputePipeline;
 		};

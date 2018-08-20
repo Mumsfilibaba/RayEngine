@@ -18,10 +18,6 @@ namespace RayEngine
 			{
 				struct
 				{
-				} Buffer;
-
-				struct
-				{
 				} Texture1D;
 
 				struct
@@ -43,22 +39,6 @@ namespace RayEngine
 				struct
 				{
 				} Texture2DMSArray;
-
-				struct
-				{
-				} Texture3D;
-
-				struct
-				{
-				} Texture3DMS;
-
-				struct
-				{
-				} Texture3DArray;
-
-				struct
-				{
-				} Texture3DMSArray;
 			};
 		};
 

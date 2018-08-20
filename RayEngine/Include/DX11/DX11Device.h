@@ -31,7 +31,6 @@ namespace RayEngine
 			~DX11Device();
 
 			ID3D11Device* GetD3D11Device() const;
-			ID3D11DeviceContext* GetD3D11DeviceContext() const;
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;

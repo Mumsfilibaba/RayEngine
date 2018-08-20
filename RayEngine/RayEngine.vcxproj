@@ -203,6 +203,7 @@
     <ClInclude Include="Include\DX12\DX12RenderTargetView.h" />
     <ClInclude Include="Include\DX12\DX12Resource.h" />
     <ClInclude Include="Include\DX12\DX12RootLayout.h" />
+    <ClInclude Include="Include\DX12\DX12RootVariableSlot.h" />
     <ClInclude Include="Include\DX12\DX12Sampler.h" />
     <ClInclude Include="Include\DX12\DX12Shader.h" />
     <ClInclude Include="Include\DX12\DX12ShaderResourceView.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Include\DX12\DX12Texture.h" />
     <ClInclude Include="Include\DX12\DX12UnorderedAccessView.h" />
     <ClInclude Include="Include\DX12\DX12View.h" />
+    <ClInclude Include="Include\DX12\DX12DescriptorHandle.h" />
     <ClInclude Include="Include\DXBase\DXCommon.h" />
     <ClInclude Include="Include\DXBase\DXShaderBase.h" />
     <ClInclude Include="Include\Graphics\AdapterInfo.h" />

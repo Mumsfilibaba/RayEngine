@@ -52,7 +52,7 @@ namespace RayEngine
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.pResource)->GetD3D12Resource();
 			//TODO: Look up pCounterResource
-			pD3D12Device->CreateUnorderedAccessView(pD3D12Resource, nullptr, &desc, m_View);
+			pD3D12Device->CreateUnorderedAccessView(pD3D12Resource, nullptr, &desc, m_View.Cpu);
 		}
 	}
 }

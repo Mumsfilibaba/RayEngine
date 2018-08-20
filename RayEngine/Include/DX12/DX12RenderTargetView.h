@@ -5,12 +5,17 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
-#include "DX12Device.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX12Device;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX12RenderTargetView final : public IRenderTargetView, public DX12View
 		{
 		public:

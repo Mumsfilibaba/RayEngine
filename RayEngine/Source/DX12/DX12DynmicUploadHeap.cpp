@@ -1,7 +1,7 @@
 #include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
-#include "..\..\Include\DX12\DX12Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Device.h"
 
 namespace RayEngine
 {

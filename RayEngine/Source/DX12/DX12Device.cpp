@@ -5,8 +5,11 @@
 #include "..\..\Include\DX12\DX12Buffer.h"
 #include "..\..\Include\DX12\DX12Shader.h"
 #include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12CommandQueue.h"
+#include "..\..\Include\DX12\DX12DeviceContext.h"
 #include "..\..\Include\DX12\DX12PipelineState.h"
+#include "..\..\Include\DX12\DX12Sampler.h"
+#include "..\..\Include\DX12\DX12ShaderResourceView.h"
+#include "..\..\Include\DX12\DX12UnorderedAccessView.h"
 #include "..\..\Include\DX12\DX12RootLayout.h"
 #include "..\..\Include\DX12\DX12DepthStencilView.h"
 #include "..\..\Include\DX12\DX12RenderTargetView.h"
@@ -24,7 +27,7 @@ namespace RayEngine
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			m_UploadHeap(nullptr),
-			m_UploadQueue(nullptr),
+			m_ImmediateContext(nullptr),
 			m_ResourceHeap(nullptr),
 			m_DsvHeap(nullptr),
 			m_RtvHeap(nullptr),
@@ -47,7 +50,7 @@ namespace RayEngine
 			ReRelease_S(m_DsvHeap);
 			ReRelease_S(m_RtvHeap);
 			ReRelease_S(m_ResourceHeap);
-			ReRelease_S(m_UploadQueue);
+			ReRelease_S(m_ImmediateContext);
 			ReRelease_S(m_UploadHeap);
 			ReRelease_S(m_SamplerHeap);
 
@@ -59,14 +62,6 @@ namespace RayEngine
 				m_DebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL);
 				D3DRelease(m_DebugDevice);
 			}
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		bool DX12Device::CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info)
-		{
-			return ((*ppCommandQueue = new DX12CommandQueue(this, info)) != nullptr);
 		}
 
 
@@ -91,6 +86,30 @@ namespace RayEngine
 		bool DX12Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
 		{
 			return (*ppView = new DX12DepthStencilView(this, info));
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
+		{
+			return ((*ppView = new DX12ShaderResourceView(this, info)) != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info)
+		{
+			return ((*ppView = new DX12UnorderedAccessView(this, info)) != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateSampler(ISampler** ppSampler, const SamplerInfo& info)
+		{
+			return ((*ppSampler = new DX12Sampler(this, info)) != nullptr);
 		}
 
 
@@ -151,14 +170,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12CommandQueue* DX12Device::GetDX12CommandQueue() const
-		{
-			return m_UploadQueue;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		DX12DescriptorHeap* DX12Device::GetDX12DepthStencilViewHeap() const
 		{
 			return m_DsvHeap;
@@ -195,6 +206,22 @@ namespace RayEngine
 		{
 			return m_UploadHeap;
 		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::GetImmediateContext(IDeviceContext** ppContext)
+		{
+			return ((*ppContext) = reinterpret_cast<DX12DeviceContext*>(m_ImmediateContext->QueryReference())) != nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool DX12Device::CreateDefferedContext(IDeviceContext** ppContext)
+		{
+			return ((*ppContext) = new DX12DeviceContext(this, true)) != nullptr;
+		}
 		
 
 
@@ -227,10 +254,7 @@ namespace RayEngine
 					m_SamplerHeap = new DX12DescriptorHeap(this, info.Name + ": Sampler-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, 128, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
 
-					CommandQueueInfo queueInfo = {};
-					queueInfo.Name = "Device UploadQueue";
-					m_UploadQueue = new DX12CommandQueue(this, queueInfo);
-					
+					m_ImmediateContext = new DX12DeviceContext(this, false);
 
 					D3D12SetName(m_Device, info.Name);
 				}

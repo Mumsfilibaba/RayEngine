@@ -11,6 +11,12 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX12Device;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX12Texture final : public ITexture, public DX12Resource
 		{
 		public:

@@ -54,7 +54,7 @@ namespace RayEngine
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.pResource)->GetD3D12Resource();
-			pD3D12Device->CreateShaderResourceView(pD3D12Resource, nullptr, m_View);
+			pD3D12Device->CreateShaderResourceView(pD3D12Resource, nullptr, m_View.Cpu);
 		}
 	}
 }

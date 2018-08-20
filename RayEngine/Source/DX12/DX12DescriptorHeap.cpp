@@ -50,10 +50,16 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		D3D12_CPU_DESCRIPTOR_HANDLE DX12DescriptorHeap::GetNext() const
+		DX12DescriptorHandle DX12DescriptorHeap::GetNext() const
 		{
-			D3D12_CPU_DESCRIPTOR_HANDLE next = m_Heap->GetCPUDescriptorHandleForHeapStart();
-			next.ptr += m_UsedCount * m_DescriptorSize;
+			DX12DescriptorHandle next = {};
+			next.Index = m_UsedCount;
+
+			next.Cpu = m_Heap->GetCPUDescriptorHandleForHeapStart();
+			next.Cpu.ptr += m_UsedCount * m_DescriptorSize;
+
+			next.Gpu = m_Heap->GetGPUDescriptorHandleForHeapStart();
+			next.Gpu.ptr += m_UsedCount * m_DescriptorSize;
 
 			m_UsedCount++;
 			return next;

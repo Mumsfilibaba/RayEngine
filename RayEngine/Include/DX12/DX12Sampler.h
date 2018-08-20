@@ -3,12 +3,18 @@
 #include "..\Graphics\ISampler.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12Device.h"
+#include "DX12DescriptorHandle.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX12Device;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX12Sampler final : public ISampler
 		{
 		public:
@@ -22,6 +28,7 @@ namespace RayEngine
 			~DX12Sampler();
 
 			D3D12_CPU_DESCRIPTOR_HANDLE  GetD3D12CpuDescriptorHandle() const;
+			D3D12_GPU_DESCRIPTOR_HANDLE  GetD3D12GpuDescriptorHandle() const;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 
@@ -30,7 +37,7 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-			D3D12_CPU_DESCRIPTOR_HANDLE m_SamplerState;
+			DX12DescriptorHandle m_SamplerState;
 		};
 	}
 }

@@ -4,13 +4,19 @@
 #include "..\Graphics\IShader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12Device.h"
+#include "DX12Common.h"
 #include "..\DXBase\DXShaderBase.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX12Device;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX12Shader final : public IShader, public DXShaderBase
 		{
 		public:
