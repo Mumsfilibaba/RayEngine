@@ -1,8 +1,6 @@
 #pragma once
 
 #include "..\System\Window.h"
-#include "ICommandQueue.h"
-#include "ITexture.h"
 
 namespace RayEngine
 {
@@ -11,6 +9,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IFactory;
 		class ITexture;
+		class IDevice;
 
 
 
@@ -19,8 +18,7 @@ namespace RayEngine
 		{
 			std::string Name = "";
 			System::Window* pWindow = nullptr;
-			
-			ICommandQueue* pCommandQueue = nullptr;
+			IDevice* pDevice = nullptr;
 
 			struct
 			{
@@ -54,7 +52,7 @@ namespace RayEngine
 			//Present next backbuffer to the front
 			virtual void Present() const = 0;
 			//Get the CommandQueue that created the swapchain
-			virtual void QueryCommandQueue(ICommandQueue** ppCommandQueue) const = 0;
+			virtual void QueryDevice(IDevice** ppDevice) const = 0;
 			//Get the factory that created the swapchain 
 			virtual void QueryFactory(IFactory** ppFactory) const = 0;
 		};

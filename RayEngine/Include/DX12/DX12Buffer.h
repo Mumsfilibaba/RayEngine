@@ -4,6 +4,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Resource.h"
+#include "DX12DescriptorHandle.h"
 
 namespace RayEngine
 {
@@ -27,7 +28,7 @@ namespace RayEngine
 			DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
 			~DX12Buffer();
 
-			D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const;
+			DX12DescriptorHandle GetDX12DescriptorHandle() const;
 			D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const;
 			D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const;
 
@@ -43,9 +44,10 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			BUFFER_USAGE m_BufferType;
+			
+			DX12DescriptorHandle m_ConstantBufferView;
 			union 
 			{
-				D3D12_CPU_DESCRIPTOR_HANDLE Constant;
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;

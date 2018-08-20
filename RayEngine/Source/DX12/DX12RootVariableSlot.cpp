@@ -1,0 +1,261 @@
+#include "..\..\Include\DX12\DX12RootVariableSlot.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+
+namespace RayEngine
+{
+	namespace Graphics
+	{
+		/////////////////////////////////////////////////////////////
+		DX12GraphicsDescriptorRootSlot::DX12GraphicsDescriptorRootSlot(int32 baseSlot)
+			: m_BaseSlot(baseSlot)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12GraphicsDescriptorRootSlot::~DX12GraphicsDescriptorRootSlot()
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsDescriptorRootSlot::SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSRVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pSRVs[i].GpuDescriptor;
+				pCommandList->SetGraphicsRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsDescriptorRootSlot::SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pSamplerStates[i].GpuDescriptor;
+				pCommandList->SetGraphicsRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsDescriptorRootSlot::SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pUAVs[i].GpuDescriptor;
+				pCommandList->SetGraphicsRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsDescriptorRootSlot::SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pBuffers[i].GpuDescriptor;
+				pCommandList->SetGraphicsRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12GraphicsRootSignatureSlot::DX12GraphicsRootSignatureSlot(int32 slot)
+			: m_Slot(slot)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12GraphicsRootSignatureSlot::~DX12GraphicsRootSignatureSlot()
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsRootSignatureSlot::SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSRVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_VIRTUAL_ADDRESS adress = pSRVs[i].GpuResourceAdress;
+				pCommandList->SetGraphicsRootShaderResourceView(m_Slot + i, adress);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsRootSignatureSlot::SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pSamplerStates[i].GpuDescriptor;
+				pCommandList->SetGraphicsRootDescriptorTable(m_Slot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsRootSignatureSlot::SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_VIRTUAL_ADDRESS adress = pUAVs[i].GpuResourceAdress;
+				pCommandList->SetGraphicsRootUnorderedAccessView(m_Slot + i, adress);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12GraphicsRootSignatureSlot::SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_VIRTUAL_ADDRESS adress = pBuffers[i].GpuResourceAdress;
+				pCommandList->SetGraphicsRootConstantBufferView(m_Slot + i, adress);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12ComputeDescriptorRootSlot::DX12ComputeDescriptorRootSlot(int32 baseSlot)
+			: m_BaseSlot(baseSlot)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12ComputeDescriptorRootSlot::~DX12ComputeDescriptorRootSlot()
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeDescriptorRootSlot::SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSRVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pSRVs[i].GpuDescriptor;
+				pCommandList->SetComputeRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeDescriptorRootSlot::SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pSamplerStates[i].GpuDescriptor;
+				pCommandList->SetComputeRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeDescriptorRootSlot::SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pUAVs[i].GpuDescriptor;
+				pCommandList->SetComputeRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeDescriptorRootSlot::SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pBuffers[i].GpuDescriptor;
+				pCommandList->SetComputeRootDescriptorTable(m_BaseSlot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12ComputeRootSignatureSlot::DX12ComputeRootSignatureSlot(int32 slot)
+			: m_Slot(slot)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12ComputeRootSignatureSlot::~DX12ComputeRootSignatureSlot()
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeRootSignatureSlot::SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSRVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_VIRTUAL_ADDRESS adress = pSRVs[i].GpuResourceAdress;
+				pCommandList->SetComputeRootShaderResourceView(m_Slot + i, adress);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeRootSignatureSlot::SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE handle = pSamplerStates[i].GpuDescriptor;
+				pCommandList->SetComputeRootDescriptorTable(m_Slot + i, handle);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeRootSignatureSlot::SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_VIRTUAL_ADDRESS adress = pUAVs[i].GpuResourceAdress;
+				pCommandList->SetComputeRootUnorderedAccessView(m_Slot + i, adress);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12ComputeRootSignatureSlot::SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_GPU_VIRTUAL_ADDRESS adress = pBuffers[i].GpuResourceAdress;
+				pCommandList->SetComputeRootConstantBufferView(m_Slot + i, adress);
+			}
+		}
+}
+}
+
+#endif

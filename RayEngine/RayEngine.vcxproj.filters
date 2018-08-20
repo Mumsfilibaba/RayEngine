@@ -303,9 +303,6 @@
     <ClInclude Include="Include\Vulkan\VulkImageView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\RefCounter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Vulkan\VulkShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -708,6 +705,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12RootLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX12\DX12RootVariableSlot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\IReferenceCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

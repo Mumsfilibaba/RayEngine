@@ -2,7 +2,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX12\DX12Factory.h"
-#include "..\..\Include\DX12\DX12CommandQueue.h"
+#include "..\..\Include\DX12\DX12DeviceContext.h"
 #include "..\..\Include\Win32\Win32WindowImpl.h"
 
 namespace RayEngine
@@ -12,13 +12,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Swapchain::DX12Swapchain(IFactory* pFactory, const SwapchainInfo& info)
 			: m_Factory(nullptr),
-			m_CommandQueue(nullptr),
+			m_Context(nullptr),
 			m_Swapchain(nullptr),
 			m_CurrentBuffer(0),
 			m_Textures()
 		{
 			AddRef();
-			m_CommandQueue = reinterpret_cast<DX12CommandQueue*>(info.pCommandQueue->QueryReference());
+
+			m_Device = QueryDX12Device(info.pDevice);
+			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
 			m_Factory = reinterpret_cast<DX12Factory*>(pFactory->QueryReference());
 
 			Create(info);
@@ -32,7 +34,8 @@ namespace RayEngine
 			D3DRelease_S(m_Swapchain);
 			
 			ReRelease_S(m_Factory);
-			ReRelease_S(m_CommandQueue);
+			ReRelease_S(m_Device);
+			ReRelease_S(m_Context);
 
 			for (int32 i = 0; i < m_Textures.size(); i++)
 			{
@@ -67,9 +70,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Swapchain::QueryCommandQueue(ICommandQueue** ppCommandQueue) const
+		void DX12Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppCommandQueue) = reinterpret_cast<DX12CommandQueue*>(m_CommandQueue->QueryReference());
+			(*ppDevice) = QueryDX12Device(m_Device);
 		}
 
 
@@ -113,7 +116,7 @@ namespace RayEngine
 			//COMMANDQUEUE??
 			HWND hWnd = reinterpret_cast<const System::Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
 			IDXGIFactory5* pDXGIFactory = m_Factory->GetDXGIFactory();
-			ID3D12CommandQueue* pD3D12queue = m_CommandQueue->GetD3D12CommandQueue();
+			ID3D12CommandQueue* pD3D12queue = m_Context->GetD3D12CommandQueue();
 			
 
 			if (FAILED(pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain)))
@@ -138,9 +141,6 @@ namespace RayEngine
 			using namespace System;
 			using namespace Microsoft::WRL;
 
-			IDevice* pDevice = nullptr;
-			m_CommandQueue->QueryDevice(&pDevice);
-
 			m_Textures.resize(info.Buffer.Count);
 
 
@@ -150,21 +150,16 @@ namespace RayEngine
 				HRESULT hr = m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer));
 				if (FAILED(hr))
 				{
-					pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not get baqckbuffer. " + DXErrorString(hr));
-					
-					ReRelease_S(pDevice);
+					m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not get baqckbuffer. " + DXErrorString(hr));
 					return;
 				}
 				else
 				{
 					D3D12SetName(buffer.Get(), info.Name + std::to_string(i));
 					
-					m_Textures[i] = new DX12Texture(pDevice, buffer.Get());
+					m_Textures[i] = new DX12Texture(m_Device, buffer.Get());
 				}
 			}
-
-
-			ReRelease_S(pDevice);
 		}
 	}
 }

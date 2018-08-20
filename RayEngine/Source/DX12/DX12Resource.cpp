@@ -1,6 +1,6 @@
 #include "..\..\Include\DX12\DX12Resource.h"
 
-#if defined(RE_PLAFORM_WINDOWS)
+#if defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
 {

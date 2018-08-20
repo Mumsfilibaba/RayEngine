@@ -3,8 +3,8 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\Win32\Win32WindowImpl.h"
 #include "..\..\Include\DX11\DX11Factory.h"
-#include "..\..\Include\DX11\DX11CommandQueue.h"
 #include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11Texture.h"
 
 namespace RayEngine
 {
@@ -14,7 +14,6 @@ namespace RayEngine
 		DX11Swapchain::DX11Swapchain(IFactory* pFactory, const SwapchainInfo& info)
 			: m_Device(nullptr),
 			m_Factory(nullptr),
-			m_CommandQueue(nullptr),
 			m_Swapchain(nullptr),
 			m_Texture(nullptr),
 			m_BufferCount(0),
@@ -22,8 +21,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<DX11Factory*>(pFactory->QueryReference());
-			m_CommandQueue = reinterpret_cast<DX11CommandQueue*>(info.pCommandQueue->QueryReference());
-			m_CommandQueue->QueryDevice(reinterpret_cast<IDevice**>(&m_Device));
+			m_Device = reinterpret_cast<DX11Device*>(info.pDevice->QueryReference());
 
 			Create(info);
 		}
@@ -37,7 +35,6 @@ namespace RayEngine
 			
 			ReRelease_S(m_Device);
 			ReRelease_S(m_Factory);
-			ReRelease_S(m_CommandQueue);
 			ReRelease_S(m_Texture);
 		}
 
@@ -68,9 +65,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Swapchain::QueryCommandQueue(ICommandQueue** ppCommandQueue) const
+		void DX11Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppCommandQueue) = reinterpret_cast<DX11CommandQueue*>(m_CommandQueue->QueryReference());
+			(*ppDevice) = QueryDX11Device(m_Device);
 		}
 
 

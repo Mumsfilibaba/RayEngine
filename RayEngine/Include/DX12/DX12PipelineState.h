@@ -11,6 +11,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class DX12Device;
+		class DX12Shader;
 
 
 

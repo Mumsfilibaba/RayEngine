@@ -20,7 +20,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12DescriptorHandle DX12View::GetViewHandle() const
+		DX12DescriptorHandle DX12View::GetDX12DescriptorHandle() const
 		{
 			return m_View;
 		}
@@ -30,7 +30,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		D3D12_CPU_DESCRIPTOR_HANDLE DX12View::GetD3D12CpuDescriptorHandle() const
 		{
-			return m_View.Cpu;
+			return m_View.CpuDescriptor;
 		}
 
 
@@ -38,7 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		D3D12_GPU_DESCRIPTOR_HANDLE DX12View::GetD3D12GpuDescriptorHandle() const
 		{
-			return m_View.Gpu;
+			return m_View.GpuDescriptor;
 		}
 	}
 }

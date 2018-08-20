@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DX12ViewHandle.h"
+#include "DX12DescriptorHandle.h"
 #if defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
@@ -20,7 +20,7 @@ namespace RayEngine
 			~DX12View();
 
 		public:
-			DX12DescriptorHandle GetViewHandle() const;
+			DX12DescriptorHandle GetDX12DescriptorHandle() const;
 			D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const;
 			D3D12_GPU_DESCRIPTOR_HANDLE GetD3D12GpuDescriptorHandle() const;
 

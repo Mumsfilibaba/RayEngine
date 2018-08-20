@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-
 #include "..\..\Include\DX12\DX12RootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -16,7 +15,7 @@ namespace RayEngine
 			m_RootSignature(nullptr)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = reinterpret_cast<DX12Device*>(pDevice->QueryReference());
 
 			Create(pDevice, info);
 		}

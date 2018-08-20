@@ -17,16 +17,23 @@ namespace RayEngine
 		IReferenceCounter() {}
 		virtual ~IReferenceCounter() {}
 
-
+		//Adds a reference to the object
+		virtual uint32 AddRef();
 		//Gets a pointer to the object
-		virtual IReferenceCounter* QueryReference() = 0;
+		virtual IReferenceCounter* QueryReference();
 		//Decreases the reference counter and releases the object
-		virtual void Release() const = 0;
+		virtual void Release() const;
 		//Returns the reference count
-		virtual uint32 GetReferenceCount() const = 0;
+		virtual uint32 GetReferenceCount() const;
+
+		//Templated version of QueryReference
+		template<typename Ref>
+		inline Ref* QueryReference()
+		{
+			return reinterpret_cast<Ref*>(QueryReference());
+		}
 
 	protected:
-		//Adds a reference to the object
-		virtual uint32 AddRef() = 0;
+		virtual int32& ReferenceCounter() const = 0;
 	};
 }

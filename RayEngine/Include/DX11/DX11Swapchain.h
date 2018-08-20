@@ -37,7 +37,7 @@ namespace RayEngine
 
 			ITexture* GetBuffer(int32 index) override final;
 			const ITexture* GetBuffer(int32 index) const override final;
-			void QueryCommandQueue(ICommandQueue** ppCommandQueue) const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 			void QueryFactory(IFactory** ppFactory) const override final;
 
 		private:
@@ -47,7 +47,6 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			DX11Factory* m_Factory;
-			DX11CommandQueue* m_CommandQueue;
 			IDXGISwapChain* m_Swapchain;
 			DX11Texture* m_Texture;
 			int32 m_BufferCount;

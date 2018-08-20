@@ -10,9 +10,10 @@ namespace RayEngine
 	{
 		struct DX12DescriptorHandle
 		{
-			int32 Index = 0;
-			D3D12_CPU_DESCRIPTOR_HANDLE Cpu = { 0 };
-			D3D12_GPU_DESCRIPTOR_HANDLE Gpu = { 0 };
+			int32 DescriptorHeapIndex = 0;
+			D3D12_GPU_DESCRIPTOR_HANDLE GpuDescriptor = { 0 };
+			D3D12_CPU_DESCRIPTOR_HANDLE CpuDescriptor = { 0 };
+			D3D12_GPU_VIRTUAL_ADDRESS GpuResourceAdress = 0;
 		};
 	}
 }

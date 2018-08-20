@@ -252,7 +252,6 @@
     <ClInclude Include="Include\Math\Vector3.h" />
     <ClInclude Include="Include\Math\Vector4.h" />
     <ClInclude Include="Include\Network\Socket.h" />
-    <ClInclude Include="Include\RefCounter.h" />
     <ClInclude Include="Include\System\Bitmap.h" />
     <ClInclude Include="Include\System\Clipboard.h" />
     <ClInclude Include="Include\System\Clock.h" />
@@ -337,6 +336,7 @@
     <ClCompile Include="Source\DX12\DX12RenderTargetView.cpp" />
     <ClCompile Include="Source\DX12\DX12Resource.cpp" />
     <ClCompile Include="Source\DX12\DX12RootLayout.cpp" />
+    <ClCompile Include="Source\DX12\DX12RootVariableSlot.cpp" />
     <ClCompile Include="Source\DX12\DX12Sampler.cpp" />
     <ClCompile Include="Source\DX12\DX12Shader.cpp" />
     <ClCompile Include="Source\DX12\DX12ShaderResourceView.cpp" />
@@ -347,6 +347,7 @@
     <ClCompile Include="Source\DXBase\DXCommon.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
+    <ClCompile Include="Source\IReferenceCounter.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />

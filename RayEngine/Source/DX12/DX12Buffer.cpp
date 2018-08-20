@@ -2,6 +2,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12DescriptorHeap.h"
 #include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
 #include "..\..\Include\DX12\DX12DeviceContext.h"
 
@@ -12,7 +13,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
 			: m_Device(nullptr),
-			m_BufferType(BUFFER_USAGE_UNKNOWN)
+			m_BufferType(BUFFER_USAGE_UNKNOWN),
+			m_ConstantBufferView(),
+			m_Views()
 		{
 			AddRef();
 			m_Device = QueryDX12Device(pDevice);
@@ -54,9 +57,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		D3D12_CPU_DESCRIPTOR_HANDLE DX12Buffer::GetD3D12CpuDescriptorHandle() const
+		DX12DescriptorHandle DX12Buffer::GetDX12DescriptorHandle() const
 		{
-			return m_Views.Constant;
+			return m_ConstantBufferView;
 		}
 
 
@@ -154,9 +157,10 @@ namespace RayEngine
 		void DX12Buffer::CreateView(const BufferInfo& info)
 		{
 			const DX12Device* pDX12Device = m_Device;
-			if (info.Usage == BUFFER_USAGE_UNIFORM)
+			if (info.Usage == BUFFER_USAGE_CONSTANT)
 			{
-				m_Views.Constant = pDX12Device->GetDX12ResourceHeap()->GetNext();
+				m_ConstantBufferView = pDX12Device->GetDX12ResourceHeap()->GetNext();
+				m_ConstantBufferView.GpuResourceAdress = m_Resource->GetGPUVirtualAddress();
 			}
 			else if (info.Usage == BUFFER_USAGE_VERTEX)
 			{

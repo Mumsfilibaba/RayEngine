@@ -41,8 +41,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DepthStencilView::Create(const DepthStencilViewInfo& info)
 		{
+			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.pResource)->GetD3D12Resource();
+
 			const DX12DescriptorHeap* pHeap = m_Device->GetDX12DepthStencilViewHeap();
 			m_View = pHeap->GetNext();
+			m_View.GpuResourceAdress = pD3D12Resource->GetGPUVirtualAddress();
 
 			//TODO: More than texture2D
 			D3D12_DEPTH_STENCIL_VIEW_DESC desc = {};
@@ -50,8 +53,7 @@ namespace RayEngine
 			desc.Texture2D.MipSlice = 0;
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Texture*>(info.pResource)->GetD3D12Resource();
-			pD3D12Device->CreateDepthStencilView(pD3D12Resource, nullptr, m_View);
+			pD3D12Device->CreateDepthStencilView(pD3D12Resource, nullptr, m_View.CpuDescriptor);
 		}
 	}
 }

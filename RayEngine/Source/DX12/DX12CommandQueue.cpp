@@ -4,10 +4,10 @@
 #include "..\..\Include\DX12\DX12RenderTargetView.h"
 #include "..\..\Include\DX12\DX12DepthStencilView.h"
 #include "..\..\Include\DX12\DX12PipelineState.h"
-#include "..\..\Include\DX12\DX12RootSignature.h"
+#include "..\..\Include\DX12\DX12RootLayout.h"
 #include "..\..\Include\DX12\DX12Buffer.h"
 
-#if defined(RE_PLATFORM_WINDOWS)
+#if 0//defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
 {
