@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\System\Window.h"
+#include "..\ReferenceCounter.h"
 
 namespace RayEngine
 {
@@ -32,7 +33,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ISwapchain : public RefCounter
+		class ISwapchain : public ReferenceCounter
 		{
 		public:
 			ISwapchain(ISwapchain&& other) = delete;

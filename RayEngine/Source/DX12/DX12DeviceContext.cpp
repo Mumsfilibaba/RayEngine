@@ -1,3 +1,4 @@
+#include "..\..\Include\Graphics\Viewport.h"
 #include "..\..\Include\DX12\DX12DeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -78,6 +79,49 @@ namespace RayEngine
 		ID3D12CommandAllocator* DX12DeviceContext::GetD3D12CommandAllocator() const
 		{
 			return m_Allocator;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::CopyResource(DX12Resource* pDst, DX12Resource* pSrc) const
+		{
+			ID3D12Resource* pD3D12Dst = pDst->GetD3D12Resource();
+			ID3D12Resource* pD3D12Src = pSrc->GetD3D12Resource();
+
+			m_CommandList->CopyResource(pD3D12Dst, pD3D12Src);
+
+			AddCommand();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::CopyTexture(DX12Resource* pDst, DX12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth) const
+		{
+			ID3D12Resource* pD3D12Dst = pDst->GetD3D12Resource();
+			ID3D12Resource* pD3D12Src = pSrc->GetD3D12Resource();
+
+
+			D3D12_TEXTURE_COPY_LOCATION srcLoc = {};
+			srcLoc.pResource = pD3D12Src;
+			srcLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+			srcLoc.PlacedFootprint.Offset = 0;
+			srcLoc.PlacedFootprint.Footprint.Width = width;
+			srcLoc.PlacedFootprint.Footprint.Height = height;
+			srcLoc.PlacedFootprint.Footprint.Depth = depth;
+			srcLoc.PlacedFootprint.Footprint.Format = format;
+			srcLoc.PlacedFootprint.Footprint.RowPitch = width * stride * depth;
+
+
+			D3D12_TEXTURE_COPY_LOCATION dstLoc = {};
+			dstLoc.pResource = pD3D12Dst;
+			dstLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+			dstLoc.SubresourceIndex = 0;
+
+			m_CommandList->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
+
+			AddCommand();
 		}
 
 

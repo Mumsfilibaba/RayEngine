@@ -1,11 +1,16 @@
 #pragma once
 
-#include "ITexture.h"
+#include "IDeviceObject.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class IResource;
+
+
+
 		/////////////////////////////////////////////////////////////
 		struct RenderTargetViewInfo
 		{

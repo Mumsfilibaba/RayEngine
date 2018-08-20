@@ -4,11 +4,11 @@ TODO:
 -Render triangle Vulkan
 -Implement OpenGL
 -Swapchain Resize
+-Swapchain Fullscreen
 
 
 -Create Constantbuffer in DX11Shader for shaderconstants
 -Create Variables in DX12Shader and move RootSignature to DX12PipelineState
--More forwarddeclarations
 -Factory-Log
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
 -DX12 - Check tearing support - Vulkan (if supported by the API)
@@ -17,14 +17,13 @@ TODO:
 -DX12 - Setup breakpoints when errors occurs
 -DX12 - Dynamic uploadheap - Resize when needed
 -DX12 - How resources are used needs refining
--Swapchain Fullscreen
 -Create rendertargets for swapchain during creation?
 
 -ITexture - GetType
 -DX11/DX12 - Bufferusage flags
 -DX11 - Static Samplers must be bound from 0 to n (in a single range), should be possible to not do this (DX11StaticSamplerRange)
 
--Vk - Create dummy surface and search for correct formats etc
+-Vulk - Create dummy surface and search for correct formats etc
 -TextureLoader needs to be updated with the new formats
 -Add p for pointers
 -Controller support

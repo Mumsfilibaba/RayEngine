@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AdapterInfo.h"
+#include "..\ReferenceCounter.h"
 
 namespace RayEngine
 {
@@ -16,7 +17,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IFactory : public RefCounter
+		class IFactory : public ReferenceCounter
 		{
 			IFactory(IFactory&& other) = delete;
 			IFactory(const IFactory& other) = delete;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IShader.h"
+#include "IDeviceObject.h"
 
 #if defined(max)
 #undef max
@@ -11,7 +11,6 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		class IDevice;
 		class IBuffer;
 		class ITexture;
 		class ISampler;
@@ -25,6 +24,18 @@ namespace RayEngine
 			STATIC_SAMPLER_BORDER_COLOR_TRANSPARENT_BLACK = 1,
 			STATIC_SAMPLER_BORDER_COLOR_OPAQUE_BLACK = 2,
 			STATIC_SAMPLER_BORDER_COLOR_OPAQUE_WHITE = 3,
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		enum VARIABLE_TYPE : int32
+		{
+			VARIABLE_TYPE_UNKNOWN = 0,
+			VARIABLE_TYPE_UNIFORMBUFFER = 1,
+			VARIABLE_TYPE_TEXTURE = 2,
+			VARIABLE_TYPE_SAMPLER = 3,
+			VARIABLE_TYPE_SHADER_CONSTANTS = 4
 		};
 
 

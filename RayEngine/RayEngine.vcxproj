@@ -218,7 +218,6 @@
     <ClInclude Include="Include\Graphics\IDeviceContext.h" />
     <ClInclude Include="Include\Graphics\IDeviceObject.h" />
     <ClInclude Include="Include\Graphics\IBuffer.h" />
-    <ClInclude Include="Include\Graphics\ICommandQueue.h" />
     <ClInclude Include="Include\Graphics\IDepthStencilView.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />
     <ClInclude Include="Include\Graphics\IFactory.h" />
@@ -234,7 +233,7 @@
     <ClInclude Include="Include\Graphics\ITexture.h" />
     <ClInclude Include="Include\Graphics\IUnorderedAccessView.h" />
     <ClInclude Include="Include\Graphics\Viewport.h" />
-    <ClInclude Include="Include\IReferenceCounter.h" />
+    <ClInclude Include="Include\ReferenceCounter.h" />
     <ClInclude Include="Include\Math\Color.h" />
     <ClInclude Include="Include\Math\ColorF.h" />
     <ClInclude Include="Include\Graphics\TextureLoader.h" />
@@ -347,7 +346,7 @@
     <ClCompile Include="Source\DXBase\DXCommon.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
-    <ClCompile Include="Source\IReferenceCounter.cpp" />
+    <ClCompile Include="Source\ReferenceCounter.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />
     <ClCompile Include="Source\Graphics\TextureLoader.cpp" />
@@ -365,7 +364,6 @@
     <ClCompile Include="Source\Math\Vector4.cpp" />
     <ClCompile Include="Source\Network\Socket.cpp" />
     <ClCompile Include="Source\Math\RandomGenerator.cpp" />
-    <ClCompile Include="Source\RefCounter.cpp" />
     <ClCompile Include="Source\System\Bitmap.cpp" />
     <ClCompile Include="Source\System\Clock.cpp" />
     <ClCompile Include="Source\System\Event.cpp" />

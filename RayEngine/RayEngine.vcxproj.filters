@@ -186,9 +186,6 @@
     <ClInclude Include="Include\DX12\DX12Swapchain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Graphics\ICommandQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DX12\DX12CommandQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -235,9 +232,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Graphics\Viewport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\IReferenceCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Vulkan\VulkCommon.h">
@@ -382,6 +376,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DX12\DX12DescriptorHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ReferenceCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -647,9 +644,6 @@
     <ClCompile Include="Source\Vulkan\VulkShaderCompiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\RefCounter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Vulkan\VulkShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -710,7 +704,7 @@
     <ClCompile Include="Source\DX12\DX12RootVariableSlot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\IReferenceCounter.cpp">
+    <ClCompile Include="Source\ReferenceCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

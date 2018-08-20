@@ -1,13 +1,18 @@
 #pragma once
 
 #include <string>
-#include "IShader.h"
-#include "IRootLayout.h"
+#include "IDeviceObject.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class IShader;
+		class IRootLayout;
+
+
+
 		/////////////////////////////////////////////////////////////
 		enum ELEMENT_STEP_TYPE : int32
 		{

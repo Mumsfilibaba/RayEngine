@@ -11,6 +11,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class DX11Device;
+		class DX11DeviceContext;
 
 
 
@@ -40,6 +41,7 @@ namespace RayEngine
 
 		private:
 			DX11Device* m_Device;
+			DX11DeviceContext* m_Context;
 			ID3D11Buffer* m_Resource;
 			int32 m_ByteStride;
 		};

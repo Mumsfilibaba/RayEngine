@@ -1,12 +1,12 @@
 #pragma once
 
-#include "..\RefCounter.h"
+#include "..\ReferenceCounter.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class IRootVariableSlot : public RefCounter
+		class IRootVariableSlot : public ReferenceCounter
 		{
 		public:
 			IRootVariableSlot(IRootVariableSlot&& other) = delete;

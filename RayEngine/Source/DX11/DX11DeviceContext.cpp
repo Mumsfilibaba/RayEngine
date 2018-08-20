@@ -1,3 +1,4 @@
+#include "..\..\Include\Graphics\Viewport.h"
 #include "..\..\Include\DX11\DX11DeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)

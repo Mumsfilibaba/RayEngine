@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IDeviceObject.h"
-#include "Viewport.h"
 #include "..\Math\Rectangle.h"
 
 namespace RayEngine
@@ -18,6 +17,8 @@ namespace RayEngine
 		class IUnorderedAccessView;
 		class IRootLayout;
 		class IPipelineState;
+
+		struct Viewport;
 
 
 

@@ -7,7 +7,6 @@ namespace RayEngine
 {
 	namespace Graphics
 	{	/////////////////////////////////////////////////////////////
-		class IDevice;
 		class IResource;
 
 

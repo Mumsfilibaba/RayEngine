@@ -1,17 +1,7 @@
 #pragma once
 
-#include "ICommandQueue.h"
-#include "IDeviceContext.h"
-#include "IShader.h"
-#include "IRenderTargetView.h"
-#include "IDepthStencilView.h"
-#include "IShaderResourceView.h"
-#include "IUnorderedAccessView.h"
-#include "IRootLayout.h"
-#include "IPipelineState.h"
-#include "IBuffer.h"
 #include "AdapterInfo.h"
-#include "..\IReferenceCounter.h"
+#include "..\ReferenceCounter.h"
 #include "..\System\Log.h"
 
 namespace RayEngine
@@ -20,6 +10,36 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class IFactory;
+		class IDeviceContext;
+		class IShader;
+		struct ShaderInfo;
+
+		class IRenderTargetView;
+		struct RenderTargetViewInfo;
+
+		class IDepthStencilView;
+		struct DepthStencilViewInfo;
+		
+		class IShaderResourceView;
+		struct ShaderResourceViewInfo;
+
+		class IUnorderedAccessView;
+		struct UnorderedAccessViewInfo;
+
+		class IBuffer;
+		struct BufferInfo;
+
+		class IRootLayout;
+		struct RootLayoutInfo;
+
+		class IPipelineState;
+		struct PipelineStateInfo;
+
+		class ISampler;
+		struct SamplerInfo;
+
+		class ITexture;
+		struct TextureInfo;
 
 
 
@@ -37,7 +57,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDevice : public IReferenceCounter
+		class IDevice : public ReferenceCounter
 		{
 		public:
 			IDevice(IDevice&& other) = delete;

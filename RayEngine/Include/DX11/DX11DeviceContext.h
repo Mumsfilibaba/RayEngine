@@ -5,6 +5,8 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
 
+#define QueryDX11DeviceContext(pContext) reinterpret_cast<DX11DeviceContext*>(pContext->QueryReference());
+
 namespace RayEngine
 {
 	namespace Graphics

@@ -2,6 +2,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
+#include "..\..\Include\DX11\DX11DeviceContext.h"
 
 namespace RayEngine
 {
@@ -11,10 +12,12 @@ namespace RayEngine
 		DX11Buffer::DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
 			: m_Device(nullptr),
 			m_Resource(nullptr),
+			m_Context(nullptr),
 			m_ByteStride(0)
 		{
 			AddRef();
 			m_Device = QueryDX11Device(pDevice);
+			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
 
 			Create(pInitalData, info);
 		}
@@ -27,6 +30,7 @@ namespace RayEngine
 			D3DRelease_S(m_Resource);
 
 			ReRelease_S(m_Device);
+			ReRelease_S(m_Context);
 		}
 
 
@@ -52,7 +56,7 @@ namespace RayEngine
 		{
 			D3D11_MAPPED_SUBRESOURCE mappedResource = {};
 
-			ID3D11DeviceContext* pD3D11Context = reinterpret_cast<DX11Device*>(m_Device)->GetD3D11DeviceContext();
+			ID3D11DeviceContext* pD3D11Context = m_Context->GetD3D11DeviceContext();
 			pD3D11Context->Map(m_Resource, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
 			return mappedResource.pData;
@@ -63,7 +67,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Buffer::Unmap()
 		{
-			ID3D11DeviceContext* pD3D11Context = reinterpret_cast<DX11Device*>(m_Device)->GetD3D11DeviceContext();
+			ID3D11DeviceContext* pD3D11Context = m_Context->GetD3D11DeviceContext();
 			pD3D11Context->Unmap(m_Resource, 0);
 		}
 
@@ -90,7 +94,7 @@ namespace RayEngine
 				desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			else if (info.Type == BUFFER_USAGE_INDEX)
 				desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			else if (info.Type == BUFFER_USAGE_UNIFORM)
+			else if (info.Type == BUFFER_USAGE_CONSTANT)
 				desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			
 			desc.CPUAccessFlags = 0;
