@@ -11,7 +11,7 @@
 #include "IPipelineState.h"
 #include "IBuffer.h"
 #include "AdapterInfo.h"
-#include "..\RefCounter.h"
+#include "..\IReferenceCounter.h"
 #include "..\System\Log.h"
 
 namespace RayEngine
@@ -37,7 +37,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDevice : public RefCounter
+		class IDevice : public IReferenceCounter
 		{
 		public:
 			IDevice(IDevice&& other) = delete;

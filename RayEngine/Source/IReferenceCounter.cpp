@@ -9,6 +9,15 @@ namespace RayEngine
 		return ReferenceCounter();
 	}
 
+	void IReferenceCounter::Release() const
+	{
+	}
+
+	uint32 IReferenceCounter::GetReferenceCount() const
+	{
+		return uint32();
+	}
+
 	IReferenceCounter* IReferenceCounter::QueryReference()
 	{
 		AddRef();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\RefCounter.h"
+#include "..\IReferenceCounter.h"
 
 namespace RayEngine
 {
@@ -12,7 +12,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDeviceObject : public RefCounter
+		class IDeviceObject : public IReferenceCounter
 		{
 		public:
 			IDeviceObject(IDeviceObject&& other) = delete;

@@ -165,6 +165,30 @@ namespace RayEngine
 				D3D12SetName(m_RootSignature, info.Name);
 			}
 		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		D3D12_ROOT_PARAMETER DX12RootLayout::CreateVariable(const ShaderVariable& variable)
+		{
+			return D3D12_ROOT_PARAMETER();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		D3D12_STATIC_SAMPLER_DESC DX12RootLayout::CreateSampler(const StaticSampler& sampler)
+		{
+			return D3D12_STATIC_SAMPLER_DESC();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IDX12RootVaribleSlot* DX12RootLayout::CreateRootVariableSlot(const ShaderVariable& variable)
+		{
+			return nullptr;
+		}
 	}
 }
 
