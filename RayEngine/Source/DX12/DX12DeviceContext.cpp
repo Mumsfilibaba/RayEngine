@@ -97,7 +97,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DeviceContext::CopyTexture(DX12Resource* pDst, DX12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth) const
+		void DX12DeviceContext::CopyTexture(DX12Resource* pDst, DX12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth, int32 stride) const
 		{
 			ID3D12Resource* pD3D12Dst = pDst->GetD3D12Resource();
 			ID3D12Resource* pD3D12Src = pSrc->GetD3D12Resource();
@@ -143,6 +143,8 @@ namespace RayEngine
 			m_CommandList->ResourceBarrier(1, &barrier);
 
 			AddCommand();
+
+			pResource->SetD3D12State(to);
 		}
 
 

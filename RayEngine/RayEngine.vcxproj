@@ -191,7 +191,6 @@
     <ClInclude Include="Include\DX11\DX11Texture.h" />
     <ClInclude Include="Include\DX11\DX11UnorderedAccessView.h" />
     <ClInclude Include="Include\DX12\DX12Buffer.h" />
-    <ClInclude Include="Include\DX12\DX12CommandQueue.h" />
     <ClInclude Include="Include\DX12\DX12Common.h" />
     <ClInclude Include="Include\DX12\DX12DepthStencilView.h" />
     <ClInclude Include="Include\DX12\DX12DescriptorHeap.h" />
@@ -323,7 +322,6 @@
     <ClCompile Include="Source\DX11\DX11Texture.cpp" />
     <ClCompile Include="Source\DX11\DX11UnorderedAccessView.cpp" />
     <ClCompile Include="Source\DX12\DX12Buffer.cpp" />
-    <ClCompile Include="Source\DX12\DX12CommandQueue.cpp" />
     <ClCompile Include="Source\DX12\DX12Common.cpp" />
     <ClCompile Include="Source\DX12\DX12DepthStencilView.cpp" />
     <ClCompile Include="Source\DX12\DX12DescriptorHeap.cpp" />
