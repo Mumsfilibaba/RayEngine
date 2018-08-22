@@ -1,9 +1,12 @@
 #pragma once
 
+#include <vector>
 #include "..\Graphics\IDeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
+
+#define RE_DX12_MAX_COMMANDS 15
 
 namespace RayEngine
 {
@@ -38,6 +41,9 @@ namespace RayEngine
 			void CopyTexture(DX12Resource* pDst, DX12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth, int32 stride) const;
 			
 			void TransitionResource(DX12Resource* pResource, D3D12_RESOURCE_STATES to, int32 subresource) const;
+			void TransitionResourceGroup(DX12Resource* const * ppResource, D3D12_RESOURCE_STATES* pToStates, int32* pSbresources, int32 count) const;
+			void TransitionResourceIndirect(DX12Resource* pResource, D3D12_RESOURCE_STATES to, int32 subresource) const;
+			void TransitionResourceGroupIndirect(DX12Resource* const * ppResource, D3D12_RESOURCE_STATES* pToStates, int32* pSbresources, int32 count) const;
 
 			void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const override final;
 			void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const override final;
@@ -71,6 +77,8 @@ namespace RayEngine
 			void Create(bool isDeffered);
 			void AddCommand() const;
 			void ExecuteCommandList();
+			void CommitDefferedBarriers() const;
+			D3D12_RESOURCE_BARRIER CreateTransitionBarrier(DX12Resource* pResource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
 
 		private:
 			DX12Device* m_Device;
@@ -81,8 +89,9 @@ namespace RayEngine
 			ID3D12Fence* m_Fence;
 			bool m_IsDeffered;
 			mutable uint64 m_CurrentFence;
-			mutable uint32 m_NumCommands;
 			uint32 m_MaxCommands;
+			mutable uint32 m_NumCommands;
+			mutable std::vector<D3D12_RESOURCE_BARRIER> m_DefferedBarriers;
 		};
 	}
 }

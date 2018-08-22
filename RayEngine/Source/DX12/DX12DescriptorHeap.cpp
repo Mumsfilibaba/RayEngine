@@ -2,6 +2,7 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12Resource.h"
 
 namespace RayEngine
 {
@@ -50,16 +51,19 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12DescriptorHandle DX12DescriptorHeap::GetNext() const
+		DX12DescriptorHandle DX12DescriptorHeap::GetNext(const DX12Resource* pResource) const
 		{
 			DX12DescriptorHandle next = {};
-			next.Index = m_UsedCount;
+			next.DescriptorHeapIndex = m_UsedCount;
 
-			next.Cpu = m_Heap->GetCPUDescriptorHandleForHeapStart();
-			next.Cpu.ptr += m_UsedCount * m_DescriptorSize;
+			next.CpuDescriptor = m_Heap->GetCPUDescriptorHandleForHeapStart();
+			next.CpuDescriptor.ptr += m_UsedCount * m_DescriptorSize;
 
-			next.Gpu = m_Heap->GetGPUDescriptorHandleForHeapStart();
-			next.Gpu.ptr += m_UsedCount * m_DescriptorSize;
+			next.GpuDescriptor = m_Heap->GetGPUDescriptorHandleForHeapStart();
+			next.GpuDescriptor.ptr += m_UsedCount * m_DescriptorSize;
+
+			if (pResource != nullptr)
+				next.GpuResourceAdress = pResource->GetD3D12Resource()->GetGPUVirtualAddress();
 
 			m_UsedCount++;
 			return next;

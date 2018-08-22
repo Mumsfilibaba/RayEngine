@@ -41,11 +41,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12ShaderResourceView::Create(const ShaderResourceViewInfo& info)
 		{
-			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Resource*>(info.pResource)->GetD3D12Resource();
+			m_Resource = info.pResource->QueryReference<DX12Resource>();
+			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();
 
 			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12ResourceHeap();
-			m_View = pDX12Heap->GetNext();
-			m_View.GpuResourceAdress = pD3D12Resource->GetGPUVirtualAddress();
+			m_View = pDX12Heap->GetNext(m_Resource);
 
 
 			D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};

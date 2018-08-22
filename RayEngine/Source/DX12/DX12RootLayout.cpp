@@ -42,7 +42,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDX12RootVariableSlot* DX12RootLayout::GetDX12RootVariableSlot(int32 index) const
+		DX12RootVariableSlot* DX12RootLayout::GetDX12RootVariableSlot(int32 index) const
 		{
 			return m_VariableSlots[index];
 		}
@@ -50,7 +50,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDX12RootVariableSlot* const * DX12RootLayout::GetDX12RootVariableSlotArray(int32 index) const
+		DX12RootVariableSlot* const * DX12RootLayout::GetDX12RootVariableSlotArray(int32 index) const
 		{
 			return m_VariableSlots.data();
 		}
@@ -109,7 +109,7 @@ namespace RayEngine
 
 				usedShaders |= parameter.ShaderVisibility;
 
-				IDX12RootVariableSlot* slot = CreateRootVariableSlot(info.pVariables[i], i);
+				DX12RootVariableSlot* slot = CreateRootVariableSlot(info.pVariables[i], i, info.pVariables[i].ShaderUsage == SHADER_USAGE_STATIC);
 				m_VariableSlots[i] = slot;
 			}
 
@@ -275,21 +275,21 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDX12RootVariableSlot* DX12RootLayout::CreateRootVariableSlot(const ShaderVariable& variable, int32 rootSlot)
+		DX12RootVariableSlot* DX12RootLayout::CreateRootVariableSlot(const ShaderVariable& variable, int32 rootSlot, bool placeDescriptorTable)
 		{
 			if (variable.ShaderStage == SHADER_TYPE_COMPUTE)
 			{
-				if (variable.ShaderUsage == SHADER_USAGE_DYNAMIC)
-					return new DX12ComputeRootSignatureSlot(rootSlot);
-				else
+				if (placeDescriptorTable)
 					return new DX12ComputeDescriptorRootSlot(rootSlot);
+				else
+					return new DX12ComputeRootSignatureSlot(rootSlot);
 			}
 			else
 			{
-				if (variable.ShaderUsage == SHADER_USAGE_DYNAMIC)
-					return new DX12GraphicsRootSignatureSlot(rootSlot);
-				else
+				if (placeDescriptorTable)
 					return new DX12GraphicsDescriptorRootSlot(rootSlot);
+				else
+					return new DX12GraphicsRootSignatureSlot(rootSlot);
 			}
 
 			return nullptr;

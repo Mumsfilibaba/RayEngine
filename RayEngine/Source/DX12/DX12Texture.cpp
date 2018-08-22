@@ -3,6 +3,8 @@
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX12\DX12Device.h"
+#include "..\..\Include\DX12\DX12DeviceContext.h"
+#include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
 
 namespace RayEngine
 {
@@ -155,25 +157,20 @@ namespace RayEngine
 
 			if (pInitialData != nullptr)
 			{
-				const DX12CommandQueue* pQueue = m_Device->GetDX12CommandQueue();
-				
 				DX12DynamicUploadHeap* uploadHeap = m_Device->GetDX12UploadHeap();
 				uploadHeap->SetData(pInitialData->pData, pInitialData->ByteStride * pInitialData->WidthOrCount);
 
-				pQueue->Reset();
+				DX12DeviceContext* pContext = nullptr;
+				m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&pContext));
 
-				ID3D12Resource* pSrc = uploadHeap->GetD3D12Resource();
-				pQueue->TransitionResource(GetD3D12Resource(), GetD3D12State(), D3D12_RESOURCE_STATE_COPY_DEST, 0);
-				SetD3D12State(D3D12_RESOURCE_STATE_COPY_DEST);
+				DX12Resource* resources[] = { this, uploadHeap };
+				D3D12_RESOURCE_STATES states[] = { D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COPY_SOURCE };
+				int32 subresoures[] = { 0, 0 };
+			
+				pContext->TransitionResourceGroup(resources, states, subresoures, 2);
+				pContext->CopyTexture(this, uploadHeap, format, info.Width, info.Height, info.DepthOrArraySize, pInitialData->ByteStride);
 
-				pQueue->CopyTextureRegion(GetD3D12Resource(), pSrc, format, info.Width, info.Height, 1, pInitialData->ByteStride);
-				
-				pQueue->TransitionResource(GetD3D12Resource(), GetD3D12State(), D3D12_RESOURCE_STATE_GENERIC_READ, 0);
-				SetD3D12State(D3D12_RESOURCE_STATE_GENERIC_READ);
-
-				pQueue->Close();
-				pQueue->Execute();
-				pQueue->Flush();
+				ReRelease_S(pContext);
 			}
 		}
 	}

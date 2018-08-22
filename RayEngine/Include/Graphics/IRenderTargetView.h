@@ -56,7 +56,7 @@ namespace RayEngine
 			std::string Name = "";
 			FORMAT Format = FORMAT_UNKNOWN;
 			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
-			const IResource* pResource = nullptr;
+			IResource* pResource = nullptr;
 
 			union
 			{

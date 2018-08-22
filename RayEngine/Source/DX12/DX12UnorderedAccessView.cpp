@@ -39,16 +39,16 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		void DX12UnorderedAccessView::Create(const UnorderedAccessViewInfo& info)
-		{
-			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Resource*>(info.pResource)->GetD3D12Resource();
-			
+		{			
 			ID3D12Resource* pD3D12CounterResource = nullptr;
 			if (info.pCounterResource != nullptr)
 				pD3D12CounterResource = reinterpret_cast<const DX12Resource*>(info.pCounterResource)->GetD3D12Resource();
 
+			m_Resource = info.pResource->QueryReference<DX12Resource>();
+			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();
+
 			DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12SamplerHeap();
-			m_View = pDX12Heap->GetNext();
-			m_View.GpuResourceAdress = pD3D12Resource->GetGPUVirtualAddress();
+			m_View = pDX12Heap->GetNext(m_Resource);
 
 			
 			D3D12_UNORDERED_ACCESS_VIEW_DESC desc = {};

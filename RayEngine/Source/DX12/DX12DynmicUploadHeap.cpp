@@ -49,14 +49,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IDevice* DX12DynamicUploadHeap::GetDevice() const
-		{
-			return m_Device;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		ID3D12Heap* DX12DynamicUploadHeap::GetD3D12Heap() const
 		{
 			return m_Heap;

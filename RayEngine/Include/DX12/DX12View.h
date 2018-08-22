@@ -7,6 +7,13 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class DX12Device;
+		class DX12Resource;
+
+
+
+		/////////////////////////////////////////////////////////////
 		class DX12View
 		{
 		public:
@@ -20,11 +27,13 @@ namespace RayEngine
 			~DX12View();
 
 		public:
+			DX12Resource* GetD3D12Resource() const;
 			DX12DescriptorHandle GetDX12DescriptorHandle() const;
 			D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const;
 			D3D12_GPU_DESCRIPTOR_HANDLE GetD3D12GpuDescriptorHandle() const;
 
 		protected:
+			DX12Resource* m_Resource;
 			DX12DescriptorHandle m_View;
 		};
 	}

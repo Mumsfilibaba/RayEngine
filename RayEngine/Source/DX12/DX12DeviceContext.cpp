@@ -21,14 +21,16 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DeviceContext::DX12DeviceContext(IDevice* pDevice, bool isDeffered)
 			: m_Device(nullptr),
-			m_CurrentRootLayout(nullptr),
 			m_Allocator(nullptr),
 			m_Queue(nullptr),
 			m_CommandList(nullptr),
+			m_Fence(nullptr),
+			m_CurrentRootLayout(nullptr),
 			m_CurrentFence(0),
 			m_NumCommands(0),
-			m_MaxCommands(15),
-			m_IsDeffered(false)
+			m_MaxCommands(RE_DX12_MAX_COMMANDS),
+			m_IsDeffered(false),
+			m_DefferedBarriers()
 		{
 			AddRef();
 			m_Device = QueryDX12Device(pDevice);
@@ -90,6 +92,7 @@ namespace RayEngine
 			ID3D12Resource* pD3D12Dst = pDst->GetD3D12Resource();
 			ID3D12Resource* pD3D12Src = pSrc->GetD3D12Resource();
 
+			CommitDefferedBarriers();
 			m_CommandList->CopyResource(pD3D12Dst, pD3D12Src);
 
 			AddCommand();
@@ -120,6 +123,8 @@ namespace RayEngine
 			dstLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 			dstLoc.SubresourceIndex = 0;
 
+
+			CommitDefferedBarriers();
 			m_CommandList->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
 
 			AddCommand();
@@ -130,17 +135,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::TransitionResource(DX12Resource* pResource, D3D12_RESOURCE_STATES to, int32 subresource) const
 		{
-			ID3D12Resource* pD3D12Resource = pResource->GetD3D12Resource();
 			D3D12_RESOURCE_STATES from = pResource->GetD3D12State();
 
-			D3D12_RESOURCE_BARRIER barrier = {};
-			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			barrier.Transition.Subresource = subresource;
-			barrier.Transition.pResource = pD3D12Resource;
-			barrier.Transition.StateBefore = from;
-			barrier.Transition.StateAfter = to;
+			if (from == to)
+				return;
 
+			D3D12_RESOURCE_BARRIER barrier = CreateTransitionBarrier(pResource, from, to, subresource);
 			m_CommandList->ResourceBarrier(1, &barrier);
 
 			AddCommand();
@@ -151,9 +151,71 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::TransitionResourceGroup(DX12Resource* const * ppResource, D3D12_RESOURCE_STATES* pToStates, int32* pSbresources, int32 count) const
+		{
+			std::vector<D3D12_RESOURCE_BARRIER> barriers;
+			barriers.reserve(count);
+			
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_RESOURCE_STATES from = ppResource[i]->GetD3D12State();
+
+				if (from == pToStates[i])
+					continue;
+
+				barriers.push_back(CreateTransitionBarrier(ppResource[i], from, pToStates[i], pSbresources[i]));
+
+				ppResource[i]->SetD3D12State(pToStates[i]);
+			}
+
+			m_CommandList->ResourceBarrier(barriers.size(), barriers.data());
+
+			AddCommand();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::TransitionResourceIndirect(DX12Resource* pResource, D3D12_RESOURCE_STATES to, int32 subresource) const
+		{
+			D3D12_RESOURCE_STATES from = pResource->GetD3D12State();
+
+			if (from == to)
+				return;
+
+			m_DefferedBarriers.push_back(CreateTransitionBarrier(pResource, from, to, subresource));
+
+			pResource->SetD3D12State(to);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::TransitionResourceGroupIndirect(DX12Resource* const * ppResource, D3D12_RESOURCE_STATES* pToStates, int32* pSbresources, int32 count) const
+		{
+			for (int32 i = 0; i < count; i++)
+			{
+				D3D12_RESOURCE_STATES from = ppResource[i]->GetD3D12State();
+
+				if (from == pToStates[i])
+					continue;
+
+				m_DefferedBarriers.push_back(CreateTransitionBarrier(ppResource[i], from, pToStates[i], pSbresources[i]));
+
+				ppResource[i]->SetD3D12State(pToStates[i]);
+			}
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
 		{
 			DX12RenderTargetView* pDX12View = reinterpret_cast<DX12RenderTargetView*>(pView);
+			
+			//TODO: Subresource may not be zero
+
+			TransitionResource(pDX12View->GetD3D12Resource(), D3D12_RESOURCE_STATE_RENDER_TARGET, 0);
 			m_CommandList->ClearRenderTargetView(pDX12View->GetD3D12CpuDescriptorHandle(), pColor, 0, nullptr);
 
 			AddCommand();
@@ -165,6 +227,10 @@ namespace RayEngine
 		void DX12DeviceContext::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
 		{
 			DX12RenderTargetView* pDX12View = reinterpret_cast<DX12RenderTargetView*>(pView);
+			
+			//TODO: Subresource may not be zero
+
+			TransitionResource(pDX12View->GetD3D12Resource(), D3D12_RESOURCE_STATE_DEPTH_WRITE, 0);
 			m_CommandList->ClearDepthStencilView(pDX12View->GetD3D12CpuDescriptorHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depth, stencil, 0, nullptr);
 
 			AddCommand();
@@ -175,12 +241,19 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
+			//TODO: We need a nulldescriptor
+
 			DX12RenderTargetView* pDX12RenderTarget = reinterpret_cast<DX12RenderTargetView*>(pRenderTarget);
 			DX12DepthStencilView* pDX12DepthStencil = reinterpret_cast<DX12DepthStencilView*>(pDepthStencil);
 
 			D3D12_CPU_DESCRIPTOR_HANDLE rtv = pDX12RenderTarget->GetD3D12CpuDescriptorHandle();
 			D3D12_CPU_DESCRIPTOR_HANDLE dsv = pDX12DepthStencil->GetD3D12CpuDescriptorHandle();
 
+			DX12Resource* ppResources[] = { pDX12RenderTarget->GetD3D12Resource(), pDX12DepthStencil->GetD3D12Resource() };
+			D3D12_RESOURCE_STATES pToStates[] = { D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_DEPTH_WRITE };
+			int32 pSubresources[] = { 0, 0 };
+
+			TransitionResourceGroupIndirect(ppResources, pToStates, pSubresources, 2);
 			m_CommandList->OMSetRenderTargets(1, &rtv, false, &dsv);
 
 			AddCommand();
@@ -191,8 +264,14 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const
 		{
-			DX12DescriptorHandle srv = reinterpret_cast<DX12ShaderResourceView*>(pShaderResourceView)->GetDX12DescriptorHandle();
-			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetShaderResourceViews(m_CommandList, &srv, 1);
+			DX12ShaderResourceView* pDX12View = reinterpret_cast<DX12ShaderResourceView*>(pShaderResourceView);
+			DX12DescriptorHandle srv = pDX12View->GetDX12DescriptorHandle();
+			
+			//TODO: Maybe the subreource is not 0
+
+			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
+			TransitionResourceIndirect(pDX12View->GetD3D12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
+			pDX12Slot->SetShaderResourceViews(m_CommandList, &srv, 1);
 
 			AddCommand();
 		}
@@ -202,8 +281,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const
 		{
-			DX12DescriptorHandle uav = reinterpret_cast<DX12UnorderedAccessView*>(pUnorderedAccessView)->GetDX12DescriptorHandle();
-			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetUnorderedAccessViews(m_CommandList, &uav, 1);
+			DX12ShaderResourceView* pDX12View = reinterpret_cast<DX12ShaderResourceView*>(pUnorderedAccessView);
+			DX12DescriptorHandle uav = pDX12View->GetDX12DescriptorHandle();
+
+			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
+			TransitionResourceIndirect(pDX12View->GetD3D12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
+			pDX12Slot->SetUnorderedAccessViews(m_CommandList, &uav, 1);
 
 			AddCommand();
 		}
@@ -213,8 +296,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const
 		{
-			DX12DescriptorHandle cbv = reinterpret_cast<DX12Buffer*>(pBuffer)->GetDX12DescriptorHandle();
-			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetConstantBuffers(m_CommandList, &cbv, 1);
+			DX12Buffer* pDX12Buffer = reinterpret_cast<DX12Buffer*>(pBuffer);
+			DX12DescriptorHandle cbv = pDX12Buffer->GetDX12DescriptorHandle();
+
+			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
+			TransitionResourceIndirect(pDX12Buffer, pDX12Slot->GetNeededD3D12ResourceState(), 0);
+			pDX12Slot->SetUnorderedAccessViews(m_CommandList, &cbv, 1);
 
 			AddCommand();
 		}
@@ -262,7 +349,10 @@ namespace RayEngine
 		{
 			DX12Buffer* pDX12Buffer = reinterpret_cast<DX12Buffer*>(pBuffer);
 
+			//TODO: Maybe subresource ain't 0
+
 			D3D12_VERTEX_BUFFER_VIEW view = pDX12Buffer->GetD3D12VertexBufferView();
+			TransitionResourceIndirect(pDX12Buffer, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, 0);
 			m_CommandList->IASetVertexBuffers(startSlot, 1, &view);
 
 			AddCommand();
@@ -321,6 +411,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
+			CommitDefferedBarriers();
+			m_CommandList->DrawInstanced(vertexCount, 1, startVertex, 0);
+
 			if (!m_IsDeffered)
 				Flush();
 		}
@@ -330,6 +423,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
 		{
+			CommitDefferedBarriers();
+			m_CommandList->DrawIndexedInstanced(indexCount, 1, startIndex, startVertex, 0);
+
 			if (!m_IsDeffered)
 				Flush();
 		}
@@ -339,6 +435,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const
 		{
+			CommitDefferedBarriers();
+			m_CommandList->DrawInstanced(vertexCount, instanceCount, startVertex, startInstance);
+
 			if (!m_IsDeffered)
 				Flush();
 		}
@@ -348,6 +447,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
 		{
+			CommitDefferedBarriers();
+			m_CommandList->DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
+
 			if (!m_IsDeffered)
 				Flush();
 		}
@@ -533,6 +635,35 @@ namespace RayEngine
 
 			if (m_NumCommands >= m_MaxCommands)
 				Flush();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::CommitDefferedBarriers() const
+		{
+			m_CommandList->ResourceBarrier(m_DefferedBarriers.size(), m_DefferedBarriers.data());
+			m_DefferedBarriers.clear();
+
+			AddCommand();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		D3D12_RESOURCE_BARRIER DX12DeviceContext::CreateTransitionBarrier(DX12Resource* pResource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const
+		{
+			ID3D12Resource* pD3D12Resource = pResource->GetD3D12Resource();
+
+			D3D12_RESOURCE_BARRIER barrier = {};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.Subresource = subresource;
+			barrier.Transition.pResource = pD3D12Resource;
+			barrier.Transition.StateBefore = from;
+			barrier.Transition.StateAfter = to;
+
+			return barrier;
 		}
 	}
 }

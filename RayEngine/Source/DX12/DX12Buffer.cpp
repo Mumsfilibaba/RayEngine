@@ -140,14 +140,14 @@ namespace RayEngine
 				DX12DeviceContext* pContext = nullptr;
 				m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&pContext));
 
-				ID3D12Resource* pSrc = uploadHeap->GetD3D12Resource();
-				pContext->TransitionResource(this, D3D12_RESOURCE_STATE_COPY_DEST, 0);
-				SetD3D12State(D3D12_RESOURCE_STATE_COPY_DEST);
+				DX12Resource* resources[] = { this, uploadHeap };
+				D3D12_RESOURCE_STATES states[] = { D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COPY_SOURCE };
+				int32 subresoures[] = { 0, 0 };
 
-				pContext->CopyResource(GetD3D12Resource(), pSrc);
-				
-				pContext->TransitionResource(this, D3D12_RESOURCE_STATE_GENERIC_READ, 0);
-				SetD3D12State(D3D12_RESOURCE_STATE_GENERIC_READ);
+				pContext->TransitionResourceGroup(resources, states, subresoures, 2);
+				pContext->CopyResource(this, uploadHeap);
+
+				ReRelease_S(pContext);
 			}
 		}
 

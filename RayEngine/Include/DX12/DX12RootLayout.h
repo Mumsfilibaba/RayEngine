@@ -12,7 +12,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class DX12Device;
-		class IDX12RootVariableSlot;
+		class DX12RootVariableSlot;
 
 
 
@@ -30,8 +30,8 @@ namespace RayEngine
 			~DX12RootLayout();
 
 			ID3D12RootSignature* GetD3D12RootSignature() const;
-			IDX12RootVariableSlot* GetDX12RootVariableSlot(int32 index) const;
-			IDX12RootVariableSlot* const * GetDX12RootVariableSlotArray(int32 index) const;
+			DX12RootVariableSlot* GetDX12RootVariableSlot(int32 index) const;
+			DX12RootVariableSlot* const * GetDX12RootVariableSlotArray(int32 index) const;
 			int32 GetDX12RootVariableSlotCount() const;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
@@ -40,12 +40,12 @@ namespace RayEngine
 			void Create(const RootLayoutInfo& info);
 			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariable& variable);
 			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSampler& sampler);
-			IDX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariable& variable, int32 rootSlot);
+			DX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariable& variable, int32 rootSlot, bool placeDescriptorTable);
 
 		private:
 			DX12Device* m_Device;
 			ID3D12RootSignature* m_RootSignature;
-			std::vector<IDX12RootVariableSlot*> m_VariableSlots;
+			std::vector<DX12RootVariableSlot*> m_VariableSlots;
 		};
 	}
 }

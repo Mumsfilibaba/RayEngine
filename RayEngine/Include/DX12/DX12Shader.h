@@ -30,17 +30,12 @@ namespace RayEngine
 			~DX12Shader();
 
 			D3D12_SHADER_BYTECODE GetD3D12ByteCode() const;
-			const D3D12_STATIC_SAMPLER_DESC* GetStaticSamplers() const;
-			int32 GetStaticSamplerCount() const;
-			const D3D12_ROOT_PARAMETER1* GetVariables() const;
-			int32 GetVariableCount() const;
 
 			SHADER_TYPE GetType() const override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
 			void Create(const ShaderInfo& info);
-			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariable& variable);
 
 		private:
 			DX12Device* m_Device;

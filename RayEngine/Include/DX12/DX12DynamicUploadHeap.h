@@ -29,7 +29,6 @@ namespace RayEngine
 
 			void SetData(const void* pData, int32 size);
 
-			IDevice* GetDevice() const;
 			ID3D12Heap* GetD3D12Heap() const;
 
 			void QueryDevice(IDevice** ppDevice) const override final;

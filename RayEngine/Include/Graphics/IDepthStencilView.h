@@ -57,7 +57,7 @@ namespace RayEngine
 			int32 Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
 			FORMAT Format = FORMAT_UNKNOWN;
 			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
-			const IResource* pResource = nullptr;
+			IResource* pResource = nullptr;
 
 			union
 			{

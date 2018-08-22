@@ -66,30 +66,6 @@ namespace RayEngine
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not compile shader" + errorString);
 				return;
 			}
-			
-
-			for (int32 i = 0; i < info.SamplerCount; i++)
-				m_StaticSamplers.push_back(CreateSampler(info.pSamplers[i]));
-
-
-			for (int32 i = 0; i < info.VariableCount; i++)
-				m_Variables.push_back(CreateVariable(info.pVariables[i]));
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		D3D12_STATIC_SAMPLER_DESC DX12Shader::CreateSampler(const StaticSampler& sampler)
-		{
-			
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		D3D12_ROOT_PARAMETER1 DX12Shader::CreateVariable(const ShaderVariable& variable)
-		{
-			
 		}
 
 
@@ -102,38 +78,6 @@ namespace RayEngine
 			byteCode.BytecodeLength = m_ShaderBlob->GetBufferSize();
 			
 			return byteCode;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		const D3D12_STATIC_SAMPLER_DESC* DX12Shader::GetStaticSamplers() const
-		{
-			return m_StaticSamplers.data();
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		int32 DX12Shader::GetStaticSamplerCount() const
-		{
-			return static_cast<int32>(m_StaticSamplers.size());
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		const D3D12_ROOT_PARAMETER1* DX12Shader::GetVariables() const
-		{
-			return m_Variables.data();
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		int32 DX12Shader::GetVariableCount() const
-		{
-			return static_cast<int32>(m_Variables.size());
 		}
 	}
 }

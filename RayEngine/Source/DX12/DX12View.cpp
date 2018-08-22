@@ -1,4 +1,8 @@
+#include "..\..\Include\Graphics\IResource.h"
 #include "..\..\Include\DX12\DX12View.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+#include "..\..\Include\DX12\DX12Resource.h"
 
 namespace RayEngine
 {
@@ -6,7 +10,8 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12View::DX12View()
-			: m_View()
+			: m_Resource(nullptr),
+			m_View()
 		{
 		}
 
@@ -15,6 +20,16 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12View::~DX12View()
 		{
+			IResource* pResource = reinterpret_cast<IResource*>(m_Resource);
+			ReRelease_S(pResource);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12Resource* DX12View::GetD3D12Resource() const
+		{
+			return m_Resource;
 		}
 
 
@@ -42,3 +57,5 @@ namespace RayEngine
 		}
 	}
 }
+
+#endif

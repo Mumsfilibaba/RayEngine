@@ -323,7 +323,6 @@ namespace RayEngine
 			m_Context->DSSetShader(pGraphicsPipeline->GetD3D11DomainShader(), nullptr, 0);
 			m_Context->GSSetShader(pGraphicsPipeline->GetD3D11GeometryShader(), nullptr, 0);
 			m_Context->PSSetShader(pGraphicsPipeline->GetD3D11PixelShader(), nullptr, 0);
-			m_Context->CSSetShader(pGraphicsPipeline->GetD3D11ComputeShader(), nullptr, 0);
 		}
 
 
@@ -331,6 +330,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetComputePipeline(DX11PipelineState* pComputePipeline) const
 		{
+			m_Context->CSSetShader(pComputePipeline->GetD3D11ComputeShader(), nullptr, 0);
 		}
 	}
 }

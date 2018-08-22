@@ -7,8 +7,9 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12GraphicsDescriptorRootSlot::DX12GraphicsDescriptorRootSlot(int32 baseSlot)
-			: m_BaseSlot(baseSlot)
+		DX12GraphicsDescriptorRootSlot::DX12GraphicsDescriptorRootSlot(D3D12_RESOURCE_STATES neededState, int32 baseSlot)
+			: DX12RootVariableSlot(neededState),
+			m_BaseSlot(baseSlot)
 		{
 		}
 
@@ -70,8 +71,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12GraphicsRootSignatureSlot::DX12GraphicsRootSignatureSlot(int32 slot)
-			: m_Slot(slot)
+		DX12GraphicsRootSignatureSlot::DX12GraphicsRootSignatureSlot(D3D12_RESOURCE_STATES neededState, int32 slot)
+			: DX12RootVariableSlot(neededState), 
+			m_Slot(slot)
 		{
 		}
 
@@ -133,8 +135,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12ComputeDescriptorRootSlot::DX12ComputeDescriptorRootSlot(int32 baseSlot)
-			: m_BaseSlot(baseSlot)
+		DX12ComputeDescriptorRootSlot::DX12ComputeDescriptorRootSlot(D3D12_RESOURCE_STATES neededState, int32 baseSlot)
+			: DX12RootVariableSlot(neededState),
+			m_BaseSlot(baseSlot)
 		{
 		}
 
@@ -196,8 +199,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		DX12ComputeRootSignatureSlot::DX12ComputeRootSignatureSlot(int32 slot)
-			: m_Slot(slot)
+		DX12ComputeRootSignatureSlot::DX12ComputeRootSignatureSlot(D3D12_RESOURCE_STATES neededState, int32 slot)
+			: DX12RootVariableSlot(neededState),
+			m_Slot(slot)
 		{
 		}
 
@@ -255,7 +259,30 @@ namespace RayEngine
 				pCommandList->SetComputeRootConstantBufferView(m_Slot + i, adress);
 			}
 		}
-}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12RootVariableSlot::DX12RootVariableSlot(D3D12_RESOURCE_STATES neededState)
+			: m_NeededState(neededState)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12RootVariableSlot::~DX12RootVariableSlot()
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		D3D12_RESOURCE_STATES DX12RootVariableSlot::GetNeededD3D12ResourceState() const
+		{
+			return m_NeededState;
+		}
+	}
 }
 
 #endif

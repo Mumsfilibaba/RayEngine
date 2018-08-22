@@ -41,13 +41,13 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DepthStencilView::Create(const DepthStencilViewInfo& info)
 		{
-			ID3D12Resource* pD3D12Resource = reinterpret_cast<const DX12Resource*>(info.pResource)->GetD3D12Resource();
+			m_Resource = info.pResource->QueryReference<DX12Resource>();
+			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();
 
 			const DX12DescriptorHeap* pHeap = m_Device->GetDX12DepthStencilViewHeap();
-			m_View = pHeap->GetNext();
-			m_View.GpuResourceAdress = pD3D12Resource->GetGPUVirtualAddress();
+			m_View = pHeap->GetNext(m_Resource);
 
-			//TODO: More than texture2D
+
 			D3D12_DEPTH_STENCIL_VIEW_DESC desc = {};
 			desc.Flags = D3D12_DSV_FLAG_NONE;
 			if (info.Flags & DEPTH_STENCIL_VIEW_FLAGS_READ_ONLY_STENCIL)

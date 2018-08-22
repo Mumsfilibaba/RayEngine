@@ -56,7 +56,7 @@ namespace RayEngine
 		void DX12Sampler::Create(const SamplerInfo& info)
 		{
 			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12SamplerHeap();
-			m_SamplerState = pDX12Heap->GetNext();
+			m_SamplerState = pDX12Heap->GetNext(nullptr);
 
 
 			D3D12_SAMPLER_DESC desc = {};
