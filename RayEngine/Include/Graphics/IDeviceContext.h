@@ -69,6 +69,8 @@ namespace RayEngine
 			virtual void DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const = 0;
 			//Draws the current vertexbuffer instanced and indexed
 			virtual void DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const = 0;
+			//Dispath a compute thread-group
+			virtual void Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const = 0;
 			//Flushes the commandqueue - Syncronizes the CPU and GPU
 			virtual void Flush() const = 0;
 			//Reset allocator and list

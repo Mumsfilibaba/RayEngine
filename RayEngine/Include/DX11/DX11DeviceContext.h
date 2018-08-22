@@ -53,7 +53,9 @@ namespace RayEngine
 			void DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const override final;
 			void DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const override final;
 			void DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const override final;
-		
+
+			void Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const override final;
+
 			void Flush() const override final;
 			bool Reset() const override final;
 			bool Close() const override final;

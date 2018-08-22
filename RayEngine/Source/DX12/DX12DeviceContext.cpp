@@ -457,9 +457,24 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const
+		{
+			CommitDefferedBarriers();
+			m_CommandList->Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
+
+			if (!m_IsDeffered)
+				Flush();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::Flush() const
 		{
 			using namespace System;
+
+			if (m_IsDeffered)
+				return;
 
 			m_CurrentFence++;
 			HRESULT hr = m_Queue->Signal(m_Fence, m_CurrentFence);
@@ -567,6 +582,19 @@ namespace RayEngine
 				{
 					D3D12SetName(m_Queue, "DeviceContext");
 				}
+
+
+
+				hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
+				if (FAILED(hr))
+				{
+					m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
+					return;
+				}
+				else
+				{
+					Close();
+				}
 			}
 
 
@@ -588,28 +616,13 @@ namespace RayEngine
 			if (FAILED(hr))
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandList. " + DXErrorString(hr));
-				return;
 			}
 			else
 			{
+				m_IsDeffered = isDeffered;
+				
 				D3D12SetName(m_CommandList, "DeviceContext : List");
 			}
-
-
-
-			hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
-			if (FAILED(hr))
-			{
-				m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
-			}
-			else
-			{
-				Close();
-			}
-
-
-
-			m_IsDeffered = isDeffered;
 		}
 
 

@@ -236,9 +236,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11DeviceContext::Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const
+		{
+			m_Context->Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Flush() const
 		{
-			//NOT RELEVANT
+			//NOT RELEVANT?
 		}
 
 
