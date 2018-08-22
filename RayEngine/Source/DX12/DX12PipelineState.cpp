@@ -87,6 +87,7 @@ namespace RayEngine
 
 			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(info.pRootLayout)->GetD3D12RootSignature();
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
+			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 			desc.pRootSignature = pD3D12RootSignature;
 			desc.NodeMask = 0;
 
@@ -159,7 +160,25 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::CreateComputeState(const PipelineStateInfo& info)
 		{
-			//TODO: Compute states
+			using namespace System;
+
+			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(info.pRootLayout)->GetD3D12RootSignature();
+			D3D12_COMPUTE_PIPELINE_STATE_DESC desc = { };
+			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+			desc.pRootSignature = pD3D12RootSignature;
+			desc.NodeMask = 0;
+
+			SetShaderByteCode(desc.CS, reinterpret_cast<DX12Shader*>(info.ComputePipeline.pComputeShader));
+
+			desc.CachedPSO.CachedBlobSizeInBytes = 0;
+			desc.CachedPSO.pCachedBlob = nullptr;
+
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+			HRESULT hr = pD3D12Device->CreateComputePipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
+			if (FAILED(hr))
+			{
+				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create PipelineState. " + DXErrorString(hr));
+			}
 		}
 
 

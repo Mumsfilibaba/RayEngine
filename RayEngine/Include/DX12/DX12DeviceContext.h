@@ -35,7 +35,7 @@ namespace RayEngine
 			ID3D12CommandAllocator* GetD3D12CommandAllocator() const;
 
 			void CopyResource(DX12Resource* pDst, DX12Resource* pSrc) const;
-			void CopyTexture(DX12Resource* pDst, DX12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth) const;
+			void CopyTexture(DX12Resource* pDst, DX12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth, int32 stride) const;
 			
 			void TransitionResource(DX12Resource* pResource, D3D12_RESOURCE_STATES to, int32 subresource) const;
 

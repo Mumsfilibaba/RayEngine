@@ -14,6 +14,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Device;
 		class DX11RootLayout;
+		class DX11PipelineState;
 
 
 
@@ -63,10 +64,13 @@ namespace RayEngine
 
 		private:
 			void Create(bool isDeffered);
+			void SetGraphicsPipeline(DX11PipelineState* pGraphicsPipeline) const;
+			void SetComputePipeline(DX11PipelineState* pComputePipeline) const;
 
 		private:
 			DX11Device* m_Device;
 			mutable DX11RootLayout* m_CurrentRootLayout;
+			mutable DX11PipelineState* m_CurrentPipelineState;
 			ID3D11DeviceContext* m_Context;
 			mutable ID3D11CommandList* m_CommandList;
 			bool m_IsDeffered;

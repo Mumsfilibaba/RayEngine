@@ -41,12 +41,9 @@ namespace RayEngine
 		private:
 			void Create(const ShaderInfo& info);
 			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariable& variable);
-			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSampler& sampler);
 
 		private:
 			DX12Device* m_Device;
-			std::vector<D3D12_ROOT_PARAMETER1> m_Variables;
-			std::vector<D3D12_STATIC_SAMPLER_DESC> m_StaticSamplers;
 		};
 	}
 }

@@ -27,20 +27,10 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		enum SHADER_USAGE : int32
-		{
-			SHADER_USAGE_UNKNOWN = 0,
-			SHADER_USAGE_DYNAMIC = 1,
-			SHADER_USAGE_STATIC = 2,
-		};
-
-
-
-		/////////////////////////////////////////////////////////////
 		enum SHADER_FLAGS : int32
 		{
 			SHADER_FLAGS_NONE = 0,
-			SHADER_FLAGS_DEBUG = 1,
+			SHADER_FLAGS_DEBUG = (1 << 0),
 		};
 
 

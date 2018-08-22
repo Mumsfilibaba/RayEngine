@@ -4,7 +4,7 @@
 #include "Types.h"
 
 #if !defined(ReRelease)
-#define ReRelease(pReferenferCounter) pReferenferCounter->Release; pReferenferCounter = nullptr
+#define ReRelease(pReferenferCounter) pReferenferCounter->Release(); pReferenferCounter = nullptr
 #endif
 
 #if !defined(ReRelease_S)

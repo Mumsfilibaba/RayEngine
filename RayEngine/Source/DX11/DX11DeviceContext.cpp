@@ -21,6 +21,7 @@ namespace RayEngine
 		DX11DeviceContext::DX11DeviceContext(IDevice* pDevice, bool isDeffered)
 			: m_Device(nullptr),
 			m_CurrentRootLayout(nullptr),
+			m_CurrentPipelineState(nullptr),
 			m_Context(nullptr),
 			m_CommandList(nullptr),
 			m_IsDeffered(false)
@@ -40,6 +41,7 @@ namespace RayEngine
 			D3DRelease_S(m_CommandList);
 			
 			ReRelease_S(m_CurrentRootLayout);
+			ReRelease_S(m_CurrentPipelineState);
 			ReRelease_S(m_Device);
 		}
 
@@ -130,19 +132,14 @@ namespace RayEngine
 		void DX11DeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
 		{
 			DX11PipelineState* pDX11PipelineState = reinterpret_cast<DX11PipelineState*>(pPipelineState);
+			
+			if (pDX11PipelineState->GetPipelineType() == PIPELINE_TYPE_GRAPHICS)
+				SetGraphicsPipeline(pDX11PipelineState);
+			else
+				SetComputePipeline(pDX11PipelineState);
 
-			m_Context->IASetInputLayout(pDX11PipelineState->GetD3D11InputLayout());
-			m_Context->OMSetDepthStencilState(pDX11PipelineState->GetD3D11DepthStencilState(), 0);
-			m_Context->OMSetBlendState(pDX11PipelineState->GetD3D11BlendState(),
-				pDX11PipelineState->GetBlendFactor(), pDX11PipelineState->GetSampleMask());
-			m_Context->RSSetState(pDX11PipelineState->GetD3D11RasterizerState());
-
-			m_Context->VSSetShader(pDX11PipelineState->GetD3D11VertexShader(), nullptr, 0);
-			m_Context->HSSetShader(pDX11PipelineState->GetD3D11HullShader(), nullptr, 0);
-			m_Context->DSSetShader(pDX11PipelineState->GetD3D11DomainShader(), nullptr, 0);
-			m_Context->GSSetShader(pDX11PipelineState->GetD3D11GeometryShader(), nullptr, 0);
-			m_Context->PSSetShader(pDX11PipelineState->GetD3D11PixelShader(), nullptr, 0);
-			m_Context->CSSetShader(pDX11PipelineState->GetD3D11ComputeShader(), nullptr, 0);
+			ReRelease_S(m_CurrentPipelineState);
+			m_CurrentPipelineState = pDX11PipelineState->QueryReference<DX11PipelineState>();
 		}
 
 
@@ -308,6 +305,32 @@ namespace RayEngine
 			}
 
 			m_IsDeffered = isDeffered;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11DeviceContext::SetGraphicsPipeline(DX11PipelineState* pGraphicsPipeline) const
+		{
+			m_Context->IASetInputLayout(pGraphicsPipeline->GetD3D11InputLayout());
+			m_Context->OMSetDepthStencilState(pGraphicsPipeline->GetD3D11DepthStencilState(), 0);
+			m_Context->OMSetBlendState(pGraphicsPipeline->GetD3D11BlendState(),
+				pGraphicsPipeline->GetBlendFactor(), pGraphicsPipeline->GetSampleMask());
+			m_Context->RSSetState(pGraphicsPipeline->GetD3D11RasterizerState());
+
+			m_Context->VSSetShader(pGraphicsPipeline->GetD3D11VertexShader(), nullptr, 0);
+			m_Context->HSSetShader(pGraphicsPipeline->GetD3D11HullShader(), nullptr, 0);
+			m_Context->DSSetShader(pGraphicsPipeline->GetD3D11DomainShader(), nullptr, 0);
+			m_Context->GSSetShader(pGraphicsPipeline->GetD3D11GeometryShader(), nullptr, 0);
+			m_Context->PSSetShader(pGraphicsPipeline->GetD3D11PixelShader(), nullptr, 0);
+			m_Context->CSSetShader(pGraphicsPipeline->GetD3D11ComputeShader(), nullptr, 0);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11DeviceContext::SetComputePipeline(DX11PipelineState* pComputePipeline) const
+		{
 		}
 	}
 }

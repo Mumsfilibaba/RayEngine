@@ -3,6 +3,7 @@
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
 #include "..\..\Include\DX11\DX11Texture.h"
+#include "..\..\Include\DX11\DX11Buffer.h"
 
 namespace RayEngine
 {
@@ -50,17 +51,109 @@ namespace RayEngine
 		{
 			using namespace System;
 
-			//TODO: Get miplevel info and not only Texture2D
 			D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
-			desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-			desc.Texture2D.MostDetailedMip = 0;
-			desc.Texture2D.MipLevels = 1;
-
+			desc.Format = ReToDXFormat(info.Format);
 			
-			ID3D11Texture2D* pD3D11Texture2D = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+			ID3D11Resource* pD3D11Resource = nullptr;
+			if (info.ViewDimension == VIEWDIMENSION_BUFFER)
+			{
+				if (info.Flags & SHADER_RESOURCE_VIEW_FLAG_RAW_BUFFER)
+				{
+					desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+					desc.BufferEx.Flags = D3D11_BUFFEREX_SRV_FLAG_RAW;
+					desc.BufferEx.FirstElement = info.Buffer.StartElement;
+					desc.BufferEx.NumElements = info.Buffer.ElementCount;
+				}
+				else
+				{
+					desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+					desc.Buffer.FirstElement = info.Buffer.StartElement;
+					desc.Buffer.NumElements = info.Buffer.ElementCount;
+				}
+
+				pD3D11Resource = reinterpret_cast<const DX11Buffer*>(info.pResource)->GetD3D11Buffer();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE1D)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
+				desc.Texture1D.MipLevels = info.Texture1D.MipLevels;
+				desc.Texture1D.MostDetailedMip = info.Texture1D.MostDetailedMip;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture1D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE1D_ARRAY)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1DARRAY;
+				desc.Texture1DArray.MipLevels = info.Texture1DArray.MipLevels;
+				desc.Texture1DArray.MostDetailedMip = info.Texture1DArray.MostDetailedMip;
+				desc.Texture1DArray.ArraySize = info.Texture1DArray.ArraySize;
+				desc.Texture1DArray.FirstArraySlice = info.Texture1DArray.FirstArraySlice;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture1D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2D)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+				desc.Texture2D.MipLevels = info.Texture2D.MipLevels;
+				desc.Texture2D.MostDetailedMip = info.Texture2D.MostDetailedMip;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2DMS)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2D_ARRAY)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+				desc.Texture2DArray.MipLevels = info.Texture2DArray.MipLevels;
+				desc.Texture2DArray.MostDetailedMip = info.Texture2DArray.MostDetailedMip;
+				desc.Texture2DArray.ArraySize = info.Texture2DArray.ArraySize;
+				desc.Texture2DArray.FirstArraySlice = info.Texture2DArray.FirstArraySlice;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2DMS_ARRAY)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMSARRAY;
+				desc.Texture2DMSArray.ArraySize = info.Texture2DMSArray.ArraySize;
+				desc.Texture2DMSArray.FirstArraySlice = info.Texture2DMSArray.FirstArraySlice;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE3D)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
+				desc.Texture3D.MipLevels = info.Texture3D.MipLevels;
+				desc.Texture3D.MostDetailedMip = info.Texture3D.MostDetailedMip;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture3D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE_CUBEMAP)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+				desc.TextureCube.MipLevels= info.TextureCube.MipLevels;
+				desc.TextureCube.MostDetailedMip = info.TextureCube.MostDetailedMip;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+			}
+			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE_CUBEMAP_ARRAY)
+			{
+				desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
+				desc.TextureCubeArray.MipLevels = info.TextureCube.MipLevels;
+				desc.TextureCubeArray.MostDetailedMip = info.TextureCubeArray.MostDetailedMip;
+				desc.TextureCubeArray.First2DArrayFace = info.TextureCubeArray.First2DArrayFace;
+				desc.TextureCubeArray.NumCubes = info.TextureCubeArray.CubeCount;
+
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+			}
+
+		
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			
-			HRESULT hr = pD3D11Device->CreateShaderResourceView(pD3D11Texture2D, &desc, &m_View);
+			HRESULT hr = pD3D11Device->CreateShaderResourceView(pD3D11Resource, &desc, &m_View);
 			if (FAILED(hr))
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create ShaderResourceView. " + DXErrorString(hr));

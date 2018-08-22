@@ -29,27 +29,57 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		enum SHADER_USAGE : int32
+		{
+			SHADER_USAGE_UNKNOWN = 0,
+			SHADER_USAGE_DYNAMIC = 1,
+			SHADER_USAGE_STATIC = 2,
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
 		enum VARIABLE_TYPE : int32
 		{
 			VARIABLE_TYPE_UNKNOWN = 0,
 			VARIABLE_TYPE_UNIFORMBUFFER = 1,
-			VARIABLE_TYPE_TEXTURE = 2,
-			VARIABLE_TYPE_SAMPLER = 3,
-			VARIABLE_TYPE_SHADER_CONSTANTS = 4
+			VARIABLE_TYPE_UNORDERED_ACCESS = 2,
+			VARIABLE_TYPE_TEXTURE = 3,
+			VARIABLE_TYPE_SAMPLER = 4,
+			VARIABLE_TYPE_SHADER_CONSTANTS = 5,
+		};
+
+
+
+		/////////////////////////////////////////////////////////////
+		enum ROOT_LAYOUT_FLAGS : int32
+		{
+			ROOT_LAYOUT_FLAG_NONE = 0,
+			ROOT_LAYOUT_FLAG_DISABLE_INPUT_LAYOUT = (1 << 0)
 		};
 
 
 
 		/*////////////////////////////////////////////////////////////
+		
 		ShaderVariables defines a variable in the shader. This
 		can be a texture, buffer or sampler.
 
-		VariableType - Type of variable
+		Type - Type of variable - Is this a sampler, texture, 
+		unorderedaccess- or constant-buffer
 
-		ShaderUsage - If the variable will be updated between
+		ShaderUsage - The usage of the variable. Variables that won't 
+		be updated between drawcalls should be static. This puts them 
+		into a descriptortable in the rootlayout (In apis that uses
+		descriptor tables i.e D3D12 and vulkan). Dynamic variables gets
+		put directly into the rootlayout. Dynamic variables are those 
+		that may be updated between drawcalls. Since this requries the
+		driver to allocate space for a descriptor heap, it is better 
+		for performance if these descriptors are stored directly in the
+		rootlayout to avoid the allocation.
 
-		ShaderRegister - Register that the resource is mapped
-		to
+		ShaderRegister - Register in the shader that the resource is 
+		mapped to.
 
 		ShaderSpace - ShaderSpace that the resource will be
 		mapped to. This makes it posible to have different
@@ -72,6 +102,7 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////
 		struct StaticSampler
 		{
+			SHADER_TYPE ShaderStage = SHADER_TYPE_UNKNOWN;
 			SAMPLER_FILTER_MODE FilterMode = SAMPLER_FILTER_MODE_UNKNOWN;
 			SAMPLER_ADRESS_MODE AdressU = SAMPLER_ADRESS_MODE_UNKNOWN;
 			SAMPLER_ADRESS_MODE AdressV = SAMPLER_ADRESS_MODE_UNKNOWN;
@@ -93,7 +124,7 @@ namespace RayEngine
 		{
 			std::string Name = "";
 			PIPELINE_TYPE PipelineType = PIPELINE_TYPE_UNKNOWN;
-			int32 RootSignatureVisibility = SHADER_VISIBILITY_UNKNOWN;
+			int32 Flags = ROOT_LAYOUT_FLAG_NONE;
 			ShaderVariable* pVariables = nullptr;
 			int32 VariableCount = 0;
 			StaticSampler* pStaticSamplers = nullptr;

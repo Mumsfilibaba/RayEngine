@@ -12,6 +12,7 @@
 #include "..\..\Include\DX12\DX12Buffer.h"
 #include "..\..\Include\DX12\DX12Sampler.h"
 #include "..\..\Include\DX12\DX12Resource.h"
+#include "..\..\Include\DX12\DX12RootVariableSlot.h"
 
 namespace RayEngine
 {
@@ -190,6 +191,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const
 		{
+			DX12DescriptorHandle srv = reinterpret_cast<DX12ShaderResourceView*>(pShaderResourceView)->GetDX12DescriptorHandle();
+			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetShaderResourceViews(m_CommandList, &srv, 1);
+
 			AddCommand();
 		}
 
@@ -198,6 +202,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const
 		{
+			DX12DescriptorHandle uav = reinterpret_cast<DX12UnorderedAccessView*>(pUnorderedAccessView)->GetDX12DescriptorHandle();
+			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetUnorderedAccessViews(m_CommandList, &uav, 1);
+
 			AddCommand();
 		}
 
@@ -206,6 +213,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const
 		{
+			DX12DescriptorHandle cbv = reinterpret_cast<DX12Buffer*>(pBuffer)->GetDX12DescriptorHandle();
+			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetConstantBuffers(m_CommandList, &cbv, 1);
+
 			AddCommand();
 		}
 
@@ -214,6 +224,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetSamplers(ISampler* pSampler, int32 startRootIndex) const
 		{
+			DX12DescriptorHandle sampler = reinterpret_cast<DX12Buffer*>(pSampler)->GetDX12DescriptorHandle();
+			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetSamplers(m_CommandList, &sampler, 1);
+
 			AddCommand();
 		}
 
