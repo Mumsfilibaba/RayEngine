@@ -1,3 +1,24 @@
+/*////////////////////////////////////////////////////////////
+
+Copyright 2018 Alexander Dahlin
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in
+compliance with the License. You may obtain a copy of
+the License at
+
+http ://www.apache.org/licenses/LICENSE-2.0
+
+THIS SOFTWARE IS PROVIDED "AS IS". MEANING NO WARRANTY
+OR SUPPORT IS PROVIDED OF ANY KIND.
+
+In event of any damages, direct or indirect that can
+be traced back to the use of this software, shall no
+contributor be held liable. This includes computer
+failure and or malfunction of any kind.
+
+////////////////////////////////////////////////////////////*/
+
 #include "..\..\Include\Graphics\Viewport.h"
 #include "..\..\Include\DX12\DX12DeviceContext.h"
 
@@ -13,6 +34,7 @@
 #include "..\..\Include\DX12\DX12Sampler.h"
 #include "..\..\Include\DX12\DX12Resource.h"
 #include "..\..\Include\DX12\DX12RootVariableSlot.h"
+#include "..\..\Include\DX12\DX12CommandList.h"
 
 namespace RayEngine
 {
@@ -21,9 +43,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DeviceContext::DX12DeviceContext(IDevice* pDevice, bool isDeffered)
 			: m_Device(nullptr),
-			m_Allocator(nullptr),
 			m_Queue(nullptr),
-			m_CommandList(nullptr),
+			m_List(nullptr),
+			m_ComputeList(nullptr),
 			m_Fence(nullptr),
 			m_CurrentRootLayout(nullptr),
 			m_CurrentFence(0),
@@ -43,13 +65,13 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DeviceContext::~DX12DeviceContext()
 		{
-			D3DRelease_S(m_Allocator);
 			D3DRelease_S(m_Queue);
-			D3DRelease_S(m_CommandList);
 			D3DRelease_S(m_Fence);
 
 			ReRelease_S(m_Device);
 			ReRelease_S(m_CurrentRootLayout);
+			ReRelease_S(m_List);
+			ReRelease_S(m_ComputeList);
 		}
 
 
@@ -58,14 +80,6 @@ namespace RayEngine
 		ID3D12Fence* DX12DeviceContext::GetD3D12Fence() const
 		{
 			return m_Fence;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////s
-		ID3D12CommandList* DX12DeviceContext::GetD3D12CommandList() const
-		{
-			return m_CommandList;
 		}
 
 
@@ -79,9 +93,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		ID3D12CommandAllocator* DX12DeviceContext::GetD3D12CommandAllocator() const
+		DX12CommandList* DX12DeviceContext::GetDX12List() const
 		{
-			return m_Allocator;
+			return m_List;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		DX12CommandList* DX12DeviceContext::GetDX12ComputeList() const
+		{
+			return m_ComputeList;
 		}
 
 
@@ -93,9 +115,11 @@ namespace RayEngine
 			ID3D12Resource* pD3D12Src = pSrc->GetD3D12Resource();
 
 			CommitDefferedBarriers();
-			m_CommandList->CopyResource(pD3D12Dst, pD3D12Src);
+			m_List->GetD3D12GraphicsCommandList()->CopyResource(pD3D12Dst, pD3D12Src);
 
-			AddCommand();
+
+			if (!m_IsDeffered)
+				ExecuteCommandLists();
 		}
 
 
@@ -125,9 +149,11 @@ namespace RayEngine
 
 
 			CommitDefferedBarriers();
-			m_CommandList->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
+			m_List->GetD3D12GraphicsCommandList()->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
 
-			AddCommand();
+
+			if (!m_IsDeffered)
+				ExecuteCommandLists();
 		}
 
 
@@ -141,7 +167,7 @@ namespace RayEngine
 				return;
 
 			D3D12_RESOURCE_BARRIER barrier = CreateTransitionBarrier(pResource, from, to, subresource);
-			m_CommandList->ResourceBarrier(1, &barrier);
+			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(1, &barrier);
 
 			AddCommand();
 
@@ -168,7 +194,7 @@ namespace RayEngine
 				ppResource[i]->SetD3D12State(pToStates[i]);
 			}
 
-			m_CommandList->ResourceBarrier(barriers.size(), barriers.data());
+			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(barriers.size(), barriers.data());
 
 			AddCommand();
 		}
@@ -216,7 +242,7 @@ namespace RayEngine
 			//TODO: Subresource may not be zero
 
 			TransitionResource(pDX12View->GetD3D12Resource(), D3D12_RESOURCE_STATE_RENDER_TARGET, 0);
-			m_CommandList->ClearRenderTargetView(pDX12View->GetD3D12CpuDescriptorHandle(), pColor, 0, nullptr);
+			m_List->GetD3D12GraphicsCommandList()->ClearRenderTargetView(pDX12View->GetD3D12CpuDescriptorHandle(), pColor, 0, nullptr);
 
 			AddCommand();
 		}
@@ -231,7 +257,7 @@ namespace RayEngine
 			//TODO: Subresource may not be zero
 
 			TransitionResource(pDX12View->GetD3D12Resource(), D3D12_RESOURCE_STATE_DEPTH_WRITE, 0);
-			m_CommandList->ClearDepthStencilView(pDX12View->GetD3D12CpuDescriptorHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depth, stencil, 0, nullptr);
+			m_List->GetD3D12GraphicsCommandList()->ClearDepthStencilView(pDX12View->GetD3D12CpuDescriptorHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depth, stencil, 0, nullptr);
 
 			AddCommand();
 		}
@@ -254,7 +280,7 @@ namespace RayEngine
 			int32 pSubresources[] = { 0, 0 };
 
 			TransitionResourceGroupIndirect(ppResources, pToStates, pSubresources, 2);
-			m_CommandList->OMSetRenderTargets(1, &rtv, false, &dsv);
+			m_List->GetD3D12GraphicsCommandList()->OMSetRenderTargets(1, &rtv, false, &dsv);
 
 			AddCommand();
 		}
@@ -271,7 +297,7 @@ namespace RayEngine
 
 			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
 			TransitionResourceIndirect(pDX12View->GetD3D12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
-			pDX12Slot->SetShaderResourceViews(m_CommandList, &srv, 1);
+			pDX12Slot->SetShaderResourceViews(m_List->GetD3D12GraphicsCommandList(), &srv, 1);
 
 			AddCommand();
 		}
@@ -286,7 +312,7 @@ namespace RayEngine
 
 			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
 			TransitionResourceIndirect(pDX12View->GetD3D12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
-			pDX12Slot->SetUnorderedAccessViews(m_CommandList, &uav, 1);
+			pDX12Slot->SetUnorderedAccessViews(m_List->GetD3D12GraphicsCommandList(), &uav, 1);
 
 			AddCommand();
 		}
@@ -301,7 +327,7 @@ namespace RayEngine
 
 			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
 			TransitionResourceIndirect(pDX12Buffer, pDX12Slot->GetNeededD3D12ResourceState(), 0);
-			pDX12Slot->SetUnorderedAccessViews(m_CommandList, &cbv, 1);
+			pDX12Slot->SetUnorderedAccessViews(m_List->GetD3D12GraphicsCommandList(), &cbv, 1);
 
 			AddCommand();
 		}
@@ -312,7 +338,7 @@ namespace RayEngine
 		void DX12DeviceContext::SetSamplers(ISampler* pSampler, int32 startRootIndex) const
 		{
 			DX12DescriptorHandle sampler = reinterpret_cast<DX12Buffer*>(pSampler)->GetDX12DescriptorHandle();
-			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetSamplers(m_CommandList, &sampler, 1);
+			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetSamplers(m_List->GetD3D12GraphicsCommandList(), &sampler, 1);
 
 			AddCommand();
 		}
@@ -323,7 +349,7 @@ namespace RayEngine
 		void DX12DeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
 		{
 			DX12PipelineState* pDX12PipelineState = reinterpret_cast<DX12PipelineState*>(pPipelineState);
-			m_CommandList->SetPipelineState(pDX12PipelineState->GetD3D12PipelineState());
+			m_List->GetD3D12GraphicsCommandList()->SetPipelineState(pDX12PipelineState->GetD3D12PipelineState());
 
 			AddCommand();
 		}
@@ -334,7 +360,7 @@ namespace RayEngine
 		void DX12DeviceContext::SetRootLayout(IRootLayout* pRootLayout) const
 		{
 			DX12RootLayout* pDX12RootLayout = reinterpret_cast<DX12RootLayout*>(pRootLayout);
-			m_CommandList->SetGraphicsRootSignature(pDX12RootLayout->GetD3D12RootSignature());
+			m_List->GetD3D12GraphicsCommandList()->SetGraphicsRootSignature(pDX12RootLayout->GetD3D12RootSignature());
 
 			ReRelease_S(m_CurrentRootLayout);
 			m_CurrentRootLayout = reinterpret_cast<DX12RootLayout*>(pRootLayout->GetReferenceCount());
@@ -353,7 +379,7 @@ namespace RayEngine
 
 			D3D12_VERTEX_BUFFER_VIEW view = pDX12Buffer->GetD3D12VertexBufferView();
 			TransitionResourceIndirect(pDX12Buffer, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, 0);
-			m_CommandList->IASetVertexBuffers(startSlot, 1, &view);
+			m_List->GetD3D12GraphicsCommandList()->IASetVertexBuffers(startSlot, 1, &view);
 
 			AddCommand();
 		}
@@ -373,7 +399,7 @@ namespace RayEngine
 				viewport.MaxDepth
 			};
 
-			m_CommandList->RSSetViewports(1, &view);
+			m_List->GetD3D12GraphicsCommandList()->RSSetViewports(1, &view);
 
 			AddCommand();
 		}
@@ -383,7 +409,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const
 		{
-			m_CommandList->IASetPrimitiveTopology(ReToDXTopology(topology));
+			m_List->GetD3D12GraphicsCommandList()->IASetPrimitiveTopology(ReToDXTopology(topology));
 
 			AddCommand();
 		}
@@ -401,7 +427,7 @@ namespace RayEngine
 				static_cast<LONG>(rect.BottomRight.y)
 			};
 
-			m_CommandList->RSSetScissorRects(1, &dxRect);
+			m_List->GetD3D12GraphicsCommandList()->RSSetScissorRects(1, &dxRect);
 
 			AddCommand();
 		}
@@ -412,10 +438,13 @@ namespace RayEngine
 		void DX12DeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
 			CommitDefferedBarriers();
-			m_CommandList->DrawInstanced(vertexCount, 1, startVertex, 0);
+			m_List->GetD3D12GraphicsCommandList()->DrawInstanced(vertexCount, 1, startVertex, 0);
 
 			if (!m_IsDeffered)
+			{
+				ExecuteCommandLists();
 				Flush();
+			}
 		}
 
 
@@ -424,10 +453,13 @@ namespace RayEngine
 		void DX12DeviceContext::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
 		{
 			CommitDefferedBarriers();
-			m_CommandList->DrawIndexedInstanced(indexCount, 1, startIndex, startVertex, 0);
+			m_List->GetD3D12GraphicsCommandList()->DrawIndexedInstanced(indexCount, 1, startIndex, startVertex, 0);
 
 			if (!m_IsDeffered)
+			{
+				ExecuteCommandLists();
 				Flush();
+			}
 		}
 
 
@@ -436,10 +468,13 @@ namespace RayEngine
 		void DX12DeviceContext::DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const
 		{
 			CommitDefferedBarriers();
-			m_CommandList->DrawInstanced(vertexCount, instanceCount, startVertex, startInstance);
+			m_List->GetD3D12GraphicsCommandList()->DrawInstanced(vertexCount, instanceCount, startVertex, startInstance);
 
 			if (!m_IsDeffered)
+			{
+				ExecuteCommandLists();
 				Flush();
+			}
 		}
 
 
@@ -448,22 +483,28 @@ namespace RayEngine
 		void DX12DeviceContext::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
 		{
 			CommitDefferedBarriers();
-			m_CommandList->DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
+			m_List->GetD3D12GraphicsCommandList()->DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
 
 			if (!m_IsDeffered)
+			{
+				ExecuteCommandLists();
 				Flush();
+			}
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DeviceContext::Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const
+		void DX12DeviceContext::Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const
 		{
 			CommitDefferedBarriers();
-			m_CommandList->Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
+			m_ComputeList->GetD3D12GraphicsCommandList()->Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
 
 			if (!m_IsDeffered)
+			{
+				ExecuteCommandLists();
 				Flush();
+			}
 		}
 
 
@@ -507,13 +548,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12DeviceContext::Reset() const
 		{
-			if (FAILED(m_Allocator->Reset()))
-				return false;
-
-			if (FAILED(m_CommandList->Reset(m_Allocator, nullptr)))
-				return false;
-
-			return true;
+			return m_List->Reset();
 		}
 
 
@@ -524,7 +559,7 @@ namespace RayEngine
 			if (!m_IsDeffered)
 				return;
 
-			HRESULT hr = m_CommandList->Close();
+			HRESULT hr = m_List->GetD3D12GraphicsCommandList()->Close();
 			return SUCCEEDED(hr);
 		}
 
@@ -537,10 +572,11 @@ namespace RayEngine
 				return;
 
 			DX12DeviceContext* pDX12DeviceContext = reinterpret_cast<DX12DeviceContext*>(pDefferedContext);
-			ID3D12CommandList* lists[] = { pDX12DeviceContext->GetD3D12CommandList() };
+			
+			ID3D12CommandList* lists[] = { pDX12DeviceContext->GetDX12List()->GetD3D12CommandList() };
 			m_Queue->ExecuteCommandLists(1, lists);
 
-			pDX12DeviceContext->Flush();
+			Flush();
 		}
 
 
@@ -596,33 +632,11 @@ namespace RayEngine
 					Close();
 				}
 			}
+			
+			m_List = new DX12CommandList(m_Device, nullptr, D3D12_COMMAND_LIST_TYPE_DIRECT, qDesc.NodeMask);
+			m_ComputeList = new DX12CommandList(m_Device, nullptr, D3D12_COMMAND_LIST_TYPE_COMPUTE, qDesc.NodeMask);
 
-
-
-			hr = pD3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_Allocator));
-			if (FAILED(hr))
-			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandAllocator. " + DXErrorString(hr));
-				return;
-			}
-			else
-			{
-				D3D12SetName(m_Allocator, "DeviceContext : Allocator");
-			}
-
-
-
-			hr = pD3D12Device->CreateCommandList(qDesc.NodeMask, D3D12_COMMAND_LIST_TYPE_DIRECT, m_Allocator, nullptr, IID_PPV_ARGS(&m_CommandList));
-			if (FAILED(hr))
-			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandList. " + DXErrorString(hr));
-			}
-			else
-			{
-				m_IsDeffered = isDeffered;
-				
-				D3D12SetName(m_CommandList, "DeviceContext : List");
-			}
+			m_IsDeffered = isDeffered;
 		}
 
 
@@ -635,19 +649,21 @@ namespace RayEngine
 
 			m_NumCommands++;
 			if (m_NumCommands >= m_MaxCommands)
+			{
+				ExecuteCommandLists();
 				Flush();
+			}
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DeviceContext::ExecuteCommandList()
+		void DX12DeviceContext::ExecuteCommandLists() const
 		{
-			ID3D12CommandList* lists[] = { m_CommandList };
+			ID3D12CommandList* lists[] = { m_ComputeList->GetD3D12GraphicsCommandList(), m_List->GetD3D12GraphicsCommandList() };
 			m_Queue->ExecuteCommandLists(1, lists);
 
-			if (m_NumCommands >= m_MaxCommands)
-				Flush();
+			m_NumCommands = 0;
 		}
 
 
@@ -655,7 +671,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::CommitDefferedBarriers() const
 		{
-			m_CommandList->ResourceBarrier(m_DefferedBarriers.size(), m_DefferedBarriers.data());
+			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(m_DefferedBarriers.size(), m_DefferedBarriers.data());
 			m_DefferedBarriers.clear();
 
 			AddCommand();

@@ -20,53 +20,49 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\..\Include\Graphics\ITexture.h"
+#include "..\Graphics\IDeviceObject.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Common.h"
+#include "DX12Common.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		class DX11Device;
+		class DX12Device;
+		class DX12Resource;
 
 
 
 		/////////////////////////////////////////////////////////////
-		class DX11Texture final : public ITexture
+		class DX12CommandList final : public IDeviceObject
 		{
 		public:
-			DX11Texture(const DX11Texture& other) = delete;
-			DX11Texture& operator=(const DX11Texture& other) = delete;
-			DX11Texture(DX11Texture&& other) = delete;
-			DX11Texture& operator=(DX11Texture&& other) = delete;
+			DX12CommandList(const DX12CommandList& other) = delete;
+			DX12CommandList& operator=(const DX12CommandList& other) = delete;
+			DX12CommandList(DX12CommandList&& other) = delete;
+			DX12CommandList& operator=(DX12CommandList&& other) = delete;
 
 		public:
-			DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
-			DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource);
-			~DX11Texture();
+			DX12CommandList(DX12Device* pDevice, ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);
+			~DX12CommandList();
 
-			ID3D11Texture1D* GetD3D11Texture1D() const;
-			ID3D11Texture2D* GetD3D11Texture2D() const;
-			ID3D11Texture3D* GetD3D11Texture3D() const;
+			ID3D12CommandList* GetD3D12CommandList() const;
+			ID3D12CommandAllocator* GetD3D12CommandAllocator() const;
+			ID3D12GraphicsCommandList* GetD3D12GraphicsCommandList() const;
 
-			RESOURCE_STATE GetResourceState() const override final;
+			bool Reset() const;
+
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);
 
 		private:
-			DX11Device* m_Device;
-			TEXTURE_TYPE m_Type;
-			union
-			{
-				ID3D11Texture1D* m_Texture1D;
-				ID3D11Texture2D* m_Texture2D;
-				ID3D11Texture3D* m_Texture3D;
-			};
+			ID3D12GraphicsCommandList* m_List;
+			ID3D12CommandAllocator* m_Allocator;
+			DX12Device* m_Device;
 		};
 	}
 }

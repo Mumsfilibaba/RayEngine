@@ -1,5 +1,25 @@
-#pragma once
+/*////////////////////////////////////////////////////////////
 
+Copyright 2018 Alexander Dahlin
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in
+compliance with the License. You may obtain a copy of
+the License at
+
+http ://www.apache.org/licenses/LICENSE-2.0
+
+THIS SOFTWARE IS PROVIDED "AS IS". MEANING NO WARRANTY
+OR SUPPORT IS PROVIDED OF ANY KIND.
+
+In event of any damages, direct or indirect that can
+be traced back to the use of this software, shall no
+contributor be held liable. This includes computer
+failure and or malfunction of any kind.
+
+////////////////////////////////////////////////////////////*/
+
+#pragma once
 #include <string>
 
 namespace RayEngine
@@ -13,6 +33,8 @@ namespace RayEngine
 	typedef unsigned short uint16;
 	typedef unsigned int uint32;
 	typedef unsigned long long uint64;
+	typedef int16 float16;
+	typedef float float32;
 
 
 
@@ -382,6 +404,19 @@ namespace RayEngine
 		VIEWDIMENSION_TEXTURE3D = 8,
 		VIEWDIMENSION_TEXTURE_CUBEMAP = 9,
 		VIEWDIMENSION_TEXTURE_CUBEMAP_ARRAY = 10
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum IMAGE_EXTENSION : int32
+	{
+		IMAGE_EXTENSION_UNKNOWN = 0,
+		IMAGE_EXTENSION_PNG = 1,
+		IMAGE_EXTENSION_BMP = 2,
+		IMAGE_EXTENSION_TGA = 3,
+		IMAGE_EXTENSION_JPG = 4,
+		IMAGE_EXTENSION_HDR = 5,
 	};
 
 

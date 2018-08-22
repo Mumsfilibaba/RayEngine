@@ -191,6 +191,7 @@
     <ClInclude Include="Include\DX11\DX11Texture.h" />
     <ClInclude Include="Include\DX11\DX11UnorderedAccessView.h" />
     <ClInclude Include="Include\DX12\DX12Buffer.h" />
+    <ClInclude Include="Include\DX12\DX12CommandList.h" />
     <ClInclude Include="Include\DX12\DX12Common.h" />
     <ClInclude Include="Include\DX12\DX12DepthStencilView.h" />
     <ClInclude Include="Include\DX12\DX12DescriptorHeap.h" />
@@ -266,6 +267,7 @@
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Include\Utilities\EngineUtilities.h" />
     <ClInclude Include="Include\Utilities\StringUtilities.h" />
+    <ClInclude Include="Include\Utilities\TextureUtilities.h" />
     <ClInclude Include="Include\Vulkan\VulkCommon.h" />
     <ClInclude Include="Include\Vulkan\VulkDevice.h" />
     <ClInclude Include="Include\Vulkan\VulkFactory.h" />
@@ -322,6 +324,7 @@
     <ClCompile Include="Source\DX11\DX11Texture.cpp" />
     <ClCompile Include="Source\DX11\DX11UnorderedAccessView.cpp" />
     <ClCompile Include="Source\DX12\DX12Buffer.cpp" />
+    <ClCompile Include="Source\DX12\DX12CommandList.cpp" />
     <ClCompile Include="Source\DX12\DX12Common.cpp" />
     <ClCompile Include="Source\DX12\DX12DepthStencilView.cpp" />
     <ClCompile Include="Source\DX12\DX12DescriptorHeap.cpp" />
@@ -371,6 +374,7 @@
     <ClCompile Include="Source\System\Window.cpp" />
     <ClCompile Include="Source\Utilities\EngineUtilities.cpp" />
     <ClCompile Include="Source\Utilities\StringUtilities.cpp" />
+    <ClCompile Include="Source\Utilities\TextureUtilities.cpp" />
     <ClCompile Include="Source\Vulkan\VulkDevice.cpp" />
     <ClCompile Include="Source\Vulkan\VulkFactory.cpp" />
     <ClCompile Include="Source\Vulkan\VulkImageView.cpp" />

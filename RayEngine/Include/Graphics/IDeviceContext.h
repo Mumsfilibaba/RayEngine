@@ -1,5 +1,25 @@
-#pragma once
+/*////////////////////////////////////////////////////////////
 
+Copyright 2018 Alexander Dahlin
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in
+compliance with the License. You may obtain a copy of
+the License at
+
+http ://www.apache.org/licenses/LICENSE-2.0
+
+THIS SOFTWARE IS PROVIDED "AS IS". MEANING NO WARRANTY
+OR SUPPORT IS PROVIDED OF ANY KIND.
+
+In event of any damages, direct or indirect that can
+be traced back to the use of this software, shall no
+contributor be held liable. This includes computer
+failure and or malfunction of any kind.
+
+////////////////////////////////////////////////////////////*/
+
+#pragma once
 #include "IDeviceObject.h"
 #include "..\Math\Rectangle.h"
 
@@ -69,8 +89,8 @@ namespace RayEngine
 			virtual void DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const = 0;
 			//Draws the current vertexbuffer instanced and indexed
 			virtual void DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const = 0;
-			//Dispath a compute thread-group
-			virtual void Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const = 0;
+			//Dispatch a compute thread-group
+			virtual void Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const = 0;
 			//Flushes the commandqueue - Syncronizes the CPU and GPU
 			virtual void Flush() const = 0;
 			//Reset allocator and list

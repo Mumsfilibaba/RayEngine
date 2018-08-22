@@ -1,5 +1,4 @@
 TODO:
--DX12CommandList - Create a commandlist (Bundle allocator and commandlist - can create one for compute and one for graphics)
 -DX12 - Dynamic uploadheap - Resize when needed
 -Generate MipMaps
 -Swapchain Resize

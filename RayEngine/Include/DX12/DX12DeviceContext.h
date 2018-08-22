@@ -1,5 +1,25 @@
-#pragma once
+/*////////////////////////////////////////////////////////////
 
+Copyright 2018 Alexander Dahlin
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in
+compliance with the License. You may obtain a copy of
+the License at
+
+http ://www.apache.org/licenses/LICENSE-2.0
+
+THIS SOFTWARE IS PROVIDED "AS IS". MEANING NO WARRANTY
+OR SUPPORT IS PROVIDED OF ANY KIND.
+
+In event of any damages, direct or indirect that can
+be traced back to the use of this software, shall no
+contributor be held liable. This includes computer
+failure and or malfunction of any kind.
+
+////////////////////////////////////////////////////////////*/
+
+#pragma once
 #include <vector>
 #include "..\Graphics\IDeviceContext.h"
 
@@ -16,6 +36,7 @@ namespace RayEngine
 		class DX12Device;
 		class DX12RootLayout;
 		class DX12Resource;
+		class DX12CommandList;
 
 
 
@@ -33,9 +54,9 @@ namespace RayEngine
 			~DX12DeviceContext();
 
 			ID3D12Fence* GetD3D12Fence() const;
-			ID3D12CommandList* GetD3D12CommandList() const;
 			ID3D12CommandQueue* GetD3D12CommandQueue() const;
-			ID3D12CommandAllocator* GetD3D12CommandAllocator() const;
+			DX12CommandList* GetDX12List() const;
+			DX12CommandList* GetDX12ComputeList() const;
 
 			void CopyResource(DX12Resource* pDst, DX12Resource* pSrc) const;
 			void CopyTexture(DX12Resource* pDst, DX12Resource* pSrc, DXGI_FORMAT format, int32 width, int32 height, int32 depth, int32 stride) const;
@@ -65,7 +86,7 @@ namespace RayEngine
 			void DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const override final;
 			void DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const override final;
 
-			void Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const override final;
+			void Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const override final;
 
 			void Flush() const override final;
 			bool Reset() const override final;
@@ -78,7 +99,7 @@ namespace RayEngine
 		private:
 			void Create(bool isDeffered);
 			void AddCommand() const;
-			void ExecuteCommandList();
+			void ExecuteCommandLists() const;
 			void CommitDefferedBarriers() const;
 			D3D12_RESOURCE_BARRIER CreateTransitionBarrier(DX12Resource* pResource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
 
@@ -86,8 +107,8 @@ namespace RayEngine
 			DX12Device* m_Device;
 			mutable DX12RootLayout* m_CurrentRootLayout;
 			ID3D12CommandQueue* m_Queue;
-			ID3D12CommandAllocator* m_Allocator;
-			ID3D12GraphicsCommandList* m_CommandList;
+			DX12CommandList* m_List;
+			DX12CommandList* m_ComputeList;
 			ID3D12Fence* m_Fence;
 			bool m_IsDeffered;
 			mutable uint64 m_CurrentFence;

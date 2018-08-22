@@ -1,5 +1,25 @@
-#pragma once
+/*////////////////////////////////////////////////////////////
 
+Copyright 2018 Alexander Dahlin
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in
+compliance with the License. You may obtain a copy of
+the License at
+
+http ://www.apache.org/licenses/LICENSE-2.0
+
+THIS SOFTWARE IS PROVIDED "AS IS". MEANING NO WARRANTY
+OR SUPPORT IS PROVIDED OF ANY KIND.
+
+In event of any damages, direct or indirect that can
+be traced back to the use of this software, shall no
+contributor be held liable. This includes computer
+failure and or malfunction of any kind.
+
+////////////////////////////////////////////////////////////*/
+
+#pragma once
 #include "..\Graphics\IDeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -54,7 +74,7 @@ namespace RayEngine
 			void DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const override final;
 			void DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const override final;
 
-			void Dispath(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const override final;
+			void Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const override final;
 
 			void Flush() const override final;
 			bool Reset() const override final;
