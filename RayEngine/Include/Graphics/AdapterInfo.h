@@ -45,6 +45,30 @@ namespace RayEngine
 
 		/*////////////////////////////////////////////////////////////
 
+			Contains information about a adapter (graphics-card).
+
+			VendorName - Name of the adapter's vendor
+			
+			ModelName - Name of the adapter
+
+			ApiID - Identifer of the adapter based on the api.
+			This can be an index of the adapters that the api is
+			able to find on the system.
+
+			DeviceID - This ID is the same for all apis because it
+			is tied to the physical device (Exluding software 
+			adapters)
+
+			VendorID - This ID is the same for all apis because it
+			is tied to the physical device (Exluding software
+			adapters)
+
+			Flags - Flags that is set based on what features that
+			are available on the adapter.
+
+			Limits - An anonymous struct that contains the maximum
+			values that the adapter support.
+
 		////////////////////////////////////////////////////////////*/
 		struct AdapterInfo
 		{

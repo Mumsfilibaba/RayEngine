@@ -44,16 +44,52 @@ namespace RayEngine
 
 
 		/*////////////////////////////////////////////////////////////
+			
+			A structure containg information about a inputattribute.
+			Describes information in the vertexbuffers.
+
+			Semantic - Semantic to bind the attribute to. If GLSL
+			is used as sourceshaderlanguage this parameter can be
+			discarded. However it is needed if any directx api will
+			be used.
+
+			SemanticIndex - Index of the semantic. Allows multiple
+			attributes to have the same semantic but with different
+			indices.
+
+			Format - Format of the attribute.
+
+			StepType - Should the attribute be updated for each 
+			vertex or instance.
+
+			InputSlot - An index telling what vertexbuffer to read 
+			from.
+
+			DataStepRate - How many steeps in the vertexbuffer to
+			take between updates.
+
+			ElementOffset - The number of bytes between elements
+			in the datastructure. E.g 
+			
+			struct Vertex
+			{
+				float x;
+				float y;
+			};
+			
+			should be sizeof(float) if describing the variable y.
+			
+			StrideBytes - The number of bytes of this element.
 
 		////////////////////////////////////////////////////////////*/
 		struct InputElementInfo
 		{
-			std::string Semantic;
+			std::string Semantic = "";
 			int32 SemanticIndex = 0;
 			FORMAT Format = FORMAT_UNKNOWN;
 			ELEMENT_STEP_TYPE StepType = ELEMENT_STEP_TYPE_UNKNOWN;
-			int32 DataStepRate = 0;
 			int32 InputSlot = 0;
+			int32 DataStepRate = 0;
 			int32 ElementOffset = 0;
 			int32 StrideBytes = 0;
 		};
@@ -61,6 +97,14 @@ namespace RayEngine
 
 
 		/*////////////////////////////////////////////////////////////
+
+			A structure containing an array of InputElementInfo.
+			Describes all the input attributes that will be used in
+			a pipelinestate.
+
+			pElements - An array of InputElementInfo-structures.
+
+			ElementCount - Number of elements in pElements.
 
 		////////////////////////////////////////////////////////////*/
 		struct InputLayoutInfo
@@ -77,6 +121,43 @@ namespace RayEngine
 
 
 		/*////////////////////////////////////////////////////////////
+			
+			A structure describing the RasterizerState of the 
+			pipeline.
+
+			ConservativeRasterizerEnable - Turn the conservative
+			rasterizer on/off.
+
+			ForcedSampleCount - Force multisampling with this 
+			sample. This is when rendering to a UnorderedAccessView
+			instead of rendering to a RenderTargetView and/or 
+			DepthStencilView.
+
+			FillMode - How to fill triangleprimitives.
+
+			CullMode - How to cull primitives.
+
+			FrontCounterClockwise - Triangleprimitives are 
+			frontfaceing if vertexorder is clockwise. Set to true
+			to make them facing forward if they are counterclockwise.
+
+			DepthClipEnable - Clip pixels that has a z-coordinate
+			beyond the depth-clippingplane.
+
+			DepthBias - A value added to the depth of each pixel.
+
+			DepthBiasClamp - A value clamping the DepthBias.
+
+			SlopeScaleDepthBias - A scalar on a given pixels slope.
+
+			ScissorEnable - Enables scissor rectangles
+
+			MultisampleEnable - Enables multisampling when rendering
+			to a RenderTargetView and/or DepthStencilView.
+
+			AntialiasedLineEnable - Enables antialiasing when 
+			rendering lineprimitives or wireframefillmodes. If set
+			to true then MultisampleEnable should be set to false.
 
 		////////////////////////////////////////////////////////////*/
 		struct RasterizerStateInfo
@@ -102,6 +183,31 @@ namespace RayEngine
 
 		/*////////////////////////////////////////////////////////////
 
+			A structure defining the DepthStencilState of the 
+			pipeline.
+			
+			DepthEnable - Enable depthtesting.
+
+			DepthWriteMask - Describes if writes to the 
+			depthstencilbuffer shold be turned on or not.
+
+			DepthFunc - Sets the function for when the depthtest 
+			should yelid a positive result.
+
+			StencilEnable - Enables stenciltesting.
+
+			StencilReadMask - Identifies a portion of the 
+			stencilbuffer available for readoperations.
+
+			StencilWrite - Identifies a portion of the stencilbuffer
+			available for writeoperations.
+
+			Frontface - Describes stencil operations on frontfacing
+			triangles.
+
+			Backface - Describes stencil operations on backfacing
+			triangles.
+
 		////////////////////////////////////////////////////////////*/
 		struct DepthStencilStateInfo
 		{
@@ -121,6 +227,31 @@ namespace RayEngine
 
 		/*////////////////////////////////////////////////////////////
 
+			A structure describing how a RenderTarget should blend.
+
+			BlendEnable - Set to true to enable blending.
+
+			SrcBlend - Part of the source to use in the 
+			blendoperation. RGB values.
+
+			DstBlend -  Part of the destination to use in the 
+			blendoperation. RGB values.
+
+			BlendOperation - What type of blendoperation to 
+			perform on the RGB values.
+			
+			SrcAlphaBlend - Part of the source to use in the
+			blendoperation. The alpha value.
+
+			DstAlphaBlend -  Part of the destination to use in the
+			blendoperation. The alpha value.
+
+			AlphaBlendOperation - What type of blendoperation to
+			perform on the alphavalues.
+
+			RenderTargetWriteMask - Mask that enables different
+			components to take part in the blendoperation.
+
 		////////////////////////////////////////////////////////////*/
 		struct RenderTargetBlendInfo
 		{
@@ -137,6 +268,28 @@ namespace RayEngine
 
 
 		/*////////////////////////////////////////////////////////////
+
+			A structure describing the blendstate of the pipeline.
+
+			AlphaToCoverageEnable - Enable AlphaToCoverage. Takes 
+			the alpha component of the output rendertarget at slot
+			0 and uses it as a n-step coverage mask on an n-sampled
+			rendertarget. A AND operation determines what samples
+			to update in the rendertarget.
+
+			IndependentBlendEnable - If set to false only the 
+			RenderTargets[0] member is used in the blendstate.
+			If true the rendertargets at slot [1 - 7] will have
+			independent blendsettings.
+
+			LogicOpEnable - Enables logic oeprations
+
+			BlendFactor - Four-component floatarray to use when the 
+			blendoperation is using the blendfactor in either the 
+			src or dest.
+
+			RenderTargets - A structure describing each rendertarget
+			that can be bound to the pipeline at one time.
 
 		////////////////////////////////////////////////////////////*/
 		struct BlendStateInfo
@@ -158,6 +311,11 @@ namespace RayEngine
 		public:
 			/*////////////////////////////////////////////////////////////
 
+				A structure describing a compute pipeline.
+
+				pComputeShader - The computeshader to use in the 
+				pipeline.
+
 			////////////////////////////////////////////////////////////*/
 			struct ComputePipelineInfo
 			{
@@ -172,6 +330,15 @@ namespace RayEngine
 
 
 			/*////////////////////////////////////////////////////////////
+
+				A structure describing the graphics pipeline.
+
+				RenderTargetCount - Number of rendertargets to use.
+
+				RenderTargetFormats - The format of each rendertarget
+				that will be used.
+
+				DepthStencilFormat - The format of the depthstencil.
 
 			////////////////////////////////////////////////////////////*/
 			struct GraphicsPipelineInfo

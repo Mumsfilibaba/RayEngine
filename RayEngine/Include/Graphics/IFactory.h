@@ -48,19 +48,103 @@ namespace RayEngine
 			IFactory() {}
 			virtual ~IFactory() {}
 
-			//Get the information about the available graphicscards (Adapters) on the system
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives a list of all the adapters (physical devices)
+				that is found on the system by the chosen api.
+
+				list - A AdapterList-structure that contains all info
+				about the adpaters in the system.
+
+			////////////////////////////////////////////////////////////*/
 			virtual void EnumerateAdapters(AdapterList& list) const = 0;
-			//Create a device for interaction with the graphicscard
+			
+			
+			/*////////////////////////////////////////////////////////////
+
+				Creates a new logical device.
+
+				ppDevice - A valid pointer to a IDevice interface.
+
+				deviceInfo - Structure that contains information about
+				the device to be created.
+
+			////////////////////////////////////////////////////////////*/
 			virtual bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) = 0;
-			//Create a swapchain for presenting images to the window
+			
+			
+			/*////////////////////////////////////////////////////////////
+
+				Creates a new swapchain.
+
+				ppSwapchain - A valid pointer to a ISwapchain interface.
+
+				swapchainInfo - Structure that contains information about
+				the swapchain to be created.
+
+			////////////////////////////////////////////////////////////*/
 			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) = 0;
-			//Create a device for interaction with the graphicscard and a swapchain for presenting images to the window
+
+
+			/*////////////////////////////////////////////////////////////
+
+				Creates a new device and swapchain.
+
+				ppDevice - A pointer to a IDevice interface. Can be
+				nullptr and the result is the same as a call to 
+				CreateSwapchain.
+
+				deviceInfo - Structure that contains information about
+				the device to be created.
+
+				ppSwapchain - A valid pointer to a ISwapchain interface.
+				Can be nullptr and the result is the same as a call to
+				CreateDevice.
+
+				swapchainInfo - Structure that contains information about
+				the swapchain to be created.
+
+			////////////////////////////////////////////////////////////*/
 			virtual bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) = 0;
 
+
+			/*////////////////////////////////////////////////////////////
+				Returns what the underlying api is.
+			////////////////////////////////////////////////////////////*/
 			virtual GRAPHICS_API GetGraphicsApi() const = 0;
 
 		public:
+
+			/*////////////////////////////////////////////////////////////
+
+				Creates a new factory.
+
+				api - The api to use.
+
+				debugLayers - A boolean turning the debuglayer on/off
+
+				Returns a pointer to a IFactory interface. Can be 
+				nullptr if an error occured during the call
+
+			////////////////////////////////////////////////////////////*/
 			static IFactory* Create(GRAPHICS_API api, bool debugLayers);
+
+
+			/*////////////////////////////////////////////////////////////
+
+				Creates a new factory.
+
+				name - Set a name for the factory
+
+				api - The api to use.
+
+				debugLayers - A boolean turning the debuglayer on/off
+
+				Returns a pointer to a IFactory interface. Can be
+				nullptr if an error occured during the call
+
+			////////////////////////////////////////////////////////////*/
 			static IFactory* Create(const std::string& name, GRAPHICS_API api, bool debugLayers);
 		};
 	}

@@ -43,32 +43,33 @@ namespace RayEngine
 
 		/*///////////////////////////////////////////////////////////
 
-		Struct that contains info of a DepthStencilView. Allows
-		a resource to be used as a depth- and/or stencil-buffer.
+			Struct that contains info of a DepthStencilView. Allows
+			a resource to be used as a depth- and/or stencil-buffer.
 
-		Name - Name of the view.
+			Name - Name of the view.
 
-		Flags - Specify a DEPTH_STENCIL_VIEW_FLAGS-flag
+			Flags - Specify a DEPTH_STENCIL_VIEW_FLAGS-flag
 
-		Format - Format of the view
+			Format - Format of the view
 
-		ViewDimension - What kind of resource that is using
-		the view. E.g is this a texture1D or texture2D
+			ViewDimension - What kind of resource that is using
+			the view. E.g is this a texture1D or texture2D
 
-		pResource - The resource the is using the view
+			pResource - The resource the is using the view
 
-		The following variables used based on the value of
-		ViewDimension. E.g if the value is VIEWDIMENSION_TEXTURE1D
-		then only the texture1D-struct should contain values.
+			The following variables used based on the value of
+			ViewDimension. E.g if the value is 
+			VIEWDIMENSION_TEXTURE1D then only the texture1D-struct 
+			should contain values.
 
-		MipSlice - The first miplevel that the view should use.
+			MipSlice - The first miplevel that the view should use.
 
-		ArraySlice - The number of elements in the array that
-		the view can access. The first element is specified in
-		FirstArraySlice.
+			ArraySlice - The number of elements in the array that
+			the view can access. The first element is specified in
+			FirstArraySlice.
 
-		FirstArraySlice - The first element in the earray that
-		the view can access.
+			FirstArraySlice - The first element in the earray that
+			the view can access.
 
 		///////////////////////////////////////////////////////////*/
 		struct DepthStencilViewInfo

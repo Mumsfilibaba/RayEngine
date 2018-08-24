@@ -1,6 +1,6 @@
 TODO:
--DX12 - Dynamic uploadheap - Resize when needed
 -Generate MipMaps
+-DX12 - Dynamic uploadheap - Resize when needed
 -Swapchain Resize
 -Create Constantbuffer in DX11Shader for shaderconstants
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
@@ -10,6 +10,7 @@ TODO:
 -Render triangle Vulkan
 -Implement OpenGL
 -Swapchain Fullscreen
+
 
 -DX12 - Check tearing support - Vulkan (if supported by the API)
 -DX12 - Setup breakpoints when errors occurs
