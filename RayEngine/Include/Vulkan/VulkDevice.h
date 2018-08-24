@@ -52,7 +52,10 @@ namespace RayEngine
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
 			bool CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info) override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+			
+			void SetName(const std::string& name) override final;
 			void QueryFactory(IFactory** ppFactory) const override final;
+			
 			System::Log* GetDeviceLog() override final;
 
 		private:

@@ -53,6 +53,8 @@ namespace RayEngine
 			
 			ITexture* GetBuffer(int32 index) override final;
 			const ITexture* GetBuffer(int32 index) const override final;
+
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 			void QueryFactory(IFactory** ppFactory) const override final;
 

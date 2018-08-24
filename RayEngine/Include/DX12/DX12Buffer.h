@@ -65,7 +65,6 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			BUFFER_USAGE m_BufferType;
-			
 			DX12DescriptorHandle m_ConstantBufferView;
 			union 
 			{

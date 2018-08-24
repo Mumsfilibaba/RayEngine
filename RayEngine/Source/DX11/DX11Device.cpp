@@ -101,6 +101,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11Device::SetName(const std::string& name)
+		{
+			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			
+			std::string adapterName = name + " : Adapter";
+			m_Adapter->SetPrivateData(WKPDID_D3DDebugObjectName, adapterName.size(), adapterName.c_str());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11Device::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = reinterpret_cast<DX11Factory*>(m_Factory->QueryReference());

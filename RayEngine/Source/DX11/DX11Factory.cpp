@@ -123,6 +123,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11Factory::SetName(const std::string& name)
+		{
+			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		GRAPHICS_API DX11Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D11;

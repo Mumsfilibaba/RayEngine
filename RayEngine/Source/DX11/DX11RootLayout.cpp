@@ -72,6 +72,13 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11RootLayout::SetName(const std::string& name)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11RootLayout::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX11Device(m_Device);

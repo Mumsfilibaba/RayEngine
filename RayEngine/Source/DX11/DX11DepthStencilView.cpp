@@ -43,6 +43,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11DepthStencilView::SetName(const std::string& name)
+		{
+			m_View->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		DX11DepthStencilView::~DX11DepthStencilView()
 		{
 			D3DRelease_S(m_View);

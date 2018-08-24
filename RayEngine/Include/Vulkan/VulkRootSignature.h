@@ -40,6 +40,8 @@ namespace RayEngine
 			~VulkRootLayout();
 
 			VkPipelineLayout GetVkPipelineLayout() const;
+
+			void SetName(const std::string& name) override final;
 			IDevice* GetDevice() const override final;
 
 		private:

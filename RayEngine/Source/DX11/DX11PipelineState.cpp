@@ -215,6 +215,24 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11PipelineState::SetName(const std::string& name)
+		{
+			std::string tmpName = name + " : InputLayout";
+			m_InputLayout->SetPrivateData(WKPDID_D3DDebugObjectName, tmpName.size(), tmpName.c_str());
+
+			tmpName = name + " : BlendState";
+			m_BlendState->SetPrivateData(WKPDID_D3DDebugObjectName, tmpName.size(), tmpName.c_str());
+
+			tmpName = name + " : RasterizerState";
+			m_RasterizerState->SetPrivateData(WKPDID_D3DDebugObjectName, tmpName.size(), tmpName.c_str());
+
+			tmpName = name + " : DepthStencilState";
+			m_DepthStencilState->SetPrivateData(WKPDID_D3DDebugObjectName, tmpName.size(), tmpName.c_str());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11PipelineState::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX11Device(m_Device);

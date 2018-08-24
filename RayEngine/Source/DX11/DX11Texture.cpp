@@ -101,9 +101,10 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		RESOURCE_STATE DX11Texture::GetResourceState() const
+		void DX11Texture::SetName(const std::string& name)
 		{
-			return RESOURCE_STATE_UNKNOWN;
+			ID3D11DeviceChild* pDeviceChild = m_Texture1D;
+			pDeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
 		}
 
 

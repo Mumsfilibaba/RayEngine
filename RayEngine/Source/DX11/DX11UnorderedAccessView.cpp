@@ -62,6 +62,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11UnorderedAccessView::SetName(const std::string& name)
+		{
+			m_View->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11UnorderedAccessView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX11Device(m_Device);

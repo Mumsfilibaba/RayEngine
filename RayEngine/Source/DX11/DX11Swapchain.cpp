@@ -86,6 +86,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11Swapchain::SetName(const std::string& name)
+		{
+			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX11Device(m_Device);
