@@ -82,6 +82,7 @@ namespace RayEngine
 			
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

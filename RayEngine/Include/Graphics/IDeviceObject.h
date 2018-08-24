@@ -44,6 +44,26 @@ namespace RayEngine
 			IDeviceObject() {}
 			virtual ~IDeviceObject() {}
 
+
+			/*////////////////////////////////////////////////////////////
+
+				Sets the name of the object.
+
+				name - A new name of the object.
+
+			////////////////////////////////////////////////////////////*/
+			virtual void SetName(const std::string& name) = 0;
+
+			/*////////////////////////////////////////////////////////////
+				
+				Querys the device that created the object.
+
+				ppDevice - A valid pointer to a ppDevice - interface.
+
+				Release needs to be called on the returned object when
+				it is no longer needed.
+
+			////////////////////////////////////////////////////////////*/
 			virtual void QueryDevice(IDevice** ppDevice) const = 0;
 		};
 	}

@@ -54,6 +54,7 @@ namespace RayEngine
 			DX12RootVariableSlot* const * GetDX12RootVariableSlotArray(int32 index) const;
 			int32 GetDX12RootVariableSlotCount() const;
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

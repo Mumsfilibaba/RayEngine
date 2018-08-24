@@ -49,6 +49,7 @@ namespace RayEngine
 
 			ID3D11ShaderResourceView* GetD3D11ShaderResourceView() const;
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

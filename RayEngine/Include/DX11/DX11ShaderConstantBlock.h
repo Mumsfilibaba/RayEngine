@@ -51,6 +51,8 @@ namespace RayEngine
 			void SetConstant(uint32 constant, uint32 index);
 
 			ID3D11Buffer* GetD3D11Buffer() const;
+			
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

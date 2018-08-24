@@ -335,7 +335,17 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual System::Log* GetDeviceLog() = 0;
 			
-			
+
+			/*////////////////////////////////////////////////////////////
+
+				Sets the name of the object.
+
+				name - A new name of the object.
+
+			////////////////////////////////////////////////////////////*/
+			virtual void SetName(const std::string& name) = 0;
+
+
 			/*////////////////////////////////////////////////////////////
 				Query the factory that was used to create this device.
 				The referencecount of the factory will be increased

@@ -49,6 +49,7 @@ namespace RayEngine
 
 			ID3D11SamplerState* GetD3D11SamplerState() const;
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

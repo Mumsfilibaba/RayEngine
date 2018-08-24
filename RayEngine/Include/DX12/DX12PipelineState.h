@@ -51,6 +51,8 @@ namespace RayEngine
 			ID3D12PipelineState* GetD3D12PipelineState() const;
 
 			PIPELINE_TYPE GetPipelineType() const override final;
+
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

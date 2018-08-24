@@ -52,6 +52,8 @@ namespace RayEngine
 			D3D12_SHADER_BYTECODE GetD3D12ByteCode() const;
 
 			SHADER_TYPE GetType() const override final;
+
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

@@ -65,6 +65,7 @@ namespace RayEngine
 			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info) override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
 		
+			void SetName(const std::string& name) override final;
 			void QueryFactory(IFactory** ppFactory) const override final;
 			
 			System::Log* GetDeviceLog() override final;

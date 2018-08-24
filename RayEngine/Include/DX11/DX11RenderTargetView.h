@@ -49,6 +49,7 @@ namespace RayEngine
 
 			ID3D11RenderTargetView* GetD3D11RenderTargetView() const;
 			
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

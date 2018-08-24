@@ -48,6 +48,7 @@ namespace RayEngine
 			DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewInfo& info);
 			~DX12UnorderedAccessView();
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

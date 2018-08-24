@@ -48,6 +48,7 @@ namespace RayEngine
 			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewInfo& info);
 			~DX12ShaderResourceView();
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

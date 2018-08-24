@@ -305,6 +305,19 @@ namespace RayEngine
 
 		/*////////////////////////////////////////////////////////////
 
+			Describes a pipelinestate
+
+			Name - Name of the state
+
+			Type - Type of pipelinestate
+
+			pRootLayout - A valid pointer to a RootLayout to be used
+			with the pipelinestate. 
+
+			GraphicsPipeline - Descibes a graphicspipeline;
+
+			ComputePipeline - Descibes a computepipeline;
+
 		////////////////////////////////////////////////////////////*/
 		struct PipelineStateInfo
 		{
@@ -339,6 +352,36 @@ namespace RayEngine
 				that will be used.
 
 				DepthStencilFormat - The format of the depthstencil.
+
+				SampleCount - The samples of the rendertargets.
+
+				InputLayout - Describes the input to the vertexshader.
+
+				RasterizerState - Describes how the outputimage will be 
+				rasterized.
+
+				DepthStencilState - Descibes how depth- and 
+				stenciltesting will be performed.
+
+				BlendState - Describes how blending will be performed.
+
+				SampleMask - Samplemask for the blendstate.
+
+				Topology - The topology to use for the tesselation and
+				geometrystages.
+
+				StripCutEnable - Enable the value -1 to restart the 
+				strip. Requires an indexbuffer.
+
+				pVertexShader - Shader for the vertexstage
+
+				pHullShader - Shader for the tesselationstage
+
+				pDomainShader - Shader for the tesselationstage
+
+				pGeometryShader - Shader for the geometrystage
+
+				pPixelShader - Shader for the pixelstage
 
 			////////////////////////////////////////////////////////////*/
 			struct GraphicsPipelineInfo
@@ -396,7 +439,9 @@ namespace RayEngine
 			IPipelineState() {}
 			virtual ~IPipelineState() {}
 
-			//Get type
+			/*////////////////////////////////////////////////////////////
+				Return the type of the pipeline.
+			////////////////////////////////////////////////////////////*/
 			virtual PIPELINE_TYPE GetPipelineType() const = 0;
 		};
 	}

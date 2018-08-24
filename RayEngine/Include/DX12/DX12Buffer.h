@@ -55,6 +55,7 @@ namespace RayEngine
 			void* Map(int32 subresource) override final;
 			void Unmap() override final;
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

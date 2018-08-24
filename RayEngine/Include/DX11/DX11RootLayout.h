@@ -52,6 +52,7 @@ namespace RayEngine
 
 			IDX11RootVariableSlot* GetDX11VariableSlot(int32 slotSndex) const;
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

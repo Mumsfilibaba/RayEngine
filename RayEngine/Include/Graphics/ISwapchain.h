@@ -74,6 +74,16 @@ namespace RayEngine
 			virtual const ITexture* GetBuffer(int32 index) const = 0;
 			//Present next backbuffer to the front
 			virtual void Present() const = 0;
+
+
+			/*////////////////////////////////////////////////////////////
+
+				Sets the name of the object.
+
+				name - A new name of the object.
+
+			////////////////////////////////////////////////////////////*/
+			virtual void SetName(const std::string& name) = 0;
 			//Get the CommandQueue that created the swapchain
 			virtual void QueryDevice(IDevice** ppDevice) const = 0;
 			//Get the factory that created the swapchain 

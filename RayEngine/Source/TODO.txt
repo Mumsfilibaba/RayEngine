@@ -1,15 +1,17 @@
 TODO:
--Generate MipMaps
--DX12 - Dynamic uploadheap - Resize when needed
+-DX12 - Swapchain flags for usage, format, count etc
 -Swapchain Resize
+-Swapchain Fullscreen
+-IDeviceContext::SetConstant()
+-IDeviceContext::SetIndexBuffer()
+-DX12 - Dynamic uploadheap - Resize when needed
+-Generate MipMaps
 -Create Constantbuffer in DX11Shader for shaderconstants
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
--DX12 - Swapchain flags for usage, format, count etc
 
 -Constantbuffer, Sampler, Textures DX11, DX12, Vulkan
 -Render triangle Vulkan
 -Implement OpenGL
--Swapchain Fullscreen
 
 
 -DX12 - Check tearing support - Vulkan (if supported by the API)

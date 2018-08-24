@@ -52,6 +52,7 @@ namespace RayEngine
 			int32 GetDescriptorsLeft() const;
 			DX12DescriptorHandle GetNext(const DX12Resource* pResource) const;
 
+			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:

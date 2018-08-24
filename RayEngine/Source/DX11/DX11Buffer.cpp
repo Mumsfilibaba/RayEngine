@@ -95,6 +95,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX11Buffer::SetName(const std::string& name)
+		{
+			m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11Buffer::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX11Device(m_Device);

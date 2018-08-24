@@ -40,7 +40,7 @@ namespace RayEngine
 
 		public:
 			DX12RootVariableSlot(D3D12_RESOURCE_STATES neededState);
-			virtual ~DX12RootVariableSlot();
+			virtual ~DX12RootVariableSlot() {}
 
 			virtual void SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* ppSRVs, int32 count) const = 0;
 			virtual void SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const = 0;
