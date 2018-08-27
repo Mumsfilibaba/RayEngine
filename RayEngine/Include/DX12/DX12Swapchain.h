@@ -45,7 +45,7 @@ namespace RayEngine
 			DX12Swapchain& operator=(DX12Swapchain&& other) = delete;
 
 		public:
-			DX12Swapchain(IFactory* pFactory, const SwapchainInfo& info);
+			DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
 			~DX12Swapchain();
 
 			int32 GetCurrentBuffer() const override final;

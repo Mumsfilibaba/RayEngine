@@ -582,6 +582,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::SetName(const std::string& name)
+		{
+			D3D12SetName(m_Queue, name);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

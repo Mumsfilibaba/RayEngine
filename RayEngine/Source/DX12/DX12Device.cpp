@@ -57,7 +57,8 @@ namespace RayEngine
 			AddRef();
 			m_Factory = reinterpret_cast<DX12Factory*>(pFactory->QueryReference());
 			
-			m_UploadHeap = new DX12DynamicUploadHeap(this, info.Name + ": Dynamic Upload-Heap", D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
+			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
+			m_UploadHeap->SetName(info.Name + ": Dynamic Upload-Heap");
 
 			Create(pFactory, info, debugLayer);
 		}
@@ -168,6 +169,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12Device::SetName(const std::string& name)
+		{
+			D3D12SetName(m_Device, name);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Device::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = reinterpret_cast<DX12Factory*>(m_Factory->QueryReference());
@@ -269,11 +278,17 @@ namespace RayEngine
 					}
 
 
-					m_DsvHeap = new DX12DescriptorHeap(this, info.Name + ": DSV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 8, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap = new DX12DescriptorHeap(this, info.Name + ": RTV-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 64, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_ResourceHeap = new DX12DescriptorHeap(this, info.Name + ": Resource-Heap (CBV/SRV)", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-					m_SamplerHeap = new DX12DescriptorHeap(this, info.Name + ": Sampler-Heap", D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, 128, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_DsvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, info.DepthStencilDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_DsvHeap->SetName(info.Name + ": DSV-Heap");
 
+					m_RtvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, info.RendertargetDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap->SetName(info.Name + ": RTV-Heap");
+
+					m_ResourceHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, info.ResourceDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_ResourceHeap->SetName(info.Name + ": Resource-Heap (CBV/SRV)");
+
+					m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, info.SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_SamplerHeap->SetName(info.Name + ": Sampler-Heap");
 
 					m_ImmediateContext = new DX12DeviceContext(this, false);
 

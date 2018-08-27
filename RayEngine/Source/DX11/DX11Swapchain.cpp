@@ -32,7 +32,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX11Swapchain::DX11Swapchain(IFactory* pFactory, const SwapchainInfo& info)
+		DX11Swapchain::DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
 			: m_Device(nullptr),
 			m_Factory(nullptr),
 			m_Swapchain(nullptr),
@@ -42,7 +42,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<DX11Factory*>(pFactory->QueryReference());
-			m_Device = reinterpret_cast<DX11Device*>(info.pDevice->QueryReference());
+			m_Device = reinterpret_cast<DX11Device*>(pDevice->QueryReference());
 
 			Create(info);
 		}
@@ -126,7 +126,7 @@ namespace RayEngine
 			using namespace System;
 
 			DXGI_SWAP_CHAIN_DESC desc = {};
-			desc.BufferCount = info.Buffer.Count;
+			desc.BufferCount = info.Count;
 			desc.BufferDesc.Format = ReToDXFormat(info.Buffer.Format);
 			desc.BufferDesc.Height = info.Buffer.Height;
 			desc.BufferDesc.Width = info.Buffer.Width;
@@ -159,7 +159,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_BufferCount = info.Buffer.Count;
+				m_BufferCount = info.Count;
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 			}
 

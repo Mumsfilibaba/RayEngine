@@ -35,6 +35,7 @@ namespace RayEngine
 		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
 			: m_Device(nullptr),
 			m_BufferType(BUFFER_USAGE_UNKNOWN),
+			m_MappedSubresource(-1),
 			m_ConstantBufferView(),
 			m_Views()
 		{
@@ -55,9 +56,21 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void* DX12Buffer::Map(int32 subresource)
+		void* DX12Buffer::Map(int32 subresource, RESOURCE_MAP_FLAG flag)
 		{
-			return nullptr;
+			void* gpuPtr = nullptr;
+			if (flag == RESOURCE_MAP_FLAG_READ)
+			{
+				m_Resource->Map(subresource, nullptr, &gpuPtr);
+			}
+			else if (flag == RESOURCE_MAP_FLAG_WRITE)
+			{
+				D3D12_RANGE range = { 0, 0 };
+				m_Resource->Map(subresource, &range, &gpuPtr);
+			}
+
+			m_MappedSubresource = subresource;
+			return gpuPtr;
 		}
 
 
@@ -65,6 +78,16 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Buffer::Unmap()
 		{
+			m_Resource->Unmap(m_MappedSubresource, nullptr);
+			m_MappedSubresource = -1;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Buffer::SetName(const std::string& name)
+		{
+			D3D12SetName(m_Resource, name);
 		}
 
 

@@ -52,7 +52,7 @@ namespace RayEngine
 			D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const;
 			D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const;
 
-			void* Map(int32 subresource) override final;
+			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			void Unmap() override final;
 
 			void SetName(const std::string& name) override final;
@@ -71,6 +71,7 @@ namespace RayEngine
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;
+			int32 m_MappedSubresource;
 		};
 	}
 }

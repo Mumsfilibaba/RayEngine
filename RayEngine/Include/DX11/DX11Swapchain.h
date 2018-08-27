@@ -49,7 +49,7 @@ namespace RayEngine
 			DX11Swapchain& operator=(DX11Swapchain&& other) = delete;
 
 		public:
-			DX11Swapchain(IFactory* pFactory, const SwapchainInfo& info);
+			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
 			~DX11Swapchain();
 
 			int32 GetCurrentBuffer() const override final;

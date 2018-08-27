@@ -52,6 +52,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12RenderTargetView::SetName(const std::string& name)
+		{
+			//Not relevant for now
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12RenderTargetView::QueryDevice(IDevice ** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

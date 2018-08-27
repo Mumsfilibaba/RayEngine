@@ -51,7 +51,7 @@ namespace RayEngine
 			int32 GetByteStride() const;
 			ID3D11Buffer* GetD3D11Buffer() const;
 
-			void* Map(int32 subresource) override final;
+			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			void Unmap() override final;
 
 			void SetName(const std::string& name) override final;

@@ -58,6 +58,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12Shader::SetName(const std::string& name)
+		{
+			//Not relevant
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Shader::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

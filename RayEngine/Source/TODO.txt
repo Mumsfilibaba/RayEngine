@@ -1,5 +1,5 @@
 TODO:
--DX12 - Swapchain flags for usage, format, count etc
+-Swapchain flags for usage, tearing etc
 -Swapchain Resize
 -Swapchain Fullscreen
 -IDeviceContext::SetConstant()

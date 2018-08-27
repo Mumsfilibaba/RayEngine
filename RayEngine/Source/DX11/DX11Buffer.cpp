@@ -73,12 +73,18 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void* DX11Buffer::Map(int32 subresource)
+		void* DX11Buffer::Map(int32 subresource, RESOURCE_MAP_FLAG flag)
 		{
 			D3D11_MAPPED_SUBRESOURCE mappedResource = {};
 
+			D3D11_MAP map;
+			if (RESOURCE_MAP_FLAG_READ)
+				map = D3D11_MAP_READ;
+			else
+				map = D3D11_MAP_WRITE;
+
 			ID3D11DeviceContext* pD3D11Context = m_Context->GetD3D11DeviceContext();
-			pD3D11Context->Map(m_Resource, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			pD3D11Context->Map(m_Resource, 0, map, 0, &mappedResource);
 
 			return mappedResource.pData;
 		}

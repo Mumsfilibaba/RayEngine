@@ -38,21 +38,21 @@ namespace RayEngine
 			DX11Factory& operator=(DX11Factory&& other) = delete;
 
 		public:
-			DX11Factory(const std::string& name, bool debugLayer);
+			DX11Factory(bool debugLayer);
 			~DX11Factory();
 
 			IDXGIFactory* GetDXGIFactory() const;
 
 			void EnumerateAdapters(AdapterList& list) const override final;
 			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
-			bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
+			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo) override final;
 			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 
 			void SetName(const std::string& name) override final;
 			GRAPHICS_API GetGraphicsApi() const override final;
 
 		private:
-			void Create(const std::string& name);
+			void Create();
 
 		private:
 			IDXGIFactory* m_Factory;

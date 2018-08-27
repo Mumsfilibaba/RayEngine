@@ -92,6 +92,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12CommandList::SetName(const std::string& name)
+		{
+			D3D12SetName(m_List, name);
+			D3D12SetName(m_Allocator, name + " : Allocator");
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12CommandList::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

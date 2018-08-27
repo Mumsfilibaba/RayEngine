@@ -271,6 +271,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void VulkFactory::SetName(const std::string& name)
+		{
+			//Not relevant
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		GRAPHICS_API VulkFactory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_VULKAN;

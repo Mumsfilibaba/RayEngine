@@ -80,11 +80,14 @@ namespace RayEngine
 
 				ppSwapchain - A valid pointer to a ISwapchain interface.
 
+				ppDevice - A valid pointer to a IDevice interface to 
+				create the swapchain with.
+
 				swapchainInfo - Structure that contains information about
 				the swapchain to be created.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) = 0;
+			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo) = 0;
 
 
 			/*////////////////////////////////////////////////////////////

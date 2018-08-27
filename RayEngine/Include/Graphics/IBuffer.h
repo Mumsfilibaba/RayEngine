@@ -97,8 +97,10 @@ namespace RayEngine
 
 				subresource - The subreource.
 
+				flag - How the resource should be mapped.
+
 			////////////////////////////////////////////////////////////*/
-			virtual void* Map(int32 subresource) = 0;
+			virtual void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) = 0;
 
 
 			/*////////////////////////////////////////////////////////////

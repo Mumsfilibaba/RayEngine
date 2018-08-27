@@ -109,6 +109,7 @@ namespace RayEngine
 		GRAPHICS_API_D3D12 = 1,
 		GRAPHICS_API_D3D11 = 2,
 		GRAPHICS_API_VULKAN = 3,
+		GRAPHICS_API_OPENGL = 4,
 	};
 
 
@@ -417,6 +418,16 @@ namespace RayEngine
 		IMAGE_EXTENSION_TGA = 3,
 		IMAGE_EXTENSION_JPG = 4,
 		IMAGE_EXTENSION_HDR = 5,
+	};
+
+
+
+	/////////////////////////////////////////////////////////////
+	enum RESOURCE_MAP_FLAG : int32
+	{
+		RESOURCE_MAP_FLAG_NONE = 0,
+		RESOURCE_MAP_FLAG_READ = 1,
+		RESOURCE_MAP_FLAG_WRITE = 2,
 	};
 
 

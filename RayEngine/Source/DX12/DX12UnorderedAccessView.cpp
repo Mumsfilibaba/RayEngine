@@ -51,6 +51,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12UnorderedAccessView::SetName(const std::string& name)
+		{
+			//Not relevant
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12UnorderedAccessView::QueryDevice(IDevice ** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

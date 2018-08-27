@@ -36,19 +36,33 @@ namespace RayEngine
 
 		/*////////////////////////////////////////////////////////////
 
+			A structure containg info about a swapchain.
+
+			Name - Name of the swapchain.
+
+			pWindow - Window for the swapchain to display at when
+			calling present.
+
+			Count - The number of buffers in the swapchain.
+
+			Format - Format of the buffers to use.
+
+			Width - The width of the buffers.
+
+			Height - The height of the buffers.
+
 		////////////////////////////////////////////////////////////*/
 		struct SwapchainInfo
 		{
 			std::string Name = "";
 			System::Window* pWindow = nullptr;
-			IDevice* pDevice = nullptr;
 
+			int32 Count = 0;
 			struct
 			{
 				FORMAT Format = FORMAT_UNKNOWN;
 				int32 Width = 0;
 				int32 Height = 0;
-				int32 Count = 0;
 			} Buffer;
 		};
 
@@ -67,12 +81,27 @@ namespace RayEngine
 			ISwapchain() {}
 			virtual ~ISwapchain() {}
 
-			//Returns the number of the current buffer being done rendering
+
+			/*////////////////////////////////////////////////////////////
+				Returns the index of the current buffer
+			////////////////////////////////////////////////////////////*/
 			virtual int32 GetCurrentBuffer() const = 0;
-			//Get the texture resource in the chain
+
+
+			/*////////////////////////////////////////////////////////////
+				
+				Returns the buffer with a certain index.
+
+				index - Index of the buffer.
+
+			////////////////////////////////////////////////////////////*/
 			virtual ITexture* GetBuffer(int32 index) = 0;
 			virtual const ITexture* GetBuffer(int32 index) const = 0;
-			//Present next backbuffer to the front
+
+
+			/*////////////////////////////////////////////////////////////
+				Presents and swaps the buffers.
+			////////////////////////////////////////////////////////////*/
 			virtual void Present() const = 0;
 
 
@@ -84,9 +113,27 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void SetName(const std::string& name) = 0;
-			//Get the CommandQueue that created the swapchain
+			
+
+			/*////////////////////////////////////////////////////////////
+				
+				Queries the device that were used to create the 
+				swapchain.
+
+				ppDevice - A valid pointer to an IDevice interface
+
+			////////////////////////////////////////////////////////////*/
 			virtual void QueryDevice(IDevice** ppDevice) const = 0;
-			//Get the factory that created the swapchain 
+			
+
+			/*////////////////////////////////////////////////////////////
+
+				Queries the factory that were used to create the
+				swapchain.
+
+				ppFactory- A valid pointer to an IFactory interface
+
+			////////////////////////////////////////////////////////////*/
 			virtual void QueryFactory(IFactory** ppFactory) const = 0;
 		};
 	}

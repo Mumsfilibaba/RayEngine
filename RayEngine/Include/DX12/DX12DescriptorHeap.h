@@ -46,7 +46,6 @@ namespace RayEngine
 
 		public:
 			DX12DescriptorHeap(IDevice* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
-			DX12DescriptorHeap(IDevice* pDevice, const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 			~DX12DescriptorHeap();
 
 			int32 GetDescriptorsLeft() const;
@@ -56,7 +55,7 @@ namespace RayEngine
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(const std::string& name, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
+			void Create(D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 
 		private:
 			DX12Device* m_Device;

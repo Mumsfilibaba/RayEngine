@@ -32,12 +32,12 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12Factory::DX12Factory(const std::string& name, bool debugLayer)
+		DX12Factory::DX12Factory(bool debugLayer)
 			: m_Factory(nullptr),
 			m_DebugController(nullptr)
 		{
 			AddRef();
-			Create(name, debugLayer);
+			Create(debugLayer);
 		}
 
 
@@ -94,15 +94,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Factory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
 		{
-			return (*ppDevice) = new DX12Device(this, deviceInfo, m_DebugController != nullptr);
+			return ((*ppDevice) = new DX12Device(this, deviceInfo, m_DebugController != nullptr)) != nullptr;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
+		bool DX12Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
 		{
-			return (*ppSwapchain) = new DX12Swapchain(this, swapchainInfo);
+			((*ppSwapchain) = new DX12Swapchain(this, pDevice, swapchainInfo)) != nullptr;
 		}
 
 
@@ -110,8 +110,21 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			DX12Device* pDX12Device = new DX12Device(this, deviceInfo, (m_DebugController != nullptr));
-			return (pDX12Device != nullptr);
+			IDevice* pDevice = new DX12Device(this, deviceInfo, m_DebugController != nullptr);
+			ISwapchain* pSwapchain = new DX12Swapchain(this, pDevice, swapchainInfo);
+
+			(*ppDevice) = pDevice;
+			(*ppSwapchain) = pSwapchain;
+
+			return (pDevice != nullptr) && (pSwapchain != nullptr);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX12Factory::SetName(const std::string& name)
+		{
+			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
 		}
 
 
@@ -125,7 +138,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12Factory::Create(const std::string& name, bool debugLayer)
+		void DX12Factory::Create(bool debugLayer)
 		{
 			uint32 factoryFlags = 0;
 			if (debugLayer)
@@ -145,10 +158,6 @@ namespace RayEngine
 			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
 			{
 				return;
-			}
-			else
-			{
-				m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 

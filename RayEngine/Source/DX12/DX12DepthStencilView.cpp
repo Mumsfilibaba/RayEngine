@@ -52,6 +52,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12DepthStencilView::SetName(const std::string& name)
+		{
+			//Not relevant for now
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12DepthStencilView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

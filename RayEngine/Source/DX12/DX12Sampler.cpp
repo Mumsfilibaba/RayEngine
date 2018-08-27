@@ -67,6 +67,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12Sampler::SetName(const std::string& name)
+		{
+			//Not relevant
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Sampler::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

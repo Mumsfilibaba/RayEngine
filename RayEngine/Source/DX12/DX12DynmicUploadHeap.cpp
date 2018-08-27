@@ -29,7 +29,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX12DynamicUploadHeap::DX12DynamicUploadHeap(IDevice* pDevice, const std::string& name, uint32 alignment, uint32 sizeInBytes)
+		DX12DynamicUploadHeap::DX12DynamicUploadHeap(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes)
 			: DX12Resource(),
 			m_Device(nullptr),
 			m_Heap(nullptr),
@@ -38,7 +38,7 @@ namespace RayEngine
 			AddRef();
 			m_Device = QueryDX12Device(pDevice);
 
-			Create(name, alignment, sizeInBytes);
+			Create(alignment, sizeInBytes);
 		}
 
 
@@ -60,8 +60,8 @@ namespace RayEngine
 			//TODO: If sizeInBytes > size reallocate resource and heap if necessary
 
 			void* pGpuData = nullptr;
-
 			D3D12_RANGE range = { 0, 0 };
+
 			m_Resource->Map(0, &range, &pGpuData);
 			memcpy(pGpuData, pData, sizeInBytes);
 			m_Resource->Unmap(0, nullptr);
@@ -78,6 +78,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12DynamicUploadHeap::SetName(const std::string& name)
+		{
+			D3D12SetName(m_Resource, name);
+			D3D12SetName(m_Heap, name + " : Heap");
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12DynamicUploadHeap::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);
@@ -86,7 +95,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX12DynamicUploadHeap::Create(const std::string& name, uint32 alignment, uint32 sizeInBytes)
+		void DX12DynamicUploadHeap::Create(uint32 alignment, uint32 sizeInBytes)
 		{
 			using namespace System;
 
@@ -106,10 +115,6 @@ namespace RayEngine
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Heap." + DXErrorString(hr));
 				return;
-			}
-			else
-			{
-				D3D12SetName(m_Heap, name + ": Heap");
 			}
 
 
@@ -134,7 +139,6 @@ namespace RayEngine
 			else
 			{
 				m_SizeInBytes = sizeInBytes;
-				D3D12SetName(m_Resource, name + ": Resource");
 			}
 		}
 	}

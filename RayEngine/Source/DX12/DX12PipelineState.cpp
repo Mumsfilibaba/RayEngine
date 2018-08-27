@@ -64,6 +64,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12PipelineState::SetName(const std::string& name)
+		{
+			D3D12SetName(m_PipelineState, name);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::QueryDevice(IDevice ** ppDevice) const
 		{
 			(*ppDevice) = QueryDX12Device(m_Device);

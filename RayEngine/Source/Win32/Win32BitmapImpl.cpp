@@ -92,7 +92,7 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	bool Win32BitmapImpl::LoadFromFile(const Tchar* const filename, const Tchar* filepath, int32 width, int32 height)
+	bool Win32BitmapImpl::LoadImageFromFile(const Tchar* const filename, const Tchar* filepath, int32 width, int32 height)
 	{
 		if (m_Pixels != nullptr)
 		{
@@ -103,7 +103,7 @@ namespace RayEngine
 		m_Width = width;
 		m_Height = height;
 
-		if (TextureLoader::LoadFromFile(filename, filepath, const_cast<const void**>(reinterpret_cast<void**>(&m_Pixels)),
+		if (TextureLoader::LoadImageFromFile(filename, filepath, const_cast<const void**>(reinterpret_cast<void**>(&m_Pixels)),
 			m_Width, m_Height, FORMAT_R8G8B8A8_UINT))
 		{
 			TextureLoader::ReverseRB(m_Pixels, m_Width, m_Height, FORMAT_R8G8B8A8_UINT);

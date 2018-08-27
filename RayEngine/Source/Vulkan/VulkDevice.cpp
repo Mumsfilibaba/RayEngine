@@ -61,14 +61,6 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateCommandQueue(ICommandQueue** ppCommandQueue, const CommandQueueInfo& info)
-		{
-			return false;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
 		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderInfo& info)
 		{
 			return ((*ppShader = new VulkShader(this, info)));
@@ -109,9 +101,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateRootSignature(IRootSignature** ppRootSignature, const RootSignatureInfo& info)
+		bool VulkDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info)
 		{
-			return ((*ppRootSignature = new VulkRootSignature(this, info)));
+			return ((*ppRootLayout= new VulkRootLayout(this, info)));
 		}
 
 
@@ -120,6 +112,14 @@ namespace RayEngine
 		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
 		{
 			return ((*ppPipelineState = new VulkPipelineState(this, info)));
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void VulkDevice::SetName(const std::string& name)
+		{
+			//Not relevant for now
 		}
 
 

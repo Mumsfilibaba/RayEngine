@@ -68,9 +68,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		RESOURCE_STATE DX12Texture::GetResourceState() const
+		void DX12Texture::SetName(const std::string& name)
 		{
-			return DXToREResourceState(GetD3D12State());
+			D3D12SetName(m_Resource, name);
 		}
 
 

@@ -31,12 +31,12 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		DX11Factory::DX11Factory(const std::string& name, bool debugLayer)
+		DX11Factory::DX11Factory(bool debugLayer)
 			: m_Factory(nullptr),
 			m_DebugLayer(debugLayer)
 		{
 			AddRef();
-			Create(name);
+			Create();
 		}
 
 
@@ -101,15 +101,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Factory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
 		{
-			return (*ppDevice = new DX11Device(this, deviceInfo, m_DebugLayer));
+			return ((*ppDevice) = new DX11Device(this, deviceInfo, m_DebugLayer)) != nullptr;
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
+		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
 		{
-			return ((*ppSwapchain = new DX11Swapchain(this, swapchainInfo)));
+			return ((*ppSwapchain) = new DX11Swapchain(this, pDevice, swapchainInfo)) != nullptr;
 		}
 
 
@@ -117,7 +117,13 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX11Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			return false;
+			IDevice* pDevice = new DX11Device(this, deviceInfo, m_DebugLayer);
+			ISwapchain* pSwapchain = new DX11Swapchain(this, pDevice, swapchainInfo);
+
+			(*ppDevice) = pDevice;
+			(*ppSwapchain) = pSwapchain;
+
+			return (pDevice != nullptr) && (pSwapchain != nullptr);
 		}
 
 
@@ -139,15 +145,11 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Factory::Create(const std::string& name)
+		void DX11Factory::Create()
 		{
 			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory))))
 			{
 				return;
-			}
-			else
-			{
-				m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 

@@ -44,7 +44,7 @@ namespace RayEngine
 			DX12DynamicUploadHeap& operator=(DX12DynamicUploadHeap&& other) = delete;
 
 		public:
-			DX12DynamicUploadHeap(IDevice* pDevice, const std::string& name, uint32 alignment, uint32 sizeInBytes);
+			DX12DynamicUploadHeap(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes);
 			~DX12DynamicUploadHeap();
 
 			void SetData(const void* pData, int32 size);
@@ -55,7 +55,7 @@ namespace RayEngine
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
-			void Create(const std::string& name, uint32 alignment, uint32 sizeInBytes);
+			void Create(uint32 alignment, uint32 sizeInBytes);
 
 		private:
 			DX12Device* m_Device;
