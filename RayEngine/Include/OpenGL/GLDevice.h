@@ -20,5 +20,60 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-
+#include "..\Graphics\IDevice.h"
 #include "GLCommon.h"
+
+namespace RayEngine
+{
+	namespace Graphics
+	{
+		/////////////////////////////////////////////////////////////
+		class GLFactory;
+		class GLDeviceContext;
+
+
+
+		/////////////////////////////////////////////////////////////
+		class GLDevice final : public IDevice
+		{
+		public:
+			GLDevice(const GLDevice& other) = delete;
+			GLDevice& operator=(const GLDevice& other) = delete;
+			GLDevice(GLDevice&& other) = delete;
+			GLDevice& operator=(GLDevice&& other) = delete;
+
+		public:
+			GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+			~GLDevice();
+
+			GLNativeDevice GetGLNativeDevice() const;
+
+			bool GetImmediateContext(IDeviceContext** ppContext) override final;
+			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
+			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
+			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
+			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) override final;
+			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
+			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
+			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info) override final;
+			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+
+			void SetName(const std::string& name) override final;
+			void QueryFactory(IFactory** ppFactory) const override final;
+
+			System::Log* GetDeviceLog() override final;
+
+		private:
+			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+
+		private:
+			GLFactory* m_Factory;
+			GLDeviceContext* m_ImmediateContext;
+			GLNativeDevice m_Device;
+			mutable System::Log m_Log;
+		};
+	}
+}

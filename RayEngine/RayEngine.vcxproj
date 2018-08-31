@@ -235,6 +235,7 @@
     <ClInclude Include="Include\Graphics\Viewport.h" />
     <ClInclude Include="Include\OpenGL\GLCommon.h" />
     <ClInclude Include="Include\OpenGL\GLDevice.h" />
+    <ClInclude Include="Include\OpenGL\GLDeviceContext.h" />
     <ClInclude Include="Include\OpenGL\GLFactory.h" />
     <ClInclude Include="Include\OpenGL\GlImpl.h" />
     <ClInclude Include="Include\ReferenceCounter.h" />

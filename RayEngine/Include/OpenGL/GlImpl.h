@@ -38,6 +38,15 @@ failure and or malfunction of any kind.
 
 namespace RayEngine
 {
+#if defined(RE_PLATFORM_WINDOWS)
+	typedef HDC GLNativeDevice;
+	typedef HGLRC GLNativeContext;
+#else
+	typedef void* GLNativeDevice;
+	typedef void* GLNativeContext;
+#endif
+
+
 	bool LoadOpenGL();
 	void* LoadFunction(const char* name);
 	const char* GetGLErrorString(int32 error);
