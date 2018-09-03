@@ -1,5 +1,8 @@
 TODO:
--Remove texureloader
+-Compile Debug x64
+-Compile Debug x86
+-Compile Release x64
+-Compile Release x86
 
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize

@@ -11,34 +11,18 @@
 
 #include <Graphics/IFactory.h>
 #include <Graphics/IDevice.h>
+#include <Graphics/IDeviceContext.h>
 #include <Graphics/ISwapchain.h>
 #include <Graphics/IRenderTargetView.h>
-#include <Graphics/TextureLoader.h>
+#include <Graphics/IShader.h>
+#include <Graphics/IRootLayout.h>
+#include <Graphics/IPipelineState.h>
+#include <Graphics/ITexture.h>
+#include <Graphics/IDepthStencilView.h>
+#include <Graphics/IBuffer.h>
+#include <Graphics/Viewport.h>
 
 #include <Math/RandomGenerator.h>
-
-struct A
-{
-	RayEngine::uint32 x;
-	RayEngine::uint32 y;
-};
-
-struct B
-{
-	RayEngine::uint32 z;
-	RayEngine::uint32 w;
-};
-
-struct C
-{
-	union
-	{
-		A a;
-		B b;
-	};
-};
-
-
 
 int main(int args, char* argsv[])
 {
@@ -46,8 +30,6 @@ int main(int args, char* argsv[])
 	using namespace System;
 	using namespace Math;
 	using namespace Graphics;
-
-	C c = {};
 
 	Log log;
 
@@ -110,8 +92,6 @@ int main(int args, char* argsv[])
 	//Create a device and swapchain
 	constexpr int32 bufferCount = 2;
 	AdapterInfo adapterInfo = adapterList[adapterIndex];
-	IDevice* pDevice = nullptr;
-	ISwapchain* pSwapchain = nullptr;
 
 	DeviceInfo deviceInfo = {};
 	deviceInfo.Name = "Main Device";
@@ -129,108 +109,54 @@ int main(int args, char* argsv[])
 	swapchainInfo.Buffer.Width = window.GetWidth();
 	swapchainInfo.Buffer.Height = window.GetHeight();
 
+	IDevice* pDevice = nullptr;
+	ISwapchain* pSwapchain = nullptr;
 	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
 
 
-	//Create a rendertargetview for the backbuffer
-	RenderTargetViewInfo rendertargetInfo = {};
-	rendertargetInfo.Format = swapchainInfo.Buffer.Format;
-
-	
-	IRenderTargetView* rtvs[bufferCount];
-	for (int32 i = 0; i < bufferCount; i++)
-	{
-		rtvInfo.pResource = swapchain->GetBuffer(i);
-		device->CreateRenderTargetView(&(rtvs[i]), rtvInfo);
-	}
-	
-
-
+	//Create shaders
 	ShaderInfo shaderInfo = {};
 	shaderInfo.Name = "VertexShader";
+#if defined(RE_DEBUG)
+	shaderInfo.Flags = SHADER_FLAGS_DEBUG;
+#else
+	shaderInfo.Flags = SHADER_FLAGS_NONE;
+#endif
 	shaderInfo.Source = "vs.hlsl";
 	shaderInfo.FilePath = "Shaders/";
 	shaderInfo.EntryPoint = "main";
 	shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
 	shaderInfo.Type = SHADER_TYPE_VERTEX;
-	shaderInfo.pVariables = nullptr;
-	shaderInfo.VariableCount = 0;
-	shaderInfo.pSamplers = nullptr;
-	shaderInfo.SamplerCount = 0;
 
-	IShader* vs = nullptr;
-	device->CreateShader(&vs, shaderInfo);
-
-	ShaderVariable variable = {};
-	variable.Type = VARIABLE_TYPE_UNIFORMBUFFER;
-	variable.ShaderRegister = 0;
-	variable.ShaderSpace = 0;
-	variable.ShaderUsage = SHADER_USAGE_DYNAMIC;
+	IShader* pVs = nullptr;
+	pDevice->CreateShader(&pVs, shaderInfo);
 
 	shaderInfo.Name = "PixelShader";
 	shaderInfo.Source = "ps.hlsl";
-	shaderInfo.VariableCount = 1;
-	shaderInfo.pVariables = &variable;
 	shaderInfo.Type = SHADER_TYPE_PIXEL;
 
-	IShader* ps = nullptr;
-	device->CreateShader(&ps, shaderInfo);
+	IShader* pPs = nullptr;
+	pDevice->CreateShader(&pPs, shaderInfo);
 
 
 
-	IBuffer* colorbuffer = nullptr;
-	BufferInfo colorBufferInfo = {};
-	colorBufferInfo.Name = "ColorBuffer";
-	colorBufferInfo.ByteStride = sizeof(ColorF);
-	colorBufferInfo.Count = 1;
-	colorBufferInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
-	colorBufferInfo.Type = BUFFER_USAGE_UNIFORM;
-	colorBufferInfo.Usage = RESOURCE_USAGE_DEFAULT;
+	//Create a RootLayout
+	RootLayoutInfo rootLayoutInfo = {};
+	rootLayoutInfo.Name = "RootLayout";
+	rootLayoutInfo.Flags = ROOT_LAYOUT_FLAG_NONE;
+	rootLayoutInfo.PipelineType = PIPELINE_TYPE_GRAPHICS;
+	rootLayoutInfo.pStaticSamplers = nullptr;
+	rootLayoutInfo.SamplerCount = 0;
+	rootLayoutInfo.pVariables = nullptr;
+	rootLayoutInfo.VariableCount = 0;
 
-	ResourceData colorData = {};
-	colorData.ByteStride = sizeof(ColorF);
-	colorData.WidthOrCount = 1;
-	colorData.pData = &ColorF::CORNFLOWERBLUE;
-
-	device->CreateBuffer(&colorbuffer, &colorData, colorBufferInfo);
+	IRootLayout* pRootLayout = nullptr;
+	pDevice->CreateRootLayout(&pRootLayout, rootLayoutInfo);
 
 
-
-	TextureInfo textureInfo = {};
-	textureInfo.Name = "Chess - Texture";
-	textureInfo.Flags = TEXTURE_FLAGS_SHADER_RESOURCE;
-	textureInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
-	textureInfo.Usage = RESOURCE_USAGE_DEFAULT;
-	textureInfo.Format = FORMAT_R8G8B8A8_UNORM;
-	textureInfo.Type = TEXTURE_TYPE_2D;
-	textureInfo.Width = 512;
-	textureInfo.Height = 512;
-	textureInfo.DepthOrArraySize = 1;
-	textureInfo.MipLevels = 1;
-	textureInfo.SampleCount = 1;
-
-	ResourceData textureData = {};
-	textureData.ByteStride = sizeof(uint8) * 4;
-	textureData.WidthOrCount = 512;
-	textureData.Height = 512;
-
-	TextureLoader::LoadFromFile("chess.jpg", "Textures/", &textureData.pData,
-		textureData.WidthOrCount, textureData.Height, FORMAT_R8G8B8A8_UNORM);
-
-	ITexture* texture = nullptr;
-	device->CreateTexture(&texture, &textureData, textureInfo);
-
-
-
-	IRootSignature* rootSignature = nullptr;
-	RootSignatureInfo rootInfo = {};
-	rootInfo.Name = "RootSignature";
-	rootInfo.ParameterCount = 0;
-	rootInfo.pParameters = nullptr;
-
-	device->CreateRootSignature(&rootSignature, rootInfo);
-
-	InputElementInfo elementinfo = { 
+	//Create a defenition for an inputelement (Define a vertex)
+	InputElementInfo elementinfo = 
+	{ 
 		"POSITION",
 		0,
 		FORMAT_R32G32B32_FLOAT,
@@ -241,58 +167,63 @@ int main(int args, char* argsv[])
 		sizeof(Math::Vector3)
 	};
 
-	IPipelineState* pipelineState = nullptr;
-	PipelineStateInfo pipelineInfo = {};
-	pipelineInfo.Name = "PipelineState";
-	pipelineInfo.Type = PIPELINE_TYPE_GRAPHICS;
-	pipelineInfo.pRootSignature = rootSignature;
-	pipelineInfo.GraphicsPipeline.pVertexShader = vs;
-	pipelineInfo.GraphicsPipeline.pPixelShader = ps;
-	pipelineInfo.GraphicsPipeline.DepthStencilFormat = FORMAT_D16_UNORM;
-	pipelineInfo.GraphicsPipeline.RenderTargetCount = 1;
-	pipelineInfo.GraphicsPipeline.RenderTargetFormats[0] = scInfo.Buffer.Format;
-	pipelineInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
-	pipelineInfo.GraphicsPipeline.SampleMask = -1;
-	pipelineInfo.GraphicsPipeline.StripCutEnable = false;
-	pipelineInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	pipelineInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
-	pipelineInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
-
-	device->CreatePipelineState(&pipelineState, pipelineInfo);
 
 
-	TextureInfo dsInfo = {};
-	dsInfo.Name = "DepthStencil-Texture";
-	dsInfo.Flags = TEXTURE_FLAGS_DEPTH_STENCIL;
-	dsInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
-	dsInfo.Usage = RESOURCE_USAGE_DEFAULT;
-	dsInfo.Format = FORMAT_D16_UNORM;
-	dsInfo.Type = TEXTURE_TYPE_2D;
-	dsInfo.Width = window.GetWidth();
-	dsInfo.Height = window.GetHeight();
-	dsInfo.DepthOrArraySize = 1;
-	dsInfo.MipLevels = 1;
-	dsInfo.SampleCount = 1;
+	//Create a pipelinestate
+	PipelineStateInfo pipelinestateInfo = {};
+	pipelinestateInfo.Name = "PipelineState";
+	pipelinestateInfo.Type = PIPELINE_TYPE_GRAPHICS;
+	pipelinestateInfo.pRootLayout = pRootLayout;
+	pipelinestateInfo.GraphicsPipeline.pVertexShader = pVs;
+	pipelinestateInfo.GraphicsPipeline.pPixelShader = pPs;
+	pipelinestateInfo.GraphicsPipeline.DepthStencilFormat = FORMAT_D16_UNORM;
+	pipelinestateInfo.GraphicsPipeline.RenderTargetCount = 1;
+	pipelinestateInfo.GraphicsPipeline.RenderTargetFormats[0] = swapchainInfo.Buffer.Format;
+	pipelinestateInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
+	pipelinestateInfo.GraphicsPipeline.SampleMask = -1;
+	pipelinestateInfo.GraphicsPipeline.StripCutEnable = false;
+	pipelinestateInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	pipelinestateInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
+	pipelinestateInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
 
-	ITexture* depthStencil = nullptr;
-	device->CreateTexture(&depthStencil, nullptr, dsInfo);
-
-
-	DepthStencilViewInfo dsvInfo = {};
-	dsvInfo.pResource = depthStencil;
-
-	IDepthStencilView* dsv = nullptr;
-	device->CreateDepthStencilView(&dsv, dsvInfo);
-
-	queue->Reset();
-	
-	queue->TransitionResource(depthStencil, RESOURCE_STATE_DEPTH_WRITE, 0);
-
-	queue->Close();
-	queue->Execute();
-	queue->Flush();
+	IPipelineState* pPipelineState = nullptr;
+	pDevice->CreatePipelineState(&pPipelineState, pipelinestateInfo);
 
 
+
+	//Create a texture for a depthstencil
+	TextureInfo depthStencilTextureInfo = {};
+	depthStencilTextureInfo.Name = "DepthStencil-Texture";
+	depthStencilTextureInfo.Flags = TEXTURE_FLAGS_DEPTH_STENCIL;
+	depthStencilTextureInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
+	depthStencilTextureInfo.Usage = RESOURCE_USAGE_DEFAULT;
+	depthStencilTextureInfo.Format = FORMAT_D16_UNORM;
+	depthStencilTextureInfo.Type = TEXTURE_TYPE_2D;
+	depthStencilTextureInfo.Width = window.GetWidth();
+	depthStencilTextureInfo.Height = window.GetHeight();
+	depthStencilTextureInfo.DepthOrArraySize = 1;
+	depthStencilTextureInfo.MipLevels = 1;
+	depthStencilTextureInfo.SampleCount = 1;
+
+	ITexture* pDepthStencilTexture = nullptr;
+	pDevice->CreateTexture(&pDepthStencilTexture, nullptr, depthStencilTextureInfo);
+
+
+	//Create a view for a depthstencil
+	DepthStencilViewInfo depthStencilViewInfo = {};
+	depthStencilViewInfo.Name = "DepthStencil";
+	depthStencilViewInfo.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
+	depthStencilViewInfo.pResource = pDepthStencilTexture;
+	depthStencilViewInfo.Format = pipelinestateInfo.GraphicsPipeline.DepthStencilFormat;
+	depthStencilViewInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+	depthStencilViewInfo.Texture2D.MipSlice = 0;
+
+	IDepthStencilView* pDepthStencilView = nullptr;
+	pDevice->CreateDepthStencilView(&pDepthStencilView, depthStencilViewInfo);
+
+
+
+	//Create a vertexbuffer
 	Vector3 vertices[3] = 
 	{
 		Vector3(0.0f, 0.5f, 0.0f),
@@ -306,29 +237,35 @@ int main(int args, char* argsv[])
 	vbData.ByteStride = sizeof(Vector3);
 	vbData.Height = 1;
 
-	BufferInfo vbInfo = {};
-	vbInfo.Name = "VertexBuffer";
-	vbInfo.Count = 3;
-	vbInfo.ByteStride = sizeof(Vector3);
-	vbInfo.Type = BUFFER_USAGE_VERTEX;
-	vbInfo.Usage = RESOURCE_USAGE_DEFAULT;
+	BufferInfo vertexBufferInfo = {};
+	vertexBufferInfo.Name = "VertexBuffer";
+	vertexBufferInfo.Count = 3;
+	vertexBufferInfo.ByteStride = sizeof(Vector3);
+	vertexBufferInfo.Type = BUFFER_USAGE_VERTEX;
+	vertexBufferInfo.Usage = RESOURCE_USAGE_DEFAULT;
 
-	IBuffer* vertexBuffer = nullptr;
-	device->CreateBuffer(&vertexBuffer, &vbData, vbInfo);
+	IBuffer* pVertexBuffer = nullptr;
+	pDevice->CreateBuffer(&pVertexBuffer, &vbData, vertexBufferInfo);
 
+
+	//Get devicecontext
+	IDeviceContext* pDeviceContext = nullptr;
+	pDevice->GetImmediateContext(&pDeviceContext);
+
+
+	//Show window when all initialization is completed
 	window.Show();
 
 
 	Clock clock;
 	RandomGenerator ran;
 	
-
 	Math::Vector3 lastAccelerometer;
-
 
 	float strength = 1.0f;
 	ColorF bgColor = ColorF::CORNFLOWERBLUE;
 
+	//Check for sensor support
 	if (Sensors::SensorSupported(SENSOR_TYPE_ACCELEROMETER))
 	{
 		log.Write(LOG_SEVERITY_INFO, "Accelerometer supported");
@@ -411,81 +348,59 @@ int main(int args, char* argsv[])
 			}
 		}
 
-		//if (clock.GetTotalTickTime().GetAsSeconds() > 0.01)
-		//{
-		//	ColorF c = bgColor * strength;
-		//	window.SetBackground((Color)c);
-		//	clock.Reset();
-		//}
 
-		queue->Reset();
 
-		int32 buffIndex = swapchain->GetCurrentBuffer();
-		ITexture* pBuff = swapchain->GetBuffer(buffIndex);
-		queue->TransitionResource(pBuff, RESOURCE_STATE_RENDER_TARGET, 0);
+		//Get and clear currentbackbuffer and depthstencil
+		ColorF backbufferColor = ColorF::CORNFLOWERBLUE;
+		IRenderTargetView* pBackBuffer = pSwapchain->GetCurrentView();
+		pDeviceContext->ClearRendertargetView(pBackBuffer, backbufferColor);
+		pDeviceContext->ClearDepthStencilView(pDepthStencilView, 1.0f, 0);
 
-		ColorF c = ColorF::DARKGREEN;
-		queue->ClearRendertargetView(rtvs[swapchain->GetCurrentBuffer()], c);
-		queue->ClearDepthStencilView(dsv, 1.0f, 0);
 
-		Viewport vPort = {};
-		vPort.Height = static_cast<float>(window.GetHeight());
-		vPort.Width = static_cast<float>(window.GetWidth());
-		vPort.TopLeftX = 0.0f;
-		vPort.TopLeftY = 0.0f;
-		vPort.MinDepth = 0.0f;
-		vPort.MaxDepth = 1.0f;
+		//Set the viewport
+		Viewport viewport = {};
+		viewport.Height = static_cast<float>(window.GetHeight());
+		viewport.Width = static_cast<float>(window.GetWidth());
+		viewport.TopLeftX = 0.0f;
+		viewport.TopLeftY = 0.0f;
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
 
-		queue->SetViewports(vPort);
+		pDeviceContext->SetViewports(viewport);
 
-		Math::Rectangle rect = {};
-		rect.BottomRight.x = static_cast<float>(window.GetWidth());
-		rect.BottomRight.y = static_cast<float>(window.GetHeight());
 
-		queue->SetScissorRects(rect);
+		//Set the scissor rect
+		Math::Rectangle scissorRect = {};
+		scissorRect.BottomRight.x = static_cast<float>(window.GetWidth());
+		scissorRect.BottomRight.y = static_cast<float>(window.GetHeight());
+		
+		pDeviceContext->SetScissorRects(scissorRect);
 
-		queue->SetRendertargets(rtvs[buffIndex], dsv);
-		queue->SetPipelineState(pipelineState);
-		queue->SetRootSignature(rootSignature);
 
-		queue->SetPrimitiveTopology(PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		queue->SetVertexBuffers(vertexBuffer, 0);
-		queue->Draw(0, 3);
+		pDeviceContext->SetRendertargets(pBackBuffer, pDepthStencilView);
+		pDeviceContext->SetPipelineState(pPipelineState);
+		pDeviceContext->SetRootLayout(pRootLayout);
 
-		queue->TransitionResource(pBuff, RESOURCE_STATE_PRESENT, 0);
+		
+		pDeviceContext->SetPrimitiveTopology(PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pDeviceContext->SetVertexBuffers(pVertexBuffer, 0);
+		pDeviceContext->Draw(0, 3);
 
-		queue->Close();
-		queue->Execute();
-
-		swapchain->Present();
-
-		queue->Flush();
+		pSwapchain->Present();
 	}
 
-	queue->Flush();
 
-	ReRelease_S(colorbuffer);
-	ReRelease_S(texture);
-	delete textureData.pData;
-
-	ReRelease_S(vs);
-	ReRelease_S(ps);
-	ReRelease_S(vertexBuffer);
-	ReRelease_S(dsv);
-	ReRelease_S(rootSignature);
-	ReRelease_S(pipelineState);
-	ReRelease_S(depthStencil);
-
-	for (int32 i = 0; i < bufferCount; i++)
-	{
-		ReRelease_S(rtvs[i]);
-	}
-
-	ReRelease_S(swapchain);
-	ReRelease_S(queue);
-
-	ReRelease_S(device);
-	ReRelease_S(factory);
+	ReRelease_S(pVs);
+	ReRelease_S(pPs);
+	ReRelease_S(pVertexBuffer);
+	ReRelease_S(pDepthStencilTexture);
+	ReRelease_S(pRootLayout);
+	ReRelease_S(pPipelineState);
+	ReRelease_S(pDepthStencilView);
+	ReRelease_S(pSwapchain);
+	ReRelease_S(pDeviceContext);
+	ReRelease_S(pDevice);
+	ReRelease_S(pFactory);
 
 	return 0;
 }

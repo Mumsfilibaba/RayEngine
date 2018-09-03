@@ -65,9 +65,9 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			BUFFER_USAGE m_BufferType;
-			DX12DescriptorHandle m_ConstantBufferView;
 			union 
 			{
+				DX12DescriptorHandle ConstantBuffer;
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;

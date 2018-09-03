@@ -84,19 +84,19 @@ namespace RayEngine
 			{
 				struct
 				{
-					uint32 MipSlice = 0;
+					uint32 MipSlice;
 				} Texture1D;
 
 				struct
 				{
-					uint32 MipSlice = 0;
-					uint32 ArraySize = 0;
-					uint32 FirstArraySlice = 0;
+					uint32 MipSlice;
+					uint32 ArraySize;
+					uint32 FirstArraySlice;
 				} Texture1DArray;
 
 				struct
 				{
-					uint32 MipSlice = 0;
+					uint32 MipSlice;
 				} Texture2D;
 
 				struct
@@ -105,15 +105,15 @@ namespace RayEngine
 
 				struct
 				{
-					uint32 MipSlice = 0;
-					uint32 ArraySize = 0;
-					uint32 FirstArraySlice = 0;
+					uint32 MipSlice;
+					uint32 ArraySize;
+					uint32 FirstArraySlice;
 				} Texture2DArray;
 
 				struct
 				{
-					uint32 ArraySize = 0;
-					uint32 FirstArraySlice = 0;
+					uint32 ArraySize;
+					uint32 FirstArraySlice;
 				} Texture2DMSArray;
 			};
 		};

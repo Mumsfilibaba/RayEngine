@@ -36,7 +36,6 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_BufferType(BUFFER_USAGE_UNKNOWN),
 			m_MappedSubresource(-1),
-			m_ConstantBufferView(),
 			m_Views()
 		{
 			AddRef();
@@ -103,7 +102,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12DescriptorHandle DX12Buffer::GetDX12DescriptorHandle() const
 		{
-			return m_ConstantBufferView;
+			return m_Views.ConstantBuffer;
 		}
 
 
@@ -203,8 +202,8 @@ namespace RayEngine
 			const DX12Device* pDX12Device = m_Device;
 			if (info.Usage == BUFFER_USAGE_CONSTANT)
 			{
-				m_ConstantBufferView = pDX12Device->GetDX12ResourceHeap()->GetNext();
-				m_ConstantBufferView.GpuResourceAdress = m_Resource->GetGPUVirtualAddress();
+				m_Views.ConstantBuffer = pDX12Device->GetDX12ResourceHeap()->GetNext(this);
+				m_Views.ConstantBuffer.GpuResourceAdress = m_Resource->GetGPUVirtualAddress();
 			}
 			else if (info.Usage == BUFFER_USAGE_VERTEX)
 			{
