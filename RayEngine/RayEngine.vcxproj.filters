@@ -399,7 +399,7 @@
     <ClInclude Include="Include\OpenGL\GLDeviceContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\OpenGL\GLSwapchain.h">
+    <ClInclude Include="Include\Utilities\TextureUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -732,15 +732,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\OpenGL\GLFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\OpenGL\GLDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\OpenGL\GLSwapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -188,10 +188,19 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void Window::GetDesc(WindowInfo& desc) const
+		NativeWindowHandle Window::GetNativeHandle() const
 		{
 			assert(m_Impl != nullptr);
-			m_Impl->GetDesc(desc);
+			return m_Impl->GetNativeHandle();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void Window::GetInfo(WindowInfo& desc) const
+		{
+			assert(m_Impl != nullptr);
+			m_Impl->GetInfo(desc);
 		}
 
 

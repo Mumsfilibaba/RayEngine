@@ -6,11 +6,39 @@
 #include <System/Mouse.h>
 #include <System/Keyboard.h>
 #include <System/Clipboard.h>
-#include <Math/RandomGenerator.h>
 #include <System/TouchScreen.h>
 #include <System/Sensors.h>
+
 #include <Graphics/IFactory.h>
+#include <Graphics/IDevice.h>
+#include <Graphics/ISwapchain.h>
+#include <Graphics/IRenderTargetView.h>
 #include <Graphics/TextureLoader.h>
+
+#include <Math/RandomGenerator.h>
+
+struct A
+{
+	RayEngine::uint32 x;
+	RayEngine::uint32 y;
+};
+
+struct B
+{
+	RayEngine::uint32 z;
+	RayEngine::uint32 w;
+};
+
+struct C
+{
+	union
+	{
+		A a;
+		B b;
+	};
+};
+
+
 
 int main(int args, char* argsv[])
 {
@@ -18,6 +46,8 @@ int main(int args, char* argsv[])
 	using namespace System;
 	using namespace Math;
 	using namespace Graphics;
+
+	C c = {};
 
 	Log log;
 
@@ -27,6 +57,7 @@ int main(int args, char* argsv[])
 	Bitmap icon(RE_T("Walter.png"), RE_T(""), 32, 32);
 	Bitmap cursor(RE_T("Cursor.png"), RE_T(""), 24, 24);
 
+	//Create a window
 	WindowInfo windowInfo = {};
 	windowInfo.BackgroundColor.r = 0;
 	windowInfo.BackgroundColor.g = 0;
@@ -43,68 +74,68 @@ int main(int args, char* argsv[])
 	windowInfo.Icon = icon;
 #endif
 
-	Event event;
 	Window window(windowInfo);
-
 	window.SetBackground(Color::CORNFLOWERBLUE);
 
-	IFactory* factory = IFactory::Create("Factory", GRAPHICS_API_D3D11, true);
-	
+
+	//Create a factory for the api
+	IFactory* pFactory = IFactory::Create(GRAPHICS_API_D3D11, true);
+	pFactory->SetName("Factory");
+
+	//Retrive all adapters on the system that the api can find
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
-	AdapterList adapters = {};
-	factory->EnumerateAdapters(adapters);
+	AdapterList adapterList = {};
+	pFactory->EnumerateAdapters(adapterList);
 
-#if defined(RE_PLATFORM_WINDOWS)
-
-	for (int32 i = 0; i < adapters.Count; i++)
+	if (adapterList.Count > 1)
 	{
-		if (adapters[i].VendorID != AdapterInfo::INTELVendorID)
+		for (int32 i = 0; i < adapterList.Count; i++)
 		{
-			adapterIndex = i;
-			break;
+			//Do not choose an intel integrated one if there are more than 1 adapter
+			if (adapterList[i].VendorID != AdapterInfo::INTELVendorID)
+			{
+				adapterIndex = i;
+				break;
+			}
 		}
 	}
-#endif
 
-	log.Write(LOG_SEVERITY_INFO, adapters[adapterIndex].VendorName);
-	log.Write(LOG_SEVERITY_INFO, adapters[adapterIndex].ModelName);
 
+	//Print the chosen adapter
+	log.Write(LOG_SEVERITY_INFO, adapterList[adapterIndex].VendorName);
+	log.Write(LOG_SEVERITY_INFO, adapterList[adapterIndex].ModelName);
+
+
+	//Create a device and swapchain
 	constexpr int32 bufferCount = 2;
-	ISwapchain* swapchain = nullptr;
-	IDevice* device = nullptr;
-	ICommandQueue* queue = nullptr;
+	AdapterInfo adapterInfo = adapterList[adapterIndex];
+	IDevice* pDevice = nullptr;
+	ISwapchain* pSwapchain = nullptr;
 
-	DeviceInfo dInfo = {};
-	dInfo.Name = "Main Device";
-	dInfo.pAdapter = &(adapters[adapterIndex]);
+	DeviceInfo deviceInfo = {};
+	deviceInfo.Name = "Main Device";
+	deviceInfo.pAdapter = &adapterInfo;
+	deviceInfo.DepthStencilDescriptorCount = 4;
+	deviceInfo.RendertargetDescriptorCount = 4;
+	deviceInfo.ResourceDescriptorCount = 16;
+	deviceInfo.SamplerDescriptorCount = 16;
 
-	SwapchainInfo scInfo = {};
-	scInfo.pWindow = &window;
-	scInfo.Buffer.Count = bufferCount;
-	scInfo.Buffer.Format = FORMAT_B8G8R8A8_UNORM;
-	scInfo.Buffer.Width = window.GetWidth();
-	scInfo.Buffer.Height = window.GetHeight();
+	SwapchainInfo swapchainInfo = {}; 
+	swapchainInfo.Name = "SwapChain";
+	swapchainInfo.Window = window.GetNativeHandle();
+	swapchainInfo.Count = bufferCount;
+	swapchainInfo.Buffer.Format = FORMAT_B8G8R8A8_UNORM;
+	swapchainInfo.Buffer.Width = window.GetWidth();
+	swapchainInfo.Buffer.Height = window.GetHeight();
 
-	if (factory->GetGraphicsApi() != GRAPHICS_API_VULKAN)
-	{
-		factory->CreateDevice(&device, dInfo);
-
-		CommandQueueInfo qInfo = {};
-		qInfo.Name = "Main Queue";
-		device->CreateCommandQueue(&queue, qInfo);
-		scInfo.pCommandQueue = queue;
-
-		factory->CreateSwapchain(&swapchain, scInfo);
-	}
-	else
-	{
-		factory->CreateDeviceAndSwapchain(&device, dInfo, &swapchain, scInfo);
-	}
+	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
 
 
-	RenderTargetViewInfo rtvInfo = {};
-	rtvInfo.Format = scInfo.Buffer.Format;
+	//Create a rendertargetview for the backbuffer
+	RenderTargetViewInfo rendertargetInfo = {};
+	rendertargetInfo.Format = swapchainInfo.Buffer.Format;
+
 	
 	IRenderTargetView* rtvs[bufferCount];
 	for (int32 i = 0; i < bufferCount; i++)
@@ -309,6 +340,7 @@ int main(int args, char* argsv[])
 	}
 
 
+	Event event;
 	while (event.Type != EVENT_TYPE_QUIT)
 	{
 		clock.Tick();

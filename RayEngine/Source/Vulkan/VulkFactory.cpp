@@ -246,7 +246,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateSwapchain(ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
+		bool VulkFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
 		{
 			*ppSwapchain = nullptr;
 

@@ -1,4 +1,6 @@
 TODO:
+-Remove texureloader
+
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize
 -Swapchain Fullscreen

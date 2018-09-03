@@ -71,7 +71,7 @@ namespace RayEngine
 			virtual int32 GetWidth() const override final;
 			virtual int32 GetHeight() const override final;
 
-			void GetDesc(WindowInfo& desc) const override final;
+			void GetInfo(WindowInfo& desc) const override final;
 
 			HWND GetHWND() const;
 			HINSTANCE GetHINSTANCE() const;

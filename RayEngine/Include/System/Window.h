@@ -24,10 +24,32 @@ failure and or malfunction of any kind.
 #include "Bitmap.h"
 #include "..\Math\Color.h"
 
+/////////////////////////////////////////////////////////////
+#if defined(RE_PLATFORM_WINDOWS)
+#define RE_NULL_WINDOW 0
+#elif defined(RE_PLATFORM_ANDROID)
+#define RE_NULL_WINDOW nullptr
+#else
+#define RE_NULL_WINDOW nullptr
+#endif
+
+
+
 namespace RayEngine
 {
 	namespace System
 	{
+		/////////////////////////////////////////////////////////////
+#if defined(RE_PLATFORM_WINDOWS)
+		typedef HWND NativeWindowHandle;
+#elif defined(RE_PLATFORM_ANDROID)
+		typedef ANativeWindow* NativeWindowHandle;
+#else
+		typedef void* NativeWindowHandle;
+#endif
+
+
+
 		/////////////////////////////////////////////////////////////
 		enum WINDOWSTYLE
 		{
@@ -130,7 +152,9 @@ namespace RayEngine
 			virtual int32 GetWidth() const = 0;
 			virtual int32 GetHeight() const = 0;
 			//Get struct that describes the window
-			virtual void GetDesc(WindowInfo& desc) const = 0;
+			virtual void GetInfo(WindowInfo& desc) const = 0;
+			//Returns the OS-Handle to a window
+			virtual NativeWindowHandle GetNativeHandle() const = 0;
 		};
 
 
@@ -170,8 +194,11 @@ namespace RayEngine
 			const Tchar* GetTitle() const;
 			//Get implementation
 			const IWindowImpl* GetImplementation() const;
+
+			NativeWindowHandle GetNativeHandle() const;
+
 			//Get struct that describes the window
-			void GetDesc(WindowInfo& desc) const;
+			void GetInfo(WindowInfo& desc) const;
 
 			//Operators for assignment
 			Window& operator=(const Window& other);

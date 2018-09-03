@@ -142,23 +142,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			static IFactory* Create(GRAPHICS_API api, bool debugLayers);
-
-
-			/*////////////////////////////////////////////////////////////
-
-				Creates a new factory.
-
-				name - Set a name for the factory
-
-				api - The api to use.
-
-				debugLayers - A boolean turning the debuglayer on/off
-
-				Returns a pointer to a IFactory interface. Can be
-				nullptr if an error occured during the call
-
-			////////////////////////////////////////////////////////////*/
-			static IFactory* Create(const std::string& name, GRAPHICS_API api, bool debugLayers);
 		};
 	}
 }

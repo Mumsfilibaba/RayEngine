@@ -218,7 +218,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void AndroidWindowImpl::GetDesc(WindowInfo& info) const
+		void AndroidWindowImpl::GetInfo(WindowInfo& info) const
 		{
 			info.Width = m_Width;
 			info.Height = m_Height;

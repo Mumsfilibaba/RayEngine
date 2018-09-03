@@ -111,6 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -238,7 +239,6 @@
     <ClInclude Include="Include\OpenGL\GLDeviceContext.h" />
     <ClInclude Include="Include\OpenGL\GLFactory.h" />
     <ClInclude Include="Include\OpenGL\GlImpl.h" />
-    <ClInclude Include="Include\OpenGL\GLSwapchain.h" />
     <ClInclude Include="Include\ReferenceCounter.h" />
     <ClInclude Include="Include\Math\Color.h" />
     <ClInclude Include="Include\Math\ColorF.h" />
@@ -273,6 +273,7 @@
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Include\Utilities\EngineUtilities.h" />
     <ClInclude Include="Include\Utilities\StringUtilities.h" />
+    <ClInclude Include="Include\Utilities\TextureUtilities.h" />
     <ClInclude Include="Include\Vulkan\VulkCommon.h" />
     <ClInclude Include="Include\Vulkan\VulkDevice.h" />
     <ClInclude Include="Include\Vulkan\VulkDeviceContext.h" />
@@ -353,11 +354,8 @@
     <ClCompile Include="Source\DXBase\DXCommon.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
-    <ClCompile Include="Source\OpenGL\GLDevice.cpp" />
-    <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp" />
     <ClCompile Include="Source\OpenGL\GLFactory.cpp" />
     <ClCompile Include="Source\OpenGL\GLImpl.cpp" />
-    <ClCompile Include="Source\OpenGL\GLSwapchain.cpp" />
     <ClCompile Include="Source\ReferenceCounter.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />

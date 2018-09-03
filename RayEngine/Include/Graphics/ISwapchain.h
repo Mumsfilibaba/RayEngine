@@ -55,7 +55,7 @@ namespace RayEngine
 		struct SwapchainInfo
 		{
 			std::string Name = "";
-			System::Window* pWindow = nullptr;
+			System::NativeWindowHandle Window = RE_NULL_WINDOW;
 
 			int32 Count = 0;
 			struct
@@ -83,9 +83,15 @@ namespace RayEngine
 
 
 			/*////////////////////////////////////////////////////////////
-				Returns the index of the current buffer
+				Returns the index of the current buffer.
 			////////////////////////////////////////////////////////////*/
 			virtual int32 GetCurrentBuffer() const = 0;
+
+
+			/*////////////////////////////////////////////////////////////
+				Returns the index of the current view.
+			////////////////////////////////////////////////////////////*/
+			virtual IRenderTargetView* GetCurrentView() const = 0;
 
 
 			/*////////////////////////////////////////////////////////////
@@ -97,6 +103,17 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual ITexture* GetBuffer(int32 index) = 0;
 			virtual const ITexture* GetBuffer(int32 index) const = 0;
+
+
+			/*////////////////////////////////////////////////////////////
+
+				Returns the rendertargetview with a certain index.
+
+				index - Index of the buffer.
+
+			////////////////////////////////////////////////////////////*/
+			virtual IRenderTargetView* GetRenderTargetView(int32 index) = 0;
+			virtual const IRenderTargetView* GetRenderTargetView(int32 index) const = 0;
 
 
 			/*////////////////////////////////////////////////////////////
