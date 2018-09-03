@@ -103,7 +103,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Buffer::SetName(const std::string& name)
 		{
-			m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 

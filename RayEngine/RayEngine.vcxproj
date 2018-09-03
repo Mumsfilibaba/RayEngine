@@ -242,7 +242,6 @@
     <ClInclude Include="Include\ReferenceCounter.h" />
     <ClInclude Include="Include\Math\Color.h" />
     <ClInclude Include="Include\Math\ColorF.h" />
-    <ClInclude Include="Include\Graphics\TextureLoader.h" />
     <ClInclude Include="Include\Math\Math.h" />
     <ClInclude Include="Include\Math\MathCommon.h" />
     <ClInclude Include="Include\Math\MathUtilities.h" />

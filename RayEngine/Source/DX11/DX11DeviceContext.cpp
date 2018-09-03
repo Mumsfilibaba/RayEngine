@@ -308,7 +308,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetName(const std::string& name)
 		{
-			m_Context->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			m_Context->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 
