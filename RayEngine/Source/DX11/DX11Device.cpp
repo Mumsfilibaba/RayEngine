@@ -103,10 +103,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Device::SetName(const std::string& name)
 		{
-			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			
 			std::string adapterName = name + " : Adapter";
-			m_Adapter->SetPrivateData(WKPDID_D3DDebugObjectName, adapterName.size(), adapterName.c_str());
+			m_Adapter->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(adapterName.size()), adapterName.c_str());
 		}
 
 

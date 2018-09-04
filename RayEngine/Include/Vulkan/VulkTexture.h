@@ -49,8 +49,6 @@ namespace RayEngine
 			void InvalidateResource();
 
 			VkImage GetVkImage() const;
-
-			RESOURCE_STATE GetResourceState() const override final;
 			
 			void SetName(const std::string& name) override final;
 			void QueryDevice(IDevice** ppDevice) const override final;

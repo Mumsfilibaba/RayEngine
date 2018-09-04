@@ -117,7 +117,7 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		template<>
-		void DX11RootVariableSlotImpl<ID3D11HullShader>::SetUnorderedAccessViews(ID3D11DeviceContext* pContext, ID3D11UnorderedAccessView** ppUAVs, int32 count) const
+		void DX11RootVariableSlotImpl<ID3D11DomainShader>::SetUnorderedAccessViews(ID3D11DeviceContext* pContext, ID3D11UnorderedAccessView** ppUAVs, int32 count) const
 		{
 		}
 
@@ -125,7 +125,7 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		template<>
-		void DX11RootVariableSlotImpl<ID3D11HullShader>::SetConstantBuffers(ID3D11DeviceContext* pContext, ID3D11Buffer** ppBuffers, int32 count) const
+		void DX11RootVariableSlotImpl<ID3D11DomainShader>::SetConstantBuffers(ID3D11DeviceContext* pContext, ID3D11Buffer** ppBuffers, int32 count) const
 		{
 			pContext->DSSetConstantBuffers(m_Slot, count, ppBuffers);
 		}

@@ -64,7 +64,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11UnorderedAccessView::SetName(const std::string& name)
 		{
-			m_View->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 

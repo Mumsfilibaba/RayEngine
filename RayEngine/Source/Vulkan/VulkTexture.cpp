@@ -29,7 +29,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkTexture::VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: m_Device(nullptr),
-			m_Image(nullptr)
+			m_Image(VK_NULL_HANDLE)
 		{
 			AddRef();
 			m_Device = QueryVulkDevice(pDevice);
@@ -53,12 +53,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkTexture::~VulkTexture()
 		{
-			if (m_Image != nullptr)
+			if (m_Image != VK_NULL_HANDLE)
 			{
 				VkDevice device = reinterpret_cast<VulkDevice*>(m_Device)->GetVkDevice();
 				
 				vkDestroyImage(device, m_Image, nullptr);
-				m_Image = nullptr;
+				m_Image = VK_NULL_HANDLE;
 			}
 
 			ReRelease_S(m_Device);
@@ -69,7 +69,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkTexture::InvalidateResource()
 		{
-			m_Image = nullptr;
+			m_Image = VK_NULL_HANDLE;
 		}
 
 
@@ -83,9 +83,8 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		RESOURCE_STATE VulkTexture::GetResourceState() const
+		void VulkTexture::SetName(const std::string& name)
 		{
-			return RESOURCE_STATE_UNKNOWN;
 		}
 
 

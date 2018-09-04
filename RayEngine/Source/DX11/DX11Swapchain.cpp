@@ -67,6 +67,11 @@ namespace RayEngine
 			return m_CurrentBuffer;
 		}
 
+		IRenderTargetView * DX11Swapchain::GetCurrentView() const
+		{
+			return nullptr;
+		}
+
 
 
 		/////////////////////////////////////////////////////////////
@@ -86,9 +91,25 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IRenderTargetView* DX11Swapchain::GetRenderTargetView(int32 index)
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const IRenderTargetView* DX11Swapchain::GetRenderTargetView(int32 index) const
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX11Swapchain::SetName(const std::string& name)
 		{
-			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 
@@ -144,8 +165,7 @@ namespace RayEngine
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 			desc.Windowed = true;
 			
-			HWND hWnd = reinterpret_cast<const Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
-			desc.OutputWindow = hWnd;
+			desc.OutputWindow = info.WindowHandle;
 
 
 			IDXGIFactory* pDXGIFactory = m_Factory->GetDXGIFactory();

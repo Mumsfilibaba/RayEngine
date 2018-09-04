@@ -4,6 +4,7 @@ TODO:
 -Compile Release x64
 -Compile Release x86
 
+
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize
 -Swapchain Fullscreen
@@ -13,14 +14,10 @@ TODO:
 -Generate MipMaps
 -Create Constantbuffer in DX11Shader for shaderconstants
 -DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
-
--Constantbuffer, Sampler, Textures DX11, DX12, Vulkan
--Render triangle Vulkan
--Implement OpenGL
-
-
 -DX12 - Check tearing support - Vulkan (if supported by the API)
 -DX12 - Setup breakpoints when errors occurs
+
+-Remove Socket
 -Create rendertargets for swapchain during creation?
 
 -ITexture - GetType
@@ -28,7 +25,6 @@ TODO:
 -DX11 - Static Samplers must be bound from 0 to n (in a single range), should be possible to not do this (DX11StaticSamplerRange?)
 
 -Vulk - Create dummy surface and search for correct formats etc
--TextureLoader needs to be updated with the new formats
 -Add p for pointers
 -Controller support
 

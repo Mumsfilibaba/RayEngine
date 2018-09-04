@@ -180,7 +180,7 @@ namespace RayEngine
 
 			ComPtr<ID3DBlob> error;
 			ComPtr<ID3DBlob> rSign;
-			HRESULT hr = D3D12SerializeVersionedRootSignature(&vrsDesc, &rSign, &error);
+			hr = D3D12SerializeVersionedRootSignature(&vrsDesc, &rSign, &error);
 			if (FAILED(hr))
 			{
 				std::string err = reinterpret_cast<char*>(error->GetBufferPointer());
@@ -309,16 +309,16 @@ namespace RayEngine
 			if (variable.ShaderStage == SHADER_TYPE_COMPUTE)
 			{
 				if (placeDescriptorTable)
-					return new DX12ComputeDescriptorRootSlot(rootSlot);
+					return new DX12ComputeDescriptorRootSlot(D3D12_RESOURCE_STATE_COMMON, rootSlot);
 				else
-					return new DX12ComputeRootSignatureSlot(rootSlot);
+					return new DX12ComputeRootSignatureSlot(D3D12_RESOURCE_STATE_COMMON, rootSlot);
 			}
 			else
 			{
 				if (placeDescriptorTable)
-					return new DX12GraphicsDescriptorRootSlot(rootSlot);
+					return new DX12GraphicsDescriptorRootSlot(D3D12_RESOURCE_STATE_COMMON, rootSlot);
 				else
-					return new DX12GraphicsRootSignatureSlot(rootSlot);
+					return new DX12GraphicsRootSignatureSlot(D3D12_RESOURCE_STATE_COMMON, rootSlot);
 			}
 
 			return nullptr;

@@ -29,7 +29,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkImageView::VulkImageView(IDevice* pDevice)
 			: m_Device(nullptr),
-			m_View(nullptr)
+			m_View(VK_NULL_HANDLE)
 		{
 			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
 		}
@@ -39,12 +39,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkImageView::~VulkImageView()
 		{
-			if (m_View != nullptr)
+			if (m_View != VK_NULL_HANDLE)
 			{
 				VkDevice vkDevice = reinterpret_cast<VulkDevice*>(m_Device)->GetVkDevice();
 
 				vkDestroyImageView(vkDevice, m_View, nullptr);
-				m_View = nullptr;
+				m_View = VK_NULL_HANDLE;
 			}
 
 			ReRelease_S(m_Device);

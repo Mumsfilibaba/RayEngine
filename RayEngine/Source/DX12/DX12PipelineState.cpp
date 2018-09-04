@@ -110,8 +110,10 @@ namespace RayEngine
 			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
 			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
 
-			for (int32 i = 0; i < inputLayout.size(); i++)
+			for (int32 i = 0; i < static_cast<int32>(inputLayout.size()); i++)
+			{
 				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.pElements[i]);
+			}
 
 
 			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(info.pRootLayout)->GetD3D12RootSignature();

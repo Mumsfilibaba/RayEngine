@@ -29,7 +29,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkShader::VulkShader(IDevice* pDevice, const ShaderInfo& info)
 			: m_Device(nullptr),
-			m_Module(nullptr),
+			m_Module(VK_NULL_HANDLE),
 			m_Type(SHADER_TYPE_UNKNOWN)
 		{
 			AddRef();
@@ -43,12 +43,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkShader::~VulkShader()
 		{
-			if (m_Module != nullptr)
+			if (m_Module != VK_NULL_HANDLE)
 			{
 				VkDevice vkDevice = reinterpret_cast<VulkDevice*>(m_Device)->GetVkDevice();
 
 				vkDestroyShaderModule(vkDevice, m_Module, nullptr);
-				m_Module = nullptr;
+				m_Module = VK_NULL_HANDLE;
 			}
 
 			ReRelease_S(m_Device);
@@ -76,6 +76,13 @@ namespace RayEngine
 		SHADER_TYPE VulkShader::GetType() const
 		{
 			return m_Type;
+		}
+
+
+
+		//////////////////////////////////////////////////////////////
+		void VulkShader::SetName(const std::string & name)
+		{
 		}
 
 

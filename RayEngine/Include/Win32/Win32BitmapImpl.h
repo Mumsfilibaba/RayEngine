@@ -40,7 +40,7 @@ namespace RayEngine
 		Win32BitmapImpl();
 		~Win32BitmapImpl();
 
-		bool LoadImageFromFile(const Tchar* const filename, const Tchar* filePath, int32 width, int32 height) override final;
+		bool LoadFromFile(const Tchar* const filename, const Tchar* filePath, int32 width, int32 height) override final;
 		bool CreateFromArray(int32 width, int32 height, const uint8* const pixels) override final;
 
 		uint8* GetArray() override final;

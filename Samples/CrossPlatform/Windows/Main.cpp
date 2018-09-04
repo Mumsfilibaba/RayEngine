@@ -103,7 +103,7 @@ int main(int args, char* argsv[])
 
 	SwapchainInfo swapchainInfo = {}; 
 	swapchainInfo.Name = "SwapChain";
-	swapchainInfo.Window = window.GetNativeHandle();
+	swapchainInfo.WindowHandle = window.GetNativeHandle();
 	swapchainInfo.Count = bufferCount;
 	swapchainInfo.Buffer.Format = FORMAT_B8G8R8A8_UNORM;
 	swapchainInfo.Buffer.Width = window.GetWidth();

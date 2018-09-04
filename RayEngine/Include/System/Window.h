@@ -26,6 +26,8 @@ failure and or malfunction of any kind.
 
 /////////////////////////////////////////////////////////////
 #if defined(RE_PLATFORM_WINDOWS)
+#define WIN32_LEAN_AND_MEAN 1
+#include <Windows.h>
 #define RE_NULL_WINDOW 0
 #elif defined(RE_PLATFORM_ANDROID)
 #define RE_NULL_WINDOW nullptr

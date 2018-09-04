@@ -90,6 +90,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IRenderTargetView* VulkSwapchain::GetCurrentView() const
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		ITexture* VulkSwapchain::GetBuffer(int32 index)
 		{
 			return m_Textures[index];
@@ -106,8 +114,39 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IRenderTargetView* VulkSwapchain::GetRenderTargetView(int32 index)
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const IRenderTargetView* VulkSwapchain::GetRenderTargetView(int32 index) const
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void VulkSwapchain::Present() const
 		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void VulkSwapchain::SetName(const std::string& name)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void VulkSwapchain::QueryDevice(IDevice** ppDevice) const
+		{
+			(*ppDevice) = QueryVulkDevice(m_Device);
 		}
 
 
@@ -116,14 +155,6 @@ namespace RayEngine
 		void VulkSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = reinterpret_cast<VulkFactory*>(m_Factory->QueryReference());
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void VulkSwapchain::QueryCommandQueue(ICommandQueue** ppCommandQueue) const
-		{
-			(*ppCommandQueue) = reinterpret_cast<ICommandQueue*>(m_CommandQueue->QueryReference());
 		}
 
 
@@ -150,9 +181,9 @@ namespace RayEngine
 
 			ReRelease_S(m_Factory);
 			ReRelease_S(m_Device);
-			ReRelease_S(m_CommandQueue);
+			//Release DeviceContext
 
-			for (int32 i = 0; i < m_Textures.size(); i++)
+			for (int32 i = 0; i < static_cast<int32>(m_Textures.size()); i++)
 			{
 				if (m_Textures[i] != nullptr)
 				{
@@ -171,7 +202,7 @@ namespace RayEngine
 			using namespace System;
 
 			VkInstance instance = m_Factory->GetVkInstance();
-			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, info.pWindow->GetImplementation());
+			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, info.WindowHandle);
 			if (result != VK_SUCCESS)
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
@@ -214,14 +245,14 @@ namespace RayEngine
 				return;
 			}
 
-			VkExtent2D size = GetSupportedSize(capabilities, info.pWindow->GetWidth(), info.pWindow->GetHeight());
+			VkExtent2D size = GetSupportedSize(capabilities, info.Buffer.Width, info.Buffer.Height);
 
 			VkSwapchainCreateInfoKHR scInfo = {};
 			scInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 			scInfo.pNext = nullptr;
 			scInfo.flags = 0;
 			scInfo.oldSwapchain = 0;
-			scInfo.minImageCount = info.Buffer.Count;
+			scInfo.minImageCount = info.Count;
 			scInfo.surface = m_Surface;
 			scInfo.imageFormat = m_Format.format;
 			scInfo.imageColorSpace = m_Format.colorSpace;
@@ -252,8 +283,10 @@ namespace RayEngine
 			vkGetSwapchainImagesKHR(device, m_Swapchain, &count, swapchainImages.data());
 
 			m_Textures.resize(count);
-			for (int32 i = 0; i < swapchainImages.size(); i++)
+			for (int32 i = 0; i < static_cast<int32>(swapchainImages.size()); i++)
+			{
 				m_Textures[i] = new VulkTexture(m_Device, swapchainImages[i]);
+			}
 		}
 
 

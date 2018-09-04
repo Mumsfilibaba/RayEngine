@@ -40,9 +40,9 @@ namespace RayEngine
 
 	public:
 		static void SetPosition(const Math::Point& position);
-		static void SetPosition(const Math::Point& position, const System::Window& window);
+		static void SetPosition(const Math::Point& position, const System::NativeWindowHandle& window);
 		static Math::Point GetPosition();
-		static Math::Point GetPosition(const System::Window& window);
+		static Math::Point GetPosition(const System::NativeWindowHandle& window);
 
 		static bool IsButtonPressed(MOUSEBUTTON button);
 	};

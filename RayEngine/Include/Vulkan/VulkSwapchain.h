@@ -30,6 +30,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		class VulkDevice;
+		class VulkDeviceContext;
 		class VulkFactory;
 
 
@@ -51,14 +52,19 @@ namespace RayEngine
 			VkSwapchainKHR GetVkSwapchainKHR() const;
 
 			int32 GetCurrentBuffer() const override final;
-			ITexture* GetBuffer(int32 index) override final;
-			const ITexture* GetBuffer(int32 index) const override final;
+			IRenderTargetView* GetCurrentView() const override final;
 
 			void Present() const override final;
 
+			ITexture* GetBuffer(int32 index) override final;
+			const ITexture* GetBuffer(int32 index) const override final;
+
+			IRenderTargetView* GetRenderTargetView(int32 index) override final;
+			const IRenderTargetView* GetRenderTargetView(int32 index) const override final;
+
 			void SetName(const std::string& name) override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 			void QueryFactory(IFactory** ppFactory) const override final;
-			void QueryCommandQueue(ICommandQueue** ppCommandQueue) const override final;
 
 		private:
 			void ReleaseObjects();
@@ -71,7 +77,7 @@ namespace RayEngine
 		private:
 			VulkDevice* m_Device;
 			VulkFactory* m_Factory;
-			ICommandQueue* m_CommandQueue;
+			VulkDeviceContext* m_CommandQueue;
 			VkSurfaceFormatKHR m_Format;
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;

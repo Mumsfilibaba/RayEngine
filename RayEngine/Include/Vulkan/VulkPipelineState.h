@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "..\Graphics\IPipelineState.h"
-#include "VulkRootSignature.h"
+#include "VulkRootLayout.h"
 #include "VulkShader.h"
 
 namespace RayEngine
@@ -70,7 +70,7 @@ namespace RayEngine
 
 		private:
 			VulkDevice* m_Device;
-			const VulkRootSignature* m_RootSignature;
+			const VulkRootLayout* m_RootLayout;
 			VkPipeline m_Pipeline;
 			VkRenderPass m_RenderPass;
 			PIPELINE_TYPE m_Type;

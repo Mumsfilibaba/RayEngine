@@ -26,7 +26,7 @@ failure and or malfunction of any kind.
 #include "..\..\Include\Vulkan\VulkRenderTargetView.h"
 #include "..\..\Include\Vulkan\VulkShader.h"
 #include "..\..\Include\Vulkan\VulkPipelineState.h"
-#include "..\..\Include\Vulkan\VulkRootSignature.h"
+#include "..\..\Include\Vulkan\VulkRootLayout.h"
 
 namespace RayEngine
 {
@@ -78,6 +78,30 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		bool VulkDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool VulkDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool VulkDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info)
+		{
+			return false;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		bool VulkDevice::CreateSampler(ISampler** ppSampler, const SamplerInfo& info)
 		{
 			return false;
 		}
@@ -152,6 +176,16 @@ namespace RayEngine
 		VkPhysicalDevice VulkDevice::GetVkPhysicalDevice() const
 		{
 			return m_Adapter;
+		}
+
+		bool VulkDevice::GetImmediateContext(IDeviceContext ** ppContext)
+		{
+			return false;
+		}
+
+		bool VulkDevice::CreateDefferedContext(IDeviceContext ** ppContext)
+		{
+			return false;
 		}
 
 

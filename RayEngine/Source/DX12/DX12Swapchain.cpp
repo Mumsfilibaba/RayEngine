@@ -58,7 +58,7 @@ namespace RayEngine
 			ReRelease_S(m_Device);
 			ReRelease_S(m_Context);
 
-			for (int32 i = 0; i < m_Textures.size(); i++)
+			for (int32 i = 0; i < static_cast<int32>(m_Textures.size()); i++)
 			{
 				ReRelease_S(m_Textures[i]);
 			}
@@ -70,6 +70,11 @@ namespace RayEngine
 		int32 DX12Swapchain::GetCurrentBuffer() const
 		{
 			return m_CurrentBuffer;
+		}
+
+		IRenderTargetView * DX12Swapchain::GetCurrentView() const
+		{
+			return nullptr;
 		}
 
 
@@ -91,9 +96,25 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		IRenderTargetView* DX12Swapchain::GetRenderTargetView(int32 index)
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		const IRenderTargetView* DX12Swapchain::GetRenderTargetView(int32 index) const
+		{
+			return nullptr;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12Swapchain::SetName(const std::string& name)
 		{
-			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 
@@ -145,11 +166,10 @@ namespace RayEngine
 			desc.Flags = 0;
 
 
-			HWND hWnd = reinterpret_cast<const System::Win32WindowImpl*>(info.pWindow->GetImplementation())->GetHWND();
 			IDXGIFactory5* pDXGIFactory = m_Factory->GetDXGIFactory();
 			ID3D12CommandQueue* pD3D12queue = m_Context->GetD3D12CommandQueue();
 			
-			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain);
+			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, info.WindowHandle, &desc, nullptr, nullptr, &m_Swapchain);
 			if (FAILED(hr))
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12 : Could not create swapchain. " + DXErrorString(hr));
@@ -159,7 +179,7 @@ namespace RayEngine
 			{
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 				
-				pDXGIFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
+				pDXGIFactory->MakeWindowAssociation(info.WindowHandle, DXGI_MWA_NO_ALT_ENTER);
 				
 				CreateTextures(info);
 			}

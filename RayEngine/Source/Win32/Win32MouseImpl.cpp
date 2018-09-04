@@ -44,15 +44,12 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	Math::Point Mouse::GetPosition(const System::Window& window)
+	Math::Point Mouse::GetPosition(const System::NativeWindowHandle& window)
 	{
 		POINT mouse = {};
 		GetCursorPos(&mouse);
 
-		const System::Win32WindowImpl* win = reinterpret_cast<const System::Win32WindowImpl*>(window.GetImplementation());
-		HWND hWnd = win->GetHWND();
-
-		ScreenToClient(hWnd, &mouse);
+		ScreenToClient(window, &mouse);
 
 		return Math::Point(mouse.x, mouse.y);
 	}
@@ -87,16 +84,13 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	void Mouse::SetPosition(const Math::Point& position, const System::Window& window)
+	void Mouse::SetPosition(const Math::Point& position, const System::NativeWindowHandle& window)
 	{
-		const System::Win32WindowImpl* win = reinterpret_cast<const System::Win32WindowImpl*>(window.GetImplementation());
-		HWND hWnd = win->GetHWND();
-
 		POINT mouse = {};
 		mouse.x = position.x;
 		mouse.y = position.y;
 
-		ClientToScreen(hWnd, &mouse);
+		ClientToScreen(window, &mouse);
 
 		SetCursorPos(mouse.x, mouse.y);
 	}

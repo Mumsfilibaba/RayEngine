@@ -194,7 +194,7 @@ namespace RayEngine
 				ppResource[i]->SetD3D12State(pToStates[i]);
 			}
 
-			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(barriers.size(), barriers.data());
+			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
 
 			AddCommand();
 		}
@@ -363,7 +363,7 @@ namespace RayEngine
 			m_List->GetD3D12GraphicsCommandList()->SetGraphicsRootSignature(pDX12RootLayout->GetD3D12RootSignature());
 
 			ReRelease_S(m_CurrentRootLayout);
-			m_CurrentRootLayout = reinterpret_cast<DX12RootLayout*>(pRootLayout->GetReferenceCount());
+			m_CurrentRootLayout = pRootLayout->QueryReference<DX12RootLayout>();
 
 			AddCommand();
 		}
@@ -557,7 +557,7 @@ namespace RayEngine
 		bool DX12DeviceContext::Close() const
 		{
 			if (!m_IsDeffered)
-				return;
+				return false;
 
 			HRESULT hr = m_List->GetD3D12GraphicsCommandList()->Close();
 			return SUCCEEDED(hr);
@@ -679,7 +679,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::CommitDefferedBarriers() const
 		{
-			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(m_DefferedBarriers.size(), m_DefferedBarriers.data());
+			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(static_cast<uint32>(m_DefferedBarriers.size()), m_DefferedBarriers.data());
 			m_DefferedBarriers.clear();
 
 			AddCommand();

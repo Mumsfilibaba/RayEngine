@@ -104,7 +104,7 @@ namespace RayEngine
 		void DX11Texture::SetName(const std::string& name)
 		{
 			ID3D11DeviceChild* pDeviceChild = m_Texture1D;
-			pDeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+			pDeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 

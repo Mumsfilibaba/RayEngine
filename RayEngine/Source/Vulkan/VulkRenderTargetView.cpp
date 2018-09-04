@@ -44,6 +44,13 @@ namespace RayEngine
 
 
 
+		//////////////////////////////////////////////////////////////
+		void VulkRenderTargetView::SetName(const std::string & name)
+		{
+		}
+
+
+
 		/////////////////////////////////////////////////////////////
 		void VulkRenderTargetView::QueryDevice(IDevice** ppDevice) const
 		{

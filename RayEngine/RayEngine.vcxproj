@@ -73,20 +73,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)Dependencies\Debug;C:\VulkanSDK\1.1.73.0\Lib32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\VulkanSDK\1.1.73.0\Include;C:\VulkanSDK\1.1.73.0\glslang;$(IncludePath)</IncludePath>
+    <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.73.0\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)Dependencies\Debug;C:\VulkanSDK\1.1.73.0\Lib32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\VulkanSDK\1.1.73.0\Lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.73.0\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,13 +96,17 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -118,7 +124,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;glslangd.lib;SPIRVd.lib;HLSLd.lib;OSDependentd.lib;OGLCompilerd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,7 +135,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -163,7 +169,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -239,6 +245,7 @@
     <ClInclude Include="Include\OpenGL\GLDeviceContext.h" />
     <ClInclude Include="Include\OpenGL\GLFactory.h" />
     <ClInclude Include="Include\OpenGL\GlImpl.h" />
+    <ClInclude Include="Include\OpenGL\GLSwapchain.h" />
     <ClInclude Include="Include\ReferenceCounter.h" />
     <ClInclude Include="Include\Math\Color.h" />
     <ClInclude Include="Include\Math\ColorF.h" />
@@ -353,8 +360,11 @@
     <ClCompile Include="Source\DXBase\DXCommon.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
+    <ClCompile Include="Source\OpenGL\GLDevice.cpp" />
+    <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp" />
     <ClCompile Include="Source\OpenGL\GLFactory.cpp" />
     <ClCompile Include="Source\OpenGL\GLImpl.cpp" />
+    <ClCompile Include="Source\OpenGL\GLSwapchain.cpp" />
     <ClCompile Include="Source\ReferenceCounter.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />
@@ -383,13 +393,13 @@
     <ClCompile Include="Source\Utilities\StringUtilities.cpp" />
     <ClCompile Include="Source\Utilities\TextureUtilities.cpp" />
     <ClCompile Include="Source\Vulkan\VulkDevice.cpp" />
+    <ClCompile Include="Source\Vulkan\VulkDeviceContext.cpp" />
     <ClCompile Include="Source\Vulkan\VulkFactory.cpp" />
     <ClCompile Include="Source\Vulkan\VulkImageView.cpp" />
     <ClCompile Include="Source\Vulkan\VulkPipelineState.cpp" />
     <ClCompile Include="Source\Vulkan\VulkRenderTargetView.cpp" />
-    <ClCompile Include="Source\Vulkan\VulkRootSignature.cpp" />
+    <ClCompile Include="Source\Vulkan\VulkRootLayout.cpp" />
     <ClCompile Include="Source\Vulkan\VulkShader.cpp" />
-    <ClCompile Include="Source\Vulkan\VulkShaderCompiler.cpp" />
     <ClCompile Include="Source\Vulkan\VulkSwapchain.cpp" />
     <ClCompile Include="Source\Vulkan\VulkCommon.cpp" />
     <ClCompile Include="Source\Vulkan\VulkTexture.cpp" />

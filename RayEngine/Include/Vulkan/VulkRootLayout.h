@@ -42,7 +42,7 @@ namespace RayEngine
 			VkPipelineLayout GetVkPipelineLayout() const;
 
 			void SetName(const std::string& name) override final;
-			IDevice* GetDevice() const override final;
+			void QueryDevice(IDevice** ppDevice) const override final;
 
 		private:
 			void Create(IDevice* pDevice, const RootLayoutInfo& info);

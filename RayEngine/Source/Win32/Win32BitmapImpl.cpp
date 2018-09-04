@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Graphics\TextureLoader.h"
 #include <cstdlib>
+#include "..\..\Include\Utilities\TextureUtilities.h"
 #include "..\..\Include\Win32\Win32BitmapImpl.h"
 
 #if defined (RE_PLATFORM_WINDOWS)
@@ -92,7 +92,7 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	bool Win32BitmapImpl::LoadImageFromFile(const Tchar* const filename, const Tchar* filepath, int32 width, int32 height)
+	bool Win32BitmapImpl::LoadFromFile(const Tchar* const filename, const Tchar* filepath, int32 width, int32 height)
 	{
 		if (m_Pixels != nullptr)
 		{
@@ -103,10 +103,10 @@ namespace RayEngine
 		m_Width = width;
 		m_Height = height;
 
-		if (TextureLoader::LoadImageFromFile(filename, filepath, const_cast<const void**>(reinterpret_cast<void**>(&m_Pixels)),
+		if (LoadImageFromFile(filename, filepath, const_cast<const void**>(reinterpret_cast<void**>(&m_Pixels)),
 			m_Width, m_Height, FORMAT_R8G8B8A8_UINT))
 		{
-			TextureLoader::ReverseRB(m_Pixels, m_Width, m_Height, FORMAT_R8G8B8A8_UINT);
+			ReverseImageRedBlue(m_Pixels, m_Width, m_Height, FORMAT_R8G8B8A8_UINT);
 
 			Create();
 

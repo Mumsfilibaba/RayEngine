@@ -31,6 +31,7 @@ namespace RayEngine
 		class IFactory;
 		class ITexture;
 		class IDevice;
+		class IRenderTargetView;
 
 
 
@@ -55,7 +56,7 @@ namespace RayEngine
 		struct SwapchainInfo
 		{
 			std::string Name = "";
-			System::NativeWindowHandle Window = RE_NULL_WINDOW;
+			System::NativeWindowHandle WindowHandle = RE_NULL_WINDOW;
 
 			int32 Count = 0;
 			struct

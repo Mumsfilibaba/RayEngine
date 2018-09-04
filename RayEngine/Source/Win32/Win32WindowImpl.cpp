@@ -253,6 +253,14 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		NativeWindowHandle Win32WindowImpl::GetNativeHandle() const
+		{
+			return m_Hwnd;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void Win32WindowImpl::GetInfo(WindowInfo& info) const
 		{
 			GetWindowText(m_Hwnd, m_Title, 256);

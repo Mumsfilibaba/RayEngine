@@ -48,12 +48,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11RootLayout::~DX11RootLayout()
 		{
-			for (int32 i = 0; i < m_StaticSamplers.size(); i++)
+			for (int32 i = 0; i < static_cast<int32>(m_StaticSamplers.size()); i++)
 			{
 				D3DRelease_S(m_StaticSamplers[i]);
 			}
 
-			for (int32 i = 0; i < m_ConstantBlocks.size(); i++)
+			for (int32 i = 0; i < static_cast<int32>(m_ConstantBlocks.size()); i++)
 			{
 				ReRelease_S(m_ConstantBlocks[i]);
 			}

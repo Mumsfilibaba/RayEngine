@@ -44,17 +44,22 @@ namespace RayEngine
 			VkDevice GetVkDevice() const;
 			VkPhysicalDevice GetVkPhysicalDevice() const;
 
+			bool GetImmediateContext(IDeviceContext** ppContext) override final;
+			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
 			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
 			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) override final;
 			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
-			bool CreateRootLayout(IRootLayout** ppRootSignature, const RootLayoutInfo& info) override final;
+			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info) override final;
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
-			
+
 			void SetName(const std::string& name) override final;
 			void QueryFactory(IFactory** ppFactory) const override final;
-			
+
 			System::Log* GetDeviceLog() override final;
 
 		private:

@@ -31,9 +31,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkPipelineState::VulkPipelineState(IDevice* pDevice, const PipelineStateInfo& info)
 			: m_Device(nullptr),
-			m_RootSignature(nullptr),
-			m_RenderPass(nullptr),
-			m_Pipeline(nullptr),
+			m_RootLayout(nullptr),
+			m_RenderPass(VK_NULL_HANDLE),
+			m_Pipeline(VK_NULL_HANDLE),
 			m_Type(PIPELINE_TYPE_UNKNOWN)
 		{
 			AddRef();
@@ -48,20 +48,20 @@ namespace RayEngine
 		VulkPipelineState::~VulkPipelineState()
 		{
 			VkDevice vkDevice = reinterpret_cast<VulkDevice*>(m_Device)->GetVkDevice();
-			if (m_Pipeline != nullptr)
+			if (m_Pipeline != VK_NULL_HANDLE)
 			{
 				vkDestroyPipeline(vkDevice, m_Pipeline, nullptr);
-				m_Pipeline = nullptr;
+				m_Pipeline = VK_NULL_HANDLE;
 			}
 
-			if (m_RenderPass != nullptr)
+			if (m_RenderPass != VK_NULL_HANDLE)
 			{
 				vkDestroyRenderPass(vkDevice, m_RenderPass, nullptr);
-				m_RenderPass = nullptr;
+				m_RenderPass = VK_NULL_HANDLE;
 			}
 
 			ReRelease_S(m_Device);
-			ReRelease_S(m_RootSignature);
+			ReRelease_S(m_RootLayout);
 		}
 
 
@@ -85,6 +85,13 @@ namespace RayEngine
 		PIPELINE_TYPE VulkPipelineState::GetPipelineType() const
 		{
 			return m_Type;
+		}
+
+
+
+		//////////////////////////////////////////////////////////////
+		void VulkPipelineState::SetName(const std::string& name)
+		{
 		}
 
 
@@ -331,8 +338,8 @@ namespace RayEngine
 			desc.pColorBlendState = &blendState;
 			desc.pDynamicState = &dynamicState;
 
-			m_RootSignature = reinterpret_cast<const VulkRootSignature*>(info.pRootSignature->QueryReference());
-			VkPipelineLayout vkLayout = m_RootSignature->GetVkPipelineLayout();
+			m_RootLayout = info.pRootLayout->QueryReference<VulkRootLayout>();
+			VkPipelineLayout vkLayout = m_RootLayout->GetVkPipelineLayout();
 			desc.layout = vkLayout;
 
 			//TODO: Multiple subpasses?
