@@ -114,6 +114,25 @@ int main(int args, char* argsv[])
 	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
 
 
+	//Create rendertargets
+	IRenderTargetView* ppBackbuffers[bufferCount];
+	for (int32 i = 0; i < bufferCount; i++)
+	{
+		ITexture* pBackbuffer = nullptr;
+		pBackbuffer = pSwapchain->GetBuffer(i);
+
+		RenderTargetViewInfo backbufferInfo = {};
+		backbufferInfo.Name = "Backbuffer" + std::to_string(i);
+		backbufferInfo.Format = swapchainInfo.Buffer.Format;
+		backbufferInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+		backbufferInfo.pResource = pBackbuffer;
+		backbufferInfo.Texture2D.MipSlice = 0;
+		backbufferInfo.Texture2D.PlaneSlice = 0;
+
+		ReRelease_S(pBackbuffer);
+	}
+
+
 	//Create shaders
 	ShaderInfo shaderInfo = {};
 	shaderInfo.Name = "VertexShader";
@@ -352,8 +371,9 @@ int main(int args, char* argsv[])
 
 		//Get and clear currentbackbuffer and depthstencil
 		ColorF backbufferColor = ColorF::CORNFLOWERBLUE;
-		IRenderTargetView* pBackBuffer = pSwapchain->GetCurrentView();
-		pDeviceContext->ClearRendertargetView(pBackBuffer, backbufferColor);
+		int32 currentBuffer = pSwapchain->GetCurrentBuffer();
+
+		pDeviceContext->ClearRendertargetView(ppBackbuffers[currentBuffer], backbufferColor);
 		pDeviceContext->ClearDepthStencilView(pDepthStencilView, 1.0f, 0);
 
 
@@ -377,7 +397,7 @@ int main(int args, char* argsv[])
 		pDeviceContext->SetScissorRects(scissorRect);
 
 
-		pDeviceContext->SetRendertargets(pBackBuffer, pDepthStencilView);
+		pDeviceContext->SetRendertargets(ppBackbuffers[currentBuffer], pDepthStencilView);
 		pDeviceContext->SetPipelineState(pPipelineState);
 		pDeviceContext->SetRootLayout(pRootLayout);
 
