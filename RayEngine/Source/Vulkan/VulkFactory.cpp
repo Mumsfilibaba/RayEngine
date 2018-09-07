@@ -38,7 +38,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkFactory::VulkFactory(bool debugLayers)
 			: m_Instance(nullptr),
-			m_DbgCallback(0)
+			m_DbgCallback(0),
+			m_References(0)
 		{
 			AddRef();
 
@@ -282,6 +283,35 @@ namespace RayEngine
 		GRAPHICS_API VulkFactory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_VULKAN;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkFactory::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkFactory::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkFactory::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

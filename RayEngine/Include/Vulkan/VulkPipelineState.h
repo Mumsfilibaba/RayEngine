@@ -47,12 +47,20 @@ namespace RayEngine
 			~VulkPipelineState();
 
 			VkPipeline GetVkPipeline() const;
+			
 			VkRenderPass GetVkRenderPass() const;
 
 			PIPELINE_TYPE GetPipelineType() const override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const PipelineStateInfo& info);
@@ -71,9 +79,13 @@ namespace RayEngine
 		private:
 			VulkDevice* m_Device;
 			VulkRootLayout* m_RootLayout;
+			
 			VkPipeline m_Pipeline;
 			VkRenderPass m_RenderPass;
+			
 			PIPELINE_TYPE m_Type;
+			
+			IObject::CounterType m_References;
 		};
 	}
 }

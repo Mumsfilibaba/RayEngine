@@ -142,7 +142,7 @@ namespace RayEngine
 
 		public:
 			IShaderResourceView() {}
-			virtual ~IShaderResourceView() {}
+			~IShaderResourceView() {}
 		};
 	}
 }

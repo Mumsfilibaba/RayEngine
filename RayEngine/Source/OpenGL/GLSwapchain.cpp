@@ -26,6 +26,102 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
+		GLSwapchain::GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+			: m_References(0)
+		{
+		}
 
+
+
+		/////////////////////////////////////////////////////////////
+		GLSwapchain::~GLSwapchain()
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		int32 GLSwapchain::GetCurrentBuffer() const
+		{
+			return int32();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLSwapchain::QueryBuffer(ITexture** ppBuffer, int32 index) const
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLSwapchain::Present() const
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLSwapchain::SetName(const std::string& name)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLSwapchain::QueryDevice(IDevice** ppDevice) const
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLSwapchain::QueryFactory(IFactory** ppFactory) const
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLSwapchain::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLSwapchain::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLSwapchain::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLSwapchain::Create(const SwapchainInfo& info)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLSwapchain::CreateTextures(const SwapchainInfo& info)
+		{
+		}
 	}
 }

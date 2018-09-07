@@ -32,10 +32,11 @@ namespace RayEngine
 		DX12CommandList::DX12CommandList(DX12Device* pDevice, ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask)
 			: m_List(nullptr),
 			m_Allocator(nullptr),
-			m_Device(nullptr)
+			m_Device(nullptr),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 
 			Create(pInitalState, type, nodeMask);
 		}
@@ -103,7 +104,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12CommandList::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12CommandList::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12CommandList::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12CommandList::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

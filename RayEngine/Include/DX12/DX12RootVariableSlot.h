@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IRootVariableSlot.h"
+#include "..\Defines.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12DescriptorHandle.h"
@@ -30,7 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		class DX12RootVariableSlot : public IRootVariableSlot
+		class DX12RootVariableSlot
 		{
 		public:
 			DX12RootVariableSlot(const DX12RootVariableSlot& other) = delete;
@@ -43,8 +43,11 @@ namespace RayEngine
 			virtual ~DX12RootVariableSlot();
 
 			virtual void SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* ppSRVs, int32 count) const = 0;
+			
 			virtual void SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const = 0;
+			
 			virtual void SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const = 0;
+			
 			virtual void SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const = 0;
 			
 			D3D12_RESOURCE_STATES GetNeededD3D12ResourceState() const;
@@ -69,8 +72,11 @@ namespace RayEngine
 			~DX12GraphicsDescriptorRootSlot();
 
 			void SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* ppSRVs, int32 count) const override final;
+			
 			void SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const override final;
+			
 			void SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const override final;
+			
 			void SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const override final;
 
 		private:
@@ -93,8 +99,11 @@ namespace RayEngine
 			~DX12ComputeDescriptorRootSlot();
 
 			void SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* ppSRVs, int32 count) const override final;
+			
 			void SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const override final;
+			
 			void SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const override final;
+			
 			void SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const override final;
 
 		private:
@@ -117,8 +126,11 @@ namespace RayEngine
 			~DX12GraphicsRootSignatureSlot();
 
 			void SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* ppSRVs, int32 count) const override final;
+			
 			void SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const override final;
+			
 			void SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const override final;
+			
 			void SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const override final;
 
 		private:
@@ -141,8 +153,11 @@ namespace RayEngine
 			~DX12ComputeRootSignatureSlot();
 
 			void SetShaderResourceViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* ppSRVs, int32 count) const override final;
+			
 			void SetSamplers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pSamplerStates, int32 count) const override final;
+			
 			void SetUnorderedAccessViews(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pUAVs, int32 count) const override final;
+			
 			void SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const override final;
 
 		private:

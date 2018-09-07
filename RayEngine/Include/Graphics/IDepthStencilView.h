@@ -131,7 +131,7 @@ namespace RayEngine
 
 		public:
 			IDepthStencilView() {}
-			virtual ~IDepthStencilView() {}
+			~IDepthStencilView() {}
 		};
 	}
 }

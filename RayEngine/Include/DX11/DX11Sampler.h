@@ -50,7 +50,14 @@ namespace RayEngine
 			ID3D11SamplerState* GetD3D11SamplerState() const;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const SamplerInfo& info);
@@ -58,6 +65,8 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			ID3D11SamplerState* m_SamplerState;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

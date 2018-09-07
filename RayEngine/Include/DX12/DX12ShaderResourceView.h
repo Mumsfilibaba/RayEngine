@@ -49,13 +49,22 @@ namespace RayEngine
 			~DX12ShaderResourceView();
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderResourceViewInfo& info);
 
 		private:
 			DX12Device* m_Device;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

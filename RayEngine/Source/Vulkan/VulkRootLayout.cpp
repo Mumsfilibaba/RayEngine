@@ -29,10 +29,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkRootLayout::VulkRootLayout(IDevice* pDevice, const RootLayoutInfo& info)
 			: m_Device(nullptr),
-			m_Layout(VK_NULL_HANDLE)
+			m_Layout(VK_NULL_HANDLE),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = pDevice->QueryReference<VulkDevice>();
 
 			Create(pDevice, info);
 		}
@@ -66,6 +67,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkRootLayout::SetName(const std::string& name)
 		{
+			//Not relevant
 		}
 
 
@@ -73,7 +75,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkRootLayout::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryVulkDevice(m_Device);
+			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkRootLayout::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkRootLayout::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkRootLayout::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

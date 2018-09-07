@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IRootVariableSlot.h"
+#include "..\Defines.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -30,7 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		class IDX11RootVariableSlot : public IRootVariableSlot
+		class IDX11RootVariableSlot
 		{
 		public:
 			IDX11RootVariableSlot(const IDX11RootVariableSlot& other) = delete;
@@ -43,8 +43,11 @@ namespace RayEngine
 			virtual ~IDX11RootVariableSlot() {}
 
 			virtual void SetShaderResourceViews(ID3D11DeviceContext* pContext, ID3D11ShaderResourceView** ppSRVs, int32 count) const = 0;
+			
 			virtual void SetSamplers(ID3D11DeviceContext* pContext, ID3D11SamplerState** ppSamplerStates, int32 count) const = 0;
+			
 			virtual void SetUnorderedAccessViews(ID3D11DeviceContext* pContext, ID3D11UnorderedAccessView** ppUAVs, int32 count) const = 0;
+			
 			virtual void SetConstantBuffers(ID3D11DeviceContext* pContext, ID3D11Buffer** ppBuffers, int32 count) const = 0;
 		};
 
@@ -78,8 +81,11 @@ namespace RayEngine
 
 			/////////////////////////////////////////////////////////////
 			void SetShaderResourceViews(ID3D11DeviceContext* pContext, ID3D11ShaderResourceView** ppSRVs, int32 count) const override final;
+			
 			void SetSamplers(ID3D11DeviceContext* pContext, ID3D11SamplerState** ppSamplerStates, int32 count) const override final;
+			
 			void SetUnorderedAccessViews(ID3D11DeviceContext* pContext, ID3D11UnorderedAccessView** ppUAVs, int32 count) const override final;
+			
 			void SetConstantBuffers(ID3D11DeviceContext* pContext, ID3D11Buffer** ppBuffers, int32 count) const override final;
 
 		private:

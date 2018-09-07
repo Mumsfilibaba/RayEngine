@@ -42,13 +42,22 @@ namespace RayEngine
 			VkInstance GetVkInstance() const;
 
 			void EnumerateAdapters(AdapterList& list) const override final;
+			
 			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
+			
 			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo) override final;
-			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo,
-				ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
+			
+			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 
 			void SetName(const std::string& name) override final;
+			
 			GRAPHICS_API GetGraphicsApi() const override final;
+			
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(bool debugLayers);
@@ -56,19 +65,23 @@ namespace RayEngine
 		private:
 			VkInstance m_Instance;
 			VkDebugReportCallbackEXT m_DbgCallback;
+		
+			IObject::CounterType m_References;
 
 		public:
 			static bool InstanceLayersSupported(const char* const * ppNeededLayers, int32 count);
+			
 			static bool InstanceExtensionsSupported(const char* const * ppNeededExtensions, int32 count);
+			
 			static bool DeviceExtensionsSupported(VkPhysicalDevice& adapter, const char* const * ppNeededExtensions, int32 count);
-			static void FillAdapterInfo(AdapterInfo& info, VkPhysicalDeviceFeatures& features,
-				VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags);
+			
+			static void FillAdapterInfo(AdapterInfo& info, VkPhysicalDeviceFeatures& features, VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags);
+			
 			static void CheckQueueFamilySupport(VkPhysicalDevice& adapter, VkQueueFamilyProperties& queuefamily, int32& supportFlags);
 
 		private:
-			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
-				VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location,
-				int32_t code, const char* pLayerPrefix, const char* pMsg, void* pUserData);
+			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, 
+				uint64_t obj, size_t location, int32_t code, const char* pLayerPrefix, const char* pMsg, void* pUserData);
 		};
 	}
 }

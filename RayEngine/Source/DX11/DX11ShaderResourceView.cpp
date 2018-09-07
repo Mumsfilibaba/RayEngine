@@ -33,10 +33,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11ShaderResourceView::DX11ShaderResourceView(IDevice* pDevice, const ShaderResourceViewInfo& info)
 			: m_Device(nullptr),
-			m_View(nullptr)
+			m_View(nullptr),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX11Device(pDevice);
+			m_Device = pDevice->QueryReference<DX11Device>();
 
 			Create( info);
 		}
@@ -70,7 +71,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11ShaderResourceView::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX11Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11ShaderResourceView::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11ShaderResourceView::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11ShaderResourceView::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

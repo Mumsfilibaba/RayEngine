@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "..\System\Window.h"
-#include "..\ReferenceCounter.h"
+#include "..\Interfaces\IObject.h"
 
 namespace RayEngine
 {
@@ -70,7 +70,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class ISwapchain : public ReferenceCounter
+		class ISwapchain : public IObject
 		{
 		public:
 			ISwapchain(ISwapchain&& other) = delete;
@@ -80,7 +80,7 @@ namespace RayEngine
 
 		public:
 			ISwapchain() {}
-			virtual ~ISwapchain() {}
+			~ISwapchain() {}
 
 
 			/*////////////////////////////////////////////////////////////

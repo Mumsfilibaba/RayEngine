@@ -47,17 +47,28 @@ namespace RayEngine
 
 		public:
 			DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
+
 			DX12Texture(IDevice* pDevice, ID3D12Resource* pResource);
+
 			~DX12Texture();
 			
 			void SetName(const std::string& name) override final;
+
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+
+			IObject::CounterType Release() override final;
+
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
 
 		private:
 			DX12Device* m_Device;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

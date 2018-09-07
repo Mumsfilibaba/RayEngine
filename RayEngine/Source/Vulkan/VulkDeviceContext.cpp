@@ -26,154 +26,155 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////
-		VulkanDeviceContext::VulkanDeviceContext(IDevice* pDevice, bool isDeffered)
+		VulkDeviceContext::VulkDeviceContext(IDevice* pDevice, bool isDeffered)
+			: m_References(0)
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		VulkanDeviceContext::~VulkanDeviceContext()
+		VulkDeviceContext::~VulkDeviceContext()
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
+		void VulkDeviceContext::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
+		void VulkDeviceContext::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView * pDepthStencil) const
+		void VulkDeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView * pDepthStencil) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const
+		void VulkDeviceContext::SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const
+		void VulkDeviceContext::SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const
+		void VulkDeviceContext::SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetSamplers(ISampler* pSampler, int32 startRootIndex) const
+		void VulkDeviceContext::SetSamplers(ISampler* pSampler, int32 startRootIndex) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
+		void VulkDeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetRootLayout(IRootLayout* pRootLayout) const
+		void VulkDeviceContext::SetRootLayout(IRootLayout* pRootLayout) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const
+		void VulkDeviceContext::SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetViewports(const Viewport& viewport) const
+		void VulkDeviceContext::SetViewports(const Viewport& viewport) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const
+		void VulkDeviceContext::SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetScissorRects(const Math::Rectangle& rect) const
+		void VulkDeviceContext::SetScissorRects(const Math::Rectangle& rect) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::Draw(int32 startVertex, int32 vertexCount) const
+		void VulkDeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
+		void VulkDeviceContext::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const
+		void VulkDeviceContext::DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
+		void VulkDeviceContext::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const
+		void VulkDeviceContext::Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::Flush() const
+		void VulkDeviceContext::Flush() const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		bool VulkanDeviceContext::Reset() const
+		bool VulkDeviceContext::Reset() const
 		{
 			return false;
 		}
@@ -181,7 +182,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////
-		bool VulkanDeviceContext::Close() const
+		bool VulkDeviceContext::Close() const
 		{
 			return false;
 		}
@@ -189,22 +190,51 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::ExecuteDefferedContext(IDeviceContext* pDefferedContext) const
+		void VulkDeviceContext::ExecuteDefferedContext(IDeviceContext* pDefferedContext) const
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::SetName(const std::string& name)
+		void VulkDeviceContext::SetName(const std::string& name)
 		{
 		}
 
 
 
 		//////////////////////////////////////////////////////////////
-		void VulkanDeviceContext::QueryDevice(IDevice** ppDevice) const
+		void VulkDeviceContext::QueryDevice(IDevice** ppDevice) const
 		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkDeviceContext::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkDeviceContext::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkDeviceContext::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 	}
 }

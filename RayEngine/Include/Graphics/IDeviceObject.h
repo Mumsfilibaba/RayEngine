@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\ReferenceCounter.h"
+#include "..\Interfaces\IObject.h"
 
 namespace RayEngine
 {
@@ -32,7 +32,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDeviceObject : public ReferenceCounter
+		class IDeviceObject : public IObject
 		{
 		public:
 			IDeviceObject(IDeviceObject&& other) = delete;
@@ -42,7 +42,7 @@ namespace RayEngine
 			
 		public:
 			IDeviceObject() {}
-			virtual ~IDeviceObject() {}
+			~IDeviceObject() {}
 
 			/*////////////////////////////////////////////////////////////
 

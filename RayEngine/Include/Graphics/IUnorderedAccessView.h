@@ -109,7 +109,7 @@ namespace RayEngine
 
 		public:
 			IUnorderedAccessView() {}
-			virtual ~IUnorderedAccessView() {}
+			~IUnorderedAccessView() {}
 		};
 	}
 }

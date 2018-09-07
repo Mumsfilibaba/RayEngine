@@ -53,24 +53,43 @@ namespace RayEngine
 			PIPELINE_TYPE GetPipelineType() const override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+
+			IObject::CounterType Release() override final;
+
+			IObject::CounterType AddRef() override final;
+
 
 		private:
 			void Create(const PipelineStateInfo& info);
+
 			void CreateGraphicsState(const PipelineStateInfo& info);
+
 			void CreateComputeState(const PipelineStateInfo& info);
 			
+
 		private:
 			static void SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader);
+
 			static void SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementInfo& element);
+
 			static void SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateInfo& info);
+
 			static void SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateInfo& info);
+
 			static void SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info);
+
 
 		private:
 			DX12Device* m_Device;
 			ID3D12PipelineState* m_PipelineState;
+			
 			PIPELINE_TYPE m_Type;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

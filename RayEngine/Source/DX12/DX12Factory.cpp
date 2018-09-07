@@ -34,7 +34,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Factory::DX12Factory(bool debugLayer)
 			: m_Factory(nullptr),
-			m_DebugController(nullptr)
+			m_DebugController(nullptr),
+			m_References(0)
 		{
 			AddRef();
 			Create(debugLayer);
@@ -133,6 +134,35 @@ namespace RayEngine
 		GRAPHICS_API DX12Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D12;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Factory::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Factory::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Factory::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

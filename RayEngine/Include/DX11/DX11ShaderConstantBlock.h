@@ -53,7 +53,14 @@ namespace RayEngine
 			ID3D11Buffer* GetD3D11Buffer() const;
 			
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(int32 numConstants);
@@ -61,7 +68,9 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			ID3D11Buffer* m_ConstantBuffer;
+			
 			std::vector<uint32> m_Constants;
+			IObject::CounterType m_References;
 		};
 	}
 }

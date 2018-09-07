@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "AdapterInfo.h"
-#include "..\ReferenceCounter.h"
+#include "..\Interfaces\IObject.h"
 
 namespace RayEngine
 {
@@ -37,7 +37,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IFactory : public ReferenceCounter
+		class IFactory : public IObject
 		{
 			IFactory(IFactory&& other) = delete;
 			IFactory(const IFactory& other) = delete;
@@ -46,7 +46,7 @@ namespace RayEngine
 
 		public:
 			IFactory() {}
-			virtual ~IFactory() {}
+			~IFactory() {}
 
 
 			/*////////////////////////////////////////////////////////////

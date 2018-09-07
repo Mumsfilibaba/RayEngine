@@ -51,14 +51,24 @@ namespace RayEngine
 			VkImage GetVkImage() const;
 			
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
 
 		private:
 			VulkDevice* m_Device;
+			
 			VkImage m_Image;
+			
+			IObject::CounterType m_References;
 		};
 	}
 }

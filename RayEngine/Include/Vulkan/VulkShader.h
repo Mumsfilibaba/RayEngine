@@ -41,21 +41,34 @@ namespace RayEngine
 			~VulkShader();
 
 			const std::string& GetEntryPoint() const;
+			
 			VkShaderModule GetVkShaderModule() const;
 			
 			SHADER_TYPE GetType() const override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderInfo& info);
 
 		private:
 			VulkDevice* m_Device;
+			
 			VkShaderModule m_Module;
-			SHADER_TYPE m_Type;
+			
 			std::string m_EntryPoint;
+			
+			SHADER_TYPE m_Type;
+		
+			IObject::CounterType m_References;
 		};
 	}
 }

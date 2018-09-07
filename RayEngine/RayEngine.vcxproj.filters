@@ -63,9 +63,6 @@
     <ClInclude Include="Include\Math\Vector4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Network\Socket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\System\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\System\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Win32\Win32SocketImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Win32\Win32WindowImpl.h">
@@ -348,9 +342,6 @@
     <ClInclude Include="Include\DX11\DX11RootVariableSlot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Graphics\IRootVariableSlot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DX11\DX11DeviceContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -367,9 +358,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DX12\DX12DescriptorHandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\ReferenceCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DX12\DX12CommandList.h">
@@ -400,6 +388,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\OpenGL\GLSwapchain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Interfaces\IObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -446,16 +437,10 @@
     <ClCompile Include="Source\Math\Vector4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Network\Socket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\System\Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\System\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Win32\Win32SocketImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Win32\Win32WindowImpl.cpp">
@@ -711,9 +696,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12RootVariableSlot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ReferenceCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12CommandList.cpp">

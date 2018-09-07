@@ -29,10 +29,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkTexture::VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: m_Device(nullptr),
-			m_Image(VK_NULL_HANDLE)
+			m_Image(VK_NULL_HANDLE),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryVulkDevice(pDevice);
+			m_Device = pDevice->QueryReference<VulkDevice>();
 
 			Create(pInitialData, info);
 		}
@@ -42,10 +43,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkTexture::VulkTexture(IDevice* pDevice, VkImage image)
 			: m_Device(nullptr),
-			m_Image(image)
+			m_Image(image),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryVulkDevice(pDevice);
+			m_Device = pDevice->QueryReference<VulkDevice>();
 		}
 
 
@@ -92,7 +94,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkTexture::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryVulkDevice(m_Device);
+			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkTexture::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkTexture::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkTexture::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

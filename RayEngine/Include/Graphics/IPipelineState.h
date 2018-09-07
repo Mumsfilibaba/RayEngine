@@ -437,7 +437,7 @@ namespace RayEngine
 
 		public:
 			IPipelineState() {}
-			virtual ~IPipelineState() {}
+			~IPipelineState() {}
 
 			/*////////////////////////////////////////////////////////////
 				Return the type of the pipeline.

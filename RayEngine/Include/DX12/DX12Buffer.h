@@ -49,29 +49,46 @@ namespace RayEngine
 			~DX12Buffer();
 
 			DX12DescriptorHandle GetDX12DescriptorHandle() const;
+			
 			D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const;
+			
 			D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const;
 
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
+			
 			void Unmap() override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* pInitalData, const BufferInfo& info);
+			
 			void CreateView(const BufferInfo& usage);
+
 
 		private:
 			DX12Device* m_Device;
+			
 			BUFFER_USAGE m_BufferType;
+			
 			union 
 			{
 				DX12DescriptorHandle ConstantBuffer;
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;
+
 			int32 m_MappedSubresource;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

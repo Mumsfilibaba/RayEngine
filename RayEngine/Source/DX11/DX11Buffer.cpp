@@ -34,10 +34,11 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_Resource(nullptr),
 			m_Context(nullptr),
-			m_ByteStride(0)
+			m_ByteStride(0),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX11Device(pDevice);
+			m_Device = pDevice->QueryReference<DX11Device>();
 			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
 
 			Create(pInitalData, info);
@@ -50,8 +51,8 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Resource);
 
-			ReRelease_S(m_Device);
 			ReRelease_S(m_Context);
+			ReRelease_S(m_Device);
 		}
 
 
@@ -111,7 +112,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Buffer::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX11Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Buffer::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Buffer::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Buffer::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

@@ -42,14 +42,24 @@ namespace RayEngine
 			VkPipelineLayout GetVkPipelineLayout() const;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(IDevice* pDevice, const RootLayoutInfo& info);
 
 		private:
 			IDevice* m_Device;
+			
 			VkPipelineLayout m_Layout;
+			
+			IObject::CounterType m_References;
 		};
 	}
 }

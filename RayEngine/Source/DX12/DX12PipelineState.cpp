@@ -35,10 +35,11 @@ namespace RayEngine
 		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateInfo& info)
 			: m_Device(nullptr),
 			m_PipelineState(nullptr),
-			m_Type(PIPELINE_TYPE_UNKNOWN)
+			m_Type(PIPELINE_TYPE_UNKNOWN),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 
 			Create(info);
 		}
@@ -74,7 +75,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12PipelineState::QueryDevice(IDevice ** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12PipelineState::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12PipelineState::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12PipelineState::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

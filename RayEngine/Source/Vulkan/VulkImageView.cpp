@@ -31,7 +31,7 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_View(VK_NULL_HANDLE)
 		{
-			m_Device = reinterpret_cast<IDevice*>(pDevice->QueryReference());
+			m_Device = pDevice->QueryReference<VulkDevice>();
 		}
 
 

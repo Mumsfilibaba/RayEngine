@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\OpenGL\GLSwapchain.h"
+#include "..\..\Include\OpenGL\GLDeviceContext.h"
 
 namespace RayEngine
 {
@@ -27,6 +27,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLDeviceContext::GLDeviceContext(IDevice* pDevice, bool isDeffered)
+			: m_References(0)
 		{
 		}
 
@@ -205,6 +206,35 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDeviceContext::QueryDevice(IDevice** ppDevice) const
 		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLDeviceContext::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLDeviceContext::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLDeviceContext::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

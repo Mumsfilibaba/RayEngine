@@ -85,7 +85,7 @@ namespace RayEngine
 
 		public:
 			IBuffer() {}
-			virtual ~IBuffer() {}
+			~IBuffer() {}
 
 			/*////////////////////////////////////////////////////////////
 				

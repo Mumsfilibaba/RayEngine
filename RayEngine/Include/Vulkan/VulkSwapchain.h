@@ -49,33 +49,49 @@ namespace RayEngine
 			~VulkSwapchain();
 
 			VkSurfaceKHR GetVkSurfaceKHR() const;
+			
 			VkSwapchainKHR GetVkSwapchainKHR() const;
 
 			int32 GetCurrentBuffer() const override final;
+			
 			void QueryBuffer(ITexture** ppBuffer, int32 index) const override final;
 
 			void Present() const override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+			
 			void QueryFactory(IFactory** ppFactory) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void ReleaseObjects();
+			
 			void Create(const SwapchainInfo& info);
 
 		private:
 			static VkExtent2D GetSupportedSize(const VkSurfaceCapabilitiesKHR& capabilities, int32 width, int32 height);
+			
 			static VkSurfaceFormatKHR GetSupportedFormat(VulkDevice* pDevice, VkSurfaceKHR surface, VkFormat desiredFormat);
 
 		private:
 			VulkDevice* m_Device;
 			VulkFactory* m_Factory;
 			VulkDeviceContext* m_CommandQueue;
+			
 			VkSurfaceFormatKHR m_Format;
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;
+			
 			std::vector<VulkTexture*> m_Textures;
+			
+			IObject::CounterType m_References;
 		};
 	}
 }

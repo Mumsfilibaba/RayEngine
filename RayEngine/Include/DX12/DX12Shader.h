@@ -54,13 +54,22 @@ namespace RayEngine
 			SHADER_TYPE GetType() const override final;
 
 			void SetName(const std::string& name) override final;
+
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+
+			IObject::CounterType Release() override final;
+
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderInfo& info);
 
 		private:
 			DX12Device* m_Device;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

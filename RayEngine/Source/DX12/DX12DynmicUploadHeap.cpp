@@ -33,10 +33,11 @@ namespace RayEngine
 			: DX12Resource(),
 			m_Device(nullptr),
 			m_Heap(nullptr),
-			m_SizeInBytes(0)
+			m_SizeInBytes(0),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 
 			Create(alignment, sizeInBytes);
 		}
@@ -89,7 +90,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DynamicUploadHeap::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12DynamicUploadHeap::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12DynamicUploadHeap::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12DynamicUploadHeap::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

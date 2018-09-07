@@ -35,10 +35,11 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_ConstantBlocks(),
 			m_StaticSamplers(),
-			m_VariableSlots()
+			m_VariableSlots(),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX11Device(pDevice);
+			m_Device = pDevice->QueryReference<DX11Device>();
 
 			Create(info);
 		}
@@ -81,7 +82,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11RootLayout::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX11Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11RootLayout::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11RootLayout::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11RootLayout::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

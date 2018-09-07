@@ -52,10 +52,11 @@ namespace RayEngine
 			m_ResourceHeap(nullptr),
 			m_DsvHeap(nullptr),
 			m_RtvHeap(nullptr),
-			m_SamplerHeap(nullptr)
+			m_SamplerHeap(nullptr),
+			m_References(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<DX12Factory*>(pFactory->QueryReference());
+			m_Factory = pFactory->QueryReference<DX12Factory>();
 			
 			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
 			m_UploadHeap->SetName(info.Name + ": Dynamic Upload-Heap");
@@ -179,7 +180,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Device::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = reinterpret_cast<DX12Factory*>(m_Factory->QueryReference());
+			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Device::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Device::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Device::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 
@@ -242,7 +272,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::GetImmediateContext(IDeviceContext** ppContext)
 		{
-			return ((*ppContext) = reinterpret_cast<DX12DeviceContext*>(m_ImmediateContext->QueryReference())) != nullptr;
+			return ((*ppContext) = m_ImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
 		}
 
 

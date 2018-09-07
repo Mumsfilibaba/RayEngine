@@ -47,7 +47,8 @@ namespace RayEngine
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			m_ImmediateContext(nullptr),
-			m_FeatureLevel()
+			m_FeatureLevel(),
+			m_References(0)
 		{
 			AddRef();
 			m_Factory = pFactory->QueryReference<DX11Factory>();
@@ -64,13 +65,13 @@ namespace RayEngine
 			ReRelease_S(m_Factory);
 			
 			D3DRelease_S(m_Adapter);
+			D3DRelease_S(m_Device);
+
 			if (m_DebugDevice != nullptr)
 			{
-				//m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+				m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
 				D3DRelease(m_DebugDevice);
 			}
-
-			D3DRelease_S(m_Device);
 		}
 
 
@@ -89,7 +90,7 @@ namespace RayEngine
 			if (ppContext == nullptr)
 				return false;
 
-			*ppContext = reinterpret_cast<DX11DeviceContext*>(m_ImmediateContext->QueryReference());
+			(*ppContext) = m_ImmediateContext->QueryReference<DX11DeviceContext>();
 			return (*ppContext) != nullptr;
 		}
 
@@ -123,15 +124,30 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void DX11Device::Release()
+		IObject::CounterType DX11Device::GetReferenceCount() const
 		{
-			int32 refCount = DecrRef();
-			if (refCount < 1)
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Device::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Device::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
-			else if (refCount < 2)
-			{
-				ReRelease_S(m_ImmediateContext);
-			}
+
+			return counter;
 		}
 
 

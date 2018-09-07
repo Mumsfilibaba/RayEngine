@@ -34,10 +34,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12RootLayout::DX12RootLayout(IDevice* pDevice, const RootLayoutInfo& info)
 			: m_Device(nullptr),
-			m_RootSignature(nullptr)
+			m_RootSignature(nullptr),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 
 			Create(info);
 		}
@@ -97,7 +98,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12RootLayout::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12RootLayout::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12RootLayout::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12RootLayout::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

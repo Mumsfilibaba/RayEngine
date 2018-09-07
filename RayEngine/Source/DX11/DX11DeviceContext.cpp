@@ -45,10 +45,11 @@ namespace RayEngine
 			m_CurrentPipelineState(nullptr),
 			m_Context(nullptr),
 			m_CommandList(nullptr),
-			m_IsDeffered(false)
+			m_IsDeffered(false),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX11Device(pDevice);
+			m_Device = pDevice->QueryReference<DX11Device>();
 
 			Create(isDeffered);
 		}
@@ -60,7 +61,7 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Context);
 			D3DRelease_S(m_CommandList);
-			
+
 			ReRelease_S(m_CurrentRootLayout);
 			ReRelease_S(m_CurrentPipelineState);
 			ReRelease_S(m_Device);
@@ -173,7 +174,7 @@ namespace RayEngine
 		void DX11DeviceContext::SetRootLayout(IRootLayout* pRootLayout) const
 		{
 			ReRelease_S(m_CurrentRootLayout);
-			m_CurrentRootLayout = reinterpret_cast<DX11RootLayout*>(pRootLayout->QueryReference());
+			m_CurrentRootLayout = pRootLayout->QueryReference<DX11RootLayout>();
 		}
 
 
@@ -320,7 +321,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX11Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11DeviceContext::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11DeviceContext::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11DeviceContext::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

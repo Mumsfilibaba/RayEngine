@@ -33,10 +33,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12RenderTargetView::DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
 			: DX12View(),
-			m_Device(nullptr)
+			m_Device(nullptr),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 
 			Create(info);
 		}
@@ -62,7 +63,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12RenderTargetView::QueryDevice(IDevice ** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12RenderTargetView::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12RenderTargetView::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12RenderTargetView::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

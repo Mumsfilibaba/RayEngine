@@ -27,6 +27,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLFactory::GLFactory(bool debugLayer)
+			: m_References(0)
 		{
 		}
 
@@ -81,7 +82,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		GRAPHICS_API GLFactory::GetGraphicsApi() const
 		{
-			return GRAPHICS_API();
+			return GRAPHICS_API_OPENGL;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLFactory::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLFactory::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLFactory::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

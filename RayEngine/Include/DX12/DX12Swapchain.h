@@ -49,16 +49,26 @@ namespace RayEngine
 			~DX12Swapchain();
 
 			int32 GetCurrentBuffer() const override final;
+			
 			void QueryBuffer(ITexture** ppBuffer, int32 index) const override final;
 
 			void Present() const override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+			
 			void QueryFactory(IFactory** ppFactory) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const SwapchainInfo& info);
+			
 			void CreateTextures(const SwapchainInfo& info);
 
 		private:
@@ -66,8 +76,12 @@ namespace RayEngine
 			DX12Device* m_Device;
 			DX12DeviceContext* m_Context;
 			IDXGISwapChain1* m_Swapchain;
+			
 			std::vector<DX12Texture*> m_Textures;
+			
 			mutable int32 m_CurrentBuffer;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

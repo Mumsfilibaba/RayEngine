@@ -49,21 +49,32 @@ namespace RayEngine
 			~DX12CommandList();
 
 			ID3D12CommandList* GetD3D12CommandList() const;
+			
 			ID3D12CommandAllocator* GetD3D12CommandAllocator() const;
+			
 			ID3D12GraphicsCommandList* GetD3D12GraphicsCommandList() const;
 
 			bool Reset() const;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);
 
 		private:
+			DX12Device* m_Device;
 			ID3D12GraphicsCommandList* m_List;
 			ID3D12CommandAllocator* m_Allocator;
-			DX12Device* m_Device;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

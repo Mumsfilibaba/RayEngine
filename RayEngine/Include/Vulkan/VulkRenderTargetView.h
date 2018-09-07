@@ -40,10 +40,20 @@ namespace RayEngine
 			~VulkRenderTargetView();
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const RenderTargetViewInfo& info);
+
+		private:
+			IObject::CounterType m_References;
 		};
 	}
 }

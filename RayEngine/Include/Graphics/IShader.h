@@ -87,7 +87,7 @@ namespace RayEngine
 
 		public:
 			IShader() {}
-			virtual ~IShader() {}
+			~IShader() {}
 
 			//Retrives the shadertype
 			virtual SHADER_TYPE GetType() const = 0;

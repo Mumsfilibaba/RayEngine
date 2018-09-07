@@ -168,7 +168,7 @@ namespace RayEngine
 
 		public:
 			IRootLayout() {}
-			virtual ~IRootLayout() {}
+			~IRootLayout() {}
 		};
 	}
 }

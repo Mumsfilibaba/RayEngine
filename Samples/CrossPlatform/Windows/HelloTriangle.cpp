@@ -113,132 +113,132 @@ int main(int args, char* argsv[])
 	ISwapchain* pSwapchain = nullptr;
 	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
 
-//
-//	//Create rendertargets
-//	IRenderTargetView* ppBackbuffers[bufferCount];
-//	for (int32 i = 0; i < bufferCount; i++)
-//	{
-//		ITexture* pBackbuffer = nullptr;
-//		pSwapchain->QueryBuffer(&pBackbuffer, i);
-//
-//		RenderTargetViewInfo backbufferInfo = {};
-//		backbufferInfo.Name = "Backbuffer" + std::to_string(i);
-//		backbufferInfo.Format = swapchainInfo.Buffer.Format;
-//		backbufferInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
-//		backbufferInfo.pResource = pBackbuffer;
-//		backbufferInfo.Texture2D.MipSlice = 0;
-//		backbufferInfo.Texture2D.PlaneSlice = 0;
-//
-//		pDevice->CreateRenderTargetView(&ppBackbuffers[i], backbufferInfo);
-//		ReRelease_S(pBackbuffer);
-//	}
-//
-//
-//	//Create shaders
-//	ShaderInfo shaderInfo = {};
-//	shaderInfo.Name = "VertexShader";
-//#if defined(RE_DEBUG)
-//	shaderInfo.Flags = SHADER_FLAGS_DEBUG;
-//#else
-//	shaderInfo.Flags = SHADER_FLAGS_NONE;
-//#endif
-//	shaderInfo.Source = "vs.hlsl";
-//	shaderInfo.FilePath = "Shaders/";
-//	shaderInfo.EntryPoint = "main";
-//	shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
-//	shaderInfo.Type = SHADER_TYPE_VERTEX;
-//
-//	IShader* pVs = nullptr;
-//	pDevice->CreateShader(&pVs, shaderInfo);
-//
-//	shaderInfo.Name = "PixelShader";
-//	shaderInfo.Source = "ps.hlsl";
-//	shaderInfo.Type = SHADER_TYPE_PIXEL;
-//
-//	IShader* pPs = nullptr;
-//	pDevice->CreateShader(&pPs, shaderInfo);
-//
-//
-//
-//	//Create a RootLayout
-//	RootLayoutInfo rootLayoutInfo = {};
-//	rootLayoutInfo.Name = "RootLayout";
-//	rootLayoutInfo.Flags = ROOT_LAYOUT_FLAG_NONE;
-//	rootLayoutInfo.PipelineType = PIPELINE_TYPE_GRAPHICS;
-//	rootLayoutInfo.pStaticSamplers = nullptr;
-//	rootLayoutInfo.SamplerCount = 0;
-//	rootLayoutInfo.pVariables = nullptr;
-//	rootLayoutInfo.VariableCount = 0;
-//
-//	IRootLayout* pRootLayout = nullptr;
-//	pDevice->CreateRootLayout(&pRootLayout, rootLayoutInfo);
-//
-//
-//	//Create a defenition for an inputelement (Define a vertex)
-//	InputElementInfo elementinfo = 
-//	{ 
-//		"POSITION",
-//		0,
-//		FORMAT_R32G32B32_FLOAT,
-//		ELEMENT_STEP_TYPE_VERTEX,
-//		0,
-//		0,
-//		0,
-//		sizeof(Math::Vector3)
-//	};
-//
-//
-//
-//	//Create a pipelinestate
-//	PipelineStateInfo pipelinestateInfo = {};
-//	pipelinestateInfo.Name = "PipelineState";
-//	pipelinestateInfo.Type = PIPELINE_TYPE_GRAPHICS;
-//	pipelinestateInfo.pRootLayout = pRootLayout;
-//	pipelinestateInfo.GraphicsPipeline.pVertexShader = pVs;
-//	pipelinestateInfo.GraphicsPipeline.pPixelShader = pPs;
-//	pipelinestateInfo.GraphicsPipeline.DepthStencilFormat = FORMAT_UNKNOWN;
-//	pipelinestateInfo.GraphicsPipeline.RenderTargetCount = 1;
-//	pipelinestateInfo.GraphicsPipeline.RenderTargetFormats[0] = swapchainInfo.Buffer.Format;
-//	pipelinestateInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
-//	pipelinestateInfo.GraphicsPipeline.SampleMask = -1;
-//	pipelinestateInfo.GraphicsPipeline.StripCutEnable = false;
-//	pipelinestateInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-//	pipelinestateInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
-//	pipelinestateInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
-//
-//	IPipelineState* pPipelineState = nullptr;
-//	pDevice->CreatePipelineState(&pPipelineState, pipelinestateInfo);
-//
-//
-//
-//	//Create a vertexbuffer
-//	Vector3 vertices[3] = 
-//	{
-//		Vector3(0.0f, 0.5f, 0.0f),
-//		Vector3(0.5f, -0.5f, 0.0f),
-//		Vector3(-0.5f, -0.5f, 0.0f),
-//	};
-//
-//	ResourceData vbData = {};
-//	vbData.pData = vertices;
-//	vbData.WidthOrCount = 3;
-//	vbData.ByteStride = sizeof(Vector3);
-//	vbData.Height = 1;
-//
-//	BufferInfo vertexBufferInfo = {};
-//	vertexBufferInfo.Name = "VertexBuffer";
-//	vertexBufferInfo.Count = 3;
-//	vertexBufferInfo.ByteStride = sizeof(Vector3);
-//	vertexBufferInfo.Type = BUFFER_USAGE_VERTEX;
-//	vertexBufferInfo.Usage = RESOURCE_USAGE_DEFAULT;
-//
-//	IBuffer* pVertexBuffer = nullptr;
-//	pDevice->CreateBuffer(&pVertexBuffer, &vbData, vertexBufferInfo);
+	
+	//Create rendertargets
+	IRenderTargetView* ppBackbuffers[bufferCount];
+	for (int32 i = 0; i < bufferCount; i++)
+	{
+		ITexture* pBackbuffer = nullptr;
+		pSwapchain->QueryBuffer(&pBackbuffer, i);
+	
+		RenderTargetViewInfo backbufferInfo = {};
+		backbufferInfo.Name = "Backbuffer" + std::to_string(i);
+		backbufferInfo.Format = swapchainInfo.Buffer.Format;
+		backbufferInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+		backbufferInfo.pResource = pBackbuffer;
+		backbufferInfo.Texture2D.MipSlice = 0;
+		backbufferInfo.Texture2D.PlaneSlice = 0;
+	
+		pDevice->CreateRenderTargetView(&ppBackbuffers[i], backbufferInfo);
+		ReRelease_S(pBackbuffer);
+	}
 
 
-	////Get devicecontext
-	//IDeviceContext* pDeviceContext = nullptr;
-	//pDevice->GetImmediateContext(&pDeviceContext);
+	//Create shaders
+	ShaderInfo shaderInfo = {};
+	shaderInfo.Name = "VertexShader";
+#if defined(RE_DEBUG)
+	shaderInfo.Flags = SHADER_FLAGS_DEBUG;
+#else
+	shaderInfo.Flags = SHADER_FLAGS_NONE;
+#endif
+	shaderInfo.Source = "vs.hlsl";
+	shaderInfo.FilePath = "Shaders/";
+	shaderInfo.EntryPoint = "main";
+	shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
+	shaderInfo.Type = SHADER_TYPE_VERTEX;
+	
+	IShader* pVs = nullptr;
+	pDevice->CreateShader(&pVs, shaderInfo);
+	
+	shaderInfo.Name = "PixelShader";
+	shaderInfo.Source = "ps.hlsl";
+	shaderInfo.Type = SHADER_TYPE_PIXEL;
+	
+	IShader* pPs = nullptr;
+	pDevice->CreateShader(&pPs, shaderInfo);
+	
+	
+	
+	//Create a RootLayout
+	RootLayoutInfo rootLayoutInfo = {};
+	rootLayoutInfo.Name = "RootLayout";
+	rootLayoutInfo.Flags = ROOT_LAYOUT_FLAG_NONE;
+	rootLayoutInfo.PipelineType = PIPELINE_TYPE_GRAPHICS;
+	rootLayoutInfo.pStaticSamplers = nullptr;
+	rootLayoutInfo.SamplerCount = 0;
+	rootLayoutInfo.pVariables = nullptr;
+	rootLayoutInfo.VariableCount = 0;
+	
+	IRootLayout* pRootLayout = nullptr;
+	pDevice->CreateRootLayout(&pRootLayout, rootLayoutInfo);
+	
+	
+	//Create a defenition for an inputelement (Define a vertex)
+	InputElementInfo elementinfo = 
+	{ 
+		"POSITION",
+		0,
+		FORMAT_R32G32B32_FLOAT,
+		ELEMENT_STEP_TYPE_VERTEX,
+		0,
+		0,
+		0,
+		sizeof(Math::Vector3)
+	};
+
+
+
+	//Create a pipelinestate
+	PipelineStateInfo pipelinestateInfo = {};
+	pipelinestateInfo.Name = "PipelineState";
+	pipelinestateInfo.Type = PIPELINE_TYPE_GRAPHICS;
+	pipelinestateInfo.pRootLayout = pRootLayout;
+	pipelinestateInfo.GraphicsPipeline.pVertexShader = pVs;
+	pipelinestateInfo.GraphicsPipeline.pPixelShader = pPs;
+	pipelinestateInfo.GraphicsPipeline.DepthStencilFormat = FORMAT_UNKNOWN;
+	pipelinestateInfo.GraphicsPipeline.RenderTargetCount = 1;
+	pipelinestateInfo.GraphicsPipeline.RenderTargetFormats[0] = swapchainInfo.Buffer.Format;
+	pipelinestateInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
+	pipelinestateInfo.GraphicsPipeline.SampleMask = -1;
+	pipelinestateInfo.GraphicsPipeline.StripCutEnable = false;
+	pipelinestateInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	pipelinestateInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
+	pipelinestateInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
+	
+	IPipelineState* pPipelineState = nullptr;
+	pDevice->CreatePipelineState(&pPipelineState, pipelinestateInfo);
+
+
+	
+	//Create a vertexbuffer
+	Vector3 vertices[3] = 
+	{
+		Vector3(0.0f, 0.5f, 0.0f),
+		Vector3(0.5f, -0.5f, 0.0f),
+		Vector3(-0.5f, -0.5f, 0.0f),
+	};
+	
+	ResourceData vbData = {};
+	vbData.pData = vertices;
+	vbData.WidthOrCount = 3;
+	vbData.ByteStride = sizeof(Vector3);
+	vbData.Height = 1;
+	
+	BufferInfo vertexBufferInfo = {};
+	vertexBufferInfo.Name = "VertexBuffer";
+	vertexBufferInfo.Count = 3;
+	vertexBufferInfo.ByteStride = sizeof(Vector3);
+	vertexBufferInfo.Type = BUFFER_USAGE_VERTEX;
+	vertexBufferInfo.Usage = RESOURCE_USAGE_DEFAULT;
+	
+	IBuffer* pVertexBuffer = nullptr;
+	pDevice->CreateBuffer(&pVertexBuffer, &vbData, vertexBufferInfo);
+
+
+	//Get devicecontext
+	IDeviceContext* pDeviceContext = nullptr;
+	pDevice->GetImmediateContext(&pDeviceContext);
 
 
 	//Show window when all initialization is completed
@@ -265,128 +265,127 @@ int main(int args, char* argsv[])
 	}
 
 
-	//Event event;
-	//while (event.Type != EVENT_TYPE_QUIT)
-	//{
-	//	clock.Tick();
+	Event event;
+	while (event.Type != EVENT_TYPE_QUIT)
+	{
+		clock.Tick();
+	
+		while (window.PeekEvent(event))
+		{
+			if (event.Type == EVENT_TYPE_CLOSE)
+			{
+				window.SendQuitEvent(0);
+			}
+			else if (event.Type == EVENT_TYPE_TOUCHPRESSED)
+			{
+				if (event.Touch.Position.x < (info.ScreenWidth / 2))
+					Keyboard::HideVirtualKeyboardVisible();
+				else
+					Keyboard::ShowVirtualKeyboardVisible();
+			}
+			else if (event.Type == EVENT_TYPE_FOCUSCHANGED)
+			{
+				static ColorF oldColor = bgColor;
+				if (event.FocusChanged.HasFocus)
+				{
+					bgColor = oldColor;
+				}
+				else
+				{
+					oldColor = bgColor;
+					bgColor = ColorF::RED;
+				}
+			}
+			else if (event.Type == EVENT_TYPE_KEYPRESSED)
+			{
+				if (event.Key.KeyCode == KEY_0)
+					bgColor = ColorF::CORNFLOWERBLUE;
+				else if (event.Key.KeyCode == KEY_1)
+					bgColor = ColorF::SOFTRED;
+				else if (event.Key.KeyCode == KEY_2)
+					bgColor = ColorF::SOFTGREEN;
+				else if (event.Key.KeyCode == KEY_3)
+					bgColor = ColorF::SOFTBLUE;
+				else if (event.Key.KeyCode == KEY_4)
+					bgColor = ColorF::SOFTYELLOW;
+				else if (event.Key.KeyCode == KEY_5)
+					bgColor = ColorF::SOFTGRAY;
+				else if (event.Key.KeyCode == KEY_6)
+					bgColor = ColorF::RED;
+				else if (event.Key.KeyCode == KEY_7)
+					bgColor = ColorF::GREEN;
+				else if (event.Key.KeyCode == KEY_8)
+					bgColor = ColorF::BLUE;
+				else if (event.Key.KeyCode == KEY_9)
+					bgColor = ColorF::WARMWHITE;
+			}
+			else if (event.Type == EVENT_TYPE_SENSORCHANGED)
+			{
+				if (event.Sensor.Type == SENSOR_TYPE_ACCELEROMETER)
+				{
+					strength = (event.Sensor.Data.Accelerometer.x + 11.0f) / 22.0f;
+					lastAccelerometer = event.Sensor.Data.Accelerometer;
+	
+					if (strength > 1.0f)
+						strength = 1.0f;
+					else if (strength < 0.0f)
+						strength = 0.0f;
+				}
+			}
+		}
+	
+	
+	
+		//Get and clear currentbackbuffer and depthstencil
+		ColorF backbufferColor = ColorF::CORNFLOWERBLUE;
+		int32 currentBuffer = pSwapchain->GetCurrentBuffer();
+		pDeviceContext->ClearRendertargetView(ppBackbuffers[currentBuffer], backbufferColor);
+	
+	
+		//Set the viewport
+		Viewport viewport = {};
+		viewport.Height = static_cast<float>(window.GetHeight());
+		viewport.Width = static_cast<float>(window.GetWidth());
+		viewport.TopLeftX = 0.0f;
+		viewport.TopLeftY = 0.0f;
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+	
+		pDeviceContext->SetViewports(viewport);
+	
+	
+		//Set the scissor rect
+		Math::Rectangle scissorRect = {};
+		scissorRect.BottomRight.x = static_cast<float>(window.GetWidth());
+		scissorRect.BottomRight.y = static_cast<float>(window.GetHeight());
+		
+		pDeviceContext->SetScissorRects(scissorRect);
+	
+		pDeviceContext->SetRendertargets(ppBackbuffers[currentBuffer], nullptr);
+		pDeviceContext->SetPipelineState(pPipelineState);
+		pDeviceContext->SetRootLayout(pRootLayout);
+	
+		
+		pDeviceContext->SetPrimitiveTopology(PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pDeviceContext->SetVertexBuffers(pVertexBuffer, 0);
+		pDeviceContext->Draw(0, 3);
+	
+		pSwapchain->Present();
+	}
 
-	//	while (window.PeekEvent(event))
-	//	{
-	//		if (event.Type == EVENT_TYPE_CLOSE)
-	//		{
-	//			window.SendQuitEvent(0);
-	//		}
-	//		else if (event.Type == EVENT_TYPE_TOUCHPRESSED)
-	//		{
-	//			if (event.Touch.Position.x < (info.ScreenWidth / 2))
-	//				Keyboard::HideVirtualKeyboardVisible();
-	//			else
-	//				Keyboard::ShowVirtualKeyboardVisible();
-	//		}
-	//		else if (event.Type == EVENT_TYPE_FOCUSCHANGED)
-	//		{
-	//			static ColorF oldColor = bgColor;
-	//			if (event.FocusChanged.HasFocus)
-	//			{
-	//				bgColor = oldColor;
-	//			}
-	//			else
-	//			{
-	//				oldColor = bgColor;
-	//				bgColor = ColorF::RED;
-	//			}
-	//		}
-	//		else if (event.Type == EVENT_TYPE_KEYPRESSED)
-	//		{
-	//			if (event.Key.KeyCode == KEY_0)
-	//				bgColor = ColorF::CORNFLOWERBLUE;
-	//			else if (event.Key.KeyCode == KEY_1)
-	//				bgColor = ColorF::SOFTRED;
-	//			else if (event.Key.KeyCode == KEY_2)
-	//				bgColor = ColorF::SOFTGREEN;
-	//			else if (event.Key.KeyCode == KEY_3)
-	//				bgColor = ColorF::SOFTBLUE;
-	//			else if (event.Key.KeyCode == KEY_4)
-	//				bgColor = ColorF::SOFTYELLOW;
-	//			else if (event.Key.KeyCode == KEY_5)
-	//				bgColor = ColorF::SOFTGRAY;
-	//			else if (event.Key.KeyCode == KEY_6)
-	//				bgColor = ColorF::RED;
-	//			else if (event.Key.KeyCode == KEY_7)
-	//				bgColor = ColorF::GREEN;
-	//			else if (event.Key.KeyCode == KEY_8)
-	//				bgColor = ColorF::BLUE;
-	//			else if (event.Key.KeyCode == KEY_9)
-	//				bgColor = ColorF::WARMWHITE;
-	//		}
-	//		else if (event.Type == EVENT_TYPE_SENSORCHANGED)
-	//		{
-	//			if (event.Sensor.Type == SENSOR_TYPE_ACCELEROMETER)
-	//			{
-	//				strength = (event.Sensor.Data.Accelerometer.x + 11.0f) / 22.0f;
-	//				lastAccelerometer = event.Sensor.Data.Accelerometer;
 
-	//				if (strength > 1.0f)
-	//					strength = 1.0f;
-	//				else if (strength < 0.0f)
-	//					strength = 0.0f;
-	//			}
-	//		}
-	//	}
+	for (int32 i = 0; i < bufferCount; i++)
+	{
+		ReRelease_S(ppBackbuffers[i]);
+	}
 
-
-
-	//	//Get and clear currentbackbuffer and depthstencil
-	//	ColorF backbufferColor = ColorF::CORNFLOWERBLUE;
-	//	int32 currentBuffer = pSwapchain->GetCurrentBuffer();
-	//	pDeviceContext->ClearRendertargetView(ppBackbuffers[currentBuffer], backbufferColor);
-
-
-	//	//Set the viewport
-	//	Viewport viewport = {};
-	//	viewport.Height = static_cast<float>(window.GetHeight());
-	//	viewport.Width = static_cast<float>(window.GetWidth());
-	//	viewport.TopLeftX = 0.0f;
-	//	viewport.TopLeftY = 0.0f;
-	//	viewport.MinDepth = 0.0f;
-	//	viewport.MaxDepth = 1.0f;
-
-	//	pDeviceContext->SetViewports(viewport);
-
-
-	//	//Set the scissor rect
-	//	Math::Rectangle scissorRect = {};
-	//	scissorRect.BottomRight.x = static_cast<float>(window.GetWidth());
-	//	scissorRect.BottomRight.y = static_cast<float>(window.GetHeight());
-	//	
-	//	pDeviceContext->SetScissorRects(scissorRect);
-
-
-	//	pDeviceContext->SetRendertargets(ppBackbuffers[currentBuffer], nullptr);
-	//	pDeviceContext->SetPipelineState(pPipelineState);
-	//	pDeviceContext->SetRootLayout(pRootLayout);
-
-	//	
-	//	pDeviceContext->SetPrimitiveTopology(PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//	pDeviceContext->SetVertexBuffers(pVertexBuffer, 0);
-	//	pDeviceContext->Draw(0, 3);
-
-	//	pSwapchain->Present();
-	//}
-
-
-	//for (int32 i = 0; i < bufferCount; i++)
-	//{
-	//	ReRelease_S(ppBackbuffers[i]);
-	//}
-
-	//ReRelease_S(pVs);
-	//ReRelease_S(pPs);
-	//ReRelease_S(pVertexBuffer);
-	//ReRelease_S(pRootLayout);
-	//ReRelease_S(pPipelineState);
+	ReRelease_S(pDeviceContext);
+	ReRelease_S(pPipelineState);
+	ReRelease_S(pVs);
+	ReRelease_S(pPs);
+	ReRelease_S(pVertexBuffer);
+	ReRelease_S(pRootLayout);
 	ReRelease_S(pSwapchain);
-	//ReRelease_S(pDeviceContext);
 	ReRelease_S(pDevice);
 	ReRelease_S(pFactory);
 

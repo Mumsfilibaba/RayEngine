@@ -23,8 +23,6 @@ failure and or malfunction of any kind.
 #include "..\Graphics\IDevice.h"
 #include "VulkSwapchain.h"
 
-#define QueryVulkDevice(pDevice) reinterpret_cast<VulkDevice*>(pDevice->QueryReference())
-
 namespace RayEngine
 {
 	namespace Graphics
@@ -42,23 +40,42 @@ namespace RayEngine
 			~VulkDevice();
 
 			VkDevice GetVkDevice() const;
+			
 			VkPhysicalDevice GetVkPhysicalDevice() const;
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
+			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
+			
 			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
+			
 			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
+			
 			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
+			
 			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) override final;
+			
 			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) override final;
+			
 			bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) override final;
+			
 			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
+			
 			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
+			
 			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info) override final;
+			
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryFactory(IFactory** ppFactory) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+
+			IObject::CounterType AddRef() override final;
 
 			System::Log* GetDeviceLog() override final;
 
@@ -69,6 +86,9 @@ namespace RayEngine
 			VulkFactory* m_Factory;
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
+			
+			IObject::CounterType m_References;
+			
 			System::Log m_Log;
 		};
 	}

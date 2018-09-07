@@ -38,11 +38,12 @@ namespace RayEngine
 			m_Swapchain(nullptr),
 			m_Texture(nullptr),
 			m_BufferCount(0),
-			m_CurrentBuffer(0)
+			m_CurrentBuffer(0),
+			m_References(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<DX11Factory*>(pFactory->QueryReference());
-			m_Device = reinterpret_cast<DX11Device*>(pDevice->QueryReference());
+			m_Factory = pFactory->QueryReference<DX11Factory>();
+			m_Device = pDevice->QueryReference<DX11Device>();
 
 			Create(info);
 		}
@@ -88,7 +89,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX11Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX11Device>();
 		}
 
 
@@ -96,7 +97,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Swapchain::QueryFactory(IFactory ** ppFactory) const
 		{
-			(*ppFactory) = reinterpret_cast<DX11Factory*>(m_Factory->QueryReference());
+			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Swapchain::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Swapchain::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11Swapchain::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

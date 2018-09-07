@@ -44,6 +44,7 @@ namespace RayEngine
 
 		protected:
 			IDevice* m_Device;
+			
 			VkImageView m_View;
 		};
 	}

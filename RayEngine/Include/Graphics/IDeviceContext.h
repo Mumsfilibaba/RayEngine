@@ -53,7 +53,7 @@ namespace RayEngine
 
 		public:
 			IDeviceContext() {}
-			virtual ~IDeviceContext() {}
+			~IDeviceContext() {}
 
 			/*////////////////////////////////////////////////////////////
 

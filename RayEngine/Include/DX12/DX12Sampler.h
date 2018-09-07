@@ -48,17 +48,28 @@ namespace RayEngine
 			~DX12Sampler();
 
 			D3D12_CPU_DESCRIPTOR_HANDLE  GetD3D12CpuDescriptorHandle() const;
+			
 			D3D12_GPU_DESCRIPTOR_HANDLE  GetD3D12GpuDescriptorHandle() const;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+	
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const SamplerInfo& info);
 
 		private:
 			DX12Device* m_Device;
+
 			DX12DescriptorHandle m_SamplerState;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

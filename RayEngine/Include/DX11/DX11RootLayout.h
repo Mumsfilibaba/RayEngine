@@ -53,19 +53,34 @@ namespace RayEngine
 			IDX11RootVariableSlot* GetDX11VariableSlot(int32 slotSndex) const;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
+
 
 		private:
 			void Create(const RootLayoutInfo& info);
+			
 			ID3D11SamplerState* CreateStaticSampler(const StaticSampler& sampler);
+			
 			IDX11RootVariableSlot* CreateVariable(const ShaderVariable& variable);
+			
 			DX11ShaderConstantBlock* CreateConstantBlock(const ShaderVariable& variable);
+
 
 		private:
 			DX11Device* m_Device;
+
 			std::vector<DX11ShaderConstantBlock*> m_ConstantBlocks;
 			std::vector<ID3D11SamplerState*> m_StaticSamplers;
 			std::vector<IDX11RootVariableSlot*> m_VariableSlots;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

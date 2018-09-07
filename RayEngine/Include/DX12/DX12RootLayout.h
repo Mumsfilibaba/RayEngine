@@ -50,23 +50,41 @@ namespace RayEngine
 			~DX12RootLayout();
 
 			ID3D12RootSignature* GetD3D12RootSignature() const;
+			
 			DX12RootVariableSlot* GetDX12RootVariableSlot(int32 index) const;
+			
 			DX12RootVariableSlot* const * GetDX12RootVariableSlotArray(int32 index) const;
+			
 			int32 GetDX12RootVariableSlotCount() const;
 
 			void SetName(const std::string& name) override final;
+
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+
+			IObject::CounterType Release() override final;
+
+			IObject::CounterType AddRef() override final;
+
 
 		private:
 			void Create(const RootLayoutInfo& info);
+
 			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariable& variable);
+
 			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSampler& sampler);
+
 			DX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariable& variable, int32 rootSlot, bool placeDescriptorTable);
+
 
 		private:
 			DX12Device* m_Device;
 			ID3D12RootSignature* m_RootSignature;
+
 			std::vector<DX12RootVariableSlot*> m_VariableSlots;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

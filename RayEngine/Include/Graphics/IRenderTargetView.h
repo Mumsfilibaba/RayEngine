@@ -144,7 +144,7 @@ namespace RayEngine
 
 		public:
 			IRenderTargetView() {}
-			virtual ~IRenderTargetView() {}
+			~IRenderTargetView() {}
 		};
 	}
 }

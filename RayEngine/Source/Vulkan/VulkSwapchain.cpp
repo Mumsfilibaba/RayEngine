@@ -46,11 +46,12 @@ namespace RayEngine
 			m_CommandQueue(nullptr),
 			m_Swapchain(0),
 			m_Surface(0),
-			m_Format()
+			m_Format(),
+			m_References(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<VulkFactory*>(pFactory->QueryReference());
-			m_Device = QueryVulkDevice(pDevice);
+			m_Factory = pFactory->QueryReference<VulkFactory>();
+			m_Device = pDevice->QueryReference<VulkDevice>();
 
 			Create(info);
 		}
@@ -113,7 +114,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkSwapchain::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryVulkDevice(m_Device);
+			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
 		}
 
 
@@ -121,7 +122,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = reinterpret_cast<VulkFactory*>(m_Factory->QueryReference());
+			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkSwapchain::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkSwapchain::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkSwapchain::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

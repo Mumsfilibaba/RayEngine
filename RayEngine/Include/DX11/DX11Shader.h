@@ -76,7 +76,14 @@ namespace RayEngine
 			SHADER_TYPE GetType() const override final;
 			
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderInfo& info);
@@ -84,6 +91,8 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			ID3D11DeviceChild* m_Shader;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

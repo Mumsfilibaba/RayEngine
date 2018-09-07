@@ -44,10 +44,11 @@ namespace RayEngine
 			m_PS(nullptr),
 			m_CS(nullptr),
 			m_SampleMask(0),
-			m_Type(PIPELINE_TYPE_UNKNOWN)
+			m_Type(PIPELINE_TYPE_UNKNOWN),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX11Device(pDevice);
+			m_Device = pDevice->QueryReference<DX11Device>();
 
 			Create(info);
 		}
@@ -235,7 +236,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11PipelineState::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX11Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11PipelineState::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11PipelineState::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX11PipelineState::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

@@ -49,13 +49,22 @@ namespace RayEngine
 			~DX11Buffer();
 
 			int32 GetByteStride() const;
+			
 			ID3D11Buffer* GetD3D11Buffer() const;
 
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
+			
 			void Unmap() override final;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* pInitalData, const BufferInfo& info);
@@ -64,7 +73,10 @@ namespace RayEngine
 			DX11Device* m_Device;
 			DX11DeviceContext* m_Context;
 			ID3D11Buffer* m_Resource;
+			
 			int32 m_ByteStride;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

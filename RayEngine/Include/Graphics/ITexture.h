@@ -89,7 +89,7 @@ namespace RayEngine
 
 		public:
 			ITexture() {}
-			virtual ~ITexture() {}
+			~ITexture() {}
 		};
 	}
 }

@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\OpenGL\GLSwapchain.h"
+#include "..\..\Include\OpenGL\GLDevice.h"
 #include "..\..\Include\OpenGL\GLDevice.h"
 
 namespace RayEngine
@@ -28,6 +28,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
+			: m_References(0)
 		{
 		}
 
@@ -154,6 +155,35 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDevice::QueryFactory(IFactory** ppFactory) const
 		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLDevice::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLDevice::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType GLDevice::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

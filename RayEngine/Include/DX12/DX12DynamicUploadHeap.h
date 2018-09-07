@@ -52,7 +52,14 @@ namespace RayEngine
 			ID3D12Heap* GetD3D12Heap() const;
 
 			void SetName(const std::string& name) override final;
+			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(uint32 alignment, uint32 sizeInBytes);
@@ -60,7 +67,10 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			ID3D12Heap* m_Heap;
+
 			int32 m_SizeInBytes;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

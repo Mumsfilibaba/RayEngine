@@ -30,10 +30,11 @@ namespace RayEngine
 		VulkShader::VulkShader(IDevice* pDevice, const ShaderInfo& info)
 			: m_Device(nullptr),
 			m_Module(VK_NULL_HANDLE),
-			m_Type(SHADER_TYPE_UNKNOWN)
+			m_Type(SHADER_TYPE_UNKNOWN),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryVulkDevice(pDevice);
+			m_Device = pDevice->QueryReference<VulkDevice>();
 
 			Create(info);
 		}
@@ -90,7 +91,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkShader::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryVulkDevice(m_Device);
+			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkShader::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkShader::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkShader::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

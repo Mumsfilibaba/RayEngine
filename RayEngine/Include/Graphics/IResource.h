@@ -36,7 +36,7 @@ namespace RayEngine
 
 		public:
 			IResource() {}
-			virtual ~IResource() {}
+			~IResource() {}
 		};
 	}
 }

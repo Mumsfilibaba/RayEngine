@@ -36,10 +36,11 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_BufferType(BUFFER_USAGE_UNKNOWN),
 			m_MappedSubresource(-1),
-			m_Views()
+			m_Views(),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 
 			Create(pInitalData, info);
 		}
@@ -94,7 +95,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Buffer::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Buffer::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Buffer::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Buffer::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

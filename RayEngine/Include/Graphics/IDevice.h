@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "AdapterInfo.h"
-#include "..\ReferenceCounter.h"
+#include "..\Interfaces\IObject.h"
 #include "..\System\Log.h"
 
 namespace RayEngine
@@ -106,7 +106,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class IDevice : public ReferenceCounter
+		class IDevice : public IObject
 		{
 		public:
 			IDevice(IDevice&& other) = delete;

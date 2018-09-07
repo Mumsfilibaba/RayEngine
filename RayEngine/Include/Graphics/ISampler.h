@@ -69,7 +69,7 @@ namespace RayEngine
 		
 		public:
 			ISampler() {}
-			virtual ~ISampler() {}
+			~ISampler() {}
 		};
 	}
 }

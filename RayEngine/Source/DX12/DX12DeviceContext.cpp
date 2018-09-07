@@ -52,10 +52,11 @@ namespace RayEngine
 			m_NumCommands(0),
 			m_MaxCommands(RE_DX12_MAX_COMMANDS),
 			m_IsDeffered(false),
-			m_DefferedBarriers()
+			m_DefferedBarriers(),
+			m_References(0)
 		{
 			AddRef();
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 
 			Create(isDeffered);
 		}
@@ -592,7 +593,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12DeviceContext::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12DeviceContext::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12DeviceContext::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

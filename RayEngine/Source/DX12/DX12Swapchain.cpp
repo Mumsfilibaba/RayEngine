@@ -36,13 +36,14 @@ namespace RayEngine
 			m_Context(nullptr),
 			m_Swapchain(nullptr),
 			m_CurrentBuffer(0),
-			m_Textures()
+			m_Textures(),
+			m_References(0)
 		{
 			AddRef();
 
-			m_Device = QueryDX12Device(pDevice);
+			m_Device = pDevice->QueryReference<DX12Device>();
 			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
-			m_Factory = reinterpret_cast<DX12Factory*>(pFactory->QueryReference());
+			m_Factory = pFactory->QueryReference<DX12Factory>();
 
 			Create(info);
 		}
@@ -93,7 +94,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryDX12Device(m_Device);
+			(*ppDevice) = m_Device->QueryReference<DX12Device>();
 		}
 
 
@@ -101,7 +102,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Swapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = reinterpret_cast<DX12Factory*>(m_Factory->QueryReference());
+			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Swapchain::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Swapchain::AddRef()
+		{
+			m_References++;
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType DX12Swapchain::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+
+			return counter;
 		}
 
 

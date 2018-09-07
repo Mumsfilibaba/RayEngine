@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "..\..\Include\Vulkan\VulkRenderTargetView.h"
-#include "..\..\Include\Vulkan\VulkTexture.h"
+#include "..\..\Include\Vulkan\VulkRenderTargetView.h"
 #include "..\..\Include\Vulkan\VulkDevice.h"
 
 namespace RayEngine
@@ -29,7 +29,8 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		VulkRenderTargetView::VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
-			: VulkImageView(pDevice)
+			: VulkImageView(pDevice),
+			m_References(0)
 		{
 			AddRef();
 			Create(info);
@@ -54,7 +55,36 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkRenderTargetView::QueryDevice(IDevice** ppDevice) const
 		{
-			(*ppDevice) = QueryVulkDevice(m_Device);
+			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkRenderTargetView::GetReferenceCount() const
+		{
+			return m_References;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkRenderTargetView::Release()
+		{
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
+				delete this;
+			
+			return counter;
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		IObject::CounterType VulkRenderTargetView::AddRef()
+		{
+			m_References++;
+			return m_References;
 		}
 
 

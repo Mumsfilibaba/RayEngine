@@ -44,20 +44,33 @@ namespace RayEngine
 			IDXGIFactory* GetDXGIFactory() const;
 
 			void EnumerateAdapters(AdapterList& list) const override final;
+			
 			bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) override final;
+			
 			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo) override final;
+			
 			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) override final;
 
 			void SetName(const std::string& name) override final;
+			
 			GRAPHICS_API GetGraphicsApi() const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+			
+			IObject::CounterType Release() override final;
+			
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create();
 
 		private:
 			IDXGIFactory* m_Factory;
+			
 			bool m_DebugLayer;
 			
+			IObject::CounterType m_References;
+
 		private:
 			static void FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC& desc);
 		};
