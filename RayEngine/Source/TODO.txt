@@ -1,4 +1,6 @@
 TODO:
+-AdapterInfo - Inline
+-I
 -Swapchain QueryBuffer();
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize

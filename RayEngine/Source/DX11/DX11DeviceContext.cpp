@@ -105,8 +105,13 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
-			ID3D11RenderTargetView* pD3D11RenderTarget = reinterpret_cast<DX11RenderTargetView*>(pRenderTarget)->GetD3D11RenderTargetView();
-			ID3D11DepthStencilView* pD3D11DepthStencil = reinterpret_cast<DX11DepthStencilView*>(pDepthStencil)->GetD3D11DepthStencilView();
+			ID3D11RenderTargetView* pD3D11RenderTarget = nullptr;
+			if (pRenderTarget != nullptr)
+				pD3D11RenderTarget = reinterpret_cast<DX11RenderTargetView*>(pRenderTarget)->GetD3D11RenderTargetView();
+			
+			ID3D11DepthStencilView* pD3D11DepthStencil = nullptr;
+			if (pDepthStencil != nullptr)
+				pD3D11DepthStencil = reinterpret_cast<DX11DepthStencilView*>(pDepthStencil)->GetD3D11DepthStencilView();
 
 			m_Context->OMSetRenderTargets(1, &pD3D11RenderTarget, pD3D11DepthStencil);
 		}
@@ -153,7 +158,6 @@ namespace RayEngine
 		void DX11DeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
 		{
 			DX11PipelineState* pDX11PipelineState = reinterpret_cast<DX11PipelineState*>(pPipelineState);
-			
 			if (pDX11PipelineState->GetPipelineType() == PIPELINE_TYPE_GRAPHICS)
 				SetGraphicsPipeline(pDX11PipelineState);
 			else

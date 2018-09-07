@@ -67,41 +67,12 @@ namespace RayEngine
 			return m_CurrentBuffer;
 		}
 
-		IRenderTargetView * DX11Swapchain::GetCurrentView() const
-		{
-			return nullptr;
-		}
-
 
 
 		/////////////////////////////////////////////////////////////
-		ITexture* DX11Swapchain::GetBuffer(int32 index)
+		void DX11Swapchain::QueryBuffer(ITexture** ppBuffer, int32 index) const
 		{
-			return m_Texture;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		const ITexture* DX11Swapchain::GetBuffer(int32 index) const
-		{
-			return m_Texture;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IRenderTargetView* DX11Swapchain::GetRenderTargetView(int32 index)
-		{
-			return nullptr;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		const IRenderTargetView* DX11Swapchain::GetRenderTargetView(int32 index) const
-		{
-			return nullptr;
+			(*ppBuffer) = m_Texture->QueryReference<ITexture>();
 		}
 
 

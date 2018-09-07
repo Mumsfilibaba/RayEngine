@@ -70,7 +70,7 @@ namespace RayEngine
 
 		private:
 			VulkDevice* m_Device;
-			const VulkRootLayout* m_RootLayout;
+			VulkRootLayout* m_RootLayout;
 			VkPipeline m_Pipeline;
 			VkRenderPass m_RenderPass;
 			PIPELINE_TYPE m_Type;

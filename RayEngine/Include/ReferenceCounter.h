@@ -51,7 +51,7 @@ namespace RayEngine
 		//Gets a pointer to the object
 		virtual ReferenceCounter* QueryReference();
 		//Decreases the reference counter and releases the object
-		virtual void Release() const;
+		virtual void Release();
 		//Returns the reference count
 		virtual uint32 GetReferenceCount() const;
 
@@ -61,6 +61,10 @@ namespace RayEngine
 		{
 			return reinterpret_cast<Ref*>(QueryReference());
 		}
+
+	protected:
+		//Removes a reference to the object
+		virtual uint32 DecrRef();
 
 	private:
 		mutable int32 m_References;

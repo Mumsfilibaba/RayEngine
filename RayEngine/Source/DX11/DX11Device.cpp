@@ -50,7 +50,7 @@ namespace RayEngine
 			m_FeatureLevel()
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<DX11Factory*>(pFactory->QueryReference());
+			m_Factory = pFactory->QueryReference<DX11Factory>();
 			
 			Create(pFactory, info, debugLayer);
 		}
@@ -60,14 +60,17 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Device::~DX11Device()
 		{
-			D3DRelease_S(m_Adapter);
-			D3DRelease_S(m_Device);
-
 			ReRelease_S(m_ImmediateContext);
 			ReRelease_S(m_Factory);
+			
+			D3DRelease_S(m_Adapter);
+			if (m_DebugDevice != nullptr)
+			{
+				m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+				D3DRelease(m_DebugDevice);
+			}
 
-			m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
-			D3DRelease_S(m_DebugDevice);
+			D3DRelease_S(m_Device);
 		}
 
 
@@ -114,7 +117,18 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Device::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = reinterpret_cast<DX11Factory*>(m_Factory->QueryReference());
+			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void DX11Device::Release()
+		{
+			if (DecrRef() < 2)
+			{
+				ReRelease_S(m_ImmediateContext);
+			}
 		}
 
 
@@ -223,7 +237,7 @@ namespace RayEngine
 
 			uint32 deviceFlags = 0;
 			if (debugLayer)
-				deviceFlags = D3D11_CREATE_DEVICE_DEBUG;
+				deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 
 			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1,

@@ -48,10 +48,9 @@ namespace RayEngine
 
 
 	/////////////////////////////////////////////////////////////
-	void ReferenceCounter::Release() const
+	void ReferenceCounter::Release()
 	{
-		m_References--;
-		if (m_References < 1)
+		if (DecrRef() < 1)
 			delete this;
 	}
 
@@ -60,6 +59,15 @@ namespace RayEngine
 	/////////////////////////////////////////////////////////////
 	uint32 ReferenceCounter::GetReferenceCount() const
 	{
+		return m_References;
+	}
+
+
+
+	/////////////////////////////////////////////////////////////
+	uint32 ReferenceCounter::DecrRef()
+	{
+		m_References--;
 		return m_References;
 	}
 

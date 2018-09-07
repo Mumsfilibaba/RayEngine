@@ -90,41 +90,8 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		IRenderTargetView* VulkSwapchain::GetCurrentView() const
+		void VulkSwapchain::QueryBuffer(ITexture** ppBuffer, int32 index) const
 		{
-			return nullptr;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		ITexture* VulkSwapchain::GetBuffer(int32 index)
-		{
-			return m_Textures[index];
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		const ITexture* VulkSwapchain::GetBuffer(int32 index) const
-		{
-			return m_Textures[index];
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		IRenderTargetView* VulkSwapchain::GetRenderTargetView(int32 index)
-		{
-			return nullptr;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		const IRenderTargetView* VulkSwapchain::GetRenderTargetView(int32 index) const
-		{
-			return nullptr;
 		}
 
 

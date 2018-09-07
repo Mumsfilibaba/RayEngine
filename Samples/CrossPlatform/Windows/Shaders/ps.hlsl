@@ -10,5 +10,5 @@ cbuffer ColorBuffer : register(b0)
 
 float4 main(PS_IN input) : SV_TARGET
 {
-	return g_Color;
+	return float4(1.0f, 0.0f, 0.0f, 1.0f);
 }

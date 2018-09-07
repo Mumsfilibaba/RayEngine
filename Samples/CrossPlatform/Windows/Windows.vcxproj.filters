@@ -15,11 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="Walter.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -33,5 +28,10 @@
   <ItemGroup>
     <FxCompile Include="Shaders\vs.hlsl" />
     <FxCompile Include="Shaders\ps.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HelloTriangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

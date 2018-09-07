@@ -90,31 +90,16 @@ namespace RayEngine
 
 
 			/*////////////////////////////////////////////////////////////
-				Returns the index of the current view.
-			////////////////////////////////////////////////////////////*/
-			virtual IRenderTargetView* GetCurrentView() const = 0;
-
-
-			/*////////////////////////////////////////////////////////////
 				
-				Returns the buffer with a certain index.
+				Returns the buffer with a certain index. Release needs to
+				be called on returned object.
+
+				ppTexture - A texture to store the buffer.
 
 				index - Index of the buffer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual ITexture* GetBuffer(int32 index) = 0;
-			virtual const ITexture* GetBuffer(int32 index) const = 0;
-
-
-			/*////////////////////////////////////////////////////////////
-
-				Returns the rendertargetview with a certain index.
-
-				index - Index of the buffer.
-
-			////////////////////////////////////////////////////////////*/
-			virtual IRenderTargetView* GetRenderTargetView(int32 index) = 0;
-			virtual const IRenderTargetView* GetRenderTargetView(int32 index) const = 0;
+			virtual void QueryBuffer(ITexture** ppBuffer, int32 index) const = 0;
 
 
 			/*////////////////////////////////////////////////////////////

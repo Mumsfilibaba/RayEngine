@@ -159,7 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="HelloTriangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Cursor.png" />

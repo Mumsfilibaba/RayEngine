@@ -44,11 +44,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Factory::~DX11Factory()
 		{
-			if (m_Factory != nullptr)
-			{
-				m_Factory->Release();
-				m_Factory = nullptr;
-			}
+			D3DRelease_S(m_Factory);
 		}
 
 

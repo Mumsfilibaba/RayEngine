@@ -67,11 +67,15 @@ namespace RayEngine
 		
 			void SetName(const std::string& name) override final;
 			void QueryFactory(IFactory** ppFactory) const override final;
+
+			void Release() override final;
 			
 			System::Log* GetDeviceLog() override final;
 
 		private:
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+			void AllocateContext();
+			void DeallocateContext();
 
 		private:
 			DX11Factory* m_Factory;

@@ -254,6 +254,7 @@ namespace RayEngine
 			ReRelease_S(m_DS);
 			ReRelease_S(m_GS);
 			ReRelease_S(m_PS);
+
 			ReRelease_S(m_CS);
 		}
 
@@ -275,15 +276,15 @@ namespace RayEngine
 		void DX11PipelineState::CreateGraphicsState(const PipelineStateInfo& info)
 		{
 			if (info.GraphicsPipeline.pVertexShader != nullptr)
-				m_VS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pVertexShader->QueryReference());
+				m_VS = info.GraphicsPipeline.pVertexShader->QueryReference<DX11Shader>();
 			if (info.GraphicsPipeline.pHullShader != nullptr)
-				m_HS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pHullShader->QueryReference());
+				m_HS = info.GraphicsPipeline.pHullShader->QueryReference<DX11Shader>();
 			if (info.GraphicsPipeline.pDomainShader != nullptr)
-				m_DS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pDomainShader->QueryReference());
+				m_DS = info.GraphicsPipeline.pDomainShader->QueryReference<DX11Shader>();
 			if (info.GraphicsPipeline.pGeometryShader != nullptr)
-				m_GS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pGeometryShader->QueryReference());
+				m_GS = info.GraphicsPipeline.pGeometryShader->QueryReference<DX11Shader>();
 			if (info.GraphicsPipeline.pPixelShader != nullptr)
-				m_PS = reinterpret_cast<DX11Shader*>(info.GraphicsPipeline.pPixelShader->QueryReference());
+				m_PS = info.GraphicsPipeline.pPixelShader->QueryReference<DX11Shader>();
 
 
 			CreateInputLayout(info);
@@ -297,7 +298,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateComputeState(const PipelineStateInfo& info)
 		{
-			//TODO: Compute states
+			if (info.ComputePipeline.pComputeShader != nullptr)
+				m_CS = info.ComputePipeline.pComputeShader->QueryReference<DX11Shader>();
 		}
 
 
