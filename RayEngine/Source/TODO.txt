@@ -1,6 +1,8 @@
 TODO:
 -AdapterInfo - Inline
--I
+-IObject - Instead of refearenceCounter
+-
+
 -Swapchain QueryBuffer();
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize

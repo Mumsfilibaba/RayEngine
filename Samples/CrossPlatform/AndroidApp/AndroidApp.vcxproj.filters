@@ -17,7 +17,4 @@
       <Filter>res\values</Filter>
     </AndroidBuild>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\Windows\Main.cpp" />
-  </ItemGroup>
 </Project>

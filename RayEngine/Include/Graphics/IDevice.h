@@ -116,7 +116,7 @@ namespace RayEngine
 
 		public:
 			IDevice() {}
-			virtual ~IDevice() {}
+			~IDevice() {}
 
 			/*////////////////////////////////////////////////////////////
 				

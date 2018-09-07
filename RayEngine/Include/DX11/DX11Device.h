@@ -48,7 +48,6 @@ namespace RayEngine
 
 		public:
 			DX11Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
-			~DX11Device();
 
 			ID3D11Device* GetD3D11Device() const;
 
@@ -73,9 +72,8 @@ namespace RayEngine
 			System::Log* GetDeviceLog() override final;
 
 		private:
+			~DX11Device();
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
-			void AllocateContext();
-			void DeallocateContext();
 
 		private:
 			DX11Factory* m_Factory;

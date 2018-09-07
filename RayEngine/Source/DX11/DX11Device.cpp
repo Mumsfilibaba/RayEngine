@@ -66,7 +66,7 @@ namespace RayEngine
 			D3DRelease_S(m_Adapter);
 			if (m_DebugDevice != nullptr)
 			{
-				m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+				//m_DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 				D3DRelease(m_DebugDevice);
 			}
 
@@ -125,7 +125,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Device::Release()
 		{
-			if (DecrRef() < 2)
+			int32 refCount = DecrRef();
+			if (refCount < 1)
+				delete this;
+			else if (refCount < 2)
 			{
 				ReRelease_S(m_ImmediateContext);
 			}

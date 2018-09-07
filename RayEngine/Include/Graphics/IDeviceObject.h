@@ -44,7 +44,6 @@ namespace RayEngine
 			IDeviceObject() {}
 			virtual ~IDeviceObject() {}
 
-
 			/*////////////////////////////////////////////////////////////
 
 				Sets the name of the object.

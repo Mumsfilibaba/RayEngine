@@ -132,13 +132,13 @@ namespace RayEngine
 			AdapterList& operator=(const AdapterList& other) = delete;
 
 		public:
-			inline AdapterList();
-			inline AdapterList(int32 count);
-			inline AdapterList(AdapterList&& other);
-			inline ~AdapterList();
+			AdapterList();
+			AdapterList(int32 count);
+			AdapterList(AdapterList&& other);
+			~AdapterList();
 
-			inline AdapterInfo& operator[](int32 index);
-			inline AdapterList& operator=(AdapterList&& other);
+			AdapterInfo& operator[](int32 index);
+			AdapterList& operator=(AdapterList&& other);
 
 		public:
 			AdapterInfo* pAdapters = nullptr;
