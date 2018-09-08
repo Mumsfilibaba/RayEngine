@@ -37,7 +37,7 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Device = pDevice->QueryReference<DX11Device>();
+			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
 			Create(info);
 		}
@@ -48,8 +48,6 @@ namespace RayEngine
 		DX11UnorderedAccessView::~DX11UnorderedAccessView()
 		{
 			D3DRelease_S(m_View);
-
-			ReRelease_S(m_Device);
 		}
 
 
@@ -98,8 +96,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11UnorderedAccessView::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			m_References--;
+			IObject::CounterType counter = m_References;
+
+			if (counter < 1)
 				delete this;
 
 			return counter;

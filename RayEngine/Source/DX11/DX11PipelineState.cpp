@@ -48,7 +48,7 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Device = pDevice->QueryReference<DX11Device>();
+			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
 			Create(info);
 		}
@@ -261,8 +261,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11PipelineState::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			m_References--;
+			IObject::CounterType counter = m_References;
+
+			if (counter < 1)
 				delete this;
 
 			return counter;
@@ -278,7 +280,6 @@ namespace RayEngine
 			D3DRelease_S(m_DepthStencilState);
 			D3DRelease_S(m_RasterizerState);
 
-			ReRelease_S(m_Device);
 			ReRelease_S(m_VS);
 			ReRelease_S(m_HS);
 			ReRelease_S(m_DS);

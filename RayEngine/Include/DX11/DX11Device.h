@@ -48,6 +48,7 @@ namespace RayEngine
 
 		public:
 			DX11Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+			~DX11Device();
 
 			ID3D11Device* GetD3D11Device() const;
 
@@ -84,13 +85,11 @@ namespace RayEngine
 			IObject::CounterType Release() override final;
 			
 			IObject::CounterType AddRef() override final;
-			
+
 			System::Log* GetDeviceLog() override final;
 
 
 		private:
-			~DX11Device();
-			
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
 		private:
@@ -105,6 +104,7 @@ namespace RayEngine
 			System::Log m_Log;
 
 			IObject::CounterType m_References;
+			IObject::CounterType m_InternalReferences;
 		};
 	}
 }
