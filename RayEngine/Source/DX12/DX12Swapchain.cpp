@@ -43,6 +43,7 @@ namespace RayEngine
 
 			m_Device = pDevice->QueryReference<DX12Device>();
 			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
+
 			m_Factory = pFactory->QueryReference<DX12Factory>();
 
 			Create(info);
@@ -127,8 +128,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Swapchain::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			m_References--;
+			IObject::CounterType counter = m_References;
+
+			if (counter < 1)
 				delete this;
 
 			return counter;

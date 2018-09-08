@@ -38,7 +38,7 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Device = pDevice->QueryReference<DX12Device>();
+			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
 			Create(pInitialData, info);
 		}
@@ -52,7 +52,7 @@ namespace RayEngine
 			m_Device(nullptr)
 		{
 			AddRef();
-			m_Device = pDevice->QueryReference<DX12Device>();
+			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
 			m_Resource = pResource;
 			pResource->AddRef();
@@ -63,7 +63,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Texture::~DX12Texture()
 		{
-			ReRelease_S(m_Device);
 		}
 
 
@@ -104,8 +103,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			m_References--;
+			IObject::CounterType counter = m_References;
+
+			if (counter < 1)
 				delete this;
 
 			return counter;

@@ -56,7 +56,7 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Device = pDevice->QueryReference<DX12Device>();
+			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
 			Create(isDeffered);
 		}
@@ -69,7 +69,6 @@ namespace RayEngine
 			D3DRelease_S(m_Queue);
 			D3DRelease_S(m_Fence);
 
-			ReRelease_S(m_Device);
 			ReRelease_S(m_CurrentRootLayout);
 			ReRelease_S(m_List);
 			ReRelease_S(m_ComputeList);
@@ -618,8 +617,10 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12DeviceContext::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			m_References--;
+			IObject::CounterType counter = m_References;
+
+			if (counter < 1)
 				delete this;
 
 			return counter;
