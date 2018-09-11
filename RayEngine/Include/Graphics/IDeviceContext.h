@@ -37,6 +37,7 @@ namespace RayEngine
 		class IUnorderedAccessView;
 		class IRootLayout;
 		class IPipelineState;
+		class ISwapchain;
 
 		struct Viewport;
 
@@ -87,14 +88,30 @@ namespace RayEngine
 
 			/*////////////////////////////////////////////////////////////
 
+				Sets the swapchain to use. This will set the default 
+				frambuffer. Use this to render to a certain window.
+
+				pSwapchain - A valid pointer to an IRenderTargetView
+				interface.
+
+			////////////////////////////////////////////////////////////*/
+			virtual void SetSwapChain(ISwapchain* pSwapchain) const = 0;
+
+
+			/*////////////////////////////////////////////////////////////
+
 				Sets RenderTargets and DepthStencil to be used in a 
 				draw- or dispatchcall.
 
 				pRenderTarget - A pointer to an IRenderTargetView
-				interface. Can be nullptr if no RenderTarget is desired.
+				interface.
 
 				pDepthStencil - A pointer to an IDepthStencilView
-				interface. Can be nullptr if no DepthStencil is desired.
+				interface.
+
+				Interfaces can be nullptr. In that case the default 
+				framebuffer currently bound by the current swapchain
+				is used.
 
 			////////////////////////////////////////////////////////////*/
 			virtual void SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const = 0;
@@ -335,12 +352,16 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const = 0;
 
-			//Flushes the commandqueue - Syncronizes the CPU and GPU
+
+
+			/*////////////////////////////////////////////////////////////
+
+				Resets the context state. All bound resources and states
+				get reset. Function returns when all commands queued up
+				on the GPU has been executed.
+
+			////////////////////////////////////////////////////////////*/
 			virtual void Flush() const = 0;
-			//Reset allocator and list
-			virtual bool Reset() const = 0;
-			//Close list for commandsubmission
-			virtual bool Close() const = 0;
 		};
 	}
 }
