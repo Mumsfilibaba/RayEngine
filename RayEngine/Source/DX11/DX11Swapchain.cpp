@@ -69,9 +69,12 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Swapchain::Resize(int32 width, int32 height)
 		{
+			if (width < 1 || height < 1)
+				return;
+
 			ReleaseResources();
 
-			m_Swapchain->ResizeBuffers();
+			m_Swapchain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, m_Flags);
 
 			CreateTextures();
 			CreateViews();
@@ -159,7 +162,8 @@ namespace RayEngine
 			desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
 			//TODO: Tearing?
-			desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+			m_Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+			desc.Flags = m_Flags;
 
 			//TODO: MSAA?
 			desc.SampleDesc.Count = 1;

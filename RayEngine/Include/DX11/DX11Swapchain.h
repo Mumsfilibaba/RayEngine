@@ -91,6 +91,7 @@ namespace RayEngine
 			std::string m_Name;
 			int32 m_Width;
 			int32 m_Height;
+			uint32 m_Flags;
 			FORMAT m_DepthStencilFormat;
 			FORMAT m_BackBufferFormat;
 			IObject::CounterType m_References;

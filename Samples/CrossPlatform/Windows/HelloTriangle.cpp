@@ -104,34 +104,14 @@ int main(int args, char* argsv[])
 	SwapchainInfo swapchainInfo = {}; 
 	swapchainInfo.Name = "SwapChain";
 	swapchainInfo.WindowHandle = window.GetNativeHandle();
-	swapchainInfo.Count = bufferCount;
-	swapchainInfo.Buffer.Format = FORMAT_B8G8R8A8_UNORM;
-	swapchainInfo.Buffer.Width = window.GetWidth();
-	swapchainInfo.Buffer.Height = window.GetHeight();
+	swapchainInfo.Width = window.GetWidth();
+	swapchainInfo.Height = window.GetHeight();
+	swapchainInfo.BackBuffer.Count = bufferCount;
+	swapchainInfo.BackBuffer.Format = FORMAT_B8G8R8A8_UNORM;
 
 	IDevice* pDevice = nullptr;
 	ISwapchain* pSwapchain = nullptr;
 	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
-
-	
-	//Create rendertargets
-	IRenderTargetView* ppBackbuffers[bufferCount];
-	for (int32 i = 0; i < bufferCount; i++)
-	{
-		ITexture* pBackbuffer = nullptr;
-		pSwapchain->QueryBuffer(&pBackbuffer, i);
-	
-		RenderTargetViewInfo backbufferInfo = {};
-		backbufferInfo.Name = "Backbuffer" + std::to_string(i);
-		backbufferInfo.Format = swapchainInfo.Buffer.Format;
-		backbufferInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
-		backbufferInfo.pResource = pBackbuffer;
-		backbufferInfo.Texture2D.MipSlice = 0;
-		backbufferInfo.Texture2D.PlaneSlice = 0;
-	
-		pDevice->CreateRenderTargetView(&ppBackbuffers[i], backbufferInfo);
-		ReRelease_S(pBackbuffer);
-	}
 
 
 	//Create shaders
@@ -196,9 +176,9 @@ int main(int args, char* argsv[])
 	pipelinestateInfo.pRootLayout = pRootLayout;
 	pipelinestateInfo.GraphicsPipeline.pVertexShader = pVs;
 	pipelinestateInfo.GraphicsPipeline.pPixelShader = pPs;
-	pipelinestateInfo.GraphicsPipeline.DepthStencilFormat = FORMAT_UNKNOWN;
+	pipelinestateInfo.GraphicsPipeline.DepthStencilFormat = swapchainInfo.DepthStencil.Format;
 	pipelinestateInfo.GraphicsPipeline.RenderTargetCount = 1;
-	pipelinestateInfo.GraphicsPipeline.RenderTargetFormats[0] = swapchainInfo.Buffer.Format;
+	pipelinestateInfo.GraphicsPipeline.RenderTargetFormats[0] = swapchainInfo.BackBuffer.Format;
 	pipelinestateInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
 	pipelinestateInfo.GraphicsPipeline.SampleMask = -1;
 	pipelinestateInfo.GraphicsPipeline.StripCutEnable = false;
@@ -239,6 +219,10 @@ int main(int args, char* argsv[])
 	//Get devicecontext
 	IDeviceContext* pDeviceContext = nullptr;
 	pDevice->GetImmediateContext(&pDeviceContext);
+
+
+	//Set the default framebuffer
+	pDeviceContext->SetSwapChain(pSwapchain);
 
 
 	//Show window when all initialization is completed
@@ -338,8 +322,7 @@ int main(int args, char* argsv[])
 	
 		//Get and clear currentbackbuffer and depthstencil
 		ColorF backbufferColor = ColorF::CORNFLOWERBLUE;
-		int32 currentBuffer = pSwapchain->GetCurrentBuffer();
-		pDeviceContext->ClearRendertargetView(ppBackbuffers[currentBuffer], backbufferColor);
+		pDeviceContext->ClearRendertargetView(nullptr, backbufferColor);
 	
 	
 		//Set the viewport
@@ -361,7 +344,6 @@ int main(int args, char* argsv[])
 		
 		pDeviceContext->SetScissorRects(scissorRect);
 	
-		pDeviceContext->SetRendertargets(ppBackbuffers[currentBuffer], nullptr);
 		pDeviceContext->SetPipelineState(pPipelineState);
 		pDeviceContext->SetRootLayout(pRootLayout);
 	
