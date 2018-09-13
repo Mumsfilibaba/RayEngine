@@ -36,6 +36,8 @@ namespace RayEngine
 		class DX11Device;
 		class DX11DeviceContext;
 		class DX11Texture;
+		class DX11RenderTargetView;
+		class DX11DepthStencilView;
 
 
 
@@ -52,9 +54,7 @@ namespace RayEngine
 			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
 			~DX11Swapchain();
 
-			int32 GetCurrentBuffer() const override final;
-			
-			void QueryBuffer(ITexture** ppBuffer, int32 index) const override final;
+			void Resize(int32 width, int32 height) override final;
 
 			void Present() const override final;
 
@@ -73,21 +73,26 @@ namespace RayEngine
 		private:
 			void Create(const SwapchainInfo& info);
 			
-			void CreateTextures(const SwapchainInfo& info);
+			void CreateTextures();
+
+			void CreateViews();
+
+			void ReleaseResources();
 
 		private:
 			DX11Device* m_Device;
-			
 			DX11Factory* m_Factory;
-			
-			IDXGISwapChain* m_Swapchain;
-			
-			DX11Texture* m_Texture;
-			
-			int32 m_BufferCount;
-			
-			mutable int32 m_CurrentBuffer;
+			IDXGISwapChain* m_Swapchain;			
+			DX11Texture* m_BackBuffer;
+			DX11Texture* m_DepthStencil;
+			DX11RenderTargetView* m_Rtv;
+			DX11DepthStencilView* m_Dsv;
 
+			std::string m_Name;
+			int32 m_Width;
+			int32 m_Height;
+			FORMAT m_DepthStencilFormat;
+			FORMAT m_BackBufferFormat;
 			IObject::CounterType m_References;
 		};
 	}

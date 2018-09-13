@@ -60,8 +60,8 @@ namespace RayEngine
 
 				Clears a RendertargetView.
 
-				pView - A valid pointer to an IRenderTargetView 
-				interface.
+				pView - A pointer to an IRenderTargetView interface. 
+				Nullptr clears the bound defalt framebuffer.
 
 				pColor - A four element float array containg the 
 				clearcolor
@@ -74,8 +74,8 @@ namespace RayEngine
 
 				Clears a DepthStencilView.
 
-				pView - A valid pointer to an IDepthStencilView
-				interface.
+				pView - A pointer to an IDepthStencilView interface. 
+				Nullptr clears the bound defalt framebuffer.
 
 				depth - A float containing the depthvalue to be set.
 

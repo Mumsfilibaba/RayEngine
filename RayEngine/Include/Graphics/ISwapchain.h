@@ -58,13 +58,18 @@ namespace RayEngine
 			std::string Name = "";
 			System::NativeWindowHandle WindowHandle = RE_NULL_WINDOW;
 
-			int32 Count = 0;
+			int32 Width = 0;
+			int32 Height = 0;
 			struct
 			{
 				FORMAT Format = FORMAT_UNKNOWN;
-				int32 Width = 0;
-				int32 Height = 0;
-			} Buffer;
+				int32 Count = 0;
+			} BackBuffer;
+
+			struct
+			{
+				FORMAT Format = FORMAT_UNKNOWN;
+			} DepthStencil;
 		};
 
 
@@ -84,22 +89,17 @@ namespace RayEngine
 
 
 			/*////////////////////////////////////////////////////////////
-				Returns the index of the current buffer.
-			////////////////////////////////////////////////////////////*/
-			virtual int32 GetCurrentBuffer() const = 0;
-
-
-			/*////////////////////////////////////////////////////////////
 				
-				Returns the buffer with a certain index. Release needs to
-				be called on returned object.
+				Resize the size of the framebuffer (Backbuffer and 
+				DepthStencil) of the window that were specified when 
+				created the swapchain.
 
-				ppTexture - A texture to store the buffer.
+				width - The new width of the framebuffer.
 
-				index - Index of the buffer.
+				height - The new width of the framebuffer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual void QueryBuffer(ITexture** ppBuffer, int32 index) const = 0;
+			virtual void Resize(int32 width, int32 height) = 0;
 
 
 			/*////////////////////////////////////////////////////////////
