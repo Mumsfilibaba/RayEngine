@@ -69,17 +69,8 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		int32 DX12Swapchain::GetCurrentBuffer() const
+		void DX12Swapchain::Resize(int32 width, int32 height)
 		{
-			return m_CurrentBuffer;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void DX12Swapchain::QueryBuffer(ITexture** ppBuffer, int32 index) const
-		{
-			(*ppBuffer) = m_Textures[index]->QueryReference<ITexture>();
 		}
 
 
@@ -156,10 +147,10 @@ namespace RayEngine
 			using namespace System;
 
 			DXGI_SWAP_CHAIN_DESC1 desc = {};
-			desc.BufferCount = info.Count;
-			desc.Format = ReToDXFormat(info.Buffer.Format);
-			desc.Width = info.Buffer.Width;
-			desc.Height = info.Buffer.Height;
+			desc.BufferCount = info.BackBuffer.Count;
+			desc.Format = ReToDXFormat(info.BackBuffer.Format);
+			desc.Width = info.Width;
+			desc.Height = info.Height;
 			desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 			desc.SampleDesc.Count = 1;
 			
@@ -197,11 +188,11 @@ namespace RayEngine
 			using namespace System;
 			using namespace Microsoft::WRL;
 
-			m_Textures.resize(info.Count);
+			m_Textures.resize(info.BackBuffer.Count);
 
 
 			ComPtr<ID3D12Resource> buffer = nullptr;
-			for (int32 i = 0; i < info.Count; i++)
+			for (int32 i = 0; i < info.BackBuffer.Count; i++)
 			{
 				HRESULT hr = m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer));
 				if (FAILED(hr))

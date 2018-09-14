@@ -75,24 +75,16 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void VulkSwapchain::Resize(int32 width, int32 height)
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		VkSurfaceKHR VulkSwapchain::GetVkSurfaceKHR() const
 		{
 			return m_Surface;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		int32 VulkSwapchain::GetCurrentBuffer() const
-		{
-			return 0;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void VulkSwapchain::QueryBuffer(ITexture** ppBuffer, int32 index) const
-		{
 		}
 
 
@@ -235,21 +227,21 @@ namespace RayEngine
 			}
 
 
-			m_Format = GetSupportedFormat(m_Device, m_Surface, ReToVkFormat(info.Buffer.Format));
+			m_Format = GetSupportedFormat(m_Device, m_Surface, ReToVkFormat(info.BackBuffer.Format));
 			if (m_Format.format == VK_FORMAT_UNDEFINED)
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Format is not supported.");
 				return;
 			}
 
-			VkExtent2D size = GetSupportedSize(capabilities, info.Buffer.Width, info.Buffer.Height);
+			VkExtent2D size = GetSupportedSize(capabilities, info.Width, info.Height);
 
 			VkSwapchainCreateInfoKHR scInfo = {};
 			scInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 			scInfo.pNext = nullptr;
 			scInfo.flags = 0;
 			scInfo.oldSwapchain = 0;
-			scInfo.minImageCount = info.Count;
+			scInfo.minImageCount = info.BackBuffer.Count;
 			scInfo.surface = m_Surface;
 			scInfo.imageFormat = m_Format.format;
 			scInfo.imageColorSpace = m_Format.colorSpace;

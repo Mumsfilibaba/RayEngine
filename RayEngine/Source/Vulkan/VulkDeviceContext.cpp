@@ -54,6 +54,13 @@ namespace RayEngine
 
 
 
+		/////////////////////////////////////////////////////////////
+		void VulkDeviceContext::SetSwapChain(ISwapchain* pSwapChain) const
+		{
+		}
+
+
+
 		//////////////////////////////////////////////////////////////
 		void VulkDeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView * pDepthStencil) const
 		{
@@ -169,22 +176,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////
 		void VulkDeviceContext::Flush() const
 		{
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-		bool VulkDeviceContext::Reset() const
-		{
-			return false;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-		bool VulkDeviceContext::Close() const
-		{
-			return false;
 		}
 
 

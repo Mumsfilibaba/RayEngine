@@ -52,9 +52,7 @@ namespace RayEngine
 			
 			VkSwapchainKHR GetVkSwapchainKHR() const;
 
-			int32 GetCurrentBuffer() const override final;
-			
-			void QueryBuffer(ITexture** ppBuffer, int32 index) const override final;
+			void Resize(int32 width, int32 height) override final;
 
 			void Present() const override final;
 

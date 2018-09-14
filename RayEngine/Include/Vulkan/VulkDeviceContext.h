@@ -51,6 +51,8 @@ namespace RayEngine
 			
 			void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const override final;
 
+			void SetSwapChain(ISwapchain* pSwapChain) const override final;
+
 			void SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const override final;
 			
 			void SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const override final;
@@ -84,10 +86,6 @@ namespace RayEngine
 			void Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const override final;
 
 			void Flush() const override final;
-			
-			bool Reset() const override final;
-			
-			bool Close() const override final;
 
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
 

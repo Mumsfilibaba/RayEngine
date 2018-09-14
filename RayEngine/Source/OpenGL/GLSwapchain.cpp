@@ -41,15 +41,7 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		int32 GLSwapchain::GetCurrentBuffer() const
-		{
-			return int32();
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void GLSwapchain::QueryBuffer(ITexture** ppBuffer, int32 index) const
+		void GLSwapchain::Resize(int32 width, int32 height)
 		{
 		}
 

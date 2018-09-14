@@ -48,9 +48,7 @@ namespace RayEngine
 			DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
 			~DX12Swapchain();
 
-			int32 GetCurrentBuffer() const override final;
-			
-			void QueryBuffer(ITexture** ppBuffer, int32 index) const override final;
+			void Resize(int32 width, int32 height) override final;
 
 			void Present() const override final;
 

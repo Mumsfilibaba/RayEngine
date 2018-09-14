@@ -35,6 +35,7 @@ namespace RayEngine
 		class DX11Device;
 		class DX11RootLayout;
 		class DX11PipelineState;
+		class DX11Swapchain;
 
 
 
@@ -59,6 +60,8 @@ namespace RayEngine
 			
 			void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const override final;
 			
+			void SetSwapChain(ISwapchain* pSwapChain) const override final;
+
 			void SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const override final;
 			
 			void SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const override final;
@@ -93,9 +96,9 @@ namespace RayEngine
 
 			void Flush() const override final;
 			
-			bool Reset() const override final;
+			bool Reset() const;
 			
-			bool Close() const override final;
+			bool Close() const;
 			
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
 
@@ -116,14 +119,18 @@ namespace RayEngine
 			
 			void SetComputePipeline(DX11PipelineState* pComputePipeline) const;
 
+			void SetDefaultFramebuffer() const;
+
 		private:
 			DX11Device* m_Device;
+			mutable DX11Swapchain* m_CurrentSwapChain;
 			mutable DX11RootLayout* m_CurrentRootLayout;
 			mutable DX11PipelineState* m_CurrentPipelineState;
 			ID3D11DeviceContext* m_Context;
 			mutable ID3D11CommandList* m_CommandList;
 			
 			bool m_IsDeffered;
+			mutable bool m_UseDefaultFramebuffer;
 
 			IObject::CounterType m_References;
 		};

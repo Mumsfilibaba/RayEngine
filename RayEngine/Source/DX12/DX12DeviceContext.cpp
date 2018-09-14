@@ -265,6 +265,13 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void DX12DeviceContext::SetSwapChain(ISwapchain * pSwapChain) const
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
 			//TODO: We need a nulldescriptor

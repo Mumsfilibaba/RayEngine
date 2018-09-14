@@ -55,6 +55,13 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		void GLDeviceContext::SetSwapChain(ISwapchain* pSwapChain) const
+		{
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
 		}
@@ -169,22 +176,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDeviceContext::Flush() const
 		{
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		bool GLDeviceContext::Reset() const
-		{
-			return false;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		bool GLDeviceContext::Close() const
-		{
-			return false;
 		}
 
 

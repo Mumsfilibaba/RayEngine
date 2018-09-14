@@ -70,6 +70,16 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
+			inline DX11RenderTargetView* GetDX11RenderTargetView() const
+			{
+				return m_Rtv;
+			}
+
+			inline DX11DepthStencilView* GetDX11DepthStencilView() const
+			{
+				return m_Dsv;
+			}
+
 		private:
 			void Create(const SwapchainInfo& info);
 			

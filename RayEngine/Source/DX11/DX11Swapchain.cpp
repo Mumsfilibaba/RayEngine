@@ -42,11 +42,17 @@ namespace RayEngine
 			m_DepthStencil(nullptr),
 			m_Rtv(nullptr),
 			m_Dsv(nullptr),
+			m_Name(),
+			m_Width(0),
+			m_Height(0),
+			m_Flags(0),
+			m_DepthStencilFormat(FORMAT_UNKNOWN),
+			m_BackBufferFormat(FORMAT_UNKNOWN),
 			m_References(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<DX11Factory>();
-			m_Device = pDevice->QueryReference<DX11Device>();
+			m_Factory = reinterpret_cast<DX11Factory*>(pFactory);
+			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
 			Create(info);
 		}
@@ -59,9 +65,6 @@ namespace RayEngine
 			D3DRelease_S(m_Swapchain);
 			
 			ReleaseResources();
-
-			ReRelease_S(m_Factory);
-			ReRelease_S(m_Device);
 		}
 
 
@@ -187,8 +190,8 @@ namespace RayEngine
 			else
 			{
 				m_Name = info.Name;
-				m_Width = m_Width;
-				m_Height = m_Height;
+				m_Width = info.Width;
+				m_Height = info.Height;
 				m_BackBufferFormat = info.BackBuffer.Format;
 				m_DepthStencilFormat = info.DepthStencil.Format;
 

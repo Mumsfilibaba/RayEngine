@@ -108,6 +108,7 @@ int main(int args, char* argsv[])
 	swapchainInfo.Height = window.GetHeight();
 	swapchainInfo.BackBuffer.Count = bufferCount;
 	swapchainInfo.BackBuffer.Format = FORMAT_B8G8R8A8_UNORM;
+	swapchainInfo.DepthStencil.Format = FORMAT_UNKNOWN;
 
 	IDevice* pDevice = nullptr;
 	ISwapchain* pSwapchain = nullptr;
@@ -186,6 +187,10 @@ int main(int args, char* argsv[])
 	pipelinestateInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
 	pipelinestateInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
 	
+	pipelinestateInfo.GraphicsPipeline.DepthStencilState.DepthEnable = false;
+
+	pipelinestateInfo.GraphicsPipeline.RasterizerState.CullMode = CULL_MODE_NONE;
+
 	IPipelineState* pPipelineState = nullptr;
 	pDevice->CreatePipelineState(&pPipelineState, pipelinestateInfo);
 
@@ -316,15 +321,18 @@ int main(int args, char* argsv[])
 						strength = 0.0f;
 				}
 			}
+			else if (event.Type == EVENT_TYPE_RESIZE)
+			{
+				pSwapchain->Resize(event.Resize.Width, event.Resize.Height);
+			}
 		}
-	
 	
 	
 		//Get and clear currentbackbuffer and depthstencil
 		ColorF backbufferColor = ColorF::CORNFLOWERBLUE;
 		pDeviceContext->ClearRendertargetView(nullptr, backbufferColor);
-	
-	
+		
+
 		//Set the viewport
 		Viewport viewport = {};
 		viewport.Height = static_cast<float>(window.GetHeight());
@@ -355,11 +363,6 @@ int main(int args, char* argsv[])
 		pSwapchain->Present();
 	}
 
-
-	for (int32 i = 0; i < bufferCount; i++)
-	{
-		ReRelease_S(ppBackbuffers[i]);
-	}
 
 	ReRelease_S(pDeviceContext);
 	ReRelease_S(pPipelineState);
