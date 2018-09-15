@@ -182,6 +182,25 @@ namespace RayEngine
 			default: return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 			}
 		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GetHighestSupportingSamples(ID3D11Device* pD3D11Device, uint32* count, uint32* quality, uint32 requested, DXGI_FORMAT format)
+		{
+			UINT tempQuality = 0;
+			uint32 samples = requested;
+
+			while (samples > 0 && tempQuality == 0)
+			{
+				pD3D11Device->CheckMultisampleQualityLevels(format, samples, &tempQuality);
+				if (tempQuality < 1)
+					samples /= 2;
+			}
+
+			*count = samples;
+			*quality = tempQuality;
+		}
 	}
 }
 

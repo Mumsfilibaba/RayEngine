@@ -19,8 +19,14 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+
 #include "..\..\Include\OpenGL\GLDevice.h"
-#include "..\..\Include\OpenGL\GLDevice.h"
+#include "..\..\Include\OpenGL\GLFactory.h"
+
+#if defined(RE_PLATFORM_WINDOWS)
+#include "..\Win32\WndclassCache.h"
+#define CLASS_NAME RE_T("GLWND")
+#endif
 
 namespace RayEngine
 {
@@ -30,6 +36,21 @@ namespace RayEngine
 		GLDevice::GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
 			: m_References(0)
 		{
+			AddRef();
+			m_Factory = pFactory->QueryReference<GLFactory>();
+
+			Create(pFactory, info, debugLayer);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer)
+		{
+			AddRef();
+			m_Factory = pFactory->QueryReference<GLFactory>();
+
+			Create(pFactory, info, debugLayer);
 		}
 
 
@@ -195,11 +216,54 @@ namespace RayEngine
 		}
 
 
+#if defined RE_PLATFORM_WINDOWS
+		static LRESULT CALLBACK Win32WinCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+		{
+			if (msg == WM_CREATE)
+				return static_cast<LRESULT>(0);
+
+			return DefWindowProc(hWnd, msg, wParam, lParam);
+		}
+#endif
+
 
 		/////////////////////////////////////////////////////////////
 		void GLDevice::Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
 		{
+#if defined RE_PLATFORM_WINDOWS
+			WNDCLASSEX wcex;
+			wcex.cbSize = sizeof(WNDCLASSEX);
+			wcex.style = CS_HREDRAW | CS_VREDRAW;
+			wcex.lpfnWndProc = Win32WinCallback;
+			wcex.cbClsExtra = 0;
+			wcex.cbWndExtra = 0;
+			wcex.hInstance = GetModuleHandle(0);
+			wcex.hIcon = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+			wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+			wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+			wcex.lpszMenuName = NULL;
+			wcex.lpszClassName = CLASS_NAME;
+			wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+
+			System::NativeWindowHandle hWnd = RE_NULL_WINDOW;
+			if (System::WndclassCache::Register(wcex))
+			{
+				hWnd = CreateWindow(wcex.lpszClassName, CLASS_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 100, NULL, NULL, wcex.hInstance, NULL);
+			}
+
+			if (hWnd != RE_NULL_WINDOW)
+				Create(pFactory, hWnd, info, debugLayer);
+#endif
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
+		void GLDevice::Create(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer)
+		{
+#if defined RE_PLATFORM_WINDOWS
+
+#endif
+		}
 	}
 }

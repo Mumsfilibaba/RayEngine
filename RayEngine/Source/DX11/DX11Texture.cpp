@@ -226,7 +226,10 @@ namespace RayEngine
 				desc.Width = info.Width;
 				desc.Height = info.Height;
 				desc.SampleDesc.Count = info.SampleCount;
+
 				desc.SampleDesc.Quality = 0;
+				GetHighestSupportingSamples(pD3D11Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, info.SampleCount, format);
+				
 				desc.MipLevels = info.MipLevels;
 				desc.ArraySize = info.DepthOrArraySize;
 

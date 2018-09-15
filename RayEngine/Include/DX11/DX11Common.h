@@ -37,6 +37,7 @@ namespace RayEngine
 		D3D11_DEPTH_STENCILOP_DESC ReToDX11StencilOpDesc(const StencilOperationInfo& info);
 		D3D11_TEXTURE_ADDRESS_MODE ReToDX11TextureAdressMode(SAMPLER_ADRESS_MODE mode);
 		D3D11_FILTER ReToDX11Filter(SAMPLER_FILTER_MODE mode);
+		void GetHighestSupportingSamples(ID3D11Device* pD3D11Device, uint32* count, uint32* quality, uint32 requested, DXGI_FORMAT format);
 	}
 }
 #endif

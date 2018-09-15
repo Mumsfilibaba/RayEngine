@@ -55,20 +55,21 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct SwapchainInfo
 		{
-			std::string Name = "";
-			System::NativeWindowHandle WindowHandle = RE_NULL_WINDOW;
+			std::string Name;
+			System::NativeWindowHandle WindowHandle;
 
-			int32 Width = 0;
-			int32 Height = 0;
+			int32 Width;
+			int32 Height;
+			MSAA_SAMPLE_COUNT Samples;
 			struct
 			{
-				FORMAT Format = FORMAT_UNKNOWN;
-				int32 Count = 0;
+				FORMAT Format;
+				int32 Count;
 			} BackBuffer;
 
 			struct
 			{
-				FORMAT Format = FORMAT_UNKNOWN;
+				FORMAT Format;
 			} DepthStencil;
 		};
 

@@ -167,8 +167,6 @@ namespace RayEngine
 			//TODO: Tearing?
 			m_Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 			desc.Flags = m_Flags;
-
-			//TODO: MSAA?
 			desc.SampleDesc.Count = 1;
 			desc.SampleDesc.Quality = 0;
 
@@ -178,9 +176,8 @@ namespace RayEngine
 			desc.OutputWindow = info.WindowHandle;
 
 
-			IDXGIFactory* pDXGIFactory = m_Factory->GetDXGIFactory();
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
-			
+			IDXGIFactory* pDXGIFactory = m_Factory->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->CreateSwapChain(pD3D11Device, &desc, &m_Swapchain);
 			if (FAILED(hr))
 			{
@@ -237,7 +234,6 @@ namespace RayEngine
 					depthStencilInfo.DepthStencil.OptimizedStencil = 0;
 					depthStencilInfo.Format = m_DepthStencilFormat;
 					depthStencilInfo.MipLevels = 1;
-					depthStencilInfo.SampleCount = 1;
 					depthStencilInfo.Type = TEXTURE_TYPE_2D;
 					depthStencilInfo.Usage = RESOURCE_USAGE_DEFAULT;
 
@@ -254,8 +250,8 @@ namespace RayEngine
 			RenderTargetViewInfo rtvInfo = {};
 			rtvInfo.Name = m_Name + ": BackBuffer RTV";
 			rtvInfo.Format = m_BackBufferFormat;
-			rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 			rtvInfo.pResource = m_BackBuffer;
+			rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 			rtvInfo.Texture2D.MipSlice = 0;
 			rtvInfo.Texture2D.PlaneSlice = 0;
 
@@ -268,8 +264,9 @@ namespace RayEngine
 				dsvInfo.Name = m_Name + ": DepthStencil DSV";
 				dsvInfo.Format = m_DepthStencilFormat;
 				dsvInfo.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
-				dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 				dsvInfo.pResource = m_DepthStencil;
+				dsvInfo.Texture2D.MipSlice = 0;
+				dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 				dsvInfo.Texture2D.MipSlice = 0;
 
 				m_Dsv = new DX11DepthStencilView(m_Device, dsvInfo);

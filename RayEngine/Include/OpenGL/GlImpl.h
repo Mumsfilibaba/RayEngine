@@ -40,10 +40,14 @@ namespace RayEngine
 {
 #if defined(RE_PLATFORM_WINDOWS)
 	typedef HDC GLNativeDevice;
+#define RE_GL_NULL_NATIVE_DEVICE 0
 	typedef HGLRC GLNativeContext;
+#define RE_GL_NULL_NATIVE_CONTEXT 0
 #else
 	typedef void* GLNativeDevice;
+#define GL_NULL_NATIVE_DEVICE nullptr
 	typedef void* GLNativeContext;
+#define GL_NULL_NATIVE_CONTEXT nullptr
 #endif
 
 

@@ -21,6 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "..\Graphics\IDevice.h"
+#include "..\System\Window.h"
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -44,6 +45,7 @@ namespace RayEngine
 
 		public:
 			GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+			GLDevice(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer);
 			~GLDevice();
 
 			GLNativeDevice GetGLNativeDevice() const;
@@ -87,12 +89,15 @@ namespace RayEngine
 		private:
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
+			void Create(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer);
+
 		private:
 			GLFactory* m_Factory;
 			GLDeviceContext* m_ImmediateContext;
 			
 			GLNativeDevice m_Device;
-			
+			System::NativeWindowHandle m_WndHandle;
+
 			mutable System::Log m_Log;
 			
 			IObject::CounterType m_References;

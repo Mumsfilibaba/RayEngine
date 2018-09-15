@@ -109,6 +109,7 @@ int main(int args, char* argsv[])
 	swapchainInfo.BackBuffer.Count = bufferCount;
 	swapchainInfo.BackBuffer.Format = FORMAT_B8G8R8A8_UNORM;
 	swapchainInfo.DepthStencil.Format = FORMAT_UNKNOWN;
+	swapchainInfo.Samples = MSAA_SAMPLE_COUNT_8;
 
 	IDevice* pDevice = nullptr;
 	ISwapchain* pSwapchain = nullptr;
