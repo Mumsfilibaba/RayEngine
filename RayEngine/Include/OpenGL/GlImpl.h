@@ -237,6 +237,8 @@ typedef char GLchar;
 typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
 typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
 typedef BOOL(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int* piAttribIList, const FLOAT* pfAttribFList, UINT nMaxFormats, int *piFormats, UINT* nNumFormats);
+typedef const char *(WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
+
 //Buffers
 typedef void (APIENTRY* PFNGLGENBUFFERSPROC) (GLsizei n, GLuint* buffers);
 typedef void (APIENTRY* PFNGLBINDBUFFERPROC) (GLenum target, GLuint buffer);
@@ -312,6 +314,8 @@ typedef void (APIENTRY* PFNGLDEPTHRANGEFPROC) (GLfloat n, GLfloat f);
 extern PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 extern PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
+extern PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
+
 //Buffers
 extern PFNGLGENBUFFERSPROC glGenBuffers;
 extern PFNGLBINDBUFFERPROC glBindBuffer;
@@ -321,8 +325,10 @@ extern PFNGLBINDVERTEXBUFFERPROC glBindVertexBuffer;
 extern PFNGLDELETEBUFFERSPROC glDeleteBuffers;
 extern PFNGLBUFFERSUBDATAPROC glBufferSubData;
 extern PFNGLBINDBUFFERBASEPROC glBindBufferBase;
+
 //Textures
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+
 //Shaders
 extern PFNGLCREATEPROGRAMPROC glCreateProgram;
 extern PFNGLCREATESHADERPROC glCreateShader;

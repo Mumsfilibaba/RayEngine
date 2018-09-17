@@ -61,7 +61,7 @@ int main(int args, char* argsv[])
 
 
 	//Create a factory for the api
-	IFactory* pFactory = IFactory::Create(GRAPHICS_API_D3D11, true);
+	IFactory* pFactory = IFactory::Create(GRAPHICS_API_OPENGL, true);
 	pFactory->SetName("Factory");
 
 	//Retrive all adapters on the system that the api can find

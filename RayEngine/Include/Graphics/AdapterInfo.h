@@ -75,38 +75,38 @@ namespace RayEngine
 		public:
 			std::string VendorName;
 			std::string ModelName;
-			int32 ApiID = 0;
-			int32 DeviceID = 0;
-			int32 VendorID = 0;
-			int64 Flags = ADAPTER_FLAGS_NONE;
+			int32 ApiID;
+			int32 DeviceID;
+			int32 VendorID;
+			int64 Flags;
 
 			struct
 			{
 				struct
 				{
-					int32 Width = 0;
+					int32 Width;
 				} Texture1D;
 
 				struct
 				{
-					int32 Width = 0;
-					int32 Height = 0;
+					int32 Width;
+					int32 Height;
 				} Texture2D;
 
 				struct
 				{
-					int32 Width = 0;
-					int32 Height = 0;
-					int32 Depth = 0;
+					int32 Width;
+					int32 Height;
+					int32 Depth;
 				} Texture3D;
 
 				struct
 				{
-					int32 Width = 0;
-					int32 Height = 0;
+					int32 Width;
+					int32 Height;
 				} TextureCube;
 
-				int32 RenderTargetCount = 0;
+				int32 RenderTargetCount;
 			} Limits;
 
 		public:

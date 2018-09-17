@@ -21,7 +21,11 @@ failure and or malfunction of any kind.
 
 #pragma once
 
+#include <vector>
 #include "..\Graphics\IFactory.h"
+#if defined(RE_PLATFORM_WINDOWS)
+#include "..\System\Window.h"
+#endif
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -58,10 +62,18 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
+			bool ExtensionSupported(const std::string& extension) const;
+		
 		private:
 			void Create(bool debugLayer);
 
+			void QueryExtensions();
+
 		private:
+			AdapterList m_AdapterList;
+
+			std::vector<std::string> m_Extensions;
+
 			IObject::CounterType m_References;
 		};
 	}

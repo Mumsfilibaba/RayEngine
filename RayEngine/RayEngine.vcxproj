@@ -104,7 +104,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib; Opengl32.lib;</AdditionalDependencies>
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
@@ -124,7 +124,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib; Opengl32.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,7 +145,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib; Opengl32.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,7 +172,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib;</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib; Opengl32.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -25,6 +25,7 @@ failure and or malfunction of any kind.
 #include "..\..\Include\Vulkan\VulkFactory.h"
 #include "..\..\Include\DX12\DX12Factory.h"
 #include "..\..\Include\DX11\DX11Factory.h"
+#include "..\..\Include\OpenGL\GLFactory.h"
 
 namespace RayEngine
 {
@@ -41,6 +42,8 @@ namespace RayEngine
 				pFactory = new DX11Factory(debugLayers);
 			else if (api == GRAPHICS_API_VULKAN)
 				pFactory = new VulkFactory(debugLayers);
+			else if (api == GRAPHICS_API_OPENGL)
+				pFactory = new GLFactory(debugLayers);
 
 			return pFactory;
 		}

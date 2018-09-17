@@ -36,6 +36,8 @@ failure and or malfunction of any kind.
 PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = nullptr;
+
 //Buffers
 PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
 PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
@@ -133,6 +135,7 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(wglChoosePixelFormatARB) == nullptr) return false;
 			if (LOAD_GL_FUNC(wglCreateContextAttribsARB) == nullptr) return false;
 			if (LOAD_GL_FUNC(wglSwapIntervalEXT) == nullptr) return false;
+			if (LOAD_GL_FUNC(wglGetExtensionsStringARB) == nullptr) return false;
 
 			//Buffers
 			if (LOAD_GL_FUNC(glGenBuffers) == nullptr) return false;
@@ -143,8 +146,10 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(glDeleteBuffers) == nullptr) return false;
 			if (LOAD_GL_FUNC(glBufferSubData) == nullptr) return false;
 			if (LOAD_GL_FUNC(glBindBufferBase) == nullptr) return false;
+
 			//Textures
 			if (LOAD_GL_FUNC(glActiveTexture) == nullptr) return false;
+
 			//Shaders
 			if (LOAD_GL_FUNC(glCreateProgram) == nullptr) return false;
 			if (LOAD_GL_FUNC(glCreateShader) == nullptr) return false;
