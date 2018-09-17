@@ -356,7 +356,6 @@ int main(int args, char* argsv[])
 		pDeviceContext->SetPipelineState(pPipelineState);
 		pDeviceContext->SetRootLayout(pRootLayout);
 	
-		
 		pDeviceContext->SetPrimitiveTopology(PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		pDeviceContext->SetVertexBuffers(pVertexBuffer, 0);
 		pDeviceContext->Draw(0, 3);

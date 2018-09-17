@@ -67,7 +67,7 @@ namespace RayEngine
 		private:
 			void Create(bool debugLayer);
 
-			void QueryExtensions();
+			void QueryExtensionsFromString(const std::string& str);
 
 		private:
 			AdapterList m_AdapterList;

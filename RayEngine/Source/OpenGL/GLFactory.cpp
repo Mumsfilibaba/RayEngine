@@ -199,32 +199,35 @@ namespace RayEngine
 			int32 format = ChoosePixelFormat(hDC, &pfd);
 			SetPixelFormat(hDC, format, &pfd);
 
-			HGLRC tempContext = wglCreateContext(hDC);
+			GLNativeContext tempContext = wglCreateContext(hDC);
 			wglMakeCurrent(hDC, tempContext);
 
 
-			//Load functions with dummy context
-			if (!LoadOpenGL())
+			//Get all extensions for the adapter
+			auto wglGetExtensionsString = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(LoadFunction("wglGetExtensionsStringARB"));
+			if (wglGetExtensionsString == nullptr)
 				return;
 
+			std::string wglExtensions = wglGetExtensionsString(hDC);
+			QueryExtensionsFromString(wglExtensions);
 
-			//Check if we can create a real context
-			std::string wglExtensions = wglGetExtensionsStringARB(hDC);
-			int32 last = 0;
-			for (int32 i = 0; (i = wglExtensions.find(' ', last + 1)) != std::string::npos;)
-			{
-				m_Extensions.push_back(wglExtensions.substr(last, i - last));
-				last = i;
-			}
+			std::string extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+			QueryExtensionsFromString(extensions);
 
 
+			//Can we create a context?
+			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
 			if (!ExtensionSupported("WGL_ARB_create_context"))
+			{
 				return;
+			}
+			else
+			{
+				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
 
-
-			wglMakeCurrent(0, 0);
-			wglDeleteContext(tempContext);
-
+				wglMakeCurrent(0, 0);
+				wglDeleteContext(tempContext);
+			}
 
 
 			//Create real context
@@ -236,15 +239,19 @@ namespace RayEngine
 				0
 			};
 
-			HGLRC context = wglCreateContextAttribsARB(hDC, 0, attribs);
+			GLNativeContext context = wglCreateContext(hDC, 0, attribs);
 			wglMakeCurrent(hDC, context);
 
-
+			//Did we get a 3.3 or higher
 			int32 version[2];
 			glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
 			glGetIntegerv(GL_MINOR_VERSION, &version[1]);
 
+			if ((version[0] * 10) + version[1] < 33)
+				return;
 
+
+			//Get vendor and device ID
 			DISPLAY_DEVICE dd = {};
 			dd.cb = sizeof(DISPLAY_DEVICE);
 			
@@ -267,30 +274,71 @@ namespace RayEngine
 			}
 #endif
 
+
 			//--------------------------------------------//
-			AdapterInfo adapterInfo = {};
-			adapterInfo.VendorName = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
-			adapterInfo.ModelName = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-			adapterInfo.ApiID = 0;
-			adapterInfo.DeviceID = deviceID;
-			adapterInfo.VendorID = vendorID;
-			adapterInfo.Flags = ADAPTER_FLAGS_SWAPCHAIN | ADAPTER_FLAGS_GRAPHICS ;
+			if (LoadOpenGL())
+			{
+				//At this point we have valid GLfunctions for 3.3
+				AdapterInfo adapterInfo = {};
+				adapterInfo.VendorName = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+				adapterInfo.ModelName = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+				adapterInfo.ApiID = 0;
+				adapterInfo.DeviceID = deviceID;
+				adapterInfo.VendorID = vendorID;
+				adapterInfo.Flags = ADAPTER_FLAGS_SWAPCHAIN | ADAPTER_FLAGS_GRAPHICS;
 
-			if (ExtensionSupported("GL_ARB_compute_shader"))
-				adapterInfo.Flags |= ADAPTER_FLAGS_COMPUTE;
+				if (ExtensionSupported("GL_ARB_compute_shader"))
+					adapterInfo.Flags |= ADAPTER_FLAGS_COMPUTE;
+				if (ExtensionSupported("GL_ARB_geometry_shader4"))
+					adapterInfo.Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
+				if (ExtensionSupported("GL_ARB_tessellation_shader"))
+					adapterInfo.Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
 
-			m_AdapterList = AdapterList(1);
-			m_AdapterList[0] = adapterInfo;
+				int32 info = 0;
+				glGetIntegerv(GL_MAX_TEXTURE_SIZE, &info);
+				adapterInfo.Limits.Texture1D.Width = info;
+
+				adapterInfo.Limits.Texture2D.Width = info;
+				adapterInfo.Limits.Texture2D.Height = info;
+
+				glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &info);
+				adapterInfo.Limits.Texture3D.Width = info;
+				adapterInfo.Limits.Texture3D.Height = info;
+				adapterInfo.Limits.Texture3D.Depth = info;
+
+				glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &info);
+				adapterInfo.Limits.TextureCube.Width = info;
+				adapterInfo.Limits.TextureCube.Height = info;
+
+				glGetIntegerv(GL_MAX_DRAW_BUFFERS, &info);
+				adapterInfo.Limits.RenderTargetCount = info;
+
+
+				m_AdapterList = AdapterList(1);
+				m_AdapterList[0] = adapterInfo;
+			}
+
+
+#if defined(RE_PLATFORM_WINDOWS)
+			wglMakeCurrent(0, 0);
+			wglDeleteContext(context);
+
+			DeleteDC(hDC);
+			DestroyWindow(dummyWindow);
+#endif
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void GLFactory::QueryExtensions()
+		void GLFactory::QueryExtensionsFromString(const std::string & str)
 		{
-			
-
-			//int32 extensionCount = glGetIntegerv();
+			int32 last = 0;
+			for (int32 i = 0; (i = str.find(' ', last)) != std::string::npos;)
+			{
+				m_Extensions.push_back(str.substr(last, i - last));
+				last = i + 1;
+			}
 		}
 
 

@@ -61,7 +61,11 @@ namespace RayEngine
 ///DEFINES///
 /////////////
 
-//WGL
+
+/*////////////////////////////////////////////////////////////
+	WGL
+////////////////////////////////////////////////////////////*/
+
 //PixelformatAttributes
 #define WGL_DRAW_TO_WINDOW_ARB 0x2001
 #define WGL_ACCELERATION_ARB 0x2003
@@ -77,6 +81,7 @@ namespace RayEngine
 #define WGL_SWAP_COPY_ARB 0x2029
 #define WGL_SWAP_UNDEFINED_ARB 0x202A
 #define WGL_TYPE_RGBA_ARB 0x202B
+
 //Context Attributes
 #define WGL_CONTEXT_DEBUG_BIT_ARB 0x00000001
 #define WGL_CONTEXT_FLAGS_ARB 0x2094
@@ -84,29 +89,47 @@ namespace RayEngine
 #define WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
 #define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
+
+
+/*////////////////////////////////////////////////////////////
+	CORE OPENGL
+////////////////////////////////////////////////////////////*/
+
+//glGet
+#define GL_MAX_3D_TEXTURE_SIZE 0x8073
+#define GL_MAX_CUBE_MAP_TEXTURE_SIZE 0x851C
+#define GL_MAX_DRAW_BUFFERS 0x8824
+#define GL_MAJOR_VERSION 0x821B
+#define GL_MINOR_VERSION 0x821C
+
 //Errortypes
 #define GL_INVALID_FRAMEBUFFER_OPERATION 0x0506
+
 //Buffers
 #define GL_FRAMEBUFFER 0x8D40
 #define GL_RENDERBUFFER 0x8D41
 #define GL_ARRAY_BUFFER 0x8892
 #define GL_UNIFORM_BUFFER 0x8A11
 #define GL_ELEMENT_ARRAY_BUFFER 0x8893
+
 //Usage
 #define GL_STATIC_DRAW 0x88E4
 #define GL_DYNAMIC_DRAW 0x88E8
+
 //Internal format
 #define GL_R8 0x8229
 #define GL_R32F 0x822E
 #define GL_RGBA16F 0x881A
 #define GL_DEPTH_COMPONENT16 0x81A5
 #define GL_DEPTH_COMPONENT32 0x81A7
+
 //Sampler parameter
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_CLAMP_TO_BORDER 0x812D
 #define GL_TEXTURE_WRAP_R 0x8072
 #define GL_TEXTURE_BASE_LEVEL 0x813C
 #define GL_TEXTURE_MAX_LEVEL 0x813D
+
 //Texture units
 #define GL_TEXTURE0 0x84C0
 #define GL_TEXTURE1 0x84C1
@@ -140,9 +163,11 @@ namespace RayEngine
 #define GL_TEXTURE29 0x84DD
 #define GL_TEXTURE30 0x84DE
 #define GL_TEXTURE31 0x84DF
+
 //GL-Enable
 #define GL_TEXTURE_CUBE_MAP_SEAMLESS 0x884F
 #define GL_DEPTH_CLAMP 0x864F
+
 //Cube-Map
 #define GL_TEXTURE_CUBE_MAP 0x8513
 #define GL_TEXTURE_CUBE_MAP_POSITIVE_X 0x8515
@@ -151,6 +176,7 @@ namespace RayEngine
 #define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y 0x8518
 #define GL_TEXTURE_CUBE_MAP_POSITIVE_Z 0x8519
 #define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z 0x851A
+
 //Shaders
 #define GL_COMPILE_STATUS 0x8B81
 #define GL_LINK_STATUS 0x8B82
@@ -166,9 +192,11 @@ namespace RayEngine
 #define GL_TESS_EVALUATION_SHADER_BIT 0x00000010
 #define GL_ALL_SHADER_BITS 0xFFFFFFFF
 #define GL_PROGRAM_SEPARABLE 0x8258
+
 //Primitive types
 #define GL_PATCHES 0x000E
 #define GL_PATCH_VERTICES 0x8E72
+
 //Framebuffer attachment
 #define GL_COLOR_ATTACHMENT0 0x8CE0
 #define GL_COLOR_ATTACHMENT1 0x8CE1
@@ -204,14 +232,14 @@ namespace RayEngine
 #define GL_COLOR_ATTACHMENT31 0x8CFF
 #define GL_DEPTH_ATTACHMENT 0x8D00
 #define GL_STENCIL_ATTACHMENT 0x8D20
-//Get
-#define GL_MAJOR_VERSION 0x821B
-#define GL_MINOR_VERSION 0x821C
+
 //Pipelines
 #define GL_VALIDATE_STATUS 0x8B83
+
 //Stencil
 #define GL_INCR_WRAP 0x8507
 #define GL_DECR_WRAP 0x8508
+
 //Usage
 #define GL_STREAM_DRAW 0x88E0
 #define GL_STREAM_READ 0x88E1
@@ -233,6 +261,7 @@ namespace RayEngine
 typedef ptrdiff_t GLsizeiptr;
 typedef ptrdiff_t GLintptr;
 typedef char GLchar;
+
 //WGL
 typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
 typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
@@ -248,8 +277,10 @@ typedef void (APIENTRY* PFNGLDELETEBUFFERSPROC) (GLsizei n, const GLuint* buffer
 typedef void (APIENTRY* PFNGLBUFFERSUBDATAPROC) (GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
 typedef void (APIENTRY* PFNGLBINDBUFFERBASEPROC) (GLenum target, GLuint index, GLuint buffer);
 typedef GLboolean(APIENTRY* PFNGLISBUFFERPROC) (GLuint buffer);
+
 //Textures
 typedef void (APIENTRY* PFNGLACTIVETEXTUREPROC) (GLenum texture);
+
 //Shaders
 typedef void (APIENTRY* PFNGLCOMPILESHADERPROC) (GLuint shader);
 typedef void (APIENTRY* PFNGLDELETESHADERPROC) (GLuint shader);
@@ -267,8 +298,10 @@ typedef GLboolean(APIENTRY* PFNGLISPROGRAMPROC) (GLuint program);
 typedef GLboolean(APIENTRY* PFNGLISSHADERPROC) (GLuint shader);
 typedef GLuint(APIENTRY* PFNGLCREATEPROGRAMPROC) (void);
 typedef GLuint(APIENTRY* PFNGLCREATESHADERPROC) (GLenum type);
+
 //Patches
 typedef void (APIENTRY* PFNGLPATCHPARAMETERIPROC) (GLenum pname, GLint value);
+
 //Pipeline
 typedef void (APIENTRY* PFNGLGENPROGRAMPIPELINESPROC) (GLsizei n, GLuint *pipelines);
 typedef void (APIENTRY* PFNGLDELETEPROGRAMPIPELINESPROC) (GLsizei n, const GLuint *pipelines);
@@ -277,6 +310,7 @@ typedef void (APIENTRY* PFNGLGETPROGRAMPIPELINEIVPROC) (GLuint pipeline, GLenum 
 typedef void (APIENTRY* PFNGLVALIDATEPROGRAMPIPELINEPROC) (GLuint pipeline);
 typedef void (APIENTRY* PFNGLBINDPROGRAMPIPELINEPROC) (GLuint pipeline);
 typedef GLboolean(APIENTRY* PFNGLISPROGRAMPIPELINEPROC) (GLuint pipeline);
+
 //VertexArray
 typedef void (APIENTRY* PFNGLBINDVERTEXARRAYPROC) (GLuint array);
 typedef void (APIENTRY* PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
@@ -285,24 +319,30 @@ typedef void (APIENTRY* PFNGLENABLEVERTEXATTRIBARRAYPROC) (GLuint index);
 typedef void (APIENTRY* PFNGLVERTEXATTRIBBINDINGPROC) (GLuint attribindex, GLuint bindingindex);
 typedef void (APIENTRY* PFNGLVERTEXATTRIBFORMATPROC) (GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
 typedef GLboolean(APIENTRY* PFNGLISVERTEXARRAYPROC) (GLuint array);
+
 //Framebuffers
 typedef void (APIENTRY* PFNGLBINDFRAMEBUFFERPROC) (GLenum target, GLuint framebuffer);
 typedef void (APIENTRY* PFNGLDELETEFRAMEBUFFERSPROC) (GLsizei n, const GLuint* framebuffers);
 typedef GLboolean(APIENTRY* PFNGLISFRAMEBUFFERPROC) (GLuint framebuffer);
+
 //Draw
 typedef void (APIENTRY* PFNGLDRAWELEMENTSBASEVERTEXPROC) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+
 //Renderbuffers
 typedef void (APIENTRY* PFNGLBINDRENDERBUFFERPROC) (GLenum target, GLuint renderbuffer);
 typedef void (APIENTRY* PFNGLDELETERENDERBUFFERSPROC) (GLsizei n, const GLuint* renderbuffers);
 typedef void (APIENTRY* PFNGLGENRENDERBUFFERSPROC) (GLsizei n, GLuint *renderbuffers);
 typedef void (APIENTRY* PFNGLRENDERBUFFERSTORAGEPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
 typedef GLboolean(APIENTRY* PFNGLISRENDERBUFFERPROC) (GLuint renderbuffer);
+
 //Clear
 typedef void (APIENTRY* PFNGLCLEARCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 typedef void (APIENTRY* PFNGLCLEARDEPTHFPROC) (GLfloat d);
+
 //Stencil
 typedef void (APIENTRY* PFNGLSTENCILOPSEPARATEPROC) (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
 typedef void (APIENTRY* PFNGLSTENCILFUNCSEPARATEPROC) (GLenum face, GLenum func, GLint ref, GLuint mask);
+
 //Depth
 typedef void (APIENTRY* PFNGLDEPTHRANGEFPROC) (GLfloat n, GLfloat f);
 
@@ -346,8 +386,10 @@ extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
 extern PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog;
 extern PFNGLISPROGRAMPROC glIsProgram;
 extern PFNGLISSHADERPROC glIsShader;
+
 //Patches
 extern PFNGLPATCHPARAMETERIPROC glPatchParameteri;
+
 //Pipeline
 extern PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;
 extern PFNGLISPROGRAMPIPELINEPROC glIsProgramPipeline;
@@ -356,6 +398,7 @@ extern PFNGLBINDPROGRAMPIPELINEPROC glBindProgramPipeline;
 extern PFNGLGETPROGRAMPIPELINEIVPROC glGetProgramPipelineiv;
 extern PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines;
 extern PFNGLVALIDATEPROGRAMPIPELINEPROC glValidateProgramPipeline;
+
 //VertexArrays
 extern PFNGLISVERTEXARRAYPROC glIsVertexArray;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
@@ -364,24 +407,30 @@ extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 extern PFNGLVERTEXATTRIBFORMATPROC glVertexAttribFormat;
 extern PFNGLVERTEXATTRIBBINDINGPROC glVertexAttribBinding;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
+
 //Framebuffers
 extern PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
 extern PFNGLISFRAMEBUFFERPROC glIsFramebuffer;
 extern PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
+
 //Draw
 extern PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex;
+
 //Renderbuffers
 extern PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer;
 extern PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers;
 extern PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers;
 extern PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage;
 extern PFNGLISRENDERBUFFERPROC glIsRenderbuffer;
+
 //Clear
 extern PFNGLCLEARCOLORPROC glClearColorf;
 extern PFNGLCLEARDEPTHFPROC glClearDepthf;
+
 //Stencil
 extern PFNGLSTENCILOPSEPARATEPROC glStencilOpSeparate;
 extern PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate;
+
 //Depth
 extern PFNGLDEPTHRANGEFPROC glDepthRangef;
 #endif
