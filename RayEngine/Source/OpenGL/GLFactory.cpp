@@ -20,10 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "..\..\Include\OpenGL\GLFactory.h"
+#include "..\..\Include\OpenGL\GLDevice.h"
+#include "..\..\Include\OpenGL\GLSwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
-#define CLASS_NAME RE_T("GLWND")
 #endif
 
 namespace RayEngine
@@ -35,6 +36,9 @@ namespace RayEngine
 			: m_References(0)
 		{
 			AddRef();
+
+			m_DebugLayer = debugLayer;
+
 			Create(debugLayer);
 		}
 
@@ -43,6 +47,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		GLFactory::~GLFactory()
 		{
+			ReRelease_S(m_Device);
+			ReRelease_S(m_Swapchain);
 		}
 
 
@@ -60,7 +66,20 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLFactory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
 		{
-			return false;
+			if (m_Swapchain != nullptr)
+			{
+				*ppDevice = nullptr;
+				return false;
+			}
+			else if (m_Device != nullptr)
+			{
+				*ppDevice = m_Device->QueryReference<GLDevice>();
+				return true;
+			}
+
+			m_Device = new GLDevice(this, deviceInfo, m_DebugLayer);
+			*ppDevice = m_Device;
+			return true;
 		}
 
 
@@ -68,6 +87,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
 		{
+			*ppSwapchain = nullptr;
 			return false;
 		}
 
@@ -76,7 +96,19 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			return false;
+			if (m_Device != nullptr)
+			{
+				*ppDevice = nullptr;
+				*ppSwapchain = nullptr;
+				return false;
+			}
+
+			m_Device = new GLDevice(this, swapchainInfo.WindowHandle, deviceInfo, m_DebugLayer);
+			*ppDevice = m_Device;
+
+			m_Swapchain = new GLSwapchain(this, m_Device, swapchainInfo);
+			*ppSwapchain = m_Swapchain;
+			return true;
 		}
 
 

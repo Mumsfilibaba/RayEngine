@@ -20,18 +20,32 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-
 #include <vector>
 #include "..\Graphics\IFactory.h"
+
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\System\Window.h"
+#define CLASS_NAME RE_T("GLWND")
 #endif
+
 #include "GLCommon.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
+		class GLDevice;
+		class GLSwapchain;
+
+
+#if defined(RE_PLATFORM_WINDOWS)
+		/////////////////////////////////////////////////////////////
+		LRESULT CALLBACK Win32WinCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
+
+
+		/////////////////////////////////////////////////////////////
 		class GLFactory final : public IFactory
 		{
 		public:
@@ -70,11 +84,17 @@ namespace RayEngine
 			void QueryExtensionsFromString(const std::string& str);
 
 		private:
+			GLDevice* m_Device;
+
+			GLSwapchain* m_Swapchain;
+
 			AdapterList m_AdapterList;
 
 			std::vector<std::string> m_Extensions;
 
 			IObject::CounterType m_References;
+
+			bool m_DebugLayer;
 		};
 	}
 }
