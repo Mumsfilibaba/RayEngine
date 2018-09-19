@@ -725,6 +725,9 @@
     <ClCompile Include="Source\Vulkan\VulkRootLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\OpenGL\GLCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Source\TODO.txt" />

@@ -33,12 +33,14 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLFactory::GLFactory(bool debugLayer)
-			: m_References(0)
+			: m_Device(nullptr),
+			m_Swapchain(nullptr),
+			m_AdapterList(),
+			m_Extensions(),
+			m_DebugLayer(debugLayer),
+			m_References(0)
 		{
 			AddRef();
-
-			m_DebugLayer = debugLayer;
-
 			Create(debugLayer);
 		}
 
@@ -56,6 +58,14 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLFactory::EnumerateAdapters(AdapterList& list) const
 		{
+#if defined(RE_PLATFORM_WINDOWS)
+			DISPLAY_DEVICE dd = {};
+			dd.cb = sizeof(DISPLAY_DEVICE);
+
+			std::string id;
+
+#endif
+
 			list = AdapterList(m_AdapterList.Count);
 			for (int32 i = 0; i < m_AdapterList.Count; i++)
 				list[i] = m_AdapterList.pAdapters[i];
@@ -102,6 +112,18 @@ namespace RayEngine
 				*ppSwapchain = nullptr;
 				return false;
 			}
+
+#if defined(RE_PLATFORM_WINDOWS)
+			GLNativeDevice dc = GetDC(swapchainInfo.WindowHandle);
+			if (!SetPixelFormat(dc, swapchainInfo.BackBuffer.Format, swapchainInfo.DepthStencil.Format))
+			{
+				*ppDevice = nullptr;
+				*ppSwapchain = nullptr;
+				return false;
+			}
+
+			DeleteDC(dc);
+#endif
 
 			m_Device = new GLDevice(this, swapchainInfo.WindowHandle, deviceInfo, m_DebugLayer);
 			*ppDevice = m_Device;
@@ -160,13 +182,7 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 #if defined RE_PLATFORM_WINDOWS
-		static LRESULT CALLBACK Win32WinCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-		{
-			if (msg == WM_CREATE)
-				return static_cast<LRESULT>(0);
 
-			return DefWindowProc(hWnd, msg, wParam, lParam);
-		}
 #endif
 
 
@@ -178,26 +194,7 @@ namespace RayEngine
 
 
 #if defined(RE_PLATFORM_WINDOWS)
-			//Create a dummy context
-			WNDCLASSEX wcex = {};
-			wcex.cbSize = sizeof(WNDCLASSEX);
-			wcex.style = CS_HREDRAW | CS_VREDRAW;
-			wcex.lpfnWndProc = Win32WinCallback;
-			wcex.cbClsExtra = 0;
-			wcex.cbWndExtra = 0;
-			wcex.hInstance = GetModuleHandle(0);
-			wcex.hIcon = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-			wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-			wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-			wcex.lpszMenuName = NULL;
-			wcex.lpszClassName = CLASS_NAME;
-			wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-
-			System::NativeWindowHandle dummyWindow = RE_NULL_WINDOW;
-			if (System::WndclassCache::Register(wcex))
-			{
-				dummyWindow = CreateWindow(wcex.lpszClassName, CLASS_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 100, NULL, NULL, wcex.hInstance, NULL);
-			}
+			System::NativeWindowHandle dummyWindow = CreateDummyWindow();
 
 			PIXELFORMATDESCRIPTOR pfd = {};
 			pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -286,17 +283,15 @@ namespace RayEngine
 			//Get vendor and device ID
 			DISPLAY_DEVICE dd = {};
 			dd.cb = sizeof(DISPLAY_DEVICE);
-			
+
 			std::string id;
-			int i = 0;
-			while (EnumDisplayDevices(NULL, i, &dd, 0))
+			for (int32 i = 0; EnumDisplayDevices(NULL, i, &dd, 0); i++)
 			{
 				if (dd.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
 				{
 					id = dd.DeviceID;
 					break;
 				}
-				i++;
 			}
 
 			if (id != "")
@@ -357,6 +352,8 @@ namespace RayEngine
 
 			DeleteDC(hDC);
 			DestroyWindow(dummyWindow);
+
+			System::WndclassCache::Unregister(RE_GL_CLASS_NAME, GetModuleHandle(0));
 #endif
 		}
 

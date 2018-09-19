@@ -113,7 +113,8 @@ int main(int args, char* argsv[])
 
 	IDevice* pDevice = nullptr;
 	ISwapchain* pSwapchain = nullptr;
-	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
+	pFactory->CreateDevice(&pDevice, deviceInfo);
+	//pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
 
 
 	//Create shaders

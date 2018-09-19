@@ -25,7 +25,6 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\System\Window.h"
-#define CLASS_NAME RE_T("GLWND")
 #endif
 
 #include "GLCommon.h"

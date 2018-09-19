@@ -50,7 +50,7 @@ namespace RayEngine
 			AddRef();
 			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
 
-			Create(pFactory, info, debugLayer);
+			Create(pFactory, windowHandle, info, debugLayer);
 		}
 
 
@@ -222,95 +222,15 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-#if defined(RE_PLATFORM_WINDOWS)
-		int32 ChoosePixelFormat(GLNativeDevice hDC, FORMAT backBuffer, FORMAT depthStencil)
-		{
-			return 0;
-		}
-#endif
-
-
-		/////////////////////////////////////////////////////////////
 		void GLDevice::Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
 		{
 #if defined RE_PLATFORM_WINDOWS
-			//Create a dummy window
-			WNDCLASSEX wcex = {};
-			wcex.cbSize = sizeof(WNDCLASSEX);
-			wcex.style = CS_HREDRAW | CS_VREDRAW;
-			wcex.lpfnWndProc = Win32WinCallback;
-			wcex.cbClsExtra = 0;
-			wcex.cbWndExtra = 0;
-			wcex.hInstance = GetModuleHandle(0);
-			wcex.hIcon = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-			wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-			wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-			wcex.lpszMenuName = NULL;
-			wcex.lpszClassName = CLASS_NAME;
-			wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+			m_WndHandle = CreateDummyWindow();
 
-			if (System::WndclassCache::Register(wcex))
-			{
-				m_WndHandle = CreateWindow(wcex.lpszClassName, CLASS_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 100, NULL, NULL, wcex.hInstance, NULL);
-			}
+			m_Device = GetDC(m_WndHandle);
+			SetPixelFormat(m_Device, FORMAT_B8G8R8A8_UNORM, FORMAT_UNKNOWN);
 
-			//Create context
-			GLNativeDevice hDC = GetDC(m_WndHandle);
-			wglChoosePixelFormatARB();
-
-			int32 format = ChoosePixelFormat(hDC, &pfd);
-			SetPixelFormat(hDC, format, &pfd);
-
-			GLNativeContext tempContext = wglCreateContext(hDC);
-			wglMakeCurrent(hDC, tempContext);
-
-
-			//Get all extensions for the adapter
-			auto wglGetExtensionsString = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(LoadFunction("wglGetExtensionsStringARB"));
-			if (wglGetExtensionsString == nullptr)
-				return;
-
-			std::string wglExtensions = wglGetExtensionsString(hDC);
-			QueryExtensionsFromString(wglExtensions);
-
-			std::string extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
-			QueryExtensionsFromString(extensions);
-
-
-			//Can we create a context?
-			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
-			if (!ExtensionSupported("WGL_ARB_create_context"))
-			{
-				return;
-			}
-			else
-			{
-				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
-
-				wglMakeCurrent(0, 0);
-				wglDeleteContext(tempContext);
-			}
-
-
-			//Create real context
-			int attribs[] =
-			{
-				WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-				WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-				WGL_CONTEXT_FLAGS_ARB, 0,
-				0
-			};
-
-			GLNativeContext context = wglCreateContext(hDC, 0, attribs);
-			wglMakeCurrent(hDC, context);
-
-			//Did we get a 3.3 or higher
-			int32 version[2];
-			glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
-			glGetIntegerv(GL_MINOR_VERSION, &version[1]);
-
-			if ((version[0] * 10) + version[1] < 33)
-				return;
+			m_ImmediateContext = new GLDeviceContext(this, false);
 #endif
 		}
 
@@ -321,6 +241,8 @@ namespace RayEngine
 		{
 #if defined RE_PLATFORM_WINDOWS
 			GLNativeDevice device = GetDC(windowHandle);
+
+			m_ImmediateContext = new GLDeviceContext(this, false);
 #endif
 		}
 	}

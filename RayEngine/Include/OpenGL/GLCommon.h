@@ -25,3 +25,21 @@ failure and or malfunction of any kind.
 #include "..\Types.h"
 #include "GlImpl.h"
 
+namespace RayEngine
+{
+	namespace Graphics
+	{
+#if defined(RE_PLATFORM_WINDOWS)
+#define RE_GL_CLASS_NAME RE_T("GLWND")
+
+
+		/////////////////////////////////////////////////////////////
+		int32 GetColorSpace(FORMAT format);
+		int32 GetColorBits(FORMAT format);
+		int32 GetDepthBits(FORMAT format);
+		int32 GetStencilBits(FORMAT format);
+		bool SetPixelFormat(GLNativeDevice hDC, FORMAT backBuffer, FORMAT depthStencil);
+		HWND CreateDummyWindow();
+#endif
+	}
+}
