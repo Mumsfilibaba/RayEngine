@@ -96,7 +96,16 @@ namespace RayEngine
 
 			int32 pixelFormat = 0;
 			uint32 numFormats = 0;
-			return wglChoosePixelFormatARB(hDC, attrib, 0, 1, &pixelFormat, &numFormats);
+			DWORD result = wglChoosePixelFormatARB(hDC, attrib, 0, 1, &pixelFormat, &numFormats);
+			if (result)
+			{
+				PIXELFORMATDESCRIPTOR pfd = {};
+				DescribePixelFormat(hDC, pixelFormat, sizeof(pfd), &pfd);
+
+				return SetPixelFormat(hDC, pixelFormat, &pfd);
+			}
+
+			return false;
 		}
 
 

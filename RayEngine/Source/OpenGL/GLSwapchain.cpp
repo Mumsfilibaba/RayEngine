@@ -20,6 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "..\..\Include\OpenGL\GLSwapchain.h"
+#include "..\..\Include\OpenGL\GLDevice.h"
+#include "..\..\Include\OpenGL\GLFactory.h"
 
 namespace RayEngine
 {
@@ -27,8 +29,17 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLSwapchain::GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
-			: m_References(0)
+			: m_Device(nullptr),
+			m_Factory(nullptr),
+			m_WndHandle(RE_NULL_WINDOW),
+			m_NativeDevice(RE_GL_NULL_NATIVE_DEVICE),
+			m_References(0)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<GLDevice*>(pDevice);
+			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
+
+			Create();
 		}
 
 
@@ -39,40 +50,39 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		void GLSwapchain::Resize(int32 width, int32 height)
 		{
+			//Not relevant
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
 		void GLSwapchain::Present() const
 		{
+			SwapBuffers(m_NativeDevice);
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
 		void GLSwapchain::SetName(const std::string& name)
 		{
+			//Not relevant1
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
 		void GLSwapchain::QueryDevice(IDevice** ppDevice) const
 		{
+			(*ppDevice) = m_Device->QueryReference<GLDevice>();
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
 		void GLSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
+			(*ppFactory) = m_Factory->QueryReference<GLFactory>();
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -80,7 +90,6 @@ namespace RayEngine
 		{
 			return m_References;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -105,15 +114,10 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void GLSwapchain::Create(const SwapchainInfo& info)
+		void GLSwapchain::Create()
 		{
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void GLSwapchain::CreateTextures(const SwapchainInfo& info)
-		{
+			m_NativeDevice = m_Device->GetGLNativeDevice();
+			m_WndHandle = m_Device->GetNativeWindowHandle();
 		}
 	}
 }

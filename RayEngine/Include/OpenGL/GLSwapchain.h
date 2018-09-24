@@ -67,17 +67,14 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const SwapchainInfo& info);
-			
-			void CreateTextures(const SwapchainInfo& info);
+			void Create();
 
 		private:
 			GLDevice * m_Device;
 			GLFactory* m_Factory;
-			GLTexture* m_Texture;
 			
-			int32 m_BufferCount;
-			mutable int32 m_CurrentBuffer;
+			System::NativeWindowHandle m_WndHandle;
+			GLNativeDevice m_NativeDevice;
 			
 			IObject::CounterType m_References;
 		};

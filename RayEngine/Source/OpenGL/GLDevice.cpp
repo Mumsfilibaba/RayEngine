@@ -47,7 +47,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceInfo& info, bool debugLayer)
 			: m_ImmediateContext(nullptr),
@@ -63,11 +62,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		GLDevice::~GLDevice()
 		{
 			ReRelease_S(m_ImmediateContext);
+
 #if defined(RE_PLATFORM_WINDOWS)
 			if (m_Device != RE_GL_NULL_NATIVE_DEVICE)
 				ReleaseDC(m_WndHandle, m_Device);
@@ -78,13 +77,18 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		GLNativeDevice GLDevice::GetGLNativeDevice() const
 		{
 			return m_Device;
 		}
 
+
+		/////////////////////////////////////////////////////////////
+		System::NativeWindowHandle GLDevice::GetNativeWindowHandle() const
+		{
+			return m_WndHandle;
+		}
 
 
 		/////////////////////////////////////////////////////////////
@@ -94,13 +98,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreateDefferedContext(IDeviceContext** ppContext)
 		{
 			return new GLDeviceContext(this, true);
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -110,13 +112,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
 		{
 			return false;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -126,13 +126,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
 		{
 			return false;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -142,13 +140,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreateSampler(ISampler** ppSampler, const SamplerInfo& info)
 		{
 			return false;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -158,13 +154,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
 		{
 			return false;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -174,13 +168,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
 		{
 			return false;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -190,7 +182,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		void GLDevice::QueryFactory(IFactory** ppFactory) const
 		{
@@ -198,13 +189,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::GetReferenceCount() const
 		{
 			return m_References;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -218,7 +207,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::AddRef()
 		{
@@ -227,13 +215,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		System::Log* GLDevice::GetDeviceLog()
 		{
 			return &m_Log;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -254,7 +240,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		void GLDevice::Create(System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, bool debugLayer)
 		{
@@ -265,14 +250,12 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		void GLDevice::CreateContext(bool debugLayer)
 		{
 			CreateNativeContext(debugLayer);
 			m_ImmediateContext = new GLDeviceContext(this, false);
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -282,11 +265,14 @@ namespace RayEngine
 			{
 				WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
 				WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-				WGL_CONTEXT_FLAGS_ARB, debugLayer ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
+				WGL_CONTEXT_FLAGS_ARB, 0,//debugLayer ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
 				0
 			};
 
+			SetLastError(0);
 			m_NativeContext = wglCreateContextAttribsARB(m_Device, 0, attribs);
+			DWORD error = GetLastError();
+
 			wglMakeCurrent(m_Device, m_NativeContext);
 
 

@@ -54,6 +54,14 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLFactory::EnumerateAdapters(AdapterList& list) const
 		{
+#if defined(RE_PLATFORM_WINDOWS)
+			DISPLAY_DEVICE dd = {};
+			dd.cb = sizeof(DISPLAY_DEVICE);
+
+			std::string id;
+
+#endif
+
 			list = AdapterList(m_AdapterList.Count);
 			for (int32 i = 0; i < m_AdapterList.Count; i++)
 				list[i] = m_AdapterList.pAdapters[i];
@@ -82,11 +90,9 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			GLNativeDevice nativeDevice = RE_GL_NULL_NATIVE_DEVICE;
-
 #if defined(RE_PLATFORM_WINDOWS)
-			nativeDevice = GetDC(swapchainInfo.WindowHandle);
-			if (!SetPixelFormat(nativeDevice, swapchainInfo.BackBuffer.Format, swapchainInfo.DepthStencil.Format))
+			GLNativeDevice dc = GetDC(swapchainInfo.WindowHandle);
+			if (!SetPixelFormat(dc, swapchainInfo.BackBuffer.Format, swapchainInfo.DepthStencil.Format))
 			{
 				*ppDevice = nullptr;
 				*ppSwapchain = nullptr;
@@ -94,7 +100,7 @@ namespace RayEngine
 			}
 #endif
 
-			*ppDevice = new GLDevice(this, swapchainInfo.WindowHandle, nativeDevice, deviceInfo, m_DebugLayer);
+			*ppDevice = new GLDevice(this, swapchainInfo.WindowHandle, dc, deviceInfo, m_DebugLayer);
 			*ppSwapchain = new GLSwapchain(this, *ppDevice, swapchainInfo);
 			return true;
 		}
@@ -144,6 +150,12 @@ namespace RayEngine
 			return m_References;
 		}
 
+
+
+		/////////////////////////////////////////////////////////////
+#if defined RE_PLATFORM_WINDOWS
+
+#endif
 
 
 		/////////////////////////////////////////////////////////////
@@ -205,14 +217,14 @@ namespace RayEngine
 
 
 			//Can we create a context?
-			PFNWGLCREATECONTEXTATTRIBSARBPROC CreateContext = nullptr;
+			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
 			if (!ExtensionSupported("WGL_ARB_create_context"))
 			{
 				return;
 			}
 			else
 			{
-				CreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
+				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
 
 				wglMakeCurrent(0, 0);
 				wglDeleteContext(tempContext);
@@ -228,7 +240,7 @@ namespace RayEngine
 				0
 			};
 
-			GLNativeContext context = CreateContext(hDC, 0, attribs);
+			GLNativeContext context = wglCreateContext(hDC, 0, attribs);
 			wglMakeCurrent(hDC, context);
 
 			//Did we get a 3.3 or higher
@@ -304,8 +316,6 @@ namespace RayEngine
 				m_AdapterList = AdapterList(1);
 				m_AdapterList[0] = adapterInfo;
 			}
-			//--------------------------------------------//
-
 
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -322,10 +332,10 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void GLFactory::QueryExtensionsFromString(const std::string & str)
+		void GLFactory::QueryExtensionsFromString(const std::string& str)
 		{
 			int32 last = 0;
-			for (int32 i = 0; (i = str.find(' ', last)) != std::string::npos;)
+			for (int32 i = 0; (i = static_cast<int32>(str.find(' ', last))) != std::string::npos;)
 			{
 				m_Extensions.push_back(str.substr(last, i - last));
 				last = i + 1;

@@ -50,6 +50,8 @@ namespace RayEngine
 
 			GLNativeDevice GetGLNativeDevice() const;
 
+			System::NativeWindowHandle GetNativeWindowHandle() const;
+
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;

@@ -57,7 +57,6 @@ int main(int args, char* argsv[])
 #endif
 
 	Window window(windowInfo);
-	window.SetBackground(Color::CORNFLOWERBLUE);
 
 
 	//Create a factory for the api
@@ -113,8 +112,7 @@ int main(int args, char* argsv[])
 
 	IDevice* pDevice = nullptr;
 	ISwapchain* pSwapchain = nullptr;
-	pFactory->CreateDevice(&pDevice, deviceInfo);
-	//pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
+	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
 
 
 	//Create shaders
