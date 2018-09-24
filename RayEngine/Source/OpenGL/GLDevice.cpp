@@ -34,23 +34,32 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
-			: m_References(0)
+			: m_ImmediateContext(nullptr),
+			m_Device(RE_GL_NULL_NATIVE_DEVICE),
+			m_WndHandle(RE_NULL_WINDOW),
+			m_CreatedWindow(false),
+			m_References(0)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
 
-			Create(pFactory, info, debugLayer);
+			Create(debugLayer);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer)
+		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceInfo& info, bool debugLayer)
+			: m_ImmediateContext(nullptr),
+			m_Device(RE_GL_NULL_NATIVE_DEVICE),
+			m_WndHandle(RE_NULL_WINDOW),
+			m_CreatedWindow(false),
+			m_References(0)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
 
-			Create(pFactory, windowHandle, info, debugLayer);
+			Create(nativeWindow, nativeDevice, debugLayer);
 		}
 
 
@@ -60,7 +69,11 @@ namespace RayEngine
 		{
 			ReRelease_S(m_ImmediateContext);
 #if defined(RE_PLATFORM_WINDOWS)
-			DeleteDC(m_Device);
+			if (m_Device != RE_GL_NULL_NATIVE_DEVICE)
+				ReleaseDC(m_WndHandle, m_Device);
+
+			if (m_WndHandle != RE_NULL_WINDOW && m_CreatedWindow)
+				DestroyWindow(m_WndHandle);
 #endif
 		}
 
@@ -173,6 +186,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDevice::SetName(const std::string& name)
 		{
+			//Not relevant
 		}
 
 
@@ -180,6 +194,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDevice::QueryFactory(IFactory** ppFactory) const
 		{
+			(*ppFactory) = m_Factory->QueryReference<GLFactory>();
 		}
 
 
@@ -222,28 +237,71 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		void GLDevice::Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
+		void GLDevice::Create(bool debugLayer)
 		{
-#if defined RE_PLATFORM_WINDOWS
+#if defined(RE_PLATFORM_WINDOWS)
 			m_WndHandle = CreateDummyWindow();
-
+			m_CreatedWindow = true;
+			
 			m_Device = GetDC(m_WndHandle);
-			SetPixelFormat(m_Device, FORMAT_B8G8R8A8_UNORM, FORMAT_UNKNOWN);
-
-			m_ImmediateContext = new GLDeviceContext(this, false);
+			if (!SetPixelFormat(m_Device, FORMAT_B8G8R8A8_UNORM, FORMAT_UNKNOWN))
+			{
+				return;
+			}
 #endif
+
+			CreateContext(debugLayer);
 		}
 
 
 
 		/////////////////////////////////////////////////////////////
-		void GLDevice::Create(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer)
+		void GLDevice::Create(System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, bool debugLayer)
 		{
-#if defined RE_PLATFORM_WINDOWS
-			GLNativeDevice device = GetDC(windowHandle);
+			m_WndHandle = nativeWindow;
+			m_Device = nativeDevice;
 
+			CreateContext(debugLayer);
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLDevice::CreateContext(bool debugLayer)
+		{
+			CreateNativeContext(debugLayer);
 			m_ImmediateContext = new GLDeviceContext(this, false);
-#endif
+		}
+
+
+
+		/////////////////////////////////////////////////////////////
+		void GLDevice::CreateNativeContext(bool debugLayer)
+		{
+			int attribs[] =
+			{
+				WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+				WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+				WGL_CONTEXT_FLAGS_ARB, debugLayer ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
+				0
+			};
+
+			m_NativeContext = wglCreateContextAttribsARB(m_Device, 0, attribs);
+			wglMakeCurrent(m_Device, m_NativeContext);
+
+
+			//Did we get a 3.3 or higher
+			int32 version[2];
+			glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
+			glGetIntegerv(GL_MINOR_VERSION, &version[1]);
+
+
+			//Version to low - delete context
+			if ((version[0] * 10) + version[1] < 33)
+			{
+				wglMakeCurrent(0, 0);
+				wglDeleteContext(m_NativeContext);
+			}
 		}
 	}
 }

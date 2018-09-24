@@ -45,7 +45,7 @@ namespace RayEngine
 
 		public:
 			GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
-			GLDevice(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer);
+			GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceInfo& info, bool debugLayer);
 			~GLDevice();
 
 			GLNativeDevice GetGLNativeDevice() const;
@@ -87,16 +87,23 @@ namespace RayEngine
 			System::Log* GetDeviceLog() override final;
 
 		private:
-			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+			void Create(bool debugLayer);
 
-			void Create(IFactory* pFactory, System::NativeWindowHandle windowHandle, const DeviceInfo& info, bool debugLayer);
+			void Create(System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, bool debugLayer);
+
+			void CreateContext(bool debugLayer);
+
+			void CreateNativeContext(bool debugLayer);
 
 		private:
 			GLFactory* m_Factory;
 			GLDeviceContext* m_ImmediateContext;
 			
 			GLNativeDevice m_Device;
+			GLNativeContext m_NativeContext;
 			System::NativeWindowHandle m_WndHandle;
+
+			bool m_CreatedWindow;
 
 			mutable System::Log m_Log;
 			

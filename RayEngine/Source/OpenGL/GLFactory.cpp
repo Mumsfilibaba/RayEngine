@@ -33,9 +33,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLFactory::GLFactory(bool debugLayer)
-			: m_Device(nullptr),
-			m_Swapchain(nullptr),
-			m_AdapterList(),
+			: m_AdapterList(),
 			m_Extensions(),
 			m_DebugLayer(debugLayer),
 			m_References(0)
@@ -49,8 +47,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		GLFactory::~GLFactory()
 		{
-			ReRelease_S(m_Device);
-			ReRelease_S(m_Swapchain);
 		}
 
 
@@ -58,14 +54,6 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLFactory::EnumerateAdapters(AdapterList& list) const
 		{
-#if defined(RE_PLATFORM_WINDOWS)
-			DISPLAY_DEVICE dd = {};
-			dd.cb = sizeof(DISPLAY_DEVICE);
-
-			std::string id;
-
-#endif
-
 			list = AdapterList(m_AdapterList.Count);
 			for (int32 i = 0; i < m_AdapterList.Count; i++)
 				list[i] = m_AdapterList.pAdapters[i];
@@ -76,19 +64,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLFactory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
 		{
-			if (m_Swapchain != nullptr)
-			{
-				*ppDevice = nullptr;
-				return false;
-			}
-			else if (m_Device != nullptr)
-			{
-				*ppDevice = m_Device->QueryReference<GLDevice>();
-				return true;
-			}
-
-			m_Device = new GLDevice(this, deviceInfo, m_DebugLayer);
-			*ppDevice = m_Device;
+			*ppDevice = new GLDevice(this, deviceInfo, m_DebugLayer);
 			return true;
 		}
 
@@ -106,30 +82,20 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
 		{
-			if (m_Device != nullptr)
-			{
-				*ppDevice = nullptr;
-				*ppSwapchain = nullptr;
-				return false;
-			}
+			GLNativeDevice nativeDevice = RE_GL_NULL_NATIVE_DEVICE;
 
 #if defined(RE_PLATFORM_WINDOWS)
-			GLNativeDevice dc = GetDC(swapchainInfo.WindowHandle);
-			if (!SetPixelFormat(dc, swapchainInfo.BackBuffer.Format, swapchainInfo.DepthStencil.Format))
+			nativeDevice = GetDC(swapchainInfo.WindowHandle);
+			if (!SetPixelFormat(nativeDevice, swapchainInfo.BackBuffer.Format, swapchainInfo.DepthStencil.Format))
 			{
 				*ppDevice = nullptr;
 				*ppSwapchain = nullptr;
 				return false;
 			}
-
-			DeleteDC(dc);
 #endif
 
-			m_Device = new GLDevice(this, swapchainInfo.WindowHandle, deviceInfo, m_DebugLayer);
-			*ppDevice = m_Device;
-
-			m_Swapchain = new GLSwapchain(this, m_Device, swapchainInfo);
-			*ppSwapchain = m_Swapchain;
+			*ppDevice = new GLDevice(this, swapchainInfo.WindowHandle, nativeDevice, deviceInfo, m_DebugLayer);
+			*ppSwapchain = new GLSwapchain(this, *ppDevice, swapchainInfo);
 			return true;
 		}
 
@@ -178,12 +144,6 @@ namespace RayEngine
 			return m_References;
 		}
 
-
-
-		/////////////////////////////////////////////////////////////
-#if defined RE_PLATFORM_WINDOWS
-
-#endif
 
 
 		/////////////////////////////////////////////////////////////
@@ -245,14 +205,14 @@ namespace RayEngine
 
 
 			//Can we create a context?
-			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
+			PFNWGLCREATECONTEXTATTRIBSARBPROC CreateContext = nullptr;
 			if (!ExtensionSupported("WGL_ARB_create_context"))
 			{
 				return;
 			}
 			else
 			{
-				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
+				CreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
 
 				wglMakeCurrent(0, 0);
 				wglDeleteContext(tempContext);
@@ -268,7 +228,7 @@ namespace RayEngine
 				0
 			};
 
-			GLNativeContext context = wglCreateContext(hDC, 0, attribs);
+			GLNativeContext context = CreateContext(hDC, 0, attribs);
 			wglMakeCurrent(hDC, context);
 
 			//Did we get a 3.3 or higher
@@ -344,13 +304,15 @@ namespace RayEngine
 				m_AdapterList = AdapterList(1);
 				m_AdapterList[0] = adapterInfo;
 			}
+			//--------------------------------------------//
+
 
 
 #if defined(RE_PLATFORM_WINDOWS)
 			wglMakeCurrent(0, 0);
 			wglDeleteContext(context);
 
-			DeleteDC(hDC);
+			ReleaseDC(dummyWindow, hDC);
 			DestroyWindow(dummyWindow);
 
 			System::WndclassCache::Unregister(RE_GL_CLASS_NAME, GetModuleHandle(0));

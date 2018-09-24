@@ -83,10 +83,6 @@ namespace RayEngine
 			void QueryExtensionsFromString(const std::string& str);
 
 		private:
-			GLDevice* m_Device;
-
-			GLSwapchain* m_Swapchain;
-
 			AdapterList m_AdapterList;
 
 			std::vector<std::string> m_Extensions;
