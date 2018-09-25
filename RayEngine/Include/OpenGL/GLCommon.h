@@ -41,5 +41,7 @@ namespace RayEngine
 		bool SetPixelFormat(GLNativeDevice hDC, FORMAT backBuffer, FORMAT depthStencil);
 		HWND CreateDummyWindow();
 #endif
+
+		GLNativeContext GetCurrentContext();
 	}
 }

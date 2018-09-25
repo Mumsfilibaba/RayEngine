@@ -67,7 +67,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLSwapchain::SetName(const std::string& name)
 		{
-			//Not relevant1
+			//Not relevant
 		}
 
 

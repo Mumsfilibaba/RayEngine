@@ -29,6 +29,8 @@ namespace RayEngine
 		GLDeviceContext::GLDeviceContext(IDevice* pDevice, bool isDeffered)
 			: m_References(0)
 		{
+			AddRef();
+			m_Device = reinterpret_cast<GLDevice*>(pDevice);
 		}
 
 
@@ -43,6 +45,13 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDeviceContext::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
 		{
+			if (pView == nullptr)
+			{
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				
+				glClearColorf(pColor[0], pColor[1], pColor[2], pColor[3]);
+				glClear(GL_COLOR_BUFFER_BIT);
+			}
 		}
 
 
@@ -50,6 +59,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDeviceContext::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
 		{
+			if (pView == nullptr)
+			{
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+				glClearDepthf(depth);
+				glClearStencil(stencil);
+
+				glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			}
 		}
 
 

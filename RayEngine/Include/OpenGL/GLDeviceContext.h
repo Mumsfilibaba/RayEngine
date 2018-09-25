@@ -109,6 +109,7 @@ namespace RayEngine
 			
 			GLNativeContext m_Context;
 			
+			
 			bool m_IsDeffered;
 			
 			IObject::CounterType m_References;

@@ -26,7 +26,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		int32 GetColorBits(FORMAT format)
 		{
@@ -45,7 +44,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		int32 GetDepthBits(FORMAT format)
 		{
@@ -60,13 +58,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		int32 GetStencilBits(FORMAT format)
 		{
 			return format == FORMAT_D24_UNORM_S8_UINT ? 8 : 0;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -104,10 +100,48 @@ namespace RayEngine
 
 				return SetPixelFormat(hDC, pixelFormat, &pfd);
 			}
+			else
+			{
+				if (GetColorSpace(backBuffer) != WGL_COLORSPACE_LINEAR_EXT)
+					return false;
+
+				PIXELFORMATDESCRIPTOR pfd = {};
+				pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+				pfd.nVersion = 1;
+				pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+				pfd.iPixelType = PFD_TYPE_RGBA;
+				pfd.cColorBits = GetColorBits(backBuffer);
+				pfd.cRedBits = 0;
+				pfd.cRedShift = 0;
+				pfd.cGreenBits = 0;
+				pfd.cGreenShift = 0;
+				pfd.cBlueBits = 0;
+				pfd.cBlueShift = 0;
+				pfd.cAlphaBits = 0;
+				pfd.cAlphaShift = 0;
+				pfd.cAccumBits = 0;
+				pfd.cAccumRedBits = 0;
+				pfd.cAccumGreenBits = 0;
+				pfd.cAccumBlueBits = 0;
+				pfd.cAlphaBits = 0;
+				pfd.cDepthBits = GetDepthBits(depthStencil);
+				pfd.cStencilBits = GetStencilBits(depthStencil);
+				pfd.cAuxBuffers = 0;
+				pfd.iLayerType = PFD_MAIN_PLANE;
+				pfd.bReserved = 0;
+				pfd.dwDamageMask = 0;
+				pfd.dwLayerMask = 0;
+				pfd.dwVisibleMask = 0;
+
+				int32 format = ChoosePixelFormat(hDC, &pfd);
+				if (format)
+				{
+					return SetPixelFormat(hDC, format, &pfd);
+				}
+			}
 
 			return false;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -118,7 +152,6 @@ namespace RayEngine
 
 			return DefWindowProc(hWnd, msg, wParam, lParam);
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -137,7 +170,6 @@ namespace RayEngine
 			wcex.lpszMenuName = NULL;
 			wcex.lpszClassName = RE_GL_CLASS_NAME;
 			wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-
 			HWND dummyWindow = 0;
 			if (System::WndclassCache::Register(wcex))
 			{
@@ -145,6 +177,15 @@ namespace RayEngine
 			}
 
 			return dummyWindow;
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		GLNativeContext GetCurrentContext()
+		{
+#if defined(RE_PLATFORM_WINDOWS)
+			return wglGetCurrentContext();
+#endif
 		}
 #endif
 	}
