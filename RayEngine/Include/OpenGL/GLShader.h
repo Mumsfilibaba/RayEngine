@@ -28,8 +28,11 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		/////////////////////////////////////////////////////////////
 		class GLDevice;
 
+
+		/////////////////////////////////////////////////////////////
 		class GLShader final : public IShader
 		{
 			RE_IMPLEMENT_INTERFACE(GLShader);
@@ -43,9 +46,31 @@ namespace RayEngine
 				return m_Shader;
 			}
 
+			SHADER_TYPE GetType() const override final;
+
+			void SetName(const std::string& name) override final;
+
+			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+
+			IObject::CounterType Release() override final;
+
+			IObject::CounterType AddRef() override final;
+
+		private:
+			void Create(const ShaderInfo& info);
+
+			void CompileGLSL(const std::string& src);
+
 		private:
 			GLDevice* m_Device;
+			
+			SHADER_TYPE m_Type;
+
 			int32 m_Shader;
+
+			IObject::CounterType m_References;
 		};
 	}
 }
