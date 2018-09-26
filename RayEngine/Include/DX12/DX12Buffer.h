@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12Buffer final : public IBuffer, public DX12Resource
 		{
-		public:
-			DX12Buffer(const DX12Buffer& other) = delete;
-			DX12Buffer& operator=(const DX12Buffer& other) = delete;
-			DX12Buffer(DX12Buffer&& other) = delete;
-			DX12Buffer& operator=(DX12Buffer&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12Buffer);
 
 		public:
 			DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);

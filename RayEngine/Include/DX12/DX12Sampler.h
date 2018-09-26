@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12Sampler final : public ISampler
 		{
-		public:
-			DX12Sampler(const DX12Sampler& other) = delete;
-			DX12Sampler& operator=(const DX12Sampler& other) = delete;
-			DX12Sampler(DX12Sampler&& other) = delete;
-			DX12Sampler& operator=(DX12Sampler&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12Sampler);
 
 		public:
 			DX12Sampler(IDevice* pDevice, const SamplerInfo& info);

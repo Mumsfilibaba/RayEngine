@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12DynamicUploadHeap final : public DX12Resource, public IDeviceObject
 		{
-		public:
-			DX12DynamicUploadHeap(const DX12DynamicUploadHeap& other) = delete;
-			DX12DynamicUploadHeap& operator=(const DX12DynamicUploadHeap& other) = delete;
-			DX12DynamicUploadHeap(DX12DynamicUploadHeap&& other) = delete;
-			DX12DynamicUploadHeap& operator=(DX12DynamicUploadHeap&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12DynamicUploadHeap);
 
 		public:
 			DX12DynamicUploadHeap(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes);

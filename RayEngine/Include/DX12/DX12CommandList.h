@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12CommandList final : public IDeviceObject
 		{
-		public:
-			DX12CommandList(const DX12CommandList& other) = delete;
-			DX12CommandList& operator=(const DX12CommandList& other) = delete;
-			DX12CommandList(DX12CommandList&& other) = delete;
-			DX12CommandList& operator=(DX12CommandList&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12CommandList);
 
 		public:
 			DX12CommandList(DX12Device* pDevice, ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);

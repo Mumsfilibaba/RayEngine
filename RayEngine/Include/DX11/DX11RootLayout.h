@@ -40,11 +40,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11RootLayout : public IRootLayout
 		{
-		public:
-			DX11RootLayout(const DX11RootLayout& other) = delete;
-			DX11RootLayout& operator=(const DX11RootLayout& other) = delete;
-			DX11RootLayout(DX11RootLayout&& other) = delete;
-			DX11RootLayout& operator=(DX11RootLayout&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11RootLayout);
 
 		public:
 			DX11RootLayout(IDevice* pDevice, const RootLayoutInfo& info);

@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11DepthStencilView final : public IDepthStencilView
 		{
-		public:
-			DX11DepthStencilView(const DX11DepthStencilView& other) = delete;
-			DX11DepthStencilView& operator=(const DX11DepthStencilView& other) = delete;
-			DX11DepthStencilView(DX11DepthStencilView&& other) = delete;
-			DX11DepthStencilView& operator=(DX11DepthStencilView&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11DepthStencilView);
 
 		public:
 			DX11DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info);

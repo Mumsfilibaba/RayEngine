@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11ShaderConstantBlock final : public IDeviceObject
 		{
-		public:
-			DX11ShaderConstantBlock(const DX11ShaderConstantBlock& other) = delete;
-			DX11ShaderConstantBlock& operator=(const DX11ShaderConstantBlock& other) = delete;
-			DX11ShaderConstantBlock(DX11ShaderConstantBlock&& other) = delete;
-			DX11ShaderConstantBlock& operator=(DX11ShaderConstantBlock&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11ShaderConstantBlock);
 
 		public:
 			DX11ShaderConstantBlock(DX11Device* pDevice, int32 numConstants);

@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Buffer final : public IBuffer
 		{
-		public:
-			DX11Buffer(const DX11Buffer& other) = delete;
-			DX11Buffer& operator=(const DX11Buffer& other) = delete;
-			DX11Buffer(DX11Buffer&& other) = delete;
-			DX11Buffer& operator=(DX11Buffer&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11Buffer);
 
 		public:
 			DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);

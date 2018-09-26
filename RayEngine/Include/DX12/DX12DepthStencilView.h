@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12DepthStencilView : public IDepthStencilView, public DX12View
 		{
-		public:
-			DX12DepthStencilView(const DX12DepthStencilView& other) = delete;
-			DX12DepthStencilView& operator=(const DX12DepthStencilView& other) = delete;
-			DX12DepthStencilView(DX12DepthStencilView&& other) = delete;
-			DX12DepthStencilView& operator=(DX12DepthStencilView&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12DepthStencilView);
 
 		public:
 			DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info);

@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11UnorderedAccessView final : public IUnorderedAccessView
 		{
-		public:
-			DX11UnorderedAccessView(const DX11UnorderedAccessView& other) = delete;
-			DX11UnorderedAccessView& operator=(const DX11UnorderedAccessView& other) = delete;
-			DX11UnorderedAccessView(DX11UnorderedAccessView&& other) = delete;
-			DX11UnorderedAccessView& operator=(DX11UnorderedAccessView&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11UnorderedAccessView);
 
 		public:
 			DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewInfo& info);

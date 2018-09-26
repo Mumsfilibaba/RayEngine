@@ -40,11 +40,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class GLSwapchain final : public ISwapchain
 		{
-		public:
-			GLSwapchain(const GLSwapchain& other) = delete;
-			GLSwapchain& operator=(const GLSwapchain& other) = delete;
-			GLSwapchain(GLSwapchain&& other) = delete;
-			GLSwapchain& operator=(GLSwapchain&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(GLSwapchain);
 
 		public:
 			GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);

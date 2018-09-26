@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class GLDeviceContext final : public IDeviceContext
 		{
-		public:
-			GLDeviceContext(const GLDeviceContext& other) = delete;
-			GLDeviceContext& operator=(const GLDeviceContext& other) = delete;
-			GLDeviceContext(GLDeviceContext&& other) = delete;
-			GLDeviceContext& operator=(GLDeviceContext&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(GLDeviceContext);
 
 		public:
 			GLDeviceContext(IDevice* pDevice, bool isDeffered);

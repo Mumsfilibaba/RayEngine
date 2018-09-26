@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12PipelineState final : public IPipelineState
 		{
-		public:
-			DX12PipelineState(const DX12PipelineState& other) = delete;
-			DX12PipelineState& operator=(const DX12PipelineState& other) = delete;
-			DX12PipelineState(DX12PipelineState&& other) = delete;
-			DX12PipelineState& operator=(DX12PipelineState&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12PipelineState);
 
 		public:
 			DX12PipelineState(IDevice* pdevice, const PipelineStateInfo& info);

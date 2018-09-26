@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Sampler final : public ISampler
 		{
-		public:
-			DX11Sampler(const DX11Sampler& other) = delete;
-			DX11Sampler& operator=(const DX11Sampler& other) = delete;
-			DX11Sampler(DX11Sampler&& other) = delete;
-			DX11Sampler& operator=(DX11Sampler&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11Sampler);
 
 		public:
 			DX11Sampler(IDevice* pDevice, const SamplerInfo& info);

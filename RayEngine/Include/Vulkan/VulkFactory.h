@@ -27,13 +27,9 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class VulkFactory : public IFactory
+		class VulkFactory final : public IFactory
 		{
-		public:
-			VulkFactory(const VulkFactory& other) = delete;
-			VulkFactory& operator=(const VulkFactory& other) = delete;
-			VulkFactory(VulkFactory&& other) = delete;
-			VulkFactory& operator=(VulkFactory&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkFactory);
 
 		public:
 			VulkFactory(bool debugLayers);

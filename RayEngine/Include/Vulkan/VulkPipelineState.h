@@ -34,13 +34,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class VulkPipelineState : public IPipelineState
+		class VulkPipelineState final : public IPipelineState
 		{
-		public:
-			VulkPipelineState(const VulkPipelineState& other) = delete;
-			VulkPipelineState& operator=(const VulkPipelineState& other) = delete;
-			VulkPipelineState(VulkPipelineState&& other) = delete;
-			VulkPipelineState& operator=(VulkPipelineState&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkPipelineState);
 
 		public:
 			VulkPipelineState(IDevice* pdevice, const PipelineStateInfo& info);

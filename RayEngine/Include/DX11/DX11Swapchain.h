@@ -44,11 +44,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Swapchain final : public ISwapchain
 		{
-		public:
-			DX11Swapchain(const DX11Swapchain& other) = delete;
-			DX11Swapchain& operator=(const DX11Swapchain& other) = delete;
-			DX11Swapchain(DX11Swapchain&& other) = delete;
-			DX11Swapchain& operator=(DX11Swapchain&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11Swapchain);
 
 		public:
 			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);

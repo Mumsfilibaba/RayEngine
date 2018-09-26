@@ -34,15 +34,10 @@ namespace RayEngine
 		class DX12Device;
 
 
-
 		/////////////////////////////////////////////////////////////
 		class DX12RenderTargetView final : public IRenderTargetView, public DX12View
 		{
-		public:
-			DX12RenderTargetView(const DX12RenderTargetView& other) = delete;
-			DX12RenderTargetView& operator=(const DX12RenderTargetView& other) = delete;
-			DX12RenderTargetView(DX12RenderTargetView&& other) = delete;
-			DX12RenderTargetView& operator=(DX12RenderTargetView&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12RenderTargetView);
 
 		public:
 			DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info);

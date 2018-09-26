@@ -40,11 +40,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Device final : public IDevice
 		{
-		public:
-			DX11Device(const DX11Device& other) = delete;
-			DX11Device& operator=(const DX11Device& other) = delete;
-			DX11Device(DX11Device&& other) = delete;
-			DX11Device& operator=(DX11Device&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11Device);
 
 		public:
 			DX11Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);

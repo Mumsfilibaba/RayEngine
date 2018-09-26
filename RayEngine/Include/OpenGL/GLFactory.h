@@ -47,11 +47,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class GLFactory final : public IFactory
 		{
-		public:
-			GLFactory(const GLFactory& other) = delete;
-			GLFactory& operator=(const GLFactory& other) = delete;
-			GLFactory(GLFactory&& other) = delete;
-			GLFactory& operator=(GLFactory&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(GLFactory);
 
 		public:
 			GLFactory(bool debugLayer);

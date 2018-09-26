@@ -39,11 +39,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12RootLayout : public IRootLayout
 		{
-		public:
-			DX12RootLayout(const DX12RootLayout& other) = delete;
-			DX12RootLayout& operator=(const DX12RootLayout& other) = delete;
-			DX12RootLayout(DX12RootLayout&& other) = delete;
-			DX12RootLayout& operator=(DX12RootLayout&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12RootLayout);
 
 		public:
 			DX12RootLayout(IDevice* pDevice, const RootLayoutInfo& info);

@@ -31,11 +31,7 @@ namespace RayEngine
 	{
 		class DX12Factory final : public IFactory
 		{
-		public:
-			DX12Factory(const DX12Factory& other) = delete;
-			DX12Factory& operator=(const DX12Factory& other) = delete;
-			DX12Factory(DX12Factory&& other) = delete;
-			DX12Factory& operator=(DX12Factory&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12Factory);
 
 		public:
 			DX12Factory(bool debugLayer);

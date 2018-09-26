@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12UnorderedAccessView final : public IUnorderedAccessView, public DX12View
 		{
-		public:
-			DX12UnorderedAccessView(const DX12UnorderedAccessView& other) = delete;
-			DX12UnorderedAccessView& operator=(const DX12UnorderedAccessView& other) = delete;
-			DX12UnorderedAccessView(DX12UnorderedAccessView&& other) = delete;
-			DX12UnorderedAccessView& operator=(DX12UnorderedAccessView&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12UnorderedAccessView);
 
 		public:
 			DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewInfo& info);

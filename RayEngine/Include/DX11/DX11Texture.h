@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Texture final : public ITexture
 		{
-		public:
-			DX11Texture(const DX11Texture& other) = delete;
-			DX11Texture& operator=(const DX11Texture& other) = delete;
-			DX11Texture(DX11Texture&& other) = delete;
-			DX11Texture& operator=(DX11Texture&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11Texture);
 
 		public:
 			DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);

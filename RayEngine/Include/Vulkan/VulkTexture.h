@@ -33,13 +33,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class VulkTexture : public ITexture
+		class VulkTexture final : public ITexture
 		{
-		public:
-			VulkTexture(const VulkTexture& other) = delete;
-			VulkTexture& operator=(const VulkTexture& other) = delete;
-			VulkTexture(VulkTexture&& other) = delete;
-			VulkTexture& operator=(VulkTexture&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkTexture);
 
 		public:
 			VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);

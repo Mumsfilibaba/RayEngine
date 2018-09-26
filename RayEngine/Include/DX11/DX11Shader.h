@@ -56,11 +56,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11Shader final : public IShader, public DXShaderBase
 		{ 
-		public:
-			DX11Shader(const DX11Shader& other) = delete;
-			DX11Shader& operator=(const DX11Shader& other) = delete;
-			DX11Shader(DX11Shader&& other) = delete;
-			DX11Shader& operator=(DX11Shader&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11Shader);
 
 		public:
 			DX11Shader(IDevice* pDevice, const ShaderInfo& info);

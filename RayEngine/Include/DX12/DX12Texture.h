@@ -39,11 +39,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12Texture final : public ITexture, public DX12Resource
 		{
-		public:
-			DX12Texture(const DX12Texture& other) = delete;
-			DX12Texture& operator=(const DX12Texture& other) = delete;
-			DX12Texture(DX12Texture&& other) = delete;
-			DX12Texture& operator=(DX12Texture&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12Texture);
 
 		public:
 			DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);

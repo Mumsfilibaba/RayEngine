@@ -53,3 +53,21 @@ failure and or malfunction of any kind.
 #define RE_API __declspec(dllimport)
 #endif
 #endif
+
+#if !defined(RE_UNIQUE_OBJECT)
+#define RE_UNIQUE_OBJECT(interface)									\
+public:																\
+		interface(const interface& other) = delete;					\
+		interface& operator=(const interface& other) = delete;		\
+		interface(interface&& other) = delete;						\
+		interface& operator=(interface&& other) = delete			\
+
+#endif
+
+#if !defined(RE_INTERFACE)
+#define RE_INTERFACE(interface) RE_UNIQUE_OBJECT(interface)
+#endif
+
+#if !defined(RE_IMPLEMENT_INTERFACE)
+#define RE_IMPLEMENT_INTERFACE(interface) RE_UNIQUE_OBJECT(interface)
+#endif

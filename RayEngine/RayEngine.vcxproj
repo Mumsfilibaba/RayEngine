@@ -247,6 +247,7 @@
     <ClInclude Include="Include\OpenGL\GLDeviceContext.h" />
     <ClInclude Include="Include\OpenGL\GLFactory.h" />
     <ClInclude Include="Include\OpenGL\GlImpl.h" />
+    <ClInclude Include="Include\OpenGL\GLShader.h" />
     <ClInclude Include="Include\OpenGL\GLSwapchain.h" />
     <ClInclude Include="Include\Interfaces\IObject.h" />
     <ClInclude Include="Include\Math\Color.h" />
@@ -367,6 +368,7 @@
     <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp" />
     <ClCompile Include="Source\OpenGL\GLFactory.cpp" />
     <ClCompile Include="Source\OpenGL\GLImpl.cpp" />
+    <ClCompile Include="Source\OpenGL\GLShader.cpp" />
     <ClCompile Include="Source\OpenGL\GLSwapchain.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\ColorF.cpp" />

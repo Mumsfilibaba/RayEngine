@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class GLDevice final : public IDevice
 		{
-		public:
-			GLDevice(const GLDevice& other) = delete;
-			GLDevice& operator=(const GLDevice& other) = delete;
-			GLDevice(GLDevice&& other) = delete;
-			GLDevice& operator=(GLDevice&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(GLDevice);
 
 		public:
 			GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);

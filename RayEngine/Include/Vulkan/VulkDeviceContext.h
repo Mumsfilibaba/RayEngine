@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class VulkDeviceContext final : public IDeviceContext
 		{
-		public:
-			VulkDeviceContext(const VulkDeviceContext& other) = delete;
-			VulkDeviceContext& operator=(const VulkDeviceContext& other) = delete;
-			VulkDeviceContext(VulkDeviceContext&& other) = delete;
-			VulkDeviceContext& operator=(VulkDeviceContext&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkDeviceContext);
 
 		public:
 			VulkDeviceContext(IDevice* pDevice, bool isDeffered);

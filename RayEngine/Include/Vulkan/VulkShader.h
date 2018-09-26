@@ -28,13 +28,9 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class VulkShader : public IShader
+		class VulkShader final : public IShader
 		{
-		public:
-			VulkShader(const VulkShader& other) = delete;
-			VulkShader& operator=(const VulkShader& other) = delete;
-			VulkShader(VulkShader&& other) = delete;
-			VulkShader& operator=(VulkShader&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkShader);
 
 		public:
 			VulkShader(IDevice* pDevice, const ShaderInfo& info);

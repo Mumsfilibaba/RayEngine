@@ -42,11 +42,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12Device final : public IDevice
 		{
-		public:
-			DX12Device(const DX12Device& other) = delete;
-			DX12Device& operator=(const DX12Device& other) = delete;
-			DX12Device(DX12Device&& other) = delete;
-			DX12Device& operator=(DX12Device&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12Device);
 
 		public:
 			DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);

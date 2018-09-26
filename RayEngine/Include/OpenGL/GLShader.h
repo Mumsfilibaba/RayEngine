@@ -20,36 +20,32 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IRenderTargetView.h"
-#include "VulkImageView.h"
+
+#include "..\Graphics\IShader.h"
+#include "GLCommon.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class VulkRenderTargetView final : public IRenderTargetView, public VulkImageView
+		class GLDevice;
+
+		class GLShader final : public IShader
 		{
-			RE_IMPLEMENT_INTERFACE(VulkRenderTargetView);
+			RE_IMPLEMENT_INTERFACE(GLShader);
 
 		public:
-			VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info);
-			~VulkRenderTargetView();
+			GLShader(IDevice* pDevice, const ShaderInfo& info);
+			~GLShader();
 
-			void SetName(const std::string& name) override final;
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
-			
-			IObject::CounterType Release() override final;
-			
-			IObject::CounterType AddRef() override final;
+			inline int32 GetGLShaderID() const
+			{
+				return m_Shader;
+			}
 
 		private:
-			void Create(const RenderTargetViewInfo& info);
-
-		private:
-			IObject::CounterType m_References;
+			GLDevice* m_Device;
+			int32 m_Shader;
 		};
 	}
 }

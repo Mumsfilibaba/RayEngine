@@ -39,11 +39,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12Shader final : public IShader, public DXShaderBase
 		{
-		public:
-			DX12Shader(const DX12Shader& other) = delete;
-			DX12Shader& operator=(const DX12Shader& other) = delete;
-			DX12Shader(DX12Shader&& other) = delete;
-			DX12Shader& operator=(DX12Shader&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12Shader);
 
 		public:
 			DX12Shader(IDevice* pDevice, const ShaderInfo& info);

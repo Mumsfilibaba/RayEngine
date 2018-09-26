@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12DescriptorHeap final : public IDeviceObject
 		{
-		public:
-			DX12DescriptorHeap(const DX12DescriptorHeap& other) = delete;
-			DX12DescriptorHeap& operator=(const DX12DescriptorHeap& other) = delete;
-			DX12DescriptorHeap(DX12DescriptorHeap&& other) = delete;
-			DX12DescriptorHeap& operator=(DX12DescriptorHeap&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12DescriptorHeap);
 
 		public:
 			DX12DescriptorHeap(IDevice* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);

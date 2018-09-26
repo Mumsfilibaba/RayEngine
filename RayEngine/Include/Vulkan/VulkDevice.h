@@ -27,13 +27,9 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class VulkDevice : public IDevice
+		class VulkDevice final : public IDevice
 		{
-		public:
-			VulkDevice(const VulkDevice& other) = delete;
-			VulkDevice& operator=(const VulkDevice& other) = delete;
-			VulkDevice(VulkDevice&& other) = delete;
-			VulkDevice& operator=(VulkDevice&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkDevice);
 
 		public:
 			VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo);

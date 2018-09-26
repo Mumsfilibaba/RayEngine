@@ -43,11 +43,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12DeviceContext final : public IDeviceContext
 		{
-		public:
-			DX12DeviceContext(const DX12DeviceContext& other) = delete;
-			DX12DeviceContext& operator=(const DX12DeviceContext& other) = delete;
-			DX12DeviceContext(DX12DeviceContext&& other) = delete;
-			DX12DeviceContext& operator=(DX12DeviceContext&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12DeviceContext);
 
 		public:
 			DX12DeviceContext(IDevice* pDevice, bool isDeffered);

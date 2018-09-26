@@ -37,11 +37,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX11RenderTargetView final : public IRenderTargetView
 		{
-		public:
-			DX11RenderTargetView(const DX11RenderTargetView& other) = delete;
-			DX11RenderTargetView& operator=(const DX11RenderTargetView& other) = delete;
-			DX11RenderTargetView(DX11RenderTargetView&& other) = delete;
-			DX11RenderTargetView& operator=(DX11RenderTargetView&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11RenderTargetView);
 
 		public:
 			DX11RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info);

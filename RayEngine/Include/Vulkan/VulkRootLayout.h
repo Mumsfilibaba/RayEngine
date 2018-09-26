@@ -27,13 +27,9 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class VulkRootLayout : public IRootLayout
+		class VulkRootLayout final : public IRootLayout
 		{
-		public:
-			VulkRootLayout(const VulkRootLayout& other) = delete;
-			VulkRootLayout& operator=(const VulkRootLayout& other) = delete;
-			VulkRootLayout(VulkRootLayout&& other) = delete;
-			VulkRootLayout& operator=(VulkRootLayout&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkRootLayout);
 
 		public:
 			VulkRootLayout(IDevice* pDevice, const RootLayoutInfo& info);

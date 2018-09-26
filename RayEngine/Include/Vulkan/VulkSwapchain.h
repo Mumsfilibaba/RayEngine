@@ -36,13 +36,9 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		class VulkSwapchain : public ISwapchain
+		class VulkSwapchain final : public ISwapchain
 		{
-		public:
-			VulkSwapchain(const VulkSwapchain& other) = delete;
-			VulkSwapchain& operator=(const VulkSwapchain& other) = delete;
-			VulkSwapchain(VulkSwapchain&& other) = delete;
-			VulkSwapchain& operator=(VulkSwapchain&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(VulkSwapchain);
 
 		public:
 			VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);

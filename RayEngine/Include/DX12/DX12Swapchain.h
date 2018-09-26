@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12Swapchain final : public ISwapchain
 		{
-		public:
-			DX12Swapchain(const DX12Swapchain& other) = delete;
-			DX12Swapchain& operator=(const DX12Swapchain& other) = delete;
-			DX12Swapchain(DX12Swapchain&& other) = delete;
-			DX12Swapchain& operator=(DX12Swapchain&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12Swapchain);
 
 		public:
 			DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);

@@ -38,11 +38,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class DX12ShaderResourceView final : public IShaderResourceView, public DX12View
 		{
-		public:
-			DX12ShaderResourceView(const DX12ShaderResourceView& other) = delete;
-			DX12ShaderResourceView& operator=(const DX12ShaderResourceView& other) = delete;
-			DX12ShaderResourceView(DX12ShaderResourceView&& other) = delete;
-			DX12ShaderResourceView& operator=(DX12ShaderResourceView&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX12ShaderResourceView);
 
 		public:
 			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewInfo& info);
