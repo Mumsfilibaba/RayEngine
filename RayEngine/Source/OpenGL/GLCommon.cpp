@@ -187,6 +187,29 @@ namespace RayEngine
 			return wglGetCurrentContext();
 #endif
 		}
+
+
+		/////////////////////////////////////////////////////////////
+		int32 ShaderTypeToGL(SHADER_TYPE type)
+		{
+			switch (type)
+			{
+			case SHADER_TYPE_VERTEX:
+				return GL_VERTEX_SHADER;
+			case SHADER_TYPE_HULL:
+				return GL_TESS_CONTROL_SHADER;
+			case SHADER_TYPE_DOMAIN:
+				return GL_TESS_EVALUATION_SHADER;
+			case SHADER_TYPE_GEOMETRY:
+				return GL_GEOMETRY_SHADER;
+			case SHADER_TYPE_PIXEL:
+				return GL_FRAGMENT_SHADER;
+			case SHADER_TYPE_COMPUTE:
+				return GL_COMPUTE_SHADER;
+			default: 
+				return 0;
+			}
+		}
 #endif
 	}
 }

@@ -123,18 +123,35 @@ int main(int args, char* argsv[])
 #else
 	shaderInfo.Flags = SHADER_FLAGS_NONE;
 #endif
-	shaderInfo.Source = "vs.hlsl";
-	shaderInfo.FilePath = "Shaders/";
-	shaderInfo.EntryPoint = "main";
-	shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
 	shaderInfo.Type = SHADER_TYPE_VERTEX;
+	shaderInfo.EntryPoint = "main";
+	shaderInfo.FilePath = "Shaders/";
+
+	if (pFactory->GetGraphicsApi() == GRAPHICS_API_OPENGL)
+	{
+		shaderInfo.SrcLang = SHADER_SOURCE_LANG_GLSL;
+		shaderInfo.Source = "vs.glsl";
+	}
+	else
+	{
+		shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
+		shaderInfo.Source = "vs.hlsl";
+	}
+
 	
 	IShader* pVs = nullptr;
 	pDevice->CreateShader(&pVs, shaderInfo);
 	
-	shaderInfo.Name = "PixelShader";
-	shaderInfo.Source = "ps.hlsl";
 	shaderInfo.Type = SHADER_TYPE_PIXEL;
+	shaderInfo.Name = "PixelShader";
+	if (pFactory->GetGraphicsApi() == GRAPHICS_API_OPENGL)
+	{
+		shaderInfo.Source = "ps.glsl";
+	}
+	else
+	{
+		shaderInfo.Source = "ps.hlsl";
+	}
 	
 	IShader* pPs = nullptr;
 	pDevice->CreateShader(&pPs, shaderInfo);

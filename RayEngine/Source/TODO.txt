@@ -1,4 +1,6 @@
 TODO:
+-Log output instead of actual log
+
 -AdapterInfo - Inline
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize

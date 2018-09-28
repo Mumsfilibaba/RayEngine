@@ -20,9 +20,10 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 
-#include "..\..\Include\OpenGL\GLDevice.h"
 #include "..\..\Include\OpenGL\GLFactory.h"
+#include "..\..\Include\OpenGL\GLDevice.h"
 #include "..\..\Include\OpenGL\GLDeviceContext.h"
+#include "..\..\Include\OpenGL\GLShader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
@@ -108,7 +109,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreateShader(IShader** ppShader, const ShaderInfo& info)
 		{
-			return false;
+			return (*ppShader = new GLShader(this, info)) != nullptr;
 		}
 
 

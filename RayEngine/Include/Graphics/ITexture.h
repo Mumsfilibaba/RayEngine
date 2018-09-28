@@ -81,11 +81,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class ITexture : public IResource
 		{
-		public:
-			ITexture(const ITexture& other) = delete;
-			ITexture(ITexture&& other) = delete;
-			ITexture& operator=(const ITexture& other) = delete;
-			ITexture& operator=(ITexture&& other) = delete;
+			RE_INTERFACE(ITexture);
 
 		public:
 			ITexture() {}

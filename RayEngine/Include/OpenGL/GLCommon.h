@@ -43,5 +43,6 @@ namespace RayEngine
 #endif
 
 		GLNativeContext GetCurrentContext();
+		int32 ShaderTypeToGL(SHADER_TYPE type);
 	}
 }
