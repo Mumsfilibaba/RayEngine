@@ -160,11 +160,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IRootLayout : public IDeviceObject
 		{
-		public:
-			IRootLayout(IRootLayout&& other) = delete;
-			IRootLayout(const IRootLayout& other) = delete;
-			IRootLayout& operator=(IRootLayout&& other) = delete;
-			IRootLayout& operator=(const IRootLayout& other) = delete;
+			RE_INTERFACE(IRootLayout);
 
 		public:
 			IRootLayout() {}

@@ -28,11 +28,7 @@ namespace RayEngine
 	{
 		class IResource : public IDeviceObject
 		{
-		public:
-			IResource(IResource&& other) = delete;
-			IResource(const IResource& other) = delete;
-			IResource& operator=(IResource&& other) = delete;
-			IResource& operator=(const IResource& other) = delete;
+			RE_INTERFACE(IResource);
 
 		public:
 			IResource() {}

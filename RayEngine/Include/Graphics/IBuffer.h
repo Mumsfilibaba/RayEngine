@@ -77,11 +77,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IBuffer : public IResource
 		{
-		public:
-			IBuffer(IBuffer&& other) = delete;
-			IBuffer(const IBuffer& other) = delete;
-			IBuffer& operator=(IBuffer&& other) = delete;
-			IBuffer& operator=(const IBuffer& other) = delete;
+			RE_INTERFACE(IBuffer);
 
 		public:
 			IBuffer() {}

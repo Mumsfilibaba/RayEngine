@@ -429,11 +429,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IPipelineState : public IDeviceObject
 		{
-		public:
-			IPipelineState(IPipelineState&& other) = delete;
-			IPipelineState(const IPipelineState& other) = delete;
-			IPipelineState& operator=(IPipelineState&& other) = delete;
-			IPipelineState& operator=(const IPipelineState& other) = delete;
+			RE_INTERFACE(IPipelineState);
 
 		public:
 			IPipelineState() {}

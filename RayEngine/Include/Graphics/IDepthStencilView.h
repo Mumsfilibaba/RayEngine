@@ -123,11 +123,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IDepthStencilView : public IDeviceObject
 		{
-		public:
-			IDepthStencilView(IDepthStencilView&& other) = delete;
-			IDepthStencilView(const IDepthStencilView& other) = delete;
-			IDepthStencilView& operator=(IDepthStencilView&& other) = delete;
-			IDepthStencilView& operator=(const IDepthStencilView& other) = delete;
+			RE_INTERFACE(IDepthStencilView);
 
 		public:
 			IDepthStencilView() {}

@@ -101,11 +101,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IUnorderedAccessView : public IDeviceObject
 		{
-		public:
-			IUnorderedAccessView(IUnorderedAccessView&& other) = delete;
-			IUnorderedAccessView(const IUnorderedAccessView& other) = delete;
-			IUnorderedAccessView& operator=(IUnorderedAccessView&& other) = delete;
-			IUnorderedAccessView& operator=(const IUnorderedAccessView& other) = delete;
+			RE_INTERFACE(IUnorderedAccessView);
 
 		public:
 			IUnorderedAccessView() {}

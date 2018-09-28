@@ -136,11 +136,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IRenderTargetView : public IDeviceObject
 		{
-		public:
-			IRenderTargetView(IRenderTargetView&& other) = delete;
-			IRenderTargetView(const IRenderTargetView& other) = delete;
-			IRenderTargetView& operator=(IRenderTargetView&& other) = delete;
-			IRenderTargetView& operator=(const IRenderTargetView& other) = delete;
+			RE_INTERFACE(IRenderTargetView);
 
 		public:
 			IRenderTargetView() {}

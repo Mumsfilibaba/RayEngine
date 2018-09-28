@@ -108,11 +108,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IDevice : public IObject
 		{
-		public:
-			IDevice(IDevice&& other) = delete;
-			IDevice(const IDevice& other) = delete;
-			IDevice& operator=(IDevice&& other) = delete;
-			IDevice& operator=(const IDevice& other) = delete;
+			RE_INTERFACE(IDevice);
 
 		public:
 			IDevice() {}

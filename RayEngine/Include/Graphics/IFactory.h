@@ -39,10 +39,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IFactory : public IObject
 		{
-			IFactory(IFactory&& other) = delete;
-			IFactory(const IFactory& other) = delete;
-			IFactory& operator=(IFactory&& other) = delete;
-			IFactory& operator=(const IFactory& other) = delete;
+			RE_INTERFACE(IFactory);
 
 		public:
 			IFactory() {}

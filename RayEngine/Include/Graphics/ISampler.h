@@ -61,11 +61,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class ISampler : public IDeviceObject
 		{
-		public:
-			ISampler(ISampler&& other) = delete;
-			ISampler(const ISampler& other) = delete;
-			ISampler& operator=(ISampler&& other) = delete;
-			ISampler& operator=(const ISampler& other) = delete;
+			RE_INTERFACE(ISampler);
 		
 		public:
 			ISampler() {}

@@ -46,11 +46,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IDeviceContext : public IDeviceObject
 		{
-		public:
-			IDeviceContext(IDeviceContext&& other) = delete;
-			IDeviceContext(const IDeviceContext& other) = delete;
-			IDeviceContext& operator=(IDeviceContext&& other) = delete;
-			IDeviceContext& operator=(const IDeviceContext& other) = delete;
+			RE_INTERFACE(IDeviceContext);
 
 		public:
 			IDeviceContext() {}

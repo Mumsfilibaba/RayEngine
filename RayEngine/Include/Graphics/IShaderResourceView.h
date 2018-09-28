@@ -134,11 +134,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IShaderResourceView : public IDeviceObject
 		{
-		public:
-			IShaderResourceView(IShaderResourceView&& other) = delete;
-			IShaderResourceView(const IShaderResourceView& other) = delete;
-			IShaderResourceView& operator=(IShaderResourceView&& other) = delete;
-			IShaderResourceView& operator=(const IShaderResourceView& other) = delete;
+			RE_INTERFACE(IShaderResourceView);
 
 		public:
 			IShaderResourceView() {}

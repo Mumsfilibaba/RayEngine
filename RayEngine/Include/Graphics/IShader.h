@@ -79,11 +79,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class IShader : public IDeviceObject
 		{
-		public:
-			IShader(IShader&& other) = delete;
-			IShader(const IShader& other) = delete;
-			IShader& operator=(IShader&& other) = delete;
-			IShader& operator=(const IShader& other) = delete;
+			RE_INTERFACE(IShader);
 
 		public:
 			IShader() {}

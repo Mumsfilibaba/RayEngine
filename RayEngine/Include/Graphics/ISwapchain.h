@@ -78,11 +78,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		class ISwapchain : public IObject
 		{
-		public:
-			ISwapchain(ISwapchain&& other) = delete;
-			ISwapchain(const ISwapchain& other) = delete;
-			ISwapchain& operator=(ISwapchain&& other) = delete;
-			ISwapchain& operator=(const ISwapchain& other) = delete;
+			RE_INTERFACE(ISwapchain);
 
 		public:
 			ISwapchain() {}
