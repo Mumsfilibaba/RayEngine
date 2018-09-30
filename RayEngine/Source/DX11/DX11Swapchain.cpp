@@ -36,7 +36,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Swapchain::DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
 			: m_Device(nullptr),
-			m_Factory(nullptr),
+			mFactory(nullptr),
 			m_Swapchain(nullptr),
 			m_BackBuffer(nullptr),
 			m_DepthStencil(nullptr),
@@ -48,10 +48,10 @@ namespace RayEngine
 			m_Flags(0),
 			m_DepthStencilFormat(FORMAT_UNKNOWN),
 			m_BackBufferFormat(FORMAT_UNKNOWN),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<DX11Factory*>(pFactory);
+			mFactory = reinterpret_cast<DX11Factory*>(pFactory);
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
 			Create(info);
@@ -104,7 +104,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Swapchain::QueryFactory(IFactory ** ppFactory) const
 		{
-			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
+			(*ppFactory) = mFactory->QueryReference<DX11Factory>();
 		}
 
 
@@ -112,7 +112,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Swapchain::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -120,8 +120,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Swapchain::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -129,8 +129,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Swapchain::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;
@@ -177,7 +177,7 @@ namespace RayEngine
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
-			IDXGIFactory* pDXGIFactory = m_Factory->GetDXGIFactory();
+			IDXGIFactory* pDXGIFactory = mFactory->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->CreateSwapChain(pD3D11Device, &desc, &m_Swapchain);
 			if (FAILED(hr))
 			{

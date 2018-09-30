@@ -61,11 +61,11 @@ namespace RayEngine
 			void Create();
 
 		private:
-			IDXGIFactory* m_Factory;
+			IDXGIFactory* mFactory;
 			
 			bool m_DebugLayer;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 
 		private:
 			static void FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC& desc);

@@ -128,7 +128,7 @@ namespace RayEngine
 			bool m_IsDeffered;
 			mutable bool m_UseDefaultFramebuffer;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

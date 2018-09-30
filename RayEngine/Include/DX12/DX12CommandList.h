@@ -70,7 +70,7 @@ namespace RayEngine
 			ID3D12GraphicsCommandList* m_List;
 			ID3D12CommandAllocator* m_Allocator;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

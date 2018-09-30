@@ -20,7 +20,6 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-
 #include "..\Graphics\IShader.h"
 #include "GLCommon.h"
 
@@ -70,7 +69,7 @@ namespace RayEngine
 
 			int32 m_Shader;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

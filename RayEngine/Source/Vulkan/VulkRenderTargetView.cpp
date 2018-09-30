@@ -30,7 +30,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkRenderTargetView::VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
 			: VulkImageView(pDevice),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			Create(info);
@@ -63,7 +63,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkRenderTargetView::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -71,8 +71,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkRenderTargetView::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 			
 			return counter;
@@ -83,8 +83,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkRenderTargetView::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 

@@ -32,7 +32,7 @@ namespace RayEngine
 		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: m_Device(nullptr),
 			m_Type(TEXTURE_TYPE_UNKNOWN),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
@@ -46,7 +46,7 @@ namespace RayEngine
 		DX11Texture::DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource)
 			: m_Device(nullptr),
 			m_Type(TEXTURE_TYPE_2D),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
@@ -120,7 +120,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Texture::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -128,8 +128,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Texture::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -137,8 +137,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Texture::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;

@@ -76,14 +76,12 @@ namespace RayEngine
 		private:
 			void Create(bool debugLayer);
 
-			void QueryExtensionsFromString(const std::string& str);
-
 		private:
 			AdapterList m_AdapterList;
 
 			std::vector<std::string> m_Extensions;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 
 			bool m_DebugLayer;
 		};

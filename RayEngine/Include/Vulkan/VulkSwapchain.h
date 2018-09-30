@@ -76,7 +76,7 @@ namespace RayEngine
 
 		private:
 			VulkDevice* m_Device;
-			VulkFactory* m_Factory;
+			VulkFactory* mFactory;
 			VulkDeviceContext* m_CommandQueue;
 			
 			VkSurfaceFormatKHR m_Format;
@@ -85,7 +85,7 @@ namespace RayEngine
 			
 			std::vector<VulkTexture*> m_Textures;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

@@ -55,7 +55,7 @@ namespace RayEngine
 			
 			VkPipelineLayout m_Layout;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

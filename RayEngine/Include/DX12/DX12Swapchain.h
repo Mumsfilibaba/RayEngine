@@ -66,7 +66,7 @@ namespace RayEngine
 			void CreateTextures(const SwapchainInfo& info);
 
 		private:
-			DX12Factory* m_Factory;
+			DX12Factory* mFactory;
 			DX12Device* m_Device;
 			DX12DeviceContext* m_Context;
 			IDXGISwapChain1* m_Swapchain;
@@ -75,7 +75,7 @@ namespace RayEngine
 			
 			mutable int32 m_CurrentBuffer;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

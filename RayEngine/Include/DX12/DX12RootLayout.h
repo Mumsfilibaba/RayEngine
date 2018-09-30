@@ -80,7 +80,7 @@ namespace RayEngine
 
 			std::vector<DX12RootVariableSlot*> m_VariableSlots;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

@@ -35,7 +35,7 @@ namespace RayEngine
 		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
 			: DX12Resource(),
 			m_Device(nullptr),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
@@ -86,7 +86,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -94,8 +94,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -103,8 +103,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;

@@ -36,7 +36,7 @@ namespace RayEngine
 			m_ConstantBlocks(),
 			m_StaticSamplers(),
 			m_VariableSlots(),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
@@ -88,7 +88,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11RootLayout::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -96,8 +96,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11RootLayout::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -105,8 +105,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11RootLayout::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;

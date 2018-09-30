@@ -66,7 +66,7 @@ namespace RayEngine
 			ID3D11Buffer* m_ConstantBuffer;
 			
 			std::vector<uint32> m_Constants;
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

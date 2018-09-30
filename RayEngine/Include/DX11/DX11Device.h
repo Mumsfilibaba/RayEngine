@@ -89,17 +89,17 @@ namespace RayEngine
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
 		private:
-			DX11Factory* m_Factory;
-			DX11DeviceContext* m_ImmediateContext;
+			DX11Factory* mFactory;
+			DX11DeviceContext* mImmediateContext;
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;
 			ID3D11Debug* m_DebugDevice;
 			
 			D3D_FEATURE_LEVEL m_FeatureLevel;
 			
-			System::Log m_Log;
+			System::Log mLog;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 			IObject::CounterType m_InternalReferences;
 		};
 	}

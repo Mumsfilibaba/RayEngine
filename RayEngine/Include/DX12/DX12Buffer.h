@@ -84,7 +84,7 @@ namespace RayEngine
 
 			int32 m_MappedSubresource;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

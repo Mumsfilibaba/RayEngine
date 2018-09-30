@@ -34,13 +34,13 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo)
-			: m_Factory(nullptr),
+			: mFactory(nullptr),
 			m_Device(nullptr),
 			m_Adapter(nullptr),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<VulkFactory>();
+			mFactory = pFactory->QueryReference<VulkFactory>();
 
 			Create(deviceInfo);
 		}
@@ -50,7 +50,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		VulkDevice::~VulkDevice()
 		{
-			ReRelease_S(m_Factory);
+			ReRelease_S(mFactory);
 
 			if (m_Device != nullptr)
 			{
@@ -152,7 +152,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkDevice::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
+			(*ppFactory) = mFactory->QueryReference<VulkFactory>();
 		}
 
 
@@ -160,7 +160,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDevice::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -168,8 +168,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDevice::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -177,8 +177,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDevice::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 
 			return counter;
@@ -189,7 +189,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		System::Log* VulkDevice::GetDeviceLog()
 		{
-			return &m_Log;
+			return &mLog;
 		}
 
 
@@ -225,13 +225,13 @@ namespace RayEngine
 		{
 			using namespace System;
 
-			VkInstance instance = m_Factory->GetVkInstance();
+			VkInstance instance = mFactory->GetVkInstance();
 
 			uint32 adapterCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(instance, &adapterCount, nullptr);
 			if (result != VK_SUCCESS)
 			{
-				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
+				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
 				return;
 			}
 
@@ -240,7 +240,7 @@ namespace RayEngine
 			result = vkEnumeratePhysicalDevices(instance, &adapterCount, adapters.data());
 			if (result != VK_SUCCESS)
 			{
-				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
+				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
 				return;
 			}
 			else
@@ -271,7 +271,7 @@ namespace RayEngine
 
 			if (index < 0)
 			{
-				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: No supported queuefamilies.");
+				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: No supported queuefamilies.");
 				return;
 			}
 
@@ -306,7 +306,7 @@ namespace RayEngine
 			result = vkCreateDevice(m_Adapter, &dInfo, nullptr, &m_Device);
 			if (result != VK_SUCCESS)
 			{
-				m_Log.Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create device.");
+				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create device.");
 				return;
 			}
 		}

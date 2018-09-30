@@ -69,7 +69,7 @@ namespace RayEngine
 			int32 m_Count;
 			mutable int32 m_UsedCount;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

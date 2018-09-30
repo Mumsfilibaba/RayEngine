@@ -62,9 +62,9 @@ namespace RayEngine
 
 		private:
 			ID3D12Debug* m_DebugController;
-			IDXGIFactory5* m_Factory;
+			IDXGIFactory5* mFactory;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 
 		private:
 			static void FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC1& desc);

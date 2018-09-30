@@ -35,7 +35,7 @@ namespace RayEngine
 			m_Resource(nullptr),
 			m_Context(nullptr),
 			m_ByteStride(0),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
@@ -43,7 +43,6 @@ namespace RayEngine
 
 			Create(pInitalData, info);
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -55,7 +54,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		ID3D11Buffer* DX11Buffer::GetD3D11Buffer() const
 		{
@@ -63,13 +61,11 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		int32 DX11Buffer::GetByteStride() const
 		{
 			return m_ByteStride;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -90,14 +86,12 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		void DX11Buffer::Unmap()
 		{
 			ID3D11DeviceContext* pD3D11Context = m_Context->GetD3D11DeviceContext();
 			pD3D11Context->Unmap(m_Resource, 0);
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
@@ -107,7 +101,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		void DX11Buffer::QueryDevice(IDevice** ppDevice) const
 		{
@@ -115,36 +108,32 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Buffer::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Buffer::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Buffer::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;
 
 			return counter;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////

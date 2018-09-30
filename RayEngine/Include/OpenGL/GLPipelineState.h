@@ -20,50 +20,55 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\ITexture.h"
-#include "VulkCommon.h"
+#include "..\Graphics\IPipelineState.h"
+#include "GLCommon.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		class VulkDevice;
-
+		class GLDevice;
+		class GLShader;
 
 
 		/////////////////////////////////////////////////////////////
-		class VulkTexture final : public ITexture
+		class GLPipelineState final : public IPipelineState
 		{
-			RE_IMPLEMENT_INTERFACE(VulkTexture);
-
+			RE_IMPLEMENT_INTERFACE(GLPipelineState);
+		
 		public:
-			VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
-			VulkTexture(IDevice* pDevice, VkImage image);
-			~VulkTexture();
+			GLPipelineState(IDevice* pDevice, const PipelineStateInfo& info);
+			~GLPipelineState();
 
-			void InvalidateResource();
+			PIPELINE_TYPE GetPipelineType() const override final;
 
-			VkImage GetVkImage() const;
-			
 			void SetName(const std::string& name) override final;
-			
+
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 			IObject::CounterType GetReferenceCount() const override final;
-			
+
 			IObject::CounterType Release() override final;
-			
+
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(const PipelineStateInfo& info);
+
+			void LinkShaders();
 
 		private:
-			VulkDevice* m_Device;
-			
-			VkImage m_Image;
-			
+			GLDevice* mDevice;
+			GLDevice* mVS;
+			GLDevice* mHS;
+			GLDevice* mDS;
+			GLDevice* mGS;
+			GLDevice* mPS;
+			GLDevice* mCS;
+
+			PIPELINE_TYPE mType;
+
 			IObject::CounterType mReferences;
 		};
 	}

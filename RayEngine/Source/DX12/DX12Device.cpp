@@ -43,20 +43,20 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12Device::DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
-			: m_Factory(nullptr),
+			: mFactory(nullptr),
 			m_Adapter(nullptr),
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			m_UploadHeap(nullptr),
-			m_ImmediateContext(nullptr),
+			mImmediateContext(nullptr),
 			m_ResourceHeap(nullptr),
 			m_DsvHeap(nullptr),
 			m_RtvHeap(nullptr),
 			m_SamplerHeap(nullptr),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<DX12Factory>();
+			mFactory = pFactory->QueryReference<DX12Factory>();
 			
 			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
 			m_UploadHeap->SetName(info.Name + ": Dynamic Upload-Heap");
@@ -69,11 +69,11 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Device::~DX12Device()
 		{
-			ReRelease_S(m_Factory);
+			ReRelease_S(mFactory);
 			ReRelease_S(m_DsvHeap);
 			ReRelease_S(m_RtvHeap);
 			ReRelease_S(m_ResourceHeap);
-			ReRelease_S(m_ImmediateContext);
+			ReRelease_S(mImmediateContext);
 			ReRelease_S(m_UploadHeap);
 			ReRelease_S(m_SamplerHeap);
 
@@ -180,7 +180,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Device::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
+			(*ppFactory) = mFactory->QueryReference<DX12Factory>();
 		}
 
 
@@ -188,7 +188,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -196,8 +196,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -205,8 +205,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;
@@ -219,7 +219,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		System::Log* DX12Device::GetDeviceLog()
 		{
-			return &m_Log;
+			return &mLog;
 		}
 
 
@@ -274,7 +274,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool DX12Device::GetImmediateContext(IDeviceContext** ppContext)
 		{
-			return ((*ppContext) = m_ImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
+			return ((*ppContext) = mImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
 		}
 
 
@@ -304,7 +304,7 @@ namespace RayEngine
 						hr = m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice);
 						if (FAILED(hr))
 						{
-							m_Log.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DebugDevice. " + DXErrorString(hr));
+							mLog.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DebugDevice. " + DXErrorString(hr));
 							return;
 						}
 					}
@@ -322,18 +322,18 @@ namespace RayEngine
 					m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, info.SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 					m_SamplerHeap->SetName(info.Name + ": Sampler-Heap");
 
-					m_ImmediateContext = new DX12DeviceContext(this, false);
+					mImmediateContext = new DX12DeviceContext(this, false);
 
 					D3D12SetName(m_Device, info.Name);
 				}
 				else
 				{
-					m_Log.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Device. " + DXErrorString(hr));
+					mLog.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Device. " + DXErrorString(hr));
 				}
 			}
 			else
 			{
-				m_Log.Write(LOG_SEVERITY_ERROR, "D3D12: Could not enumerate adapters. " + DXErrorString(hr));
+				mLog.Write(LOG_SEVERITY_ERROR, "D3D12: Could not enumerate adapters. " + DXErrorString(hr));
 			}
 		}
 	}

@@ -33,9 +33,9 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12Factory::DX12Factory(bool debugLayer)
-			: m_Factory(nullptr),
+			: mFactory(nullptr),
 			m_DebugController(nullptr),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			Create(debugLayer);
@@ -46,7 +46,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX12Factory::~DX12Factory()
 		{
-			D3DRelease_S(m_Factory);
+			D3DRelease_S(mFactory);
 			D3DRelease_S(m_DebugController);
 		}
 
@@ -55,7 +55,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IDXGIFactory5* DX12Factory::GetDXGIFactory() const
 		{
-			return m_Factory;
+			return mFactory;
 		}
 
 
@@ -69,7 +69,7 @@ namespace RayEngine
 			ComPtr<IDXGIAdapter1> adapter;
 			ComPtr<ID3D12Device> dummyDevice;
 
-			for (uint32 i = 0; m_Factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
+			for (uint32 i = 0; mFactory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
 			{
 				DXGI_ADAPTER_DESC1 desc = {};
 				if (SUCCEEDED(adapter->GetDesc1(&desc)))
@@ -125,7 +125,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Factory::SetName(const std::string& name)
 		{
-			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+			mFactory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 
@@ -141,7 +141,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Factory::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -149,8 +149,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Factory::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -158,8 +158,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Factory::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;
@@ -187,7 +187,7 @@ namespace RayEngine
 			}
 
 
-			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
+			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&mFactory))))
 			{
 				return;
 			}

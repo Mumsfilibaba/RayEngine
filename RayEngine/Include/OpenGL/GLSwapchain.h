@@ -67,12 +67,12 @@ namespace RayEngine
 
 		private:
 			GLDevice * m_Device;
-			GLFactory* m_Factory;
+			GLFactory* mFactory;
 			
-			System::NativeWindowHandle m_WndHandle;
+			System::NativeWindowHandle mWndHandle;
 			GLNativeDevice m_NativeDevice;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

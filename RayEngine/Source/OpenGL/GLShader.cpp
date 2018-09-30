@@ -12,7 +12,7 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_Type(SHADER_TYPE_UNKNOWN),
 			m_Shader(0),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
@@ -56,15 +56,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLShader::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLShader::Release()
 		{
-			IObject::CounterType refs = --m_References;
-			if (m_References < 1)
+			IObject::CounterType refs = --mReferences;
+			if (mReferences < 1)
 				delete this;
 
 			return refs;
@@ -74,7 +74,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLShader::AddRef()
 		{
-			return ++m_References;
+			return ++mReferences;
 		}
 
 

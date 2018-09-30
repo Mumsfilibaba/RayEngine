@@ -62,7 +62,7 @@ namespace RayEngine
 			VkInstance m_Instance;
 			VkDebugReportCallbackEXT m_DbgCallback;
 		
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 
 		public:
 			static bool InstanceLayersSupported(const char* const * ppNeededLayers, int32 count);

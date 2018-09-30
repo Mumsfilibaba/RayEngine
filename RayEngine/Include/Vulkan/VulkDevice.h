@@ -79,13 +79,13 @@ namespace RayEngine
 			void Create(const DeviceInfo& deviceInfo);
 
 		private:
-			VulkFactory* m_Factory;
+			VulkFactory* mFactory;
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 			
-			System::Log m_Log;
+			System::Log mLog;
 		};
 	}
 }

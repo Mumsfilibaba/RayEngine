@@ -65,7 +65,7 @@ namespace RayEngine
 
 			DX12DescriptorHandle m_SamplerState;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

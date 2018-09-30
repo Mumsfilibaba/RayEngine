@@ -76,7 +76,7 @@ namespace RayEngine
 			std::vector<ID3D11SamplerState*> m_StaticSamplers;
 			std::vector<IDX11RootVariableSlot*> m_VariableSlots;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

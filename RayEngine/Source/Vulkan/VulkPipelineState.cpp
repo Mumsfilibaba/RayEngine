@@ -35,7 +35,7 @@ namespace RayEngine
 			m_RenderPass(VK_NULL_HANDLE),
 			m_Pipeline(VK_NULL_HANDLE),
 			m_Type(PIPELINE_TYPE_UNKNOWN),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = pDevice->QueryReference<VulkDevice>();
@@ -108,7 +108,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkPipelineState::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -116,8 +116,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkPipelineState::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 
 			return counter;
@@ -128,8 +128,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkPipelineState::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 

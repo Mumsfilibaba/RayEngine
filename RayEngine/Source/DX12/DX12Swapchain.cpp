@@ -32,19 +32,19 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX12Swapchain::DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
-			: m_Factory(nullptr),
+			: mFactory(nullptr),
 			m_Context(nullptr),
 			m_Swapchain(nullptr),
 			m_CurrentBuffer(0),
 			m_Textures(),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 
 			m_Device = pDevice->QueryReference<DX12Device>();
 			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
 
-			m_Factory = pFactory->QueryReference<DX12Factory>();
+			mFactory = pFactory->QueryReference<DX12Factory>();
 
 			Create(info);
 		}
@@ -56,7 +56,7 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Swapchain);
 			
-			ReRelease_S(m_Factory);
+			ReRelease_S(mFactory);
 			ReRelease_S(m_Device);
 			ReRelease_S(m_Context);
 
@@ -94,7 +94,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX12Swapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
+			(*ppFactory) = mFactory->QueryReference<DX12Factory>();
 		}
 
 
@@ -102,7 +102,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Swapchain::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -110,8 +110,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Swapchain::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -119,8 +119,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Swapchain::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;
@@ -161,7 +161,7 @@ namespace RayEngine
 			desc.Flags = 0;
 
 
-			IDXGIFactory5* pDXGIFactory = m_Factory->GetDXGIFactory();
+			IDXGIFactory5* pDXGIFactory = mFactory->GetDXGIFactory();
 			ID3D12CommandQueue* pD3D12queue = m_Context->GetD3D12CommandQueue();
 			
 			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, info.WindowHandle, &desc, nullptr, nullptr, &m_Swapchain);

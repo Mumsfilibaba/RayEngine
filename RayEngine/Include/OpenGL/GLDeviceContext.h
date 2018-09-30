@@ -108,7 +108,7 @@ namespace RayEngine
 			
 			bool m_IsDeffered;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

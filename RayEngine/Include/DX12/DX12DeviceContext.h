@@ -154,7 +154,7 @@ namespace RayEngine
 			
 			mutable std::vector<D3D12_RESOURCE_BARRIER> m_DefferedBarriers;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

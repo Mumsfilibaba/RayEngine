@@ -23,6 +23,8 @@ failure and or malfunction of any kind.
 
 #include "..\Defines.h"
 #include "..\Types.h"
+#include <vector>
+#include <string>
 #include "GlImpl.h"
 
 namespace RayEngine
@@ -44,5 +46,6 @@ namespace RayEngine
 
 		GLNativeContext GetCurrentContext();
 		int32 ShaderTypeToGL(SHADER_TYPE type);
+		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);
 	}
 }

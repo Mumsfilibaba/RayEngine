@@ -100,20 +100,20 @@ namespace RayEngine
 			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
 
 		private:
-			DX12Factory* m_Factory;
+			DX12Factory* mFactory;
 			IDXGIAdapter1* m_Adapter;
 			ID3D12Device* m_Device;
 			ID3D12DebugDevice* m_DebugDevice;
-			DX12DeviceContext* m_ImmediateContext;
+			DX12DeviceContext* mImmediateContext;
 			DX12DynamicUploadHeap* m_UploadHeap;
 			DX12DescriptorHeap* m_ResourceHeap;
 			DX12DescriptorHeap* m_DsvHeap;
 			DX12DescriptorHeap* m_RtvHeap;
 			DX12DescriptorHeap* m_SamplerHeap;
 
-			mutable System::Log m_Log;
+			mutable System::Log mLog;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

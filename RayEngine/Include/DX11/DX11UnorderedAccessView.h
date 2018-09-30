@@ -62,7 +62,7 @@ namespace RayEngine
 			DX11Device* m_Device;
 			ID3D11UnorderedAccessView* m_View;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

@@ -24,6 +24,7 @@ failure and or malfunction of any kind.
 #include "..\..\Include\OpenGL\GLDevice.h"
 #include "..\..\Include\OpenGL\GLDeviceContext.h"
 #include "..\..\Include\OpenGL\GLShader.h"
+#include "..\..\Include\OpenGL\GLRootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
@@ -35,14 +36,14 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
-			: m_ImmediateContext(nullptr),
+			: mImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
-			m_WndHandle(RE_NULL_WINDOW),
-			m_CreatedWindow(false),
-			m_References(0)
+			mWndHandle(RE_NULL_WINDOW),
+			mCreatedWindow(false),
+			mReferences(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
+			mFactory = reinterpret_cast<GLFactory*>(pFactory);
 
 			Create(debugLayer);
 		}
@@ -50,14 +51,14 @@ namespace RayEngine
 
 		/////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceInfo& info, bool debugLayer)
-			: m_ImmediateContext(nullptr),
+			: mImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
-			m_WndHandle(RE_NULL_WINDOW),
-			m_CreatedWindow(false),
-			m_References(0)
+			mWndHandle(RE_NULL_WINDOW),
+			mCreatedWindow(false),
+			mReferences(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
+			mFactory = reinterpret_cast<GLFactory*>(pFactory);
 
 			Create(nativeWindow, nativeDevice, debugLayer);
 		}
@@ -66,14 +67,14 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		GLDevice::~GLDevice()
 		{
-			ReRelease_S(m_ImmediateContext);
+			ReRelease_S(mImmediateContext);
 
 #if defined(RE_PLATFORM_WINDOWS)
 			if (m_Device != RE_GL_NULL_NATIVE_DEVICE)
-				ReleaseDC(m_WndHandle, m_Device);
+				ReleaseDC(mWndHandle, m_Device);
 
-			if (m_WndHandle != RE_NULL_WINDOW && m_CreatedWindow)
-				DestroyWindow(m_WndHandle);
+			if (mWndHandle != RE_NULL_WINDOW && mCreatedWindow)
+				DestroyWindow(mWndHandle);
 #endif
 		}
 
@@ -88,14 +89,27 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		System::NativeWindowHandle GLDevice::GetNativeWindowHandle() const
 		{
-			return m_WndHandle;
+			return mWndHandle;
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		bool GLDevice::ExtensionSupported(const std::string& extension) const
+		{
+			for (int32 i = 0; i < static_cast<int32>(mExtensions.size()); i++)
+			{
+				if (extension == mExtensions[i])
+					return true;
+			}
+
+			return false;
 		}
 
 
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::GetImmediateContext(IDeviceContext** ppContext)
 		{
-			return (*ppContext = m_ImmediateContext->QueryReference<GLDeviceContext>()) != nullptr;
+			return (*ppContext = mImmediateContext->QueryReference<GLDeviceContext>()) != nullptr;
 		}
 
 
@@ -165,7 +179,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info)
 		{
-			return false;
+			return (*ppRootLayout = new GLRootLayout(this, info)) != nullptr;
 		}
 
 
@@ -186,22 +200,22 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDevice::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = m_Factory->QueryReference<GLFactory>();
+			(*ppFactory) = mFactory->QueryReference<GLFactory>();
 		}
 
 
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 
 			return counter;
@@ -211,15 +225,15 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
 		/////////////////////////////////////////////////////////////
 		System::Log* GLDevice::GetDeviceLog()
 		{
-			return &m_Log;
+			return &mLog;
 		}
 
 
@@ -227,10 +241,10 @@ namespace RayEngine
 		void GLDevice::Create(bool debugLayer)
 		{
 #if defined(RE_PLATFORM_WINDOWS)
-			m_WndHandle = CreateDummyWindow();
-			m_CreatedWindow = true;
+			mWndHandle = CreateDummyWindow();
+			mCreatedWindow = true;
 			
-			m_Device = GetDC(m_WndHandle);
+			m_Device = GetDC(mWndHandle);
 			if (!SetPixelFormat(m_Device, FORMAT_B8G8R8A8_UNORM, FORMAT_UNKNOWN))
 			{
 				return;
@@ -244,7 +258,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLDevice::Create(System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, bool debugLayer)
 		{
-			m_WndHandle = nativeWindow;
+			mWndHandle = nativeWindow;
 			m_Device = nativeDevice;
 
 			CreateContext(debugLayer);
@@ -255,7 +269,7 @@ namespace RayEngine
 		void GLDevice::CreateContext(bool debugLayer)
 		{
 			CreateNativeContext(debugLayer);
-			m_ImmediateContext = new GLDeviceContext(this, false);
+			mImmediateContext = new GLDeviceContext(this, false);
 		}
 
 
@@ -272,7 +286,12 @@ namespace RayEngine
 
 			SetLastError(0);
 			m_NativeContext = wglCreateContextAttribsARB(m_Device, 0, attribs);
-			DWORD error = GetLastError();
+			if (m_NativeContext == 0)
+			{
+				DWORD error = GetLastError();
+				wglMakeCurrent(0, 0);
+				return;
+			}
 
 			wglMakeCurrent(m_Device, m_NativeContext);
 
@@ -288,6 +307,18 @@ namespace RayEngine
 			{
 				wglMakeCurrent(0, 0);
 				wglDeleteContext(m_NativeContext);
+			}
+
+
+			//Get extensions for device (Should be the same as factory)
+			std::string wglExtensions = wglGetExtensionsStringARB(m_Device);
+
+			int32 numExtensions = 0;
+			glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+			for (int32 i = 0; i < numExtensions; i++)
+			{
+				const char* extension = reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i));
+				mExtensions.push_back(extension);
 			}
 		}
 	}

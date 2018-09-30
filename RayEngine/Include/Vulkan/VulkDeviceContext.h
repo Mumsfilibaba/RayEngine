@@ -98,7 +98,7 @@ namespace RayEngine
 		private:
 			VkQueue m_CommandQueue;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

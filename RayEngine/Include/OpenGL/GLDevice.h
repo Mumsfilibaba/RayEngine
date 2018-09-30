@@ -48,6 +48,8 @@ namespace RayEngine
 
 			System::NativeWindowHandle GetNativeWindowHandle() const;
 
+			bool ExtensionSupported(const std::string& extension) const;
+
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
@@ -94,18 +96,20 @@ namespace RayEngine
 			void CreateNativeContext(bool debugLayer);
 
 		private:
-			GLFactory* m_Factory;
-			GLDeviceContext* m_ImmediateContext;
+			GLFactory* mFactory;
+			GLDeviceContext* mImmediateContext;
 			
 			GLNativeDevice m_Device;
 			GLNativeContext m_NativeContext;
-			System::NativeWindowHandle m_WndHandle;
+			System::NativeWindowHandle mWndHandle;
 
-			bool m_CreatedWindow;
+			bool mCreatedWindow;
 
-			mutable System::Log m_Log;
+			mutable System::Log mLog;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
+
+			std::vector<std::string> mExtensions;
 		};
 	}
 }

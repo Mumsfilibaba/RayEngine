@@ -41,16 +41,16 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		VulkSwapchain::VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
-			: m_Factory(nullptr),
+			: mFactory(nullptr),
 			m_Device(nullptr),
 			m_CommandQueue(nullptr),
 			m_Swapchain(0),
 			m_Surface(0),
 			m_Format(),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<VulkFactory>();
+			mFactory = pFactory->QueryReference<VulkFactory>();
 			m_Device = pDevice->QueryReference<VulkDevice>();
 
 			Create(info);
@@ -114,7 +114,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void VulkSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
+			(*ppFactory) = mFactory->QueryReference<VulkFactory>();
 		}
 
 
@@ -122,7 +122,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkSwapchain::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -130,8 +130,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkSwapchain::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 
 			return counter;
@@ -142,8 +142,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkSwapchain::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -153,7 +153,7 @@ namespace RayEngine
 		{
 			if (m_Surface != 0)
 			{
-				VkInstance instance = reinterpret_cast<VulkFactory*>(m_Factory)->GetVkInstance();
+				VkInstance instance = reinterpret_cast<VulkFactory*>(mFactory)->GetVkInstance();
 
 				vkDestroySurfaceKHR(instance, m_Surface, nullptr);
 				m_Surface = 0;
@@ -168,7 +168,7 @@ namespace RayEngine
 			}
 
 
-			ReRelease_S(m_Factory);
+			ReRelease_S(mFactory);
 			ReRelease_S(m_Device);
 			//Release DeviceContext
 
@@ -190,7 +190,7 @@ namespace RayEngine
 		{
 			using namespace System;
 
-			VkInstance instance = m_Factory->GetVkInstance();
+			VkInstance instance = mFactory->GetVkInstance();
 			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, info.WindowHandle);
 			if (result != VK_SUCCESS)
 			{

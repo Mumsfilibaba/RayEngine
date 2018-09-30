@@ -39,7 +39,7 @@ namespace RayEngine
 		VulkFactory::VulkFactory(bool debugLayers)
 			: m_Instance(nullptr),
 			m_DbgCallback(0),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 
@@ -290,7 +290,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkFactory::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -298,8 +298,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkFactory::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 
 			return counter;
@@ -310,8 +310,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType VulkFactory::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 

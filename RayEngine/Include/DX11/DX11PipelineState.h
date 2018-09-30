@@ -34,7 +34,6 @@ namespace RayEngine
 		class DX11Shader;
 
 
-
 		/////////////////////////////////////////////////////////////
 		class DX11PipelineState final : public IPipelineState
 		{
@@ -132,7 +131,7 @@ namespace RayEngine
 			
 			PIPELINE_TYPE m_Type;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

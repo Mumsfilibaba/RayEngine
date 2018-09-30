@@ -47,8 +47,10 @@ PFNGLBINDVERTEXBUFFERPROC glBindVertexBuffer = nullptr;
 PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
 PFNGLBUFFERSUBDATAPROC glBufferSubData = nullptr;
 PFNGLBINDBUFFERBASEPROC glBindBufferBase = nullptr;
+
 //Textures
 PFNGLACTIVETEXTUREPROC glActiveTexture = nullptr;
+
 //Shaders
 PFNGLCREATEPROGRAMPROC glCreateProgram = nullptr;
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
@@ -66,8 +68,10 @@ PFNGLGETPROGRAMIVPROC glGetProgramiv = nullptr;
 PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = nullptr;
 PFNGLISPROGRAMPROC glIsProgram = nullptr;
 PFNGLISSHADERPROC glIsShader = nullptr;
+
 //Patches
 PFNGLPATCHPARAMETERIPROC glPatchParameteri = nullptr;
+
 //Pipeline
 PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages = nullptr;
 PFNGLISPROGRAMPIPELINEPROC glIsProgramPipeline = nullptr;
@@ -76,6 +80,7 @@ PFNGLBINDPROGRAMPIPELINEPROC glBindProgramPipeline = nullptr;
 PFNGLGETPROGRAMPIPELINEIVPROC glGetProgramPipelineiv = nullptr;
 PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines = nullptr;
 PFNGLVALIDATEPROGRAMPIPELINEPROC glValidateProgramPipeline = nullptr;
+
 //VertexArrays
 PFNGLISVERTEXARRAYPROC glIsVertexArray = nullptr;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
@@ -84,27 +89,35 @@ PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
 PFNGLVERTEXATTRIBFORMATPROC glVertexAttribFormat = nullptr;
 PFNGLVERTEXATTRIBBINDINGPROC glVertexAttribBinding = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
+
 //Framebuffers
 PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
 PFNGLISFRAMEBUFFERPROC glIsFramebuffer = nullptr;
 PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
+
 //Draw
 PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex = nullptr;
+
 //Renderbuffers
 PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
 PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
 PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
 PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
 PFNGLISRENDERBUFFERPROC glIsRenderbuffer = nullptr;
+
 //Clear
 PFNGLCLEARCOLORPROC glClearColorf = nullptr;
 PFNGLCLEARDEPTHFPROC glClearDepthf = nullptr;
+
 //Stencil
 PFNGLSTENCILOPSEPARATEPROC glStencilOpSeparate = nullptr;
 PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate = nullptr;
+
 //Depth
 PFNGLDEPTHRANGEFPROC glDepthRangef = nullptr;
 
+//GetString
+PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 
 
 namespace RayEngine
@@ -167,8 +180,10 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(glGetProgramInfoLog) == nullptr) return false;
 			if (LOAD_GL_FUNC(glIsProgram) == nullptr) return false;
 			if (LOAD_GL_FUNC(glIsShader) == nullptr) return false;
+			
 			//Patches
 			if (LOAD_GL_FUNC(glPatchParameteri) == nullptr) return false;
+			
 			//Pipeline
 			if (LOAD_GL_FUNC(glUseProgramStages) == nullptr) return false;
 			if (LOAD_GL_FUNC(glIsProgramPipeline) == nullptr) return false;
@@ -177,6 +192,7 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(glGetProgramPipelineiv) == nullptr) return false;
 			if (LOAD_GL_FUNC(glDeleteProgramPipelines) == nullptr) return false;
 			if (LOAD_GL_FUNC(glValidateProgramPipeline) == nullptr) return false;
+			
 			//VertexArrays
 			if (LOAD_GL_FUNC(glIsVertexArray) == nullptr) return false;
 			if (LOAD_GL_FUNC(glBindVertexArray) == nullptr) return false;
@@ -185,26 +201,35 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(glVertexAttribFormat) == nullptr) return false;
 			if (LOAD_GL_FUNC(glVertexAttribBinding) == nullptr) return false;
 			if (LOAD_GL_FUNC(glEnableVertexAttribArray) == nullptr) return false;
+			
 			//Framebuffers
 			if (LOAD_GL_FUNC(glBindFramebuffer) == nullptr) return false;
 			if (LOAD_GL_FUNC(glIsFramebuffer) == nullptr) return false;
 			if (LOAD_GL_FUNC(glDeleteFramebuffers) == nullptr) return false;
+			
 			//Draw
 			if (LOAD_GL_FUNC(glDrawElementsBaseVertex) == nullptr) return false;
+			
 			//Renderbuffers
 			if (LOAD_GL_FUNC(glBindRenderbuffer) == nullptr) return false;
 			if (LOAD_GL_FUNC(glDeleteRenderbuffers) == nullptr) return false;
 			if (LOAD_GL_FUNC(glGenRenderbuffers) == nullptr) return false;
 			if (LOAD_GL_FUNC(glRenderbufferStorage) == nullptr) return false;
 			if (LOAD_GL_FUNC(glIsRenderbuffer) == nullptr) return false;
+			
 			//Clear
 			if ((glClearColorf = reinterpret_cast<decltype(glClearColorf)>(LoadFunction("glClearColor"))) == nullptr) return false;
 			if (LOAD_GL_FUNC(glClearDepthf) == nullptr) return false;
+			
 			//Stencil
 			if (LOAD_GL_FUNC(glStencilOpSeparate) == nullptr) return false;
 			if (LOAD_GL_FUNC(glStencilFuncSeparate) == nullptr) return false;
+
 			//Depth
 			if (LOAD_GL_FUNC(glDepthRangef) == nullptr) return false;
+
+			//GetString
+			if (LOAD_GL_FUNC(glGetStringi) == nullptr) return false;
 		}
 
 		return true;

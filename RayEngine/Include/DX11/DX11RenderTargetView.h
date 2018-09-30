@@ -62,7 +62,7 @@ namespace RayEngine
 			DX11Device* m_Device;
 			ID3D11RenderTargetView* m_View;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

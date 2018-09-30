@@ -210,6 +210,18 @@ namespace RayEngine
 				return 0;
 			}
 		}
+
+
+		/////////////////////////////////////////////////////////////
+		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str)
+		{
+			int32 last = 0;
+			for (int32 i = 0; (i = static_cast<int32>(str.find(' ', last))) != std::string::npos;)
+			{
+				extensions.push_back(str.substr(last, i - last));
+				last = i + 1;
+			}
+		}
 #endif
 	}
 }

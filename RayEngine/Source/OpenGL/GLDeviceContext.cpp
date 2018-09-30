@@ -27,7 +27,7 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		GLDeviceContext::GLDeviceContext(IDevice* pDevice, bool isDeffered)
-			: m_References(0)
+			: mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
@@ -222,7 +222,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDeviceContext::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -230,8 +230,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDeviceContext::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 
 			return counter;
@@ -242,8 +242,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLDeviceContext::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 

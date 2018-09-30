@@ -42,16 +42,16 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX11Device::DX11Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
-			: m_Factory(nullptr),
+			: mFactory(nullptr),
 			m_Adapter(nullptr),
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
-			m_ImmediateContext(nullptr),
+			mImmediateContext(nullptr),
 			m_FeatureLevel(),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<DX11Factory>();
+			mFactory = pFactory->QueryReference<DX11Factory>();
 			
 			Create(pFactory, info, debugLayer);
 		}
@@ -61,8 +61,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Device::~DX11Device()
 		{
-			ReRelease_S(m_ImmediateContext);
-			ReRelease_S(m_Factory);
+			ReRelease_S(mImmediateContext);
+			ReRelease_S(mFactory);
 			
 			D3DRelease_S(m_Adapter);
 			D3DRelease_S(m_Device);
@@ -90,7 +90,7 @@ namespace RayEngine
 			if (ppContext == nullptr)
 				return false;
 
-			(*ppContext) = m_ImmediateContext->QueryReference<DX11DeviceContext>();
+			(*ppContext) = mImmediateContext->QueryReference<DX11DeviceContext>();
 			return (*ppContext) != nullptr;
 		}
 
@@ -118,7 +118,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Device::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
+			(*ppFactory) = mFactory->QueryReference<DX11Factory>();
 		}
 
 
@@ -126,7 +126,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Device::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -134,8 +134,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Device::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -143,8 +143,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Device::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;
@@ -237,7 +237,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		System::Log* DX11Device::GetDeviceLog()
 		{
-			return &m_Log;
+			return &mLog;
 		}
 
 
@@ -251,7 +251,7 @@ namespace RayEngine
 			HRESULT hr = pDXGIFactory->EnumAdapters(info.pAdapter->ApiID, &m_Adapter);
 			if (FAILED(hr))
 			{
-				m_Log.Write(LOG_SEVERITY_ERROR, "D3D11: Could not retrive adapter. " + DXErrorString(hr));
+				mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not retrive adapter. " + DXErrorString(hr));
 				return;
 			}
 
@@ -265,14 +265,14 @@ namespace RayEngine
 				D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
 			if (FAILED(hr))
 			{
-				m_Log.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
+				mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
 				return;
 			}
 			else
 			{
 				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
 
-				m_ImmediateContext = new DX11DeviceContext(this, false);
+				mImmediateContext = new DX11DeviceContext(this, false);
 			}
 
 
@@ -281,7 +281,7 @@ namespace RayEngine
 				hr = m_Device->QueryInterface<ID3D11Debug>(&m_DebugDevice);
 				if (FAILED(hr))
 				{
-					m_Log.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DebugDevice. " + DXErrorString(hr));
+					mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DebugDevice. " + DXErrorString(hr));
 				}
 			}
 		}

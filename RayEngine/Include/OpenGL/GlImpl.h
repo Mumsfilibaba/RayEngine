@@ -107,6 +107,7 @@ namespace RayEngine
 #define GL_MAX_DRAW_BUFFERS 0x8824
 #define GL_MAJOR_VERSION 0x821B
 #define GL_MINOR_VERSION 0x821C
+#define GL_NUM_EXTENSIONS 0x821D
 
 //Errortypes
 #define GL_INVALID_FRAMEBUFFER_OPERATION 0x0506
@@ -355,6 +356,9 @@ typedef void (APIENTRY* PFNGLSTENCILFUNCSEPARATEPROC) (GLenum face, GLenum func,
 //Depth
 typedef void (APIENTRY* PFNGLDEPTHRANGEFPROC) (GLfloat n, GLfloat f);
 
+//GetString
+typedef const GLubyte* (APIENTRY* PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);
+
 //////////////////
 ///FUNCTIONPTRS///
 //////////////////
@@ -442,4 +446,7 @@ extern PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate;
 
 //Depth
 extern PFNGLDEPTHRANGEFPROC glDepthRangef;
+
+//GetString
+extern PFNGLGETSTRINGIPROC glGetStringi;
 #endif

@@ -19,105 +19,72 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\OpenGL\GLSwapchain.h"
 #include "..\..\Include\OpenGL\GLDevice.h"
-#include "..\..\Include\OpenGL\GLFactory.h"
+#include "..\..\Include\OpenGL\GLRootLayout.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		/////////////////////////////////////////////////////////////
-		GLSwapchain::GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+		GLRootLayout::GLRootLayout(IDevice* pDevice, const RootLayoutInfo& info)
 			: m_Device(nullptr),
-			mFactory(nullptr),
-			mWndHandle(RE_NULL_WINDOW),
-			m_NativeDevice(RE_GL_NULL_NATIVE_DEVICE),
 			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
-			mFactory = reinterpret_cast<GLFactory*>(pFactory);
 
-			Create();
+			Create(info);
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
-		GLSwapchain::~GLSwapchain()
+		GLRootLayout::~GLRootLayout()
 		{
 		}
 
 
 		/////////////////////////////////////////////////////////////
-		void GLSwapchain::Resize(int32 width, int32 height)
+		void GLRootLayout::Create(const RootLayoutInfo& info)
 		{
-			//Not relevant
 		}
 
 
 		/////////////////////////////////////////////////////////////
-		void GLSwapchain::Present() const
+		void GLRootLayout::SetName(const std::string& name)
 		{
-			SwapBuffers(m_NativeDevice);
 		}
 
 
 		/////////////////////////////////////////////////////////////
-		void GLSwapchain::SetName(const std::string& name)
-		{
-			//Not relevant
-		}
-
-
-		/////////////////////////////////////////////////////////////
-		void GLSwapchain::QueryDevice(IDevice** ppDevice) const
+		void GLRootLayout::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<GLDevice>();
 		}
 
 
 		/////////////////////////////////////////////////////////////
-		void GLSwapchain::QueryFactory(IFactory** ppFactory) const
-		{
-			(*ppFactory) = mFactory->QueryReference<GLFactory>();
-		}
-
-
-		/////////////////////////////////////////////////////////////
-		IObject::CounterType GLSwapchain::GetReferenceCount() const
+		IObject::CounterType GLRootLayout::GetReferenceCount() const
 		{
 			return mReferences;
 		}
 
 
 		/////////////////////////////////////////////////////////////
-		IObject::CounterType GLSwapchain::Release()
+		IObject::CounterType GLRootLayout::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType refs = --mReferences;
+			if (refs < 1)
 				delete this;
 
-			return counter;
+			return refs;
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
-		IObject::CounterType GLSwapchain::AddRef()
+		IObject::CounterType GLRootLayout::AddRef()
 		{
-			mReferences++;
-			return mReferences;
-		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void GLSwapchain::Create()
-		{
-			m_NativeDevice = m_Device->GetGLNativeDevice();
-			mWndHandle = m_Device->GetNativeWindowHandle();
+			return ++mReferences;
 		}
 	}
 }

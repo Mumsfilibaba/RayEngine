@@ -66,7 +66,7 @@ namespace RayEngine
 
 			int32 m_SizeInBytes;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

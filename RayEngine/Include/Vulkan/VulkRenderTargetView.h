@@ -49,7 +49,7 @@ namespace RayEngine
 			void Create(const RenderTargetViewInfo& info);
 
 		private:
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

@@ -72,7 +72,7 @@ namespace RayEngine
 			
 			int32 m_ByteStride;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

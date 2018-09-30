@@ -36,7 +36,7 @@ namespace RayEngine
 			: m_AdapterList(),
 			m_Extensions(),
 			m_DebugLayer(debugLayer),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			Create(debugLayer);
@@ -126,7 +126,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLFactory::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -134,8 +134,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLFactory::Release()
 		{
-			IObject::CounterType counter = m_References--;
-			if (m_References < 1)
+			IObject::CounterType counter = mReferences--;
+			if (mReferences < 1)
 				delete this;
 
 			return counter;
@@ -146,8 +146,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType GLFactory::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -210,10 +210,10 @@ namespace RayEngine
 				return;
 
 			std::string wglExtensions = wglGetExtensionsString(hDC);
-			QueryExtensionsFromString(wglExtensions);
+			QueryExtensionsFromString(m_Extensions, wglExtensions);
 
 			std::string extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
-			QueryExtensionsFromString(extensions);
+			QueryExtensionsFromString(m_Extensions, extensions);
 
 
 			//Can we create a context?
@@ -328,20 +328,6 @@ namespace RayEngine
 			System::WndclassCache::Unregister(RE_GL_CLASS_NAME, GetModuleHandle(0));
 #endif
 		}
-
-
-
-		/////////////////////////////////////////////////////////////
-		void GLFactory::QueryExtensionsFromString(const std::string& str)
-		{
-			int32 last = 0;
-			for (int32 i = 0; (i = static_cast<int32>(str.find(' ', last))) != std::string::npos;)
-			{
-				m_Extensions.push_back(str.substr(last, i - last));
-				last = i + 1;
-			}
-		}
-
 
 
 		/////////////////////////////////////////////////////////////

@@ -32,9 +32,9 @@ namespace RayEngine
 	{
 		/////////////////////////////////////////////////////////////
 		DX11Factory::DX11Factory(bool debugLayer)
-			: m_Factory(nullptr),
+			: mFactory(nullptr),
 			m_DebugLayer(debugLayer),
-			m_References(0)
+			mReferences(0)
 		{
 			AddRef();
 			Create();
@@ -45,7 +45,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		DX11Factory::~DX11Factory()
 		{
-			D3DRelease_S(m_Factory);
+			D3DRelease_S(mFactory);
 		}
 
 
@@ -53,7 +53,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IDXGIFactory* DX11Factory::GetDXGIFactory() const
 		{
-			return m_Factory;
+			return mFactory;
 		}
 
 
@@ -71,7 +71,7 @@ namespace RayEngine
 			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 
-			for (int32 i = 0; m_Factory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; i++)
+			for (int32 i = 0; mFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; i++)
 			{
 				HRESULT hr = D3D11CreateDevice(pAdapter.Get(), D3D_DRIVER_TYPE_UNKNOWN, 0, 0, &supportedFeatureLevel, 1,
 					D3D11_SDK_VERSION, &pDevice, &featureLevel, &pDeviceContext);
@@ -128,7 +128,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Factory::SetName(const std::string& name)
 		{
-			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+			mFactory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 
@@ -144,7 +144,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Factory::GetReferenceCount() const
 		{
-			return m_References;
+			return mReferences;
 		}
 
 
@@ -152,8 +152,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Factory::AddRef()
 		{
-			m_References++;
-			return m_References;
+			mReferences++;
+			return mReferences;
 		}
 
 
@@ -161,8 +161,8 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Factory::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
+			mReferences--;
+			IObject::CounterType counter = mReferences;
 
 			if (counter < 1)
 				delete this;
@@ -175,7 +175,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void DX11Factory::Create()
 		{
-			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory))))
+			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&mFactory))))
 			{
 				return;
 			}

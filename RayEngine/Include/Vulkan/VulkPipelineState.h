@@ -81,7 +81,7 @@ namespace RayEngine
 			
 			PIPELINE_TYPE m_Type;
 			
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

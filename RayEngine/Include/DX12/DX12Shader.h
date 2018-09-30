@@ -65,7 +65,7 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }

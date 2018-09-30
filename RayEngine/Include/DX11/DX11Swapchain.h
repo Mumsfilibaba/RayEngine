@@ -87,7 +87,7 @@ namespace RayEngine
 
 		private:
 			DX11Device* m_Device;
-			DX11Factory* m_Factory;
+			DX11Factory* mFactory;
 			IDXGISwapChain* m_Swapchain;			
 			DX11Texture* m_BackBuffer;
 			DX11Texture* m_DepthStencil;
@@ -100,7 +100,7 @@ namespace RayEngine
 			uint32 m_Flags;
 			FORMAT m_DepthStencilFormat;
 			FORMAT m_BackBufferFormat;
-			IObject::CounterType m_References;
+			IObject::CounterType mReferences;
 		};
 	}
 }
