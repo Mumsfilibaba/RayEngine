@@ -749,6 +749,9 @@
     <ClCompile Include="Source\OpenGL\GLRootLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\OpenGL\GLPipelineState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Source\TODO.txt" />

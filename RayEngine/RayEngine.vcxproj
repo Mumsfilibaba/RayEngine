@@ -370,6 +370,7 @@
     <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp" />
     <ClCompile Include="Source\OpenGL\GLFactory.cpp" />
     <ClCompile Include="Source\OpenGL\GLImpl.cpp" />
+    <ClCompile Include="Source\OpenGL\GLPipelineState.cpp" />
     <ClCompile Include="Source\OpenGL\GLRootLayout.cpp" />
     <ClCompile Include="Source\OpenGL\GLShader.cpp" />
     <ClCompile Include="Source\OpenGL\GLSwapchain.cpp" />

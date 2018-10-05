@@ -33,6 +33,17 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		struct GLInputLayout
+		{
+			uint32 Index;
+			int32 Type;
+			int32 Size;
+			int32 Stride;
+			int32 Offset;
+		};
+
+
+		/////////////////////////////////////////////////////////////
 		class GLPipelineState final : public IPipelineState
 		{
 			RE_IMPLEMENT_INTERFACE(GLPipelineState);
@@ -56,20 +67,26 @@ namespace RayEngine
 		private:
 			void Create(const PipelineStateInfo& info);
 
+			void CreateGraphicsPipeline(const PipelineStateInfo& info);
+
+			void CreateComputePipeline(const PipelineStateInfo& info);
+
 			void LinkShaders();
 
 		private:
-			GLDevice* mDevice;
-			GLDevice* mVS;
-			GLDevice* mHS;
-			GLDevice* mDS;
-			GLDevice* mGS;
-			GLDevice* mPS;
-			GLDevice* mCS;
+			GLDevice* m_Device;
+			GLShader* m_VS;
+			GLShader* m_HS;
+			GLShader* m_DS;
+			GLShader* m_GS;
+			GLShader* m_PS;
+			GLShader* m_CS;
 
-			PIPELINE_TYPE mType;
+			PIPELINE_TYPE m_Type;
 
-			IObject::CounterType mReferences;
+			int32 m_Program;
+
+			IObject::CounterType m_References;
 		};
 	}
 }

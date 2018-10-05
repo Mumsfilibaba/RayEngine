@@ -25,6 +25,7 @@ failure and or malfunction of any kind.
 #include "..\..\Include\OpenGL\GLDeviceContext.h"
 #include "..\..\Include\OpenGL\GLShader.h"
 #include "..\..\Include\OpenGL\GLRootLayout.h"
+#include "..\..\Include\OpenGL\GLPipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
@@ -186,7 +187,7 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		bool GLDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
 		{
-			return false;
+			return (*ppPipelineState = new GLPipelineState(this, info)) != nullptr;
 		}
 
 

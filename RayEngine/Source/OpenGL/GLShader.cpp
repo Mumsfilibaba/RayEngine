@@ -113,12 +113,12 @@ namespace RayEngine
 			glGetShaderiv(m_Shader, GL_COMPILE_STATUS, &result);
 			if (result != GL_TRUE)
 			{
-				std::vector<char> log;
-				glGetShaderiv(m_Shader, GL_INFO_LOG_LENGTH, &result);
-				log.resize(result);
-
 				int32 len = 0;
-				glGetShaderInfoLog(m_Shader, result, &len, log.data());
+				glGetShaderiv(m_Shader, GL_INFO_LOG_LENGTH, &len);
+
+				std::vector<char> log;
+				log.resize(result);
+				glGetShaderInfoLog(m_Shader, len, &len, log.data());
 
 				std::string message = "OpenGL: Could not compile shader.\n";
 				message += log.data();
