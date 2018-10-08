@@ -95,12 +95,12 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct DeviceInfo
 		{
-			std::string Name = "";
-			AdapterInfo* pAdapter = nullptr;
-			int32 DepthStencilDescriptorCount = 16;
-			int32 RendertargetDescriptorCount = 64;
-			int32 ResourceDescriptorCount = 128;
-			int32 SamplerDescriptorCount = 128;
+			std::string Name;
+			AdapterInfo* pAdapter;
+			int32 DepthStencilDescriptorCount;
+			int32 RendertargetDescriptorCount;
+			int32 ResourceDescriptorCount;
+			int32 SamplerDescriptorCount;
 		};
 
 

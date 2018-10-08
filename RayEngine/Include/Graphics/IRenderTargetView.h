@@ -73,10 +73,10 @@ namespace RayEngine
 		///////////////////////////////////////////////////////////*/
 		struct RenderTargetViewInfo
 		{
-			std::string Name = "";
-			FORMAT Format = FORMAT_UNKNOWN;
-			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
-			IResource* pResource = nullptr;
+			std::string Name;
+			FORMAT Format;
+			VIEWDIMENSION ViewDimension;
+			IResource* pResource;
 
 			union
 			{

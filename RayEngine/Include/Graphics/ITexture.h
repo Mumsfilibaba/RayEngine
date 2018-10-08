@@ -56,23 +56,23 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct TextureInfo
 		{
-			std::string Name = "";
-			TEXTURE_TYPE Type = TEXTURE_TYPE_2D;
-			FORMAT Format = FORMAT_UNKNOWN;
-			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
-			int32 Flags = TEXTURE_FLAGS_NONE;
-			int32 CpuAccess = CPU_ACCESS_FLAG_NONE;
-			int32 Width = 0;
-			int32 Height = 0;
-			int32 DepthOrArraySize = 0;
-			int32 SampleCount = 1;
-			int32 MipLevels = 1;			
+			std::string Name;
+			TEXTURE_TYPE Type;
+			FORMAT Format;
+			RESOURCE_USAGE Usage;
+			int32 Flags;
+			int32 CpuAccess;
+			int32 Width;
+			int32 Height;
+			int32 DepthOrArraySize;
+			int32 SampleCount;
+			int32 MipLevels;			
 			float OptimizedColor[4];
 			
 			struct
 			{
-				float OptimizedDepth = 1.0f;
-				uint8 OptimizedStencil = 0;
+				float OptimizedDepth;
+				uint8 OptimizedStencil;
 			} DepthStencil;
 		};
 

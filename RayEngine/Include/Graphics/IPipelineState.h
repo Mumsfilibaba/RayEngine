@@ -84,14 +84,14 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct InputElementInfo
 		{
-			std::string Semantic = "";
-			int32 SemanticIndex = 0;
-			FORMAT Format = FORMAT_UNKNOWN;
-			ELEMENT_STEP_TYPE StepType = ELEMENT_STEP_TYPE_UNKNOWN;
-			int32 InputSlot = 0;
-			int32 DataStepRate = 0;
-			int32 ElementOffset = 0;
-			int32 StrideBytes = 0;
+			std::string Semantic;
+			int32 SemanticIndex;
+			FORMAT Format;
+			ELEMENT_STEP_TYPE StepType;
+			int32 InputSlot;
+			int32 DataStepRate;
+			int32 ElementOffset;
+			int32 StrideBytes;
 		};
 
 
@@ -109,13 +109,8 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct InputLayoutInfo
 		{
-		public:
-			InputLayoutInfo() {};
-			~InputLayoutInfo() {};
-
-		public:
-			InputElementInfo* pElements = nullptr;
-			int32 ElementCount = 0;
+			InputElementInfo* pElements;
+			int32 ElementCount;
 		};
 
 
@@ -321,7 +316,6 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct PipelineStateInfo
 		{
-		public:
 			/*////////////////////////////////////////////////////////////
 
 				A structure describing a compute pipeline.
@@ -332,12 +326,7 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			struct ComputePipelineInfo
 			{
-			public:
-				ComputePipelineInfo() {};
-				~ComputePipelineInfo() {};
-
-			public:
-				IShader* pComputeShader = nullptr;
+				IShader* pComputeShader;
 			};
 
 
@@ -386,42 +375,37 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			struct GraphicsPipelineInfo
 			{
-			public:
-				GraphicsPipelineInfo() {};
-				~GraphicsPipelineInfo() {};
-
-			public:
-				int32 RenderTargetCount = 0;
+				int32 RenderTargetCount;
 				FORMAT RenderTargetFormats[8];
-				FORMAT DepthStencilFormat = FORMAT_UNKNOWN;
-				MSAA_SAMPLE_COUNT SampleCount = MSAA_SAMPLE_COUNT_1;
+				FORMAT DepthStencilFormat;
+				MSAA_SAMPLE_COUNT SampleCount;
 
 				InputLayoutInfo InputLayout;
 				RasterizerStateInfo RasterizerState;
 				DepthStencilStateInfo DepthStencilState;
 				BlendStateInfo BlendState;
 
-				uint32 SampleMask = -1;
+				uint32 SampleMask;
 
-				PRIMITIVE_TOPOLOGY Topology = PRIMITIVE_TOPOLOGY_UNKNOWN;
-				bool StripCutEnable = false;
+				PRIMITIVE_TOPOLOGY Topology;
+				bool StripCutEnable;
 
-				IShader* pVertexShader = nullptr;
-				IShader* pHullShader = nullptr;
-				IShader* pDomainShader = nullptr;
-				IShader* pGeometryShader = nullptr;
-				IShader* pPixelShader = nullptr;
+				IShader* pVertexShader;
+				IShader* pHullShader;
+				IShader* pDomainShader;
+				IShader* pGeometryShader;
+				IShader* pPixelShader;
 			};
-		public:
-			PipelineStateInfo() {}
-			~PipelineStateInfo() {}
 
-		public:
-			std::string Name = "";
-			PIPELINE_TYPE Type = PIPELINE_TYPE_UNKNOWN;
-			IRootLayout* pRootLayout = nullptr;
-			GraphicsPipelineInfo GraphicsPipeline;
-			ComputePipelineInfo ComputePipeline;
+			std::string Name;
+			PIPELINE_TYPE Type;
+			IRootLayout* pRootLayout;
+
+			union
+			{
+				GraphicsPipelineInfo GraphicsPipeline;
+				ComputePipelineInfo ComputePipeline;
+			};
 		};
 
 

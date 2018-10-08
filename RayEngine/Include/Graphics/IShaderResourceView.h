@@ -55,33 +55,33 @@ namespace RayEngine
 			{
 				struct
 				{
-					uint32 ElementCount = 0;
-					uint32 StartElement = 0;
-					uint32 ElementStrideBytes = 0;
+					uint32 ElementCount;
+					uint32 StartElement;
+					uint32 ElementStrideBytes;
 				} Buffer;
 
 				struct
 				{
-					uint32 MipLevels = 0;
-					uint32 MostDetailedMip = 0;
-					float MinLODClamp = 0.0f;
+					uint32 MipLevels;
+					uint32 MostDetailedMip;
+					float MinLODClamp;
 				} Texture1D;
 
 				struct
 				{
-					uint32 MipLevels = 0;
-					uint32 MostDetailedMip = 0;
-					uint32 ArraySize = 0;
-					uint32 FirstArraySlice = 0;
-					float MinLODClamp = 0.0f;
+					uint32 MipLevels;
+					uint32 MostDetailedMip;
+					uint32 ArraySize;
+					uint32 FirstArraySlice;
+					float MinLODClamp;
 				} Texture1DArray;
 
 				struct
 				{
-					uint32 MipLevels = 0;
-					uint32 MostDetailedMip = 0;
-					uint32 PlaneSlice = 0;
-					float MinLODClamp = 0.0f;
+					uint32 MipLevels;
+					uint32 MostDetailedMip;
+					uint32 PlaneSlice;
+					float MinLODClamp;
 				} Texture2D;
 
 				struct
@@ -90,41 +90,41 @@ namespace RayEngine
 
 				struct
 				{
-					uint32 MipLevels = 0;
-					uint32 MostDetailedMip = 0;
-					uint32 ArraySize = 0;
-					uint32 FirstArraySlice = 0;
-					uint32 PlaneSlice = 0;
-					float MinLODClamp = 0.0f;
+					uint32 MipLevels;
+					uint32 MostDetailedMip;
+					uint32 ArraySize;
+					uint32 FirstArraySlice;
+					uint32 PlaneSlice;
+					float MinLODClamp;
 				} Texture2DArray;
 
 				struct
 				{
-					uint32 ArraySize = 0;
-					uint32 FirstArraySlice = 0;
+					uint32 ArraySize;
+					uint32 FirstArraySlice;
 				} Texture2DMSArray;
 
 				struct
 				{
-					uint32 MipLevels = 0;
-					uint32 MostDetailedMip = 0;
-					float MinLODClamp = 0.0f;
+					uint32 MipLevels;
+					uint32 MostDetailedMip;
+					float MinLODClamp;
 				} Texture3D;
 
 				struct
 				{
-					uint32 MipLevels = 0;
-					uint32 MostDetailedMip = 0;
-					float MinLODClamp = 0.0f;
+					uint32 MipLevels;
+					uint32 MostDetailedMip;
+					float MinLODClamp;
 				} TextureCube;
 
 				struct
 				{
-					uint32 MipLevels = 0;
-					uint32 MostDetailedMip = 0;
-					uint32 CubeCount = 0;
-					uint32 First2DArrayFace = 0;
-					float MinLODClamp = 0.0f;
+					uint32 MipLevels;
+					uint32 MostDetailedMip;
+					uint32 CubeCount;
+					uint32 First2DArrayFace;
+					float MinLODClamp;
 				} TextureCubeArray;
 			};
 		};

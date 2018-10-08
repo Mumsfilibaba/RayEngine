@@ -40,6 +40,7 @@ namespace RayEngine
 			int32 Size;
 			int32 Stride;
 			int32 Offset;
+			int32 Divisor;
 		};
 
 

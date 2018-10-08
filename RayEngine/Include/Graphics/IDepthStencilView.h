@@ -74,11 +74,11 @@ namespace RayEngine
 		///////////////////////////////////////////////////////////*/
 		struct DepthStencilViewInfo
 		{
-			std::string Name = "";
-			int32 Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
-			FORMAT Format = FORMAT_UNKNOWN;
-			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
-			IResource* pResource = nullptr;
+			std::string Name;
+			int32 Flags;
+			FORMAT Format;
+			VIEWDIMENSION ViewDimension;
+			IResource* pResource;
 
 			union
 			{

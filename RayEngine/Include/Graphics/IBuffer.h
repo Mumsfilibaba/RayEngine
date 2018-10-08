@@ -64,12 +64,12 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct BufferInfo
 		{
-			std::string Name = "";
-			RESOURCE_USAGE Usage = RESOURCE_USAGE_UNKNOWN;
-			CPU_ACCESS_FLAG CpuAccess = CPU_ACCESS_FLAG_NONE;
-			BUFFER_USAGE Type = BUFFER_USAGE_UNKNOWN;
-			int32 Count = 0;
-			int32 ByteStride = 0;
+			std::string Name;
+			RESOURCE_USAGE Usage;
+			CPU_ACCESS_FLAG CpuAccess;
+			BUFFER_USAGE Type;
+			int32 Count;
+			int32 ByteStride;
 		};
 
 

@@ -146,13 +146,13 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct RootLayoutInfo
 		{
-			std::string Name = "";
-			PIPELINE_TYPE PipelineType = PIPELINE_TYPE_UNKNOWN;
-			int32 Flags = ROOT_LAYOUT_FLAG_NONE;
-			ShaderVariable* pVariables = nullptr;
-			int32 VariableCount = 0;
-			StaticSampler* pStaticSamplers = nullptr;
-			int32 SamplerCount = 0;
+			std::string Name;
+			PIPELINE_TYPE PipelineType;
+			int32 Flags;
+			ShaderVariable* pVariables;
+			int32 VariableCount;
+			StaticSampler* pStaticSamplers;
+			int32 SamplerCount;
 		};
 
 

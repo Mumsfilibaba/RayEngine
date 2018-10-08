@@ -46,52 +46,52 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct UnorderedAccessViewInfo
 		{
-			std::string Name = "";
-			int32 Flags = UNORDERED_ACCESS_VIEW_FLAG_NONE;
-			FORMAT Format = FORMAT_UNKNOWN;
-			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
-			IResource* pResource = nullptr;
-			IResource* pCounterResource = nullptr;
+			std::string Name;
+			int32 Flags;
+			FORMAT Format;
+			VIEWDIMENSION ViewDimension;
+			IResource* pResource;
+			IResource* pCounterResource;
 
 			union
 			{
 				struct
 				{
-					uint32 StartElement = 0;
-					uint32 ElementCount = 0;
+					uint32 StartElement;
+					uint32 ElementCount;
 				} Buffer;
 
 				struct
 				{
-					uint32 MipSlice = 0;
+					uint32 MipSlice;
 				} Texture1D;
 
 				struct
 				{
-					uint32 MipSlice = 0;
-					uint32 FirstArraySlice = 0;
-					uint32 ArraySize = 0;
+					uint32 MipSlice;
+					uint32 FirstArraySlice;
+					uint32 ArraySize;
 				} Texture1DArray;
 
 				struct
 				{
-					uint32 MipSlice = 0;
-					uint32 PlaneSlice = 0;
+					uint32 MipSlice;
+					uint32 PlaneSlice;
 				} Texture2D;
 
 				struct
 				{
-					uint32 MipSlice = 0;
-					uint32 FirstArraySlice = 0;
-					uint32 ArraySize = 0;
-					uint32 PlaneSlice = 0;
+					uint32 MipSlice;
+					uint32 FirstArraySlice;
+					uint32 ArraySize;
+					uint32 PlaneSlice;
 				} Texture2DArray;
 
 				struct
 				{
-					uint32 MipSlice = 0;
-					uint32 DepthSliceCount = 0;
-					uint32 FirstDepthSlice = 0;
+					uint32 MipSlice;
+					uint32 DepthSliceCount;
+					uint32 FirstDepthSlice;
 				} Texture3D;
 			};
 		};
