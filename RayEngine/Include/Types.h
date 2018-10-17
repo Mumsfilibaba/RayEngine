@@ -428,7 +428,7 @@ namespace RayEngine
 		StencilDepthFailOperation - Operation to perform on stencil
 		buffer if stencil if depth test fails.
 
-		StencilPassoperation - Operation to perform on stencil
+		StencilPassOperation - Operation to perform on stencil
 		buffer if stencil test succeeds.
 
 		StencilFunc - Function used to compare the old stencil 
@@ -437,7 +437,7 @@ namespace RayEngine
 		DEFUALT STATE:
 		StencilFailOperation = STENCIL_OPERATION_KEEP
 		StencilDepthFailOperation = STENCIL_OPERATION_KEEP
-		StencilPassoperation = STENCIL_OPERATION_KEEP
+		StencilPassOperation = STENCIL_OPERATION_KEEP
 		StencilFunc = COMPARISON_FUNC_ALWAYS
 
 	///////////////////////////////////////////////////////////*/
@@ -445,7 +445,7 @@ namespace RayEngine
 	{
 		STENCIL_OPERATION StencilFailOperation;
 		STENCIL_OPERATION StencilDepthFailOperation;
-		STENCIL_OPERATION StencilPassoperation;
+		STENCIL_OPERATION StencilPassOperation;
 		COMPARISON_FUNC StencilFunc;
 	};
 

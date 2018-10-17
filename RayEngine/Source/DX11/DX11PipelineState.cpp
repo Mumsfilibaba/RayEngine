@@ -436,7 +436,7 @@ namespace RayEngine
 			desc.StencilWriteMask = info.GraphicsPipeline.DepthStencilState.StencilWriteMask;
 
 			desc.BackFace = ReToDX11StencilOpDesc(info.GraphicsPipeline.DepthStencilState.BackFace);
-			desc.FrontFace = ReToDX11StencilOpDesc(info.GraphicsPipeline.DepthStencilState.Frontface);
+			desc.FrontFace = ReToDX11StencilOpDesc(info.GraphicsPipeline.DepthStencilState.FrontFace);
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();

@@ -362,6 +362,56 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		uint32 ComparisonFuncToGL(COMPARISON_FUNC func)
+		{
+			switch (func)
+			{
+			case COMPARISON_FUNC_NEVER:
+				return GL_NEVER;
+			case COMPARISON_FUNC_LESS:
+				return GL_LESS;
+			case COMPARISON_FUNC_EQUAL:
+				return GL_EQUAL;
+			case COMPARISON_FUNC_LESS_EQUAL:
+				return GL_LEQUAL;
+			case COMPARISON_FUNC_GREATER:
+				return GL_GREATER;
+			case COMPARISON_FUNC_NOT_EQUAL:
+				return GL_NOTEQUAL;
+			case COMPARISON_FUNC_GREATER_EQUAL:
+				return GL_GEQUAL;
+			case COMPARISON_FUNC_ALWAYS:
+				return GL_ALWAYS;
+			default:
+				return 0;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 StencilOpToGL(STENCIL_OPERATION operation)
+		{
+			switch (operation)
+			{
+			case STENCIL_OPERATION_KEEP:
+				return GL_KEEP;
+			case STENCIL_OPERATION_ZERO:
+				return GL_ZERO;
+			case STENCIL_OPERATION_REPLACE:
+				return GL_REPLACE;
+			case STENCIL_OPERATION_INVERT:
+				return GL_INVERT;
+			case STENCIL_OPERATION_INCR:
+				return GL_INCR;
+			case STENCIL_OPERATION_DECR:
+				return GL_DECR;
+			default:
+				return 0;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
 		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str)
 		{
 			int32 last = 0;

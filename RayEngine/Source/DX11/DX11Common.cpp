@@ -112,7 +112,7 @@ namespace RayEngine
 		{
 			D3D11_DEPTH_STENCILOP_DESC desc = {};
 			desc.StencilFunc = ReToDX11ComparisonFunc(info.StencilFunc);
-			desc.StencilPassOp = ReToDX11StencilOp(info.StencilPassoperation);
+			desc.StencilPassOp = ReToDX11StencilOp(info.StencilPassOperation);
 			desc.StencilFailOp = ReToDX11StencilOp(info.StencilFailOperation);
 			desc.StencilDepthFailOp = ReToDX11StencilOp(info.StencilDepthFailOperation);
 

@@ -49,6 +49,8 @@ namespace RayEngine
 		bool NormalizedVertexFormat(FORMAT format);
 		GLNativeContext GetCurrentContext();
 		int32 ShaderTypeToGL(SHADER_TYPE type);
+		uint32 ComparisonFuncToGL(COMPARISON_FUNC func);
+		uint32 StencilOpToGL(STENCIL_OPERATION operation);
 		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);
 	}
 }

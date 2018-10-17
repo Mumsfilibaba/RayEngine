@@ -52,8 +52,50 @@ namespace RayEngine
 		};
 
 
-		/////////////////////////////////////////////////////////////
+		/*///////////////////////////////////////////////////////////
+			
+			DepthEnable - true	glEnable(GL_DEPTH_TEST)
+						- false glDiable(GL_DEPTH_TEST)
+
+			DepthMask	- GL_FALSE or GL_TRUE - glDepthMask(DepthMask)
+
+			DepthFunc	- glDepthFunc(DepthFunc)
+
+			StencilEnable	- true	glEnable(GL_STENCIL_TEST)
+							- false glDiable(GL_STENCIL_TEST)
+
+			WriteMask	- glStencilMask(WriteMask)
+
+			GLStencilFace:
+				glStencilOpSeparate(-, StencilFail, DepthFail, Pass)
+				glStencilFuncSeparate(-, StencilFunc, 0, ReadMask)
+
+		///////////////////////////////////////////////////////////*/
 		struct GLDepthState
+		{
+			struct GLStencilFace
+			{
+				uint32 StencilFailOp;
+				uint32 DepthFailOp;
+				uint32 PassOp;
+				
+				uint32 ReadMask;
+				uint32 StencilFunc;
+			};
+
+			bool DepthEnable;
+			int32 DepthMask;
+			int32 DepthFunc;
+
+			bool StencilEnable;
+			uint32 WriteMask;
+			GLStencilFace FrontFace;
+			GLStencilFace BackFace;
+		};
+
+
+		/////////////////////////////////////////////////////////////
+		struct GLRasterizerState
 		{
 
 		};

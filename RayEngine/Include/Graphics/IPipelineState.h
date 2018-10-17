@@ -206,7 +206,7 @@ namespace RayEngine
 			StencilWrite - Identifies a portion of the stencilbuffer
 			available for writeoperations.
 
-			Frontface - Describes stencil operations on frontfacing
+			FrontFace - Describes stencil operations on frontfacing
 			triangles.
 
 			Backface - Describes stencil operations on backfacing
@@ -221,14 +221,14 @@ namespace RayEngine
 			StencilReadMask = -1;
 			StencilWriteMask = -1;
 			
-			Frontface.StencilFailOperation = STENCIL_OPERATION_KEEP
-			Frontface.StencilDepthFailOperation = STENCIL_OPERATION_KEEP
-			Frontface.StencilPassoperation = STENCIL_OPERATION_KEEP
-			Frontface.StencilFunc = COMPARISON_FUNC_ALWAYS
+			FrontFace.StencilFailOperation = STENCIL_OPERATION_KEEP
+			FrontFace.StencilDepthFailOperation = STENCIL_OPERATION_KEEP
+			FrontFace.StencilPassOperation = STENCIL_OPERATION_KEEP
+			FrontFace.StencilFunc = COMPARISON_FUNC_ALWAYS
 
 			BackFace.StencilFailOperation = STENCIL_OPERATION_KEEP
 			BackFace.StencilDepthFailOperation = STENCIL_OPERATION_KEEP
-			BackFace.StencilPassoperation = STENCIL_OPERATION_KEEP
+			BackFace.StencilPassOperation = STENCIL_OPERATION_KEEP
 			BackFace.StencilFunc = COMPARISON_FUNC_ALWAYS
 
 		////////////////////////////////////////////////////////////*/
@@ -242,7 +242,7 @@ namespace RayEngine
 			uint8 StencilReadMask;
 			uint8 StencilWriteMask;
 
-			StencilOperationInfo Frontface;
+			StencilOperationInfo FrontFace;
 			StencilOperationInfo BackFace;
 		};
 

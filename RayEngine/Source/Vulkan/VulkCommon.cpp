@@ -218,7 +218,7 @@ namespace RayEngine
 		{
 			VkStencilOpState state = {};
 			state.failOp = ReToVkStencilOp(info.StencilFailOperation);
-			state.passOp = ReToVkStencilOp(info.StencilPassoperation);
+			state.passOp = ReToVkStencilOp(info.StencilPassOperation);
 			state.depthFailOp = ReToVkStencilOp(info.StencilDepthFailOperation);
 			state.compareOp = ReToVkCompareOp(info.StencilFunc);
 			

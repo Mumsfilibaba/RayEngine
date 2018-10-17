@@ -195,7 +195,7 @@ namespace RayEngine
 
 			desc.stencilTestEnable = info.StencilEnable ? VK_TRUE : VK_FALSE;
 
-			desc.front = ReToVkStencilOpState(info.Frontface);
+			desc.front = ReToVkStencilOpState(info.FrontFace);
 			desc.back = ReToVkStencilOpState(info.BackFace);
 			
 			desc.minDepthBounds = 0.0f;

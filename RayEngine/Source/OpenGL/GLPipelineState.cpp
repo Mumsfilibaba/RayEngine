@@ -182,7 +182,30 @@ namespace RayEngine
 		/////////////////////////////////////////////////////////////
 		void GLPipelineState::CreateDepthState(const PipelineStateInfo& info)
 		{
+			m_DepthState.DepthEnable = info.GraphicsPipeline.DepthStencilState.DepthEnable;
+			m_DepthState.DepthFunc = ComparisonFuncToGL(info.GraphicsPipeline.DepthStencilState.DepthFunc);
+			
+			if (info.GraphicsPipeline.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ALL)
+				m_DepthState.DepthMask = GL_TRUE;
+			else if (info.GraphicsPipeline.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ZERO)
+				m_DepthState.DepthMask = GL_FALSE;
+			else
+				m_DepthState.DepthMask = 0;
 
+			m_DepthState.StencilEnable = info.GraphicsPipeline.DepthStencilState.StencilEnable;
+			m_DepthState.WriteMask = info.GraphicsPipeline.DepthStencilState.StencilWriteMask;
+
+			m_DepthState.FrontFace.StencilFunc = ComparisonFuncToGL(info.GraphicsPipeline.DepthStencilState.FrontFace.StencilFunc);
+			m_DepthState.FrontFace.ReadMask = info.GraphicsPipeline.DepthStencilState.StencilReadMask;
+			m_DepthState.FrontFace.StencilFailOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.FrontFace.StencilFailOperation);
+			m_DepthState.FrontFace.DepthFailOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.FrontFace.StencilDepthFailOperation);
+			m_DepthState.FrontFace.PassOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.FrontFace.StencilPassOperation);
+
+			m_DepthState.BackFace.StencilFunc = ComparisonFuncToGL(info.GraphicsPipeline.DepthStencilState.BackFace.StencilFunc);
+			m_DepthState.BackFace.ReadMask = info.GraphicsPipeline.DepthStencilState.StencilReadMask;
+			m_DepthState.BackFace.StencilFailOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.BackFace.StencilFailOperation);
+			m_DepthState.BackFace.DepthFailOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.BackFace.StencilDepthFailOperation);
+			m_DepthState.BackFace.PassOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.BackFace.StencilPassOperation);
 		}
 	}
 }
