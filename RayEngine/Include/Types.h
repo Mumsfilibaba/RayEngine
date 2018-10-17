@@ -37,14 +37,12 @@ namespace RayEngine
 	typedef float float32;
 
 
-
 	/////////////////////////////////////////////////////////////
 #if defined(UNICODE)
 	typedef wchar_t Tchar;
 #else
 	typedef char Tchar;
 #endif
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -101,7 +99,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum GRAPHICS_API : int32
 	{
@@ -111,7 +108,6 @@ namespace RayEngine
 		GRAPHICS_API_VULKAN = 3,
 		GRAPHICS_API_OPENGL = 4,
 	};
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -125,7 +121,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum RESOURCE_USAGE : int32
 	{
@@ -136,7 +131,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum CPU_ACCESS_FLAG : int32
 	{
@@ -145,8 +139,7 @@ namespace RayEngine
 		CPU_ACCESS_FLAG_WRITE = (1 << 1)
 	};
 
-
-
+	
 	/////////////////////////////////////////////////////////////
 	enum PRIMITIVE_TOPOLOGY : int32
 	{
@@ -158,8 +151,7 @@ namespace RayEngine
 		PRIMITIVE_TOPOLOGY_LINESTRIP = 5,
 	};
 
-
-
+	
 	/////////////////////////////////////////////////////////////
 	enum BLEND_TYPE : int32
 	{
@@ -191,8 +183,7 @@ namespace RayEngine
 		//Blend factor = (1 - BlendFactor[0], 1 - BlendFactor[1], 1 - BlendFactor[2], 1 - BlendFactor[3])
 		BLEND_TYPE_INV_BLEND_FACTOR = 13,
 	};
-
-
+	
 
 	/////////////////////////////////////////////////////////////
 	enum BLEND_OPERATION : int32
@@ -204,8 +195,7 @@ namespace RayEngine
 		BLEND_OPERATION_MIN = 4,
 		BLEND_OPERATION_MAX = 5,
 	};
-
-
+	
 
 	/////////////////////////////////////////////////////////////
 	enum DEPTH_WRITE_MASK : int32
@@ -215,8 +205,7 @@ namespace RayEngine
 		DEPTH_WRITE_MASK_ALL = 2,
 	};
 
-
-
+	
 	/////////////////////////////////////////////////////////////
 	enum COMPARISON_FUNC : int32
 	{
@@ -230,8 +219,7 @@ namespace RayEngine
 		COMPARISON_FUNC_GREATER_EQUAL = 7,
 		COMPARISON_FUNC_ALWAYS = 8
 	};
-
-
+	
 
 	/////////////////////////////////////////////////////////////
 	enum STENCIL_OPERATION : int32
@@ -246,7 +234,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum FILL_MODE : int32
 	{
@@ -254,7 +241,6 @@ namespace RayEngine
 		FILL_MODE_SOLID = 1,
 		FILL_MODE_WIREFRAME = 2,
 	};
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -265,7 +251,6 @@ namespace RayEngine
 		CULL_MODE_FRONT = 2,
 		CULL_MODE_NONE = 3,
 	};
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -281,7 +266,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum MSAA_SAMPLE_COUNT : int32
 	{
@@ -292,8 +276,6 @@ namespace RayEngine
 		MSAA_SAMPLE_COUNT_8 = 8,
 		MSAA_SAMPLE_COUNT_16 = 16
 	};
-
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -309,7 +291,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum SHADER_TYPE : int32
 	{
@@ -323,7 +304,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum PIPELINE_TYPE : int32
 	{
@@ -331,7 +311,6 @@ namespace RayEngine
 		PIPELINE_TYPE_GRAPHICS = 1,
 		PIPELINE_TYPE_COMPUTE = 2,
 	};
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -344,7 +323,6 @@ namespace RayEngine
 		SAMPLER_ADRESS_MODE_MIRROR = 4,
 		SAMPLER_ADRESS_MODE_MIRROR_ONCE = 5
 	};
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -390,7 +368,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum VIEWDIMENSION : int32
 	{
@@ -408,7 +385,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum IMAGE_EXTENSION : int32
 	{
@@ -421,7 +397,6 @@ namespace RayEngine
 	};
 
 
-
 	/////////////////////////////////////////////////////////////
 	enum RESOURCE_MAP_FLAG : int32
 	{
@@ -429,7 +404,6 @@ namespace RayEngine
 		RESOURCE_MAP_FLAG_READ = 1,
 		RESOURCE_MAP_FLAG_WRITE = 2,
 	};
-
 
 
 	/////////////////////////////////////////////////////////////
@@ -446,30 +420,48 @@ namespace RayEngine
 	};
 
 
+	/*///////////////////////////////////////////////////////////
+		
+		StencilFailOperation - Operation to perform on stencil
+		buffer if stencil test fails.
 
-	/////////////////////////////////////////////////////////////
+		StencilDepthFailOperation - Operation to perform on stencil
+		buffer if stencil if depth test fails.
+
+		StencilPassoperation - Operation to perform on stencil
+		buffer if stencil test succeeds.
+
+		StencilFunc - Function used to compare the old stencil 
+		data with the new.
+
+		DEFUALT STATE:
+		StencilFailOperation = STENCIL_OPERATION_KEEP
+		StencilDepthFailOperation = STENCIL_OPERATION_KEEP
+		StencilPassoperation = STENCIL_OPERATION_KEEP
+		StencilFunc = COMPARISON_FUNC_ALWAYS
+
+	///////////////////////////////////////////////////////////*/
 	struct StencilOperationInfo
 	{
-	public:
-		StencilOperationInfo() {};
-		~StencilOperationInfo() {};
-
-	public:
-		STENCIL_OPERATION StencilFailOperation = STENCIL_OPERATION_KEEP;
-		STENCIL_OPERATION StencilDepthFailOperation = STENCIL_OPERATION_KEEP;
-		STENCIL_OPERATION StencilPassoperation = STENCIL_OPERATION_KEEP;
-		COMPARISON_FUNC StencilFunc = COMPARISON_FUNC_ALWAYS;
+		STENCIL_OPERATION StencilFailOperation;
+		STENCIL_OPERATION StencilDepthFailOperation;
+		STENCIL_OPERATION StencilPassoperation;
+		COMPARISON_FUNC StencilFunc;
 	};
-
 
 
 	/////////////////////////////////////////////////////////////
 	namespace Type
 	{
-		template<typename T, typename U> struct IsSameType { static constexpr bool Value = false; };
-		template<typename T> struct IsSameType<T, T> { static constexpr bool Value = true; };
+		template<typename T, typename U> struct IsSameType 
+		{ 
+			static constexpr bool Value = false; 
+		};
 
-
+		template<typename T> struct IsSameType<T, T>
+		{ 
+			static constexpr bool Value = true; 
+		};
 
 		/////////////////////////////////////////////////////////////
 		template<typename T, typename U>

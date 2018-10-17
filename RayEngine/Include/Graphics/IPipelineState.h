@@ -32,7 +32,6 @@ namespace RayEngine
 		class IRootLayout;
 
 
-
 		/////////////////////////////////////////////////////////////
 		enum ELEMENT_STEP_TYPE : int32
 		{
@@ -40,7 +39,6 @@ namespace RayEngine
 			ELEMENT_STEP_TYPE_VERTEX = 1,
 			ELEMENT_STEP_TYPE_INSTANCE = 2,
 		};
-
 
 
 		/*////////////////////////////////////////////////////////////
@@ -95,7 +93,6 @@ namespace RayEngine
 		};
 
 
-
 		/*////////////////////////////////////////////////////////////
 
 			A structure containing an array of InputElementInfo.
@@ -112,7 +109,6 @@ namespace RayEngine
 			InputElementInfo* pElements;
 			int32 ElementCount;
 		};
-
 
 
 		/*////////////////////////////////////////////////////////////
@@ -154,26 +150,39 @@ namespace RayEngine
 			rendering lineprimitives or wireframefillmodes. If set
 			to true then MultisampleEnable should be set to false.
 
+			DEFUALT STATE:
+			ConservativeRasterizerEnable = false;
+			ForcedSampleCount = 0;
+			FillMode = FILL_MODE_SOLID;
+			CullMode = CULL_MODE_BACK;
+			FrontCounterClockwise = false;
+			DepthClipEnable = true;
+			DepthBias = 0;
+			DepthBiasClamp = 0.0f;
+			SlopeScaleDepthBias = 0.0f;
+			ScissorEnable = false;
+			MultisampleEnable = false;
+			AntialiasedLineEnable = false;
+
 		////////////////////////////////////////////////////////////*/
 		struct RasterizerStateInfo
 		{
-			bool ConservativeRasterizerEnable = false;
-			int32 ForcedSampleCount = 0;
+			bool ConservativeRasterizerEnable;
+			int32 ForcedSampleCount;
 
-			FILL_MODE FillMode = FILL_MODE_SOLID;
-			CULL_MODE CullMode = CULL_MODE_BACK;
-			bool FrontCounterClockwise = false;
+			FILL_MODE FillMode;
+			CULL_MODE CullMode;
+			bool FrontCounterClockwise;
 			
-			bool DepthClipEnable = true;
-			int32 DepthBias = 0;
-			float DepthBiasClamp = 0.0f;
-			float SlopeScaleDepthBias = 0.0f;
+			bool DepthClipEnable;
+			int32 DepthBias;
+			float DepthBiasClamp;
+			float SlopeScaleDepthBias;
 
-			bool ScissorEnable = false;
-			bool MultisampleEnable = false;
-			bool AntialiasedLineEnable = false;
+			bool ScissorEnable;
+			bool MultisampleEnable;
+			bool AntialiasedLineEnable;
 		};
-
 
 
 		/*////////////////////////////////////////////////////////////
@@ -203,21 +212,39 @@ namespace RayEngine
 			Backface - Describes stencil operations on backfacing
 			triangles.
 
+			DEFAULT STATE:
+			DepthEnable = true;
+			DepthWriteMask = DEPTH_WRITE_MASK_ALL;
+			DepthFunc = COMPARISON_FUNC_LESS;
+
+			StencilEnable = false;
+			StencilReadMask = -1;
+			StencilWriteMask = -1;
+			
+			Frontface.StencilFailOperation = STENCIL_OPERATION_KEEP
+			Frontface.StencilDepthFailOperation = STENCIL_OPERATION_KEEP
+			Frontface.StencilPassoperation = STENCIL_OPERATION_KEEP
+			Frontface.StencilFunc = COMPARISON_FUNC_ALWAYS
+
+			BackFace.StencilFailOperation = STENCIL_OPERATION_KEEP
+			BackFace.StencilDepthFailOperation = STENCIL_OPERATION_KEEP
+			BackFace.StencilPassoperation = STENCIL_OPERATION_KEEP
+			BackFace.StencilFunc = COMPARISON_FUNC_ALWAYS
+
 		////////////////////////////////////////////////////////////*/
 		struct DepthStencilStateInfo
 		{
-			bool DepthEnable = true;
-			DEPTH_WRITE_MASK DepthWriteMask = DEPTH_WRITE_MASK_ALL;
-			COMPARISON_FUNC DepthFunc = COMPARISON_FUNC_LESS;
+			bool DepthEnable;
+			DEPTH_WRITE_MASK DepthWriteMask;
+			COMPARISON_FUNC DepthFunc;
 			
-			bool StencilEnable = false;
-			uint8 StencilReadMask = -1;
-			uint8 StencilWriteMask = -1;
+			bool StencilEnable;
+			uint8 StencilReadMask;
+			uint8 StencilWriteMask;
 
 			StencilOperationInfo Frontface;
 			StencilOperationInfo BackFace;
 		};
-
 
 
 		/*////////////////////////////////////////////////////////////
@@ -247,19 +274,28 @@ namespace RayEngine
 			RenderTargetWriteMask - Mask that enables different
 			components to take part in the blendoperation.
 
+			DEFAULT STATE:
+			BlendEnable = false
+			SrcBlend = BLEND_TYPE_ONE
+			DstBlend = BLEND_TYPE_ZERO
+			BlendOperation = BLEND_OPERATION_ADD
+			SrcAlphaBlend = BLEND_TYPE_ONE
+			DstAlphaBlend = BLEND_TYPE_ZERO
+			AlphaBlendOperation = BLEND_OPERATION_ADD
+			RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL
+
 		////////////////////////////////////////////////////////////*/
 		struct RenderTargetBlendInfo
 		{
-			bool BlendEnable = false;
-			BLEND_TYPE SrcBlend = BLEND_TYPE_ONE;
-			BLEND_TYPE DstBlend = BLEND_TYPE_ZERO;
-			BLEND_OPERATION BlendOperation = BLEND_OPERATION_ADD;
-			BLEND_TYPE SrcAlphaBlend = BLEND_TYPE_ONE;
-			BLEND_TYPE DstAlphaBlend = BLEND_TYPE_ZERO;
-			BLEND_OPERATION AlphaBlendOperation = BLEND_OPERATION_ADD;
-			uint8 RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL;
+			bool BlendEnable;
+			BLEND_TYPE SrcBlend;
+			BLEND_TYPE DstBlend;
+			BLEND_OPERATION BlendOperation;
+			BLEND_TYPE SrcAlphaBlend;
+			BLEND_TYPE DstAlphaBlend;
+			BLEND_OPERATION AlphaBlendOperation;
+			uint8 RenderTargetWriteMask;
 		};
-
 
 
 		/*////////////////////////////////////////////////////////////
@@ -286,16 +322,20 @@ namespace RayEngine
 			RenderTargets - A structure describing each rendertarget
 			that can be bound to the pipeline at one time.
 
+			DEFAULT STATE:
+			AlphaToCoverageEnable = false;
+			IndependentBlendEnable = false;
+			LogicOpEnable = false;
+
 		////////////////////////////////////////////////////////////*/
 		struct BlendStateInfo
 		{
-			bool AlphaToCoverageEnable = false;
-			bool IndependentBlendEnable = false;
-			bool LogicOpEnable = false;
+			bool AlphaToCoverageEnable;
+			bool IndependentBlendEnable;
+			bool LogicOpEnable;
 			float BlendFactor[4];
 			RenderTargetBlendInfo RenderTargets[8];
 		};
-
 
 
 		/*////////////////////////////////////////////////////////////
@@ -328,7 +368,6 @@ namespace RayEngine
 			{
 				IShader* pComputeShader;
 			};
-
 
 
 			/*////////////////////////////////////////////////////////////
@@ -407,7 +446,6 @@ namespace RayEngine
 				ComputePipelineInfo ComputePipeline;
 			};
 		};
-
 
 
 		/////////////////////////////////////////////////////////////

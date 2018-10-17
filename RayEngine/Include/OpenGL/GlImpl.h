@@ -261,6 +261,8 @@ namespace RayEngine
 #define GL_DYNAMIC_READ 0x88E9
 #define GL_DYNAMIC_COPY 0x88EA
 
+//Types
+#define GL_HALF_FLOAT 0x140B
 
 //////////////
 ///TYPEDEFS///

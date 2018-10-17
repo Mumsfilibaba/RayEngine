@@ -393,9 +393,6 @@
     <ClInclude Include="Include\OpenGL\GLFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\OpenGL\GLContextState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\OpenGL\GLShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -738,9 +735,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\OpenGL\GLCommon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\OpenGL\GLContextState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\OpenGL\GLShader.cpp">

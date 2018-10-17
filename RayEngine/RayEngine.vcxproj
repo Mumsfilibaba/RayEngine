@@ -302,7 +302,6 @@
     <ClInclude Include="Source\Android\AndroidKeycodes.h" />
     <ClInclude Include="Source\Android\AndroidSensor.h" />
     <ClInclude Include="Include\DX11\DX11ShaderConstantBlock.h" />
-    <ClInclude Include="Include\OpenGL\GLContextState.h" />
     <ClInclude Include="Source\Win32\Win32KeyCodes.h" />
     <ClInclude Include="Source\Win32\WndclassCache.h" />
   </ItemGroup>
@@ -365,7 +364,6 @@
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
     <ClCompile Include="Source\OpenGL\GLCommon.cpp" />
-    <ClCompile Include="Source\OpenGL\GLContextState.cpp" />
     <ClCompile Include="Source\OpenGL\GLDevice.cpp" />
     <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp" />
     <ClCompile Include="Source\OpenGL\GLFactory.cpp" />

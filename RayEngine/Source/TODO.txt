@@ -1,12 +1,13 @@
 TODO:
--HelloTriangle - Sample
--HelloTextures - Sample
--HelloBuffers - Sample
--HelloCompute - Sample
+-OpenGL triangle
+-D3D12 Triangle
+-Vulkan triangle
+-Documentation
+-Shaders does not load their own source
+
 
 -Log output instead of actual log
 -Implement GetInfo() in all interfaces
-
 -AdapterInfo - Inline
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize

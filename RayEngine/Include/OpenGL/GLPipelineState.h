@@ -33,14 +33,29 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
-		struct GLInputLayout
+		struct GLInputLayoutElement
 		{
-			uint32 Index;
 			int32 Type;
 			int32 Size;
 			int32 Stride;
 			int32 Offset;
 			int32 Divisor;
+			bool Normalized;
+		};
+
+
+		/////////////////////////////////////////////////////////////
+		struct GLInputLayout
+		{
+			GLInputLayoutElement* pElements;
+			uint32 ElementCount;
+		};
+
+
+		/////////////////////////////////////////////////////////////
+		struct GLDepthState
+		{
+
 		};
 
 
@@ -65,6 +80,21 @@ namespace RayEngine
 
 			IObject::CounterType AddRef() override final;
 
+			inline const GLInputLayout& GetInputLayout() const
+			{
+				return m_InputLayout;
+			}
+
+			inline const GLDepthState& GetDepthState() const
+			{
+				return m_DepthState;
+			}
+
+			inline uint32 GetProgram() const
+			{
+				return m_Program;
+			}
+
 		private:
 			void Create(const PipelineStateInfo& info);
 
@@ -73,6 +103,10 @@ namespace RayEngine
 			void CreateComputePipeline(const PipelineStateInfo& info);
 
 			void LinkShaders();
+
+			void CreateInputLayout(const PipelineStateInfo& info);
+
+			void CreateDepthState(const PipelineStateInfo& info);
 
 		private:
 			GLDevice* m_Device;
@@ -83,9 +117,12 @@ namespace RayEngine
 			GLShader* m_PS;
 			GLShader* m_CS;
 
+			GLInputLayout m_InputLayout;
+			GLDepthState m_DepthState;
+
 			PIPELINE_TYPE m_Type;
 
-			int32 m_Program;
+			uint32 m_Program;
 
 			IObject::CounterType m_References;
 		};

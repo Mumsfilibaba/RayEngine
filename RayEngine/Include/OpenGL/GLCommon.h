@@ -44,6 +44,9 @@ namespace RayEngine
 		HWND CreateDummyWindow();
 #endif
 
+		int32 GetVertexComponents(FORMAT format);
+		int32 GetVertexFormat(FORMAT format);
+		bool NormalizedVertexFormat(FORMAT format);
 		GLNativeContext GetCurrentContext();
 		int32 ShaderTypeToGL(SHADER_TYPE type);
 		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);

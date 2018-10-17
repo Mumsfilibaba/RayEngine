@@ -24,6 +24,9 @@ namespace RayEngine
 			{
 				glDeleteProgram(m_Program);
 			}
+
+			delete[] m_InputLayout.pElements;
+			m_InputLayout.pElements = nullptr;
 		}
 
 
@@ -114,6 +117,7 @@ namespace RayEngine
 			}
 
 			LinkShaders();
+			CreateInputLayout(info);
 		}
 
 
@@ -153,6 +157,32 @@ namespace RayEngine
 				message += log.data();
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, message);
 			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		void GLPipelineState::CreateInputLayout(const PipelineStateInfo& info)
+		{
+			m_InputLayout.ElementCount = info.GraphicsPipeline.InputLayout.ElementCount;
+			m_InputLayout.pElements = new GLInputLayoutElement[m_InputLayout.ElementCount];
+
+			InputElementInfo* pElements = info.GraphicsPipeline.InputLayout.pElements;
+			for (uint32 i = 0; i < m_InputLayout.ElementCount; i++)
+			{
+				m_InputLayout.pElements[i].Stride = pElements[i].StrideBytes;
+				m_InputLayout.pElements[i].Offset = pElements[i].ElementOffset;
+				m_InputLayout.pElements[i].Type = GetVertexFormat(pElements[i].Format);
+				m_InputLayout.pElements[i].Size = GetVertexComponents(pElements[i].Format);
+				m_InputLayout.pElements[i].Normalized = NormalizedVertexFormat(pElements[i].Format);
+				m_InputLayout.pElements[i].Divisor = pElements[i].DataStepRate;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		void GLPipelineState::CreateDepthState(const PipelineStateInfo& info)
+		{
+
 		}
 	}
 }

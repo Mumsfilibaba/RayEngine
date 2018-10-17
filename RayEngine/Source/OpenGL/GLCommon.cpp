@@ -181,6 +181,155 @@ namespace RayEngine
 
 
 		/////////////////////////////////////////////////////////////
+		int32 GetVertexComponents(FORMAT format)
+		{
+			switch (format)
+			{
+			case FORMAT_R32G32B32A32_FLOAT:
+			case FORMAT_R32G32B32A32_UINT:
+			case FORMAT_R32G32B32A32_SINT:
+			case FORMAT_R16G16B16A16_FLOAT:
+			case FORMAT_R16G16B16A16_UNORM:
+			case FORMAT_R16G16B16A16_UINT:
+			case FORMAT_R16G16B16A16_SNORM:
+			case FORMAT_R16G16B16A16_SINT:
+			case FORMAT_R8G8B8A8_UNORM:
+			case FORMAT_R8G8B8A8_UINT:
+			case FORMAT_R8G8B8A8_SNORM:
+			case FORMAT_R8G8B8A8_SINT:
+				return 4;
+			
+			case FORMAT_R32G32B32_FLOAT:
+			case FORMAT_R32G32B32_UINT:
+			case FORMAT_R32G32B32_SINT:
+				return 3;
+			
+			case FORMAT_R32G32_FLOAT:
+			case FORMAT_R32G32_UINT:
+			case FORMAT_R32G32_SINT:
+			case FORMAT_R16G16_FLOAT:
+			case FORMAT_R16G16_UNORM:
+			case FORMAT_R16G16_UINT:
+			case FORMAT_R16G16_SNORM:
+			case FORMAT_R16G16_SINT:
+			case FORMAT_R8G8_UNORM:
+			case FORMAT_R8G8_UINT:
+			case FORMAT_R8G8_SNORM:
+			case FORMAT_R8G8_SINT:
+			case FORMAT_R16_FLOAT:
+				return 2;
+			
+			case FORMAT_R32_FLOAT:
+			case FORMAT_R32_UINT:
+			case FORMAT_R32_SINT:
+			case FORMAT_R16_UNORM:
+			case FORMAT_R16_UINT:
+			case FORMAT_R16_SNORM:
+			case FORMAT_R16_SINT:
+			case FORMAT_R8_UNORM:
+			case FORMAT_R8_UINT:
+			case FORMAT_R8_SNORM:
+			case FORMAT_R8_SINT:
+				return 1;
+
+			default:
+				return 0;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		int32 GetVertexFormat(FORMAT format)
+		{
+			switch (format)
+			{
+			case FORMAT_R32G32B32A32_FLOAT:
+			case FORMAT_R32G32B32_FLOAT:
+			case FORMAT_R32G32_FLOAT:
+			case FORMAT_R32_FLOAT:
+				return GL_FLOAT;
+
+			case FORMAT_R16G16B16A16_FLOAT:
+			case FORMAT_R16G16_FLOAT:
+			case FORMAT_R16_FLOAT:
+				return GL_HALF_FLOAT;
+
+			case FORMAT_R32G32B32A32_UINT:
+			case FORMAT_R32G32B32_UINT:
+			case FORMAT_R32G32_UINT:
+			case FORMAT_R32_UINT:
+				return GL_UNSIGNED_INT;
+
+			case FORMAT_R32G32B32A32_SINT:
+			case FORMAT_R32G32B32_SINT:
+			case FORMAT_R32G32_SINT:
+			case FORMAT_R32_SINT:
+				return GL_INT;
+
+			case FORMAT_R16G16B16A16_UNORM:
+			case FORMAT_R16G16B16A16_UINT:
+			case FORMAT_R16G16_UNORM:
+			case FORMAT_R16G16_UINT:
+			case FORMAT_R16_UNORM:
+			case FORMAT_R16_UINT:
+				return GL_UNSIGNED_SHORT;
+
+			case FORMAT_R16G16B16A16_SNORM:
+			case FORMAT_R16G16B16A16_SINT:
+			case FORMAT_R16G16_SNORM:
+			case FORMAT_R16G16_SINT:
+			case FORMAT_R16_SNORM:
+			case FORMAT_R16_SINT:
+				return GL_SHORT;
+
+			case FORMAT_R8G8B8A8_SNORM:
+			case FORMAT_R8G8B8A8_SINT:
+			case FORMAT_R8G8_SNORM:
+			case FORMAT_R8G8_SINT:
+			case FORMAT_R8_SNORM:
+			case FORMAT_R8_SINT:
+				return GL_BYTE;
+
+			case FORMAT_R8G8B8A8_UNORM:
+			case FORMAT_R8G8B8A8_UINT:
+			case FORMAT_R8G8_UNORM:
+			case FORMAT_R8G8_UINT:
+			case FORMAT_R8_UNORM:
+			case FORMAT_R8_UINT:
+				return GL_UNSIGNED_BYTE;
+
+			default:
+				return 0;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		bool NormalizedVertexFormat(FORMAT format)
+		{
+			switch (format)
+			{
+			case FORMAT_R16G16B16A16_UNORM:
+			case FORMAT_R16G16_UNORM:
+			case FORMAT_R16_UNORM:
+			case FORMAT_R16G16B16A16_SNORM:
+			case FORMAT_R16G16_SNORM:
+			case FORMAT_R16_SNORM:
+			case FORMAT_R8G8B8A8_SNORM:
+			case FORMAT_R8G8_SNORM:
+			case FORMAT_R8_SNORM:
+			case FORMAT_R8G8B8A8_UNORM:
+			case FORMAT_R8G8_UNORM:
+			case FORMAT_R8_UNORM:
+				return true;
+
+			default:
+				return false;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
 		GLNativeContext GetCurrentContext()
 		{
 #if defined(RE_PLATFORM_WINDOWS)
