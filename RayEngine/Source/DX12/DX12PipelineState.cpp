@@ -177,12 +177,7 @@ namespace RayEngine
 			else if (topology == D3D_PRIMITIVE_TOPOLOGY_POINTLIST)
 				desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 
-
-			if (info.GraphicsPipeline.StripCutEnable)
-				desc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFFFFFF;
-			else
-				desc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
-			
+			desc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
 
 			desc.CachedPSO.CachedBlobSizeInBytes = 0;
 			desc.CachedPSO.pCachedBlob = 0;

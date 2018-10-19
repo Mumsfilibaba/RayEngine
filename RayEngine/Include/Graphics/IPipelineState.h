@@ -400,9 +400,6 @@ namespace RayEngine
 				Topology - The topology to use for the tesselation and
 				geometrystages.
 
-				StripCutEnable - Enable the value -1 to restart the 
-				strip. Requires an indexbuffer.
-
 				pVertexShader - Shader for the vertexstage
 
 				pHullShader - Shader for the tesselationstage
@@ -429,7 +426,6 @@ namespace RayEngine
 				uint32 SampleMask;
 
 				PRIMITIVE_TOPOLOGY Topology;
-				bool StripCutEnable;
 
 				IShader* pVertexShader;
 				IShader* pHullShader;

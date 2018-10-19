@@ -546,7 +546,6 @@ namespace RayEngine
 		}
 
 
-
 		/////////////////////////////////////////////////////////////
 		void VulkPipelineState::CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateInfo& info)
 		{
@@ -554,9 +553,8 @@ namespace RayEngine
 			desc.pNext = nullptr;
 			desc.flags = 0;
 			desc.topology = ReToVkPrimitiveTopology(info.GraphicsPipeline.Topology);
-			desc.primitiveRestartEnable = info.GraphicsPipeline.StripCutEnable ? VK_TRUE : VK_FALSE;
+			desc.primitiveRestartEnable = VK_FALSE;
 		}
-
 
 
 		/////////////////////////////////////////////////////////////
