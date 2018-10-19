@@ -23,6 +23,8 @@ failure and or malfunction of any kind.
 #include <string>
 #include "IDeviceObject.h"
 
+#define RE_MAX_RENDERTARGETS 8
+
 namespace RayEngine
 {
 	namespace Graphics
@@ -294,7 +296,7 @@ namespace RayEngine
 			BLEND_TYPE SrcAlphaBlend;
 			BLEND_TYPE DstAlphaBlend;
 			BLEND_OPERATION AlphaBlendOperation;
-			uint8 RenderTargetWriteMask;
+			uint8 WriteMask;
 		};
 
 
@@ -334,7 +336,7 @@ namespace RayEngine
 			bool IndependentBlendEnable;
 			bool LogicOpEnable;
 			float BlendFactor[4];
-			RenderTargetBlendInfo RenderTargets[8];
+			RenderTargetBlendInfo RenderTargets[RE_MAX_RENDERTARGETS];
 		};
 
 

@@ -282,62 +282,6 @@ int main(int args, char* argsv[])
 			{
 				window.SendQuitEvent(0);
 			}
-			else if (event.Type == EVENT_TYPE_TOUCHPRESSED)
-			{
-				if (event.Touch.Position.x < (info.ScreenWidth / 2))
-					Keyboard::HideVirtualKeyboardVisible();
-				else
-					Keyboard::ShowVirtualKeyboardVisible();
-			}
-			else if (event.Type == EVENT_TYPE_FOCUSCHANGED)
-			{
-				static ColorF oldColor = bgColor;
-				if (event.FocusChanged.HasFocus)
-				{
-					bgColor = oldColor;
-				}
-				else
-				{
-					oldColor = bgColor;
-					bgColor = ColorF::RED;
-				}
-			}
-			else if (event.Type == EVENT_TYPE_KEYPRESSED)
-			{
-				if (event.Key.KeyCode == KEY_0)
-					bgColor = ColorF::CORNFLOWERBLUE;
-				else if (event.Key.KeyCode == KEY_1)
-					bgColor = ColorF::SOFTRED;
-				else if (event.Key.KeyCode == KEY_2)
-					bgColor = ColorF::SOFTGREEN;
-				else if (event.Key.KeyCode == KEY_3)
-					bgColor = ColorF::SOFTBLUE;
-				else if (event.Key.KeyCode == KEY_4)
-					bgColor = ColorF::SOFTYELLOW;
-				else if (event.Key.KeyCode == KEY_5)
-					bgColor = ColorF::SOFTGRAY;
-				else if (event.Key.KeyCode == KEY_6)
-					bgColor = ColorF::RED;
-				else if (event.Key.KeyCode == KEY_7)
-					bgColor = ColorF::GREEN;
-				else if (event.Key.KeyCode == KEY_8)
-					bgColor = ColorF::BLUE;
-				else if (event.Key.KeyCode == KEY_9)
-					bgColor = ColorF::WARMWHITE;
-			}
-			else if (event.Type == EVENT_TYPE_SENSORCHANGED)
-			{
-				if (event.Sensor.Type == SENSOR_TYPE_ACCELEROMETER)
-				{
-					strength = (event.Sensor.Data.Accelerometer.x + 11.0f) / 22.0f;
-					lastAccelerometer = event.Sensor.Data.Accelerometer;
-	
-					if (strength > 1.0f)
-						strength = 1.0f;
-					else if (strength < 0.0f)
-						strength = 0.0f;
-				}
-			}
 			else if (event.Type == EVENT_TYPE_RESIZE)
 			{
 				pSwapchain->Resize(event.Resize.Width, event.Resize.Height);

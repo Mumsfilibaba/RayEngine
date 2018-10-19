@@ -476,19 +476,19 @@ namespace RayEngine
 				desc.RenderTarget[i].BlendOpAlpha = ReToDX11BlendOp(info.GraphicsPipeline.BlendState.RenderTargets[i].AlphaBlendOperation);
 
 				uint8 renderTargetWriteMask = 0;
-				if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask == COLOR_WRITE_ENABLE_ALL)
+				if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask == COLOR_WRITE_ENABLE_ALL)
 				{
 					renderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 				}
 				else
 				{
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_RED)
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_RED;
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_GREEN)
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_GREEN;
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_BLUE)
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_BLUE;
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].RenderTargetWriteMask & COLOR_WRITE_ENABLE_ALPHA)
+					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_ALPHA;
 				}
 

@@ -164,12 +164,12 @@ namespace RayEngine
 			wcex.cbClsExtra = 0;
 			wcex.cbWndExtra = 0;
 			wcex.hInstance = GetModuleHandle(0);
-			wcex.hIcon = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+			wcex.hIcon = LoadIcon(wcex.hInstance, static_cast<LPCSTR>(IDI_APPLICATION));
 			wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 			wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 			wcex.lpszMenuName = NULL;
 			wcex.lpszClassName = RE_GL_CLASS_NAME;
-			wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+			wcex.hIconSm = LoadIcon(wcex.hInstance, static_cast<LPCSTR>(IDI_APPLICATION));
 			HWND dummyWindow = 0;
 			if (System::WndclassCache::Register(wcex))
 			{
@@ -405,6 +405,64 @@ namespace RayEngine
 				return GL_INCR;
 			case STENCIL_OPERATION_DECR:
 				return GL_DECR;
+			default:
+				return 0;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 BlendTypeToGL(BLEND_TYPE type)
+		{
+			switch (type)
+			{
+			case BLEND_TYPE_ZERO:
+				return GL_ZERO;
+			case BLEND_TYPE_ONE:
+				return GL_BLEND;
+			case BLEND_TYPE_SRC_COLOR:
+				return GL_SRC_COLOR;
+			case BLEND_TYPE_INV_SRC_COLOR:
+				return GL_ONE_MINUS_SRC_COLOR;
+			case BLEND_TYPE_SRC_ALPHA:
+				return GL_SRC_ALPHA;
+			case BLEND_TYPE_INV_SRC_ALPHA:
+				return GL_ONE_MINUS_SRC_ALPHA;
+			case BLEND_TYPE_DEST_ALPHA:
+				return GL_DST_ALPHA;
+			case BLEND_TYPE_INV_DEST_ALPHA:
+				return GL_ONE_MINUS_DST_ALPHA;
+			case BLEND_TYPE_DEST_COLOR:
+				return GL_DST_COLOR;
+			case BLEND_TYPE_INV_DEST_COLOR:
+				return GL_ONE_MINUS_DST_COLOR;
+			case BLEND_TYPE_SRC_ALPHA_SAT:
+				return GL_SRC_ALPHA_SATURATE;
+			case BLEND_TYPE_BLEND_FACTOR:
+				return GL_CONSTANT_COLOR;
+			case BLEND_TYPE_INV_BLEND_FACTOR:
+				return GL_ONE_MINUS_CONSTANT_COLOR;
+			default:
+				return 0;
+			}
+		}
+
+
+		/////////////////////////////////////////////////////////////
+		uint32 BlendOperationToGL(BLEND_OPERATION type)
+		{
+			switch (type)
+			{
+			case BLEND_OPERATION_ADD:
+				return GL_FUNC_ADD;
+			case BLEND_OPERATION_SUBTRACT:
+				return GL_FUNC_SUBTRACT;
+			case BLEND_OPERATION_REV_SUBTRACT:
+				return GL_FUNC_REVERSE_SUBTRACT;
+			case BLEND_OPERATION_MIN:
+				return GL_MIN;
+			case BLEND_OPERATION_MAX:
+				return GL_MAX;
 			default:
 				return 0;
 			}

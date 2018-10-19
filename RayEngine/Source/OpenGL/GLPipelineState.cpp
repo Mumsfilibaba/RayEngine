@@ -6,6 +6,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLPipelineState::GLPipelineState(IDevice* pDevice, const PipelineStateInfo& info)
 			: m_Device(nullptr),
 			m_References(0)
@@ -17,7 +18,7 @@ namespace RayEngine
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLPipelineState::~GLPipelineState()
 		{
 			if (glIsProgram(m_Program))
@@ -30,35 +31,35 @@ namespace RayEngine
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		PIPELINE_TYPE GLPipelineState::GetPipelineType() const
 		{
 			return m_Type;
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::SetName(const std::string& name)
 		{
 			//Not relevant
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<GLDevice>();
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLPipelineState::GetReferenceCount() const
 		{
 			return m_References;
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLPipelineState::Release()
 		{
 			IObject::CounterType refs = --m_References;
@@ -69,14 +70,14 @@ namespace RayEngine
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLPipelineState::AddRef()
 		{
 			return ++m_References;
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::Create(const PipelineStateInfo& info)
 		{
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
@@ -86,7 +87,7 @@ namespace RayEngine
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::CreateGraphicsPipeline(const PipelineStateInfo& info)
 		{
 			m_Program = glCreateProgram();
@@ -118,10 +119,13 @@ namespace RayEngine
 
 			LinkShaders();
 			CreateInputLayout(info);
+			CreateDepthState(info);
+			CreateRasterizerState(info);
+			CreateBlendState(info);
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::CreateComputePipeline(const PipelineStateInfo& info)
 		{
 			m_Program = glCreateProgram();
@@ -135,7 +139,7 @@ namespace RayEngine
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::LinkShaders()
 		{
 			using namespace System;
@@ -160,7 +164,7 @@ namespace RayEngine
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::CreateInputLayout(const PipelineStateInfo& info)
 		{
 			m_InputLayout.ElementCount = info.GraphicsPipeline.InputLayout.ElementCount;
@@ -179,7 +183,7 @@ namespace RayEngine
 		}
 
 
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::CreateDepthState(const PipelineStateInfo& info)
 		{
 			m_DepthState.DepthEnable = info.GraphicsPipeline.DepthStencilState.DepthEnable;
@@ -206,6 +210,83 @@ namespace RayEngine
 			m_DepthState.BackFace.StencilFailOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.BackFace.StencilFailOperation);
 			m_DepthState.BackFace.DepthFailOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.BackFace.StencilDepthFailOperation);
 			m_DepthState.BackFace.PassOp = StencilOpToGL(info.GraphicsPipeline.DepthStencilState.BackFace.StencilPassOperation);
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLPipelineState::CreateRasterizerState(const PipelineStateInfo& info)
+		{
+			m_RasterizerState.ConservativeRasterizerEnable = info.GraphicsPipeline.RasterizerState.ConservativeRasterizerEnable;
+			
+			if (info.GraphicsPipeline.RasterizerState.FillMode == FILL_MODE_SOLID)
+				m_RasterizerState.PolygonMode = GL_FILL;
+			else if (info.GraphicsPipeline.RasterizerState.FillMode == FILL_MODE_WIREFRAME)
+				m_RasterizerState.PolygonMode = GL_LINE;
+			
+			if (info.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_BACK)
+				m_RasterizerState.CullMode = GL_BACK;
+			else if (info.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_FRONT)
+				m_RasterizerState.CullMode = GL_FRONT;
+
+			if (info.GraphicsPipeline.RasterizerState.FrontCounterClockwise)
+				m_RasterizerState.FrontFace = GL_CCW;
+			else
+				m_RasterizerState.FrontFace = GL_CW;
+
+			m_RasterizerState.DepthClipEnable = info.GraphicsPipeline.RasterizerState.DepthClipEnable;
+			m_RasterizerState.DepthBias = (float)info.GraphicsPipeline.RasterizerState.DepthBias;
+			m_RasterizerState.DepthBiasClamp = info.GraphicsPipeline.RasterizerState.DepthBiasClamp;
+			m_RasterizerState.SlopeScaleDepthBias = info.GraphicsPipeline.RasterizerState.SlopeScaleDepthBias;
+
+			m_RasterizerState.AntialiasedLineEnable = info.GraphicsPipeline.RasterizerState.AntialiasedLineEnable;
+			m_RasterizerState.MultisampleEnable = info.GraphicsPipeline.RasterizerState.MultisampleEnable;
+			m_RasterizerState.ScissorEnable = info.GraphicsPipeline.RasterizerState.ScissorEnable;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLPipelineState::CreateBlendState(const PipelineStateInfo& info)
+		{
+			m_BlendState.AlphaToCoverageEnable = info.GraphicsPipeline.BlendState.AlphaToCoverageEnable;
+			m_BlendState.IndependentBlendEnable = info.GraphicsPipeline.BlendState.IndependentBlendEnable;
+			m_BlendState.LogicOpEnable = info.GraphicsPipeline.BlendState.LogicOpEnable;
+			
+			for (uint32 i = 0; i < 4; i++)
+				m_BlendState.BlendFactor[i] = info.GraphicsPipeline.BlendState.BlendFactor[i];
+
+			for (uint32 i = 0; i < RE_MAX_RENDERTARGETS; i++)
+			{
+				m_BlendState.RenderTargets[i].blendEnable = info.GraphicsPipeline.BlendState.RenderTargets[i].BlendEnable;
+
+				m_BlendState.RenderTargets[i].SrcBlend = BlendTypeToGL(info.GraphicsPipeline.BlendState.RenderTargets[i].SrcBlend);
+				m_BlendState.RenderTargets[i].DstBlend = BlendTypeToGL(info.GraphicsPipeline.BlendState.RenderTargets[i].DstBlend);
+				m_BlendState.RenderTargets[i].SrcAlphaBlend = BlendTypeToGL(info.GraphicsPipeline.BlendState.RenderTargets[i].SrcAlphaBlend);
+				m_BlendState.RenderTargets[i].DstAlphaBlend = BlendTypeToGL(info.GraphicsPipeline.BlendState.RenderTargets[i].DstAlphaBlend);
+
+				m_BlendState.RenderTargets[i].BlendOperation = BlendOperationToGL(info.GraphicsPipeline.BlendState.RenderTargets[i].BlendOperation);
+				m_BlendState.RenderTargets[i].AlphaBlendOperation = BlendOperationToGL(info.GraphicsPipeline.BlendState.RenderTargets[i].AlphaBlendOperation);
+
+
+				if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
+					m_BlendState.RenderTargets[i].WriteMask[0] = GL_TRUE;
+				else
+					m_BlendState.RenderTargets[i].WriteMask[0] = GL_FALSE;
+
+				if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
+					m_BlendState.RenderTargets[i].WriteMask[1] = GL_TRUE;
+				else
+					m_BlendState.RenderTargets[i].WriteMask[1] = GL_FALSE;
+
+				if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
+					m_BlendState.RenderTargets[i].WriteMask[2] = GL_TRUE;
+				else
+					m_BlendState.RenderTargets[i].WriteMask[2] = GL_FALSE;
+
+				if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
+					m_BlendState.RenderTargets[i].WriteMask[3] = GL_TRUE;
+				else
+					m_BlendState.RenderTargets[i].WriteMask[3] = GL_FALSE;
+			}
 		}
 	}
 }

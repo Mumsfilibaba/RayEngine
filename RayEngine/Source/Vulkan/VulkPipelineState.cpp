@@ -564,13 +564,13 @@ namespace RayEngine
 		{
 			desc.blendEnable = info.BlendEnable ? VK_TRUE : VK_FALSE;
 
-			if (info.RenderTargetWriteMask & COLOR_WRITE_ENABLE_RED)
+			if (info.WriteMask & COLOR_WRITE_ENABLE_RED)
 				desc.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
-			if (info.RenderTargetWriteMask & COLOR_WRITE_ENABLE_GREEN)
+			if (info.WriteMask & COLOR_WRITE_ENABLE_GREEN)
 				desc.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
-			if (info.RenderTargetWriteMask & COLOR_WRITE_ENABLE_BLUE)
+			if (info.WriteMask & COLOR_WRITE_ENABLE_BLUE)
 				desc.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
-			if (info.RenderTargetWriteMask & COLOR_WRITE_ENABLE_ALPHA)
+			if (info.WriteMask & COLOR_WRITE_ENABLE_ALPHA)
 				desc.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
 
 			desc.srcColorBlendFactor = ReToVkBlendFactor(info.SrcBlend);

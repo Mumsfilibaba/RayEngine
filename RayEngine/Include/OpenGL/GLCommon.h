@@ -51,6 +51,8 @@ namespace RayEngine
 		int32 ShaderTypeToGL(SHADER_TYPE type);
 		uint32 ComparisonFuncToGL(COMPARISON_FUNC func);
 		uint32 StencilOpToGL(STENCIL_OPERATION operation);
+		uint32 BlendTypeToGL(BLEND_TYPE type);
+		uint32 BlendOperationToGL(BLEND_OPERATION type);
 		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);
 	}
 }

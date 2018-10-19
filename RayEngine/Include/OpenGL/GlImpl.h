@@ -264,6 +264,17 @@ namespace RayEngine
 //Types
 #define GL_HALF_FLOAT 0x140B
 
+//BlendFunc
+#define GL_CONSTANT_COLOR 0x8001
+#define GL_ONE_MINUS_CONSTANT_COLOR 0x8002
+
+//BlendEquation
+#define GL_FUNC_ADD 0x8006
+#define GL_FUNC_REVERSE_SUBTRACT 0x800B
+#define GL_FUNC_SUBTRACT 0x800A
+#define GL_MIN 0x8007
+#define GL_MAX 0x8008
+
 //////////////
 ///TYPEDEFS///
 //////////////

@@ -104,7 +104,7 @@ namespace RayEngine
 			m_Shader = glCreateShader(ShaderTypeToGL(m_Type));
 
 			const char* pSrc = src.c_str();
-			int32 len = src.size();
+			int32 len = static_cast<int32>(src.size());
 
 			glShaderSource(m_Shader, 1, &pSrc, &len);
 			glCompileShader(m_Shader);

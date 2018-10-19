@@ -94,10 +94,126 @@ namespace RayEngine
 		};
 
 
-		/////////////////////////////////////////////////////////////
+		/*///////////////////////////////////////////////////////////
+			
+			ConservativeRasterizerEnable
+				true	-	glEnable(CONSERVATIVE_RASTERIZATION_NV)
+				false	-	glDiable(CONSERVATIVE_RASTERIZATION_NV)
+							GL_NV_conservative_raster must be present
+
+			PolygonMode - glPolygonMode(GL_FRONT_AND_BACK, polygonMode)
+
+			CullMode - glCullFace(cullMode)
+
+			FrontFace - glFrontFace(frontFace)
+
+			DepthClipEnable
+				false	- glEnable(GL_DEPTH_CLAMP)
+				true	- glDisable(GL_DEPTH_CLAMP)
+
+			DepthBias, DepthBiasClamp, SlopeScaleDepthBias -
+				PolygonOffsetClampEXT(SlopeScaleDepthBias, DepthBias, DepthBiasClamp)
+
+			AntialiasedLineEnable
+				true -  glEnable(GL_LINE_SMOOTH)
+						glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
+						Blending must be enabled
+				false - glDisable(GL_LINE_SMOOTH)
+
+			ScissorEnable 
+				true	- glEnable(GL_SCISSOR_TEST)
+				false	- glDisable(GL_SCISSOR_TEST)
+
+			MultisampleEnable 
+				true	- glEnable(GL_MULTISAMPLE)
+				false	- glDisable(GL_MULTISAMPLE)
+
+		///////////////////////////////////////////////////////////*/
 		struct GLRasterizerState
 		{
+			bool ConservativeRasterizerEnable;
+			uint32 PolygonMode;
+			uint32 CullMode;
+			uint32 FrontFace;
 
+			bool DepthClipEnable;
+			float DepthBias;
+			float DepthBiasClamp;
+			float SlopeScaleDepthBias;
+
+			bool AntialiasedLineEnable;
+			bool ScissorEnable;
+			bool MultisampleEnable;
+		};
+
+
+		/*///////////////////////////////////////////////////////////
+
+			IndependentBlendEnable 
+				true - RenderTargets index 1 - 7 are used if supported
+				false - RenderTargets[0] is only used
+
+			LogicOpEnable 
+				true  - glEnable(GL_LOGIC_OP)
+				false - glDisable(GL_LOGIC_OP)
+
+			BlendFactor - glBlendColor(BlendFactor[0], BlendFactor[1], BlendFactor[2], BlendFactor[3])
+
+			AlphaToCoverageEnable
+				true	- glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+				false	- glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+ 
+			RenderTargets 
+				if IndependentBlendEnable == true
+					if glBlendFuncSeparatei != nullptr
+						glBlendFuncSeparatei(i, RenderTargets[i].SrcBlend, RenderTargets[i].DstBlend, RenderTargets[i].SrcAlphaBlend, RenderTargets[i].DstAlphaBlend)
+					else
+						//Same as IndependentBlendEnable == false
+						glBlendFuncSeparate(RenderTargets[0].SrcBlend, RenderTargets[0].DstBlend, RenderTargets[0].SrcAlphaBlend, RenderTargets[0].DstAlphaBlend)
+					
+					if glBlendEquationSeparatei != nullptr
+						glBlendEquationSeparatei(i, RenderTargets[i].BlendOperation, RenderTargets[i].AlphaBlendOperation)
+					else
+						//Same as IndependentBlendEnable == false
+						glBlendEquationSeparate(RenderTargets[0].BlendOperation, RenderTargets[0].AlphaBlendOperation)
+
+					glColorMaski(i, RenderTargets[i].WriteMask[0], RenderTargets[i].WriteMask[1], RenderTargets[i].WriteMask[2], RenderTargets[i].WriteMask[3])
+
+					if RenderTargets[i].blendEnable == true
+						glEnablei(GL_BLEND, i)
+					else
+						glDisblei(GL_BLEND, i)
+
+				else
+					glBlendFuncSeparate(RenderTargets[0].SrcBlend, RenderTargets[0].DstBlend, RenderTargets[0].SrcAlphaBlend, RenderTargets[0].DstAlphaBlend)
+					glBlendEquationSeparate(RenderTargets[0].BlendOperation, RenderTargets[0].AlphaBlendOperation)
+					glColorMask(RenderTargets[0].WriteMask[0], RenderTargets[0].WriteMask[1], RenderTargets[0].WriteMask[2], RenderTargets[0].WriteMask[3])
+
+					if RenderTargets[0].blendEnable == true
+						glEnable(GL_BLEND)
+					else
+						glDisble(GL_BLEND)
+
+		///////////////////////////////////////////////////////////*/
+		struct GLBlendState
+		{
+			struct GLRenderTargetBlendInfo
+			{
+				bool blendEnable;
+				uint32 SrcBlend;
+				uint32 DstBlend;
+				uint32 BlendOperation;
+				uint32 SrcAlphaBlend;
+				uint32 DstAlphaBlend;
+				uint32 AlphaBlendOperation;
+				GLboolean WriteMask[4];
+			};
+
+			bool AlphaToCoverageEnable;
+			bool IndependentBlendEnable;
+			bool LogicOpEnable;
+			float BlendFactor[4];
+			GLRenderTargetBlendInfo RenderTargets[RE_MAX_RENDERTARGETS];
 		};
 
 
@@ -122,17 +238,22 @@ namespace RayEngine
 
 			IObject::CounterType AddRef() override final;
 
-			inline const GLInputLayout& GetInputLayout() const
+			inline const GLInputLayout& GetGLInputLayout() const
 			{
 				return m_InputLayout;
 			}
 
-			inline const GLDepthState& GetDepthState() const
+			inline const GLDepthState& GetGLDepthState() const
 			{
 				return m_DepthState;
 			}
 
-			inline uint32 GetProgram() const
+			inline const GLRasterizerState& GetGLRasterizerState() const
+			{
+				return m_RasterizerState;
+			}
+
+			inline uint32 GetGLProgram() const
 			{
 				return m_Program;
 			}
@@ -150,6 +271,10 @@ namespace RayEngine
 
 			void CreateDepthState(const PipelineStateInfo& info);
 
+			void CreateRasterizerState(const PipelineStateInfo& info);
+
+			void CreateBlendState(const PipelineStateInfo& info);
+
 		private:
 			GLDevice* m_Device;
 			GLShader* m_VS;
@@ -161,6 +286,8 @@ namespace RayEngine
 
 			GLInputLayout m_InputLayout;
 			GLDepthState m_DepthState;
+			GLRasterizerState m_RasterizerState;
+			GLBlendState m_BlendState;
 
 			PIPELINE_TYPE m_Type;
 
