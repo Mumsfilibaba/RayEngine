@@ -22,7 +22,7 @@ failure and or malfunction of any kind.
 #include "..\..\Include\Android\AndroidVulkanWrapper.h"
 
 #if defined(RE_PLATFORM_ANDROID)
-/////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PFN_vkCreateInstance vkCreateInstance = nullptr;
 PFN_vkDestroyInstance vkDestroyInstance = nullptr;
 PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties = nullptr;
@@ -49,7 +49,7 @@ PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentM
 
 namespace RayEngine
 {
-	/////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool InitializeVulkan()
 	{
 		void* libVulkan = dlopen("libvulkan.so", RTLD_NOW | RTLD_LOCAL);

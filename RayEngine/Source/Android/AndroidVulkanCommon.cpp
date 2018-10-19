@@ -24,7 +24,7 @@ failure and or malfunction of any kind.
 #if defined(RE_PLATFORM_ANDROID)
 #include "AndroidAppState.h"
 
-/////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* surface, const RayEngine::System::IWindowImpl* window)
 {
 	using namespace RayEngine;

@@ -34,7 +34,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VkResult VulkanCreateSwapchainSurface(VkInstance instance, VkSurfaceKHR* pSurface, const System::NativeWindowHandle& pWindow);
 		VkFormat ReToVkFormat(FORMAT format);
 		VkPrimitiveTopology ReToVkPrimitiveTopology(PRIMITIVE_TOPOLOGY topology);
