@@ -186,6 +186,7 @@
     <ClInclude Include="Include\Android\AndroidWindowImpl.h" />
     <ClInclude Include="Include\DX11\DX11Buffer.h" />
     <ClInclude Include="Include\DX11\DX11Common.h" />
+    <ClInclude Include="Include\DX11\DX11Conversions.h" />
     <ClInclude Include="Include\DX11\DX11DepthStencilView.h" />
     <ClInclude Include="Include\DX11\DX11Device.h" />
     <ClInclude Include="Include\DX11\DX11DeviceContext.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Include\DX12\DX12Buffer.h" />
     <ClInclude Include="Include\DX12\DX12CommandList.h" />
     <ClInclude Include="Include\DX12\DX12Common.h" />
+    <ClInclude Include="Include\DX12\DX12Conversions.h" />
     <ClInclude Include="Include\DX12\DX12DepthStencilView.h" />
     <ClInclude Include="Include\DX12\DX12DescriptorHeap.h" />
     <ClInclude Include="Include\DX12\DX12DeviceContext.h" />
@@ -288,6 +290,7 @@
     <ClInclude Include="Include\Utilities\StringUtilities.h" />
     <ClInclude Include="Include\Utilities\TextureUtilities.h" />
     <ClInclude Include="Include\Vulkan\VulkCommon.h" />
+    <ClInclude Include="Include\Vulkan\VulkConversions.h" />
     <ClInclude Include="Include\Vulkan\VulkDevice.h" />
     <ClInclude Include="Include\Vulkan\VulkDeviceContext.h" />
     <ClInclude Include="Include\Vulkan\VulkFactory.h" />
@@ -363,7 +366,6 @@
     <ClCompile Include="Source\DX12\DX12Texture.cpp" />
     <ClCompile Include="Source\DX12\DX12UnorderedAccessView.cpp" />
     <ClCompile Include="Source\DX12\DX12View.cpp" />
-    <ClCompile Include="Source\DXBase\DXCommon.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
     <ClCompile Include="Source\OpenGL\GLBuffer.cpp" />

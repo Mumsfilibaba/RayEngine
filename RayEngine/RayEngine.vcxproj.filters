@@ -411,6 +411,15 @@
     <ClInclude Include="Include\OpenGL\VAOCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\DX11\DX11Conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DX12\DX12Conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Vulkan\VulkConversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -618,9 +627,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX11\DX11Common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DXBase\DXCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX11\DX11Swapchain.cpp">
