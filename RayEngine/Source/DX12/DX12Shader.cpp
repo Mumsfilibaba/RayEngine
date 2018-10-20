@@ -113,15 +113,8 @@ namespace RayEngine
 			if (info.Flags & SHADER_FLAGS_DEBUG)
 				flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
-			bool result = false;
 			std::string errorString;
-
-			if (info.FilePath.size() < 2)
-				result = CompileFromString(info.Source, info.EntryPoint, info.Type, flags, errorString);
-			else
-				result = CompileFromFile(info.Source, info.FilePath, info.EntryPoint, info.Type, flags, errorString);
-
-			if (!result)
+			if (!CompileFromString(info.Source, info.EntryPoint, info.Type, flags, errorString))
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not compile shader" + errorString);
 				return;

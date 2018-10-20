@@ -269,6 +269,7 @@
     <ClInclude Include="Include\Math\Vector2.h" />
     <ClInclude Include="Include\Math\Vector3.h" />
     <ClInclude Include="Include\Math\Vector4.h" />
+    <ClInclude Include="Include\OpenGL\VAOCache.h" />
     <ClInclude Include="Include\System\Bitmap.h" />
     <ClInclude Include="Include\System\Clipboard.h" />
     <ClInclude Include="Include\System\Clock.h" />
@@ -390,6 +391,7 @@
     <ClCompile Include="Source\Math\Vector3.cpp" />
     <ClCompile Include="Source\Math\Vector4.cpp" />
     <ClCompile Include="Source\Math\RandomGenerator.cpp" />
+    <ClCompile Include="Source\OpenGL\VAOCache.cpp" />
     <ClCompile Include="Source\System\Bitmap.cpp" />
     <ClCompile Include="Source\System\Clock.cpp" />
     <ClCompile Include="Source\System\Event.cpp" />

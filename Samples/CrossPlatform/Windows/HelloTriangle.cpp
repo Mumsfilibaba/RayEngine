@@ -24,6 +24,8 @@
 
 #include <Math/RandomGenerator.h>
 
+#include <Utilities/EngineUtilities.h>
+
 int main(int args, char* argsv[])
 {
 	using namespace RayEngine;
@@ -60,7 +62,7 @@ int main(int args, char* argsv[])
 
 
 	//Create a factory for the api
-	IFactory* pFactory = IFactory::Create(GRAPHICS_API_OPENGL, true);
+	IFactory* pFactory = IFactory::Create(GRAPHICS_API_D3D11, true);
 	pFactory->SetName("Factory");
 
 	//Retrive all adapters on the system that the api can find
@@ -125,18 +127,19 @@ int main(int args, char* argsv[])
 #endif
 	shaderInfo.Type = SHADER_TYPE_VERTEX;
 	shaderInfo.EntryPoint = "main";
-	shaderInfo.FilePath = "Shaders/";
 
+	std::string source;
 	if (pFactory->GetGraphicsApi() == GRAPHICS_API_OPENGL)
 	{
 		shaderInfo.SrcLang = SHADER_SOURCE_LANG_GLSL;
-		shaderInfo.Source = "vs.glsl";
+		source = ReadFullFile("vs.glsl", "Shaders/");
 	}
 	else
 	{
 		shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
-		shaderInfo.Source = "vs.hlsl";
+		source = ReadFullFile("vs.hlsl", "Shaders/");
 	}
+	shaderInfo.Source = source;
 
 	
 	IShader* pVs = nullptr;
@@ -146,12 +149,13 @@ int main(int args, char* argsv[])
 	shaderInfo.Name = "PixelShader";
 	if (pFactory->GetGraphicsApi() == GRAPHICS_API_OPENGL)
 	{
-		shaderInfo.Source = "ps.glsl";
+		source = ReadFullFile("ps.glsl", "Shaders/");
 	}
 	else
 	{
-		shaderInfo.Source = "ps.hlsl";
+		source = ReadFullFile("ps.hlsl", "Shaders/");
 	}
+	shaderInfo.Source = source;
 	
 	IShader* pPs = nullptr;
 	pDevice->CreateShader(&pPs, shaderInfo);
@@ -200,12 +204,25 @@ int main(int args, char* argsv[])
 	pipelinestateInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
 	pipelinestateInfo.GraphicsPipeline.SampleMask = -1;
 	pipelinestateInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
 	pipelinestateInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
 	pipelinestateInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
 	
 	pipelinestateInfo.GraphicsPipeline.DepthStencilState.DepthEnable = false;
+	pipelinestateInfo.GraphicsPipeline.DepthStencilState.StencilEnable = false;
+	pipelinestateInfo.GraphicsPipeline.DepthStencilState.BackFace = pipelinestateInfo.GraphicsPipeline.DepthStencilState.FrontFace;
 
+	pipelinestateInfo.GraphicsPipeline.RasterizerState.AntialiasedLineEnable = false;
+	pipelinestateInfo.GraphicsPipeline.RasterizerState.ConservativeRasterizerEnable = false;
+	pipelinestateInfo.GraphicsPipeline.RasterizerState.FillMode = FILL_MODE_SOLID;
+	pipelinestateInfo.GraphicsPipeline.RasterizerState.MultisampleEnable = false;
+	pipelinestateInfo.GraphicsPipeline.RasterizerState.DepthClipEnable = false;
 	pipelinestateInfo.GraphicsPipeline.RasterizerState.CullMode = CULL_MODE_NONE;
+
+	pipelinestateInfo.GraphicsPipeline.BlendState.IndependentBlendEnable = false;
+	pipelinestateInfo.GraphicsPipeline.BlendState.AlphaToCoverageEnable = false;
+	pipelinestateInfo.GraphicsPipeline.BlendState.LogicOpEnable = false;
+	pipelinestateInfo.GraphicsPipeline.BlendState.RenderTargets[0].WriteMask = COLOR_WRITE_ENABLE_ALL;
 
 	IPipelineState* pPipelineState = nullptr;
 	pDevice->CreatePipelineState(&pPipelineState, pipelinestateInfo);

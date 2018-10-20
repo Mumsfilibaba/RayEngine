@@ -92,6 +92,7 @@ PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
 PFNGLVERTEXATTRIBFORMATPROC glVertexAttribFormat = nullptr;
 PFNGLVERTEXATTRIBBINDINGPROC glVertexAttribBinding = nullptr;
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 
 //Framebuffers
@@ -222,6 +223,7 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(glGenVertexArrays) == nullptr) return false;
 			if (LOAD_GL_FUNC(glDeleteVertexArrays) == nullptr) return false;
 			if (LOAD_GL_FUNC(glVertexAttribFormat) == nullptr) return false;
+			if (LOAD_GL_FUNC(glVertexAttribPointer) == nullptr) return false;
 			if (LOAD_GL_FUNC(glVertexAttribBinding) == nullptr) return false;
 			if (LOAD_GL_FUNC(glEnableVertexAttribArray) == nullptr) return false;
 			

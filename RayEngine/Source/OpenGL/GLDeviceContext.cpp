@@ -175,6 +175,11 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
+			uint32 vao = m_VAOCache.GetVAO(m_CurrentPipelineState, m_VertexBuffers, nullptr);
+			
+			glBindVertexArray(vao);
+			glDrawArrays(m_PrimitiveTopology, startVertex, vertexCount);
+			glBindVertexArray(0);
 		}
 
 

@@ -62,7 +62,6 @@ namespace RayEngine
 		{
 			std::string Name = "";
 			std::string Source = "";
-			std::string FilePath = "";
 			std::string EntryPoint = "main";
 			SHADER_TYPE Type = SHADER_TYPE_UNKNOWN;
 			SHADER_SOURCE_LANG SrcLang = SHADER_SOURCE_LANG_UNKNOWN;

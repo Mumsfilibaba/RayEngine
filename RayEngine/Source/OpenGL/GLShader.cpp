@@ -83,16 +83,8 @@ namespace RayEngine
 		{
 			m_Type = info.Type;
 
-
-			std::string source;
-			if (info.FilePath.size() < 2)
-				source = info.Source;
-			else 
-				source = ReadFullFile(info.Source, info.FilePath);
-
-
 			if (info.SrcLang == SHADER_SOURCE_LANG_GLSL)
-				CompileGLSL(source);
+				CompileGLSL(info.Source);
 		}
 
 

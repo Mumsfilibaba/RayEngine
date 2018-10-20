@@ -22,6 +22,7 @@ failure and or malfunction of any kind.
 #pragma once
 #include "..\Graphics\IDeviceContext.h"
 #include "GLCommon.h"
+#include "VAOCache.h"
 
 namespace RayEngine
 {
@@ -111,6 +112,8 @@ namespace RayEngine
 			GLNativeContext m_Context;
 			
 			bool m_IsDeffered;
+
+			VAOCache m_VAOCache;
 
 			mutable uint32 m_PrimitiveTopology;
 			

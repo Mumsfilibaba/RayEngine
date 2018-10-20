@@ -350,15 +350,11 @@ namespace RayEngine
 				return;
 			}
 
-
-
 			std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout;
 			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
 
 			for (int32 i = 0; i < info.GraphicsPipeline.InputLayout.ElementCount; i++)
 				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.pElements[i]);
-
-
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			ID3DBlob* pD3DBlob = m_VS->GetBlob();
