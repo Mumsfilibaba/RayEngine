@@ -3,10 +3,13 @@ TODO:
 -D3D12 Triangle
 -Vulkan triangle
 -Documentation
--Shaders does not load their own source
+-Shaders does not load their own source (Users work)
+-Use pointer for desc - Rename info to desc
+-Inline converter functions
+-GLImpl - do not return false (Print what function was not loaded)
+-Static log for system
+-RootLayout should control binding of resources
 
-
--Log output instead of actual log
 -Implement GetInfo() in all interfaces
 -AdapterInfo - Inline
 -Swapchain flags for usage, tearing etc

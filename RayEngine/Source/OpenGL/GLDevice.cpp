@@ -26,6 +26,7 @@ failure and or malfunction of any kind.
 #include "..\..\Include\OpenGL\GLShader.h"
 #include "..\..\Include\OpenGL\GLRootLayout.h"
 #include "..\..\Include\OpenGL\GLPipelineState.h"
+#include "..\..\Include\OpenGL\GLBuffer.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
@@ -77,33 +78,6 @@ namespace RayEngine
 			if (mWndHandle != RE_NULL_WINDOW && mCreatedWindow)
 				DestroyWindow(mWndHandle);
 #endif
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLNativeDevice GLDevice::GetGLNativeDevice() const
-		{
-			return m_Device;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		System::NativeWindowHandle GLDevice::GetNativeWindowHandle() const
-		{
-			return mWndHandle;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::ExtensionSupported(const std::string& extension) const
-		{
-			for (int32 i = 0; i < static_cast<int32>(mExtensions.size()); i++)
-			{
-				if (extension == mExtensions[i])
-					return true;
-			}
-
-			return false;
 		}
 
 
@@ -173,7 +147,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool GLDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
 		{
-			return false;
+			return (*ppBuffer) = new GLBuffer(this, pInitialData, info);
 		}
 
 
@@ -215,7 +189,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::Release()
 		{
-			IObject::CounterType counter = mReferences--;
+			IObject::CounterType counter = --mReferences;
 			if (mReferences < 1)
 				delete this;
 

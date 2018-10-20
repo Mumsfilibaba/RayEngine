@@ -48,9 +48,15 @@ namespace RayEngine
 			DX11DeviceContext(IDevice* pDevice, bool isDeffered);
 			~DX11DeviceContext();
 
-			ID3D11DeviceContext* GetD3D11DeviceContext() const;
-			
-			ID3D11CommandList* GetD3D11CommandList() const;
+			inline ID3D11DeviceContext* GetD3D11DeviceContext() const
+			{
+				return m_Context;
+			}
+
+			inline ID3D11CommandList* GetD3D11CommandList() const
+			{
+				return m_CommandList;
+			}
 
 			void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const override final;
 			

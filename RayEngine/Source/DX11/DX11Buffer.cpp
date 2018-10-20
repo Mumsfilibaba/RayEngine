@@ -73,10 +73,10 @@ namespace RayEngine
 		{
 			D3D11_MAPPED_SUBRESOURCE mappedResource = {};
 
-			D3D11_MAP map;
+			D3D11_MAP map = {};
 			if (RESOURCE_MAP_FLAG_READ)
 				map = D3D11_MAP_READ;
-			else
+			else if (RESOURCE_MAP_FLAG_READ)
 				map = D3D11_MAP_WRITE;
 
 			ID3D11DeviceContext* pD3D11Context = m_Context->GetD3D11DeviceContext();

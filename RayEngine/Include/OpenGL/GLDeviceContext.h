@@ -29,6 +29,7 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class GLDevice;
+		class GLBuffer;
 		class GLRootLayout;
 		class GLPipelineState;
 
@@ -98,15 +99,20 @@ namespace RayEngine
 		private:
 			void Create(bool isDeffered);
 
+			void SetPipelineState() const;
+
 		private:
 			GLDevice* m_Device;
 			mutable GLRootLayout* m_CurrentRootLayout;
 			mutable GLPipelineState* m_CurrentPipelineState;
 			
+			mutable GLBuffer* m_VertexBuffers[RE_MAX_VERTEXBUFFERS];
+
 			GLNativeContext m_Context;
 			
-			
 			bool m_IsDeffered;
+
+			mutable uint32 m_PrimitiveTopology;
 			
 			IObject::CounterType mReferences;
 		};

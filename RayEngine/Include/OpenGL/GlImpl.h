@@ -118,10 +118,16 @@ namespace RayEngine
 #define GL_ARRAY_BUFFER 0x8892
 #define GL_UNIFORM_BUFFER 0x8A11
 #define GL_ELEMENT_ARRAY_BUFFER 0x8893
+#define GL_BUFFER_SIZE 0x8764
+#define GL_BUFFER_USAGE 0x8765
 
-//Usage
-#define GL_STATIC_DRAW 0x88E4
-#define GL_DYNAMIC_DRAW 0x88E8
+//Map
+#define GL_MAP_READ_BIT 0x0001
+#define GL_MAP_WRITE_BIT 0x0002
+#define GL_MAP_INVALIDATE_RANGE_BIT 0x0004
+#define GL_MAP_INVALIDATE_BUFFER_BIT 0x0008
+#define GL_MAP_FLUSH_EXPLICIT_BIT 0x0010
+#define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 
 //Internal format
 #define GL_R8 0x8229
@@ -174,6 +180,8 @@ namespace RayEngine
 //GL-Enable
 #define GL_TEXTURE_CUBE_MAP_SEAMLESS 0x884F
 #define GL_DEPTH_CLAMP 0x864F
+#define GL_MULTISAMPLE 0x809D
+#define GL_SAMPLE_ALPHA_TO_COVERAGE 0x809E
 
 //Cube-Map
 #define GL_TEXTURE_CUBE_MAP 0x8513
@@ -275,6 +283,15 @@ namespace RayEngine
 #define GL_MIN 0x8007
 #define GL_MAX 0x8008
 
+//Buffer Textures
+#define GL_TEXTURE_BUFFER 0x8C2A
+
+//Storage buffers
+#define GL_SHADER_STORAGE_BUFFER 0x90D2
+
+//Conservative rasterizatoin
+#define GL_CONSERVATIVE_RASTERIZATION_NV 0x9346
+
 //////////////
 ///TYPEDEFS///
 //////////////
@@ -299,7 +316,10 @@ typedef void (APIENTRY* PFNGLBINDVERTEXBUFFERPROC) (GLuint bindingindex, GLuint 
 typedef void (APIENTRY* PFNGLDELETEBUFFERSPROC) (GLsizei n, const GLuint* buffers);
 typedef void (APIENTRY* PFNGLBUFFERSUBDATAPROC) (GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
 typedef void (APIENTRY* PFNGLBINDBUFFERBASEPROC) (GLenum target, GLuint index, GLuint buffer);
+typedef void (APIENTRY* PFNGLGETBUFFERPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
 typedef GLboolean(APIENTRY* PFNGLISBUFFERPROC) (GLuint buffer);
+typedef GLboolean(APIENTRY* PFNGLUNMAPBUFFERPROC) (GLenum target);
+typedef void* (APIENTRY* PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 
 //Textures
 typedef void (APIENTRY* PFNGLACTIVETEXTUREPROC) (GLenum texture);
@@ -321,6 +341,7 @@ typedef GLboolean(APIENTRY* PFNGLISPROGRAMPROC) (GLuint program);
 typedef GLboolean(APIENTRY* PFNGLISSHADERPROC) (GLuint shader);
 typedef GLuint(APIENTRY* PFNGLCREATEPROGRAMPROC) (void);
 typedef GLuint(APIENTRY* PFNGLCREATESHADERPROC) (GLenum type);
+typedef void (APIENTRY* PFNGLUSEPROGRAMPROC) (GLuint program);
 
 //Patches
 typedef void (APIENTRY* PFNGLPATCHPARAMETERIPROC) (GLenum pname, GLint value);
@@ -368,9 +389,22 @@ typedef void (APIENTRY* PFNGLSTENCILFUNCSEPARATEPROC) (GLenum face, GLenum func,
 
 //Depth
 typedef void (APIENTRY* PFNGLDEPTHRANGEFPROC) (GLfloat n, GLfloat f);
+typedef void (APIENTRY* PFNGLPOLYGONOFFSETCLAMPPROC) (GLfloat factor, GLfloat units, GLfloat clamp);
 
 //GetString
 typedef const GLubyte* (APIENTRY* PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);
+
+//Blend
+typedef void (APIENTRY* PFNGLBLENDCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+typedef void (APIENTRY* PFNGLCOLORMASKIPROC) (GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
+typedef void (APIENTRY* PFNGLBLENDFUNCSEPARATEPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
+typedef void (APIENTRY* PFNGLBLENDFUNCSEPARATEIPROC) (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+typedef void (APIENTRY* PFNGLBLENDEQUATIONSEPARATEPROC) (GLenum modeRGB, GLenum modeAlpha);
+typedef void (APIENTRY* PFNGLBLENDEQUATIONSEPARATEIPROC) (GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+
+//Enable
+typedef void (APIENTRY* PFNGLENABLEIPROC) (GLenum target, GLuint index);
+typedef void (APIENTRY* PFNGLDISABLEIPROC) (GLenum target, GLuint index);
 
 //////////////////
 ///FUNCTIONPTRS///
@@ -390,7 +424,10 @@ extern PFNGLBUFFERDATAPROC glBufferData;
 extern PFNGLBINDVERTEXBUFFERPROC glBindVertexBuffer;
 extern PFNGLDELETEBUFFERSPROC glDeleteBuffers;
 extern PFNGLBUFFERSUBDATAPROC glBufferSubData;
+extern PFNGLGETBUFFERPARAMETERIVPROC glGetBufferParameteriv;
 extern PFNGLBINDBUFFERBASEPROC glBindBufferBase;
+extern PFNGLMAPBUFFERRANGEPROC glMapBufferRange;
+extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 
 //Textures
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
@@ -412,6 +449,7 @@ extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
 extern PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog;
 extern PFNGLISPROGRAMPROC glIsProgram;
 extern PFNGLISSHADERPROC glIsShader;
+extern PFNGLUSEPROGRAMPROC glUseProgram;
 
 //Patches
 extern PFNGLPATCHPARAMETERIPROC glPatchParameteri;
@@ -459,7 +497,20 @@ extern PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate;
 
 //Depth
 extern PFNGLDEPTHRANGEFPROC glDepthRangef;
+extern PFNGLPOLYGONOFFSETCLAMPPROC glPolygonOffsetClamp;
 
 //GetString
 extern PFNGLGETSTRINGIPROC glGetStringi;
+
+//Blend
+extern PFNGLBLENDCOLORPROC glBlendColor;
+extern PFNGLCOLORMASKIPROC glColorMaski;
+extern PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate;
+extern PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei;
+extern PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate;
+extern PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei;
+
+//Enable
+extern PFNGLENABLEIPROC glEnablei;
+extern PFNGLDISABLEIPROC glDisablei;
 #endif

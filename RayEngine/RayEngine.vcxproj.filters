@@ -402,6 +402,12 @@
     <ClInclude Include="Include\OpenGL\GLPipelineState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\OpenGL\GLBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\OpenGL\GLConversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -744,6 +750,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\OpenGL\GLPipelineState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OpenGL\GLBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -199,7 +199,6 @@ int main(int args, char* argsv[])
 	pipelinestateInfo.GraphicsPipeline.RenderTargetFormats[0] = swapchainInfo.BackBuffer.Format;
 	pipelinestateInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
 	pipelinestateInfo.GraphicsPipeline.SampleMask = -1;
-	pipelinestateInfo.GraphicsPipeline.StripCutEnable = false;
 	pipelinestateInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	pipelinestateInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
 	pipelinestateInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
@@ -313,6 +312,7 @@ int main(int args, char* argsv[])
 		
 		pDeviceContext->SetScissorRects(scissorRect);
 	
+		//Set PipelineState and RootLayout
 		pDeviceContext->SetPipelineState(pPipelineState);
 		pDeviceContext->SetRootLayout(pRootLayout);
 	

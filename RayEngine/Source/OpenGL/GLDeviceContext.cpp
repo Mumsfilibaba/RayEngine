@@ -19,7 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\Graphics\Viewport.h"
 #include "..\..\Include\OpenGL\GLDeviceContext.h"
+#include "..\..\Include\OpenGL\GLDevice.h"
+#include "..\..\Include\OpenGL\GLPipelineState.h"
+#include "..\..\Include\OpenGL\GLRootLayout.h"
 
 namespace RayEngine
 {
@@ -27,19 +31,24 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDeviceContext::GLDeviceContext(IDevice* pDevice, bool isDeffered)
-			: mReferences(0)
+			: m_Device(nullptr),
+			m_CurrentPipelineState(nullptr),
+			m_CurrentRootLayout(nullptr),
+			m_IsDeffered(false),
+			m_PrimitiveTopology(0),
+			mReferences(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
-		}
 
+			Create(isDeffered);
+		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDeviceContext::~GLDeviceContext()
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +62,6 @@ namespace RayEngine
 				glClear(GL_COLOR_BUFFER_BIT);
 			}
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,12 +79,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetSwapChain(ISwapchain* pSwapChain) const
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,12 +91,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,12 +103,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,47 +115,61 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
 		{
-		}
+			ReRelease_S(m_CurrentPipelineState);
+			
+			if (pPipelineState != nullptr)
+			{
+				m_CurrentPipelineState = pPipelineState->QueryReference<GLPipelineState>();
 
+				SetPipelineState();
+			}
+		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetRootLayout(IRootLayout* pRootLayout) const
 		{
-		}
+			ReRelease_S(m_CurrentRootLayout);
 
+			if (pRootLayout != nullptr)
+			{
+				m_CurrentRootLayout = pRootLayout->QueryReference<GLRootLayout>();
+			}
+		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const
 		{
+			m_VertexBuffers[startSlot] = reinterpret_cast<GLBuffer*>(pBuffer);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetViewports(const Viewport& viewport) const
 		{
+			glViewport(static_cast<GLint>(viewport.TopLeftX), static_cast<GLint>(viewport.TopLeftY),
+				static_cast<GLsizei>(viewport.Width), static_cast<GLsizei>(viewport.Height));
+			glDepthRangef(viewport.MinDepth, viewport.MaxDepth);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const
 		{
+			m_PrimitiveTopology = PrimitiveTopologyToGL(topology);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetScissorRects(const Math::Rectangle& rect) const
 		{
+			glScissor(static_cast<GLint>(rect.TopLeft.x), static_cast<GLint>(rect.TopLeft.y),
+				static_cast<GLsizei>(rect.BottomRight.x), static_cast<GLsizei>(rect.BottomRight.y));
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,12 +178,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,12 +190,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,12 +202,11 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::Flush() const
 		{
+			//Not relevant?
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -204,12 +215,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetName(const std::string& name)
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,13 +227,11 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDeviceContext::GetReferenceCount() const
 		{
 			return mReferences;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +245,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDeviceContext::AddRef()
 		{
@@ -247,10 +253,158 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::Create(bool isDeffered)
 		{
+			m_IsDeffered = isDeffered;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void SetGLRenderTargetBlendInfo(const GLBlendState::GLRenderTargetBlendInfo* pRenderTargetBlendInfo)
+		{
+
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLDeviceContext::SetPipelineState() const
+		{
+			glUseProgram(m_CurrentPipelineState->GetGLProgram());
+
+			if (m_CurrentPipelineState->GetPipelineType() == PIPELINE_TYPE_GRAPHICS)
+			{
+				//Set Depthstate
+				const GLDepthState* pDepthState = &m_CurrentPipelineState->GetGLDepthState();
+				if (pDepthState->DepthEnable)
+					glEnable(GL_DEPTH_TEST);
+				else
+					glDisable(GL_DEPTH_TEST);
+
+				glDepthMask(pDepthState->DepthMask);
+				glDepthFunc(pDepthState->DepthFunc);
+
+				if (pDepthState->StencilEnable)
+					glEnable(GL_STENCIL_TEST);
+				else
+					glDisable(GL_STENCIL_TEST);
+
+				glStencilMask(pDepthState->WriteMask);
+
+				glStencilOpSeparate(GL_FRONT, pDepthState->FrontFace.StencilFailOp, pDepthState->FrontFace.DepthFailOp, pDepthState->FrontFace.PassOp);
+				glStencilFuncSeparate(GL_FRONT, pDepthState->FrontFace.StencilFunc, 0, pDepthState->FrontFace.ReadMask);
+				glStencilOpSeparate(GL_BACK, pDepthState->BackFace.StencilFailOp, pDepthState->BackFace.DepthFailOp, pDepthState->BackFace.PassOp);
+				glStencilFuncSeparate(GL_BACK, pDepthState->BackFace.StencilFunc, 0, pDepthState->BackFace.ReadMask);
+
+
+				//Set RasterizerState
+				const GLRasterizerState* pRasterizerState = &m_CurrentPipelineState->GetGLRasterizerState();
+				if (m_Device->ExtensionSupported("GL_NV_conservative_raster"))
+				{
+					if (pRasterizerState->ConservativeRasterizerEnable)
+						glEnable(GL_CONSERVATIVE_RASTERIZATION_NV);
+					else
+						glDisable(GL_CONSERVATIVE_RASTERIZATION_NV);
+				}
+				else
+				{
+					m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_WARNING, "OpenGL: GL_NV_conservative_raster not supported.");
+				}
+
+				glPolygonMode(GL_FRONT_AND_BACK, pRasterizerState->PolygonMode);
+				glCullFace(pRasterizerState->CullMode);
+				glFrontFace(pRasterizerState->FrontFace);
+
+				if (pRasterizerState->DepthClipEnable)
+					glDisable(GL_DEPTH_CLAMP);
+				else
+					glEnable(GL_DEPTH_CLAMP);
+
+				if (glPolygonOffsetClamp != nullptr)
+				{
+					glPolygonOffsetClamp(pRasterizerState->SlopeScaleDepthBias, pRasterizerState->DepthBias, pRasterizerState->DepthBiasClamp);
+				}
+				else
+				{
+					glPolygonOffset(pRasterizerState->SlopeScaleDepthBias, pRasterizerState->DepthBias);
+					m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_WARNING, "OpenGL: glPolygonOffsetClamp not supported.");
+				}
+
+				if (pRasterizerState->AntialiasedLineEnable)
+				{
+					glEnable(GL_LINE_SMOOTH);
+					glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+				}
+				else
+				{
+					glDisable(GL_LINE_SMOOTH);
+				}
+
+				if (pRasterizerState->ScissorEnable)
+					glEnable(GL_SCISSOR_TEST);
+				else
+					glDisable(GL_SCISSOR_TEST);
+
+				if (pRasterizerState->MultisampleEnable)
+					glEnable(GL_MULTISAMPLE);
+				else
+					glDisable(GL_MULTISAMPLE);
+
+
+				//Set Blendstate
+				const GLBlendState* pBlendState = &m_CurrentPipelineState->GetGLBlendState();
+				if (pBlendState->AlphaToCoverageEnable)
+					glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+				else
+					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
+				if (pBlendState->LogicOpEnable)
+					glEnable(GL_LOGIC_OP);
+				else
+					glDisable(GL_LOGIC_OP);
+
+				glBlendColor(pBlendState->BlendFactor[0], pBlendState->BlendFactor[1], pBlendState->BlendFactor[2], pBlendState->BlendFactor[3]);
+				
+				if (pBlendState->IndependentBlendEnable && glBlendFuncSeparatei != nullptr && glBlendEquationSeparatei != nullptr)
+				{
+					for (uint32 i = 0; i < RE_MAX_RENDERTARGETS; i++)
+					{
+						if (pBlendState->RenderTargets[i].blendEnable == true)
+						{
+							glEnablei(GL_BLEND, i);
+
+							glBlendFuncSeparatei(i, pBlendState->RenderTargets[i].SrcBlend, pBlendState->RenderTargets[i].DstBlend, 
+								pBlendState->RenderTargets[i].SrcAlphaBlend, pBlendState->RenderTargets[i].DstAlphaBlend);
+							glBlendEquationSeparatei(i, pBlendState->RenderTargets[i].BlendOperation, pBlendState->RenderTargets[i].AlphaBlendOperation);
+
+							glColorMaski(i, pBlendState->RenderTargets[i].WriteMask[0], pBlendState->RenderTargets[i].WriteMask[1],
+								pBlendState->RenderTargets[i].WriteMask[2], pBlendState->RenderTargets[i].WriteMask[3]);
+						}
+						else
+						{
+							glDisablei(GL_BLEND, i);
+						}
+					}
+				}
+				else
+				{
+					if (pBlendState->RenderTargets[0].blendEnable == true)
+					{
+						glEnable(GL_BLEND);
+						
+						glBlendFuncSeparate(pBlendState->RenderTargets[0].SrcBlend, pBlendState->RenderTargets[0].DstBlend, 
+							pBlendState->RenderTargets[0].SrcAlphaBlend, pBlendState->RenderTargets[0].DstAlphaBlend);
+						glBlendEquationSeparate(pBlendState->RenderTargets[0].BlendOperation, pBlendState->RenderTargets[0].AlphaBlendOperation);
+					
+						glColorMask(pBlendState->RenderTargets[0].WriteMask[0], pBlendState->RenderTargets[0].WriteMask[1],
+							pBlendState->RenderTargets[0].WriteMask[2], pBlendState->RenderTargets[0].WriteMask[3]);
+					}
+					else
+					{
+						glDisable(GL_BLEND);
+					}
+				}
+			}
 		}
 	}
 }

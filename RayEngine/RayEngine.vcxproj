@@ -242,7 +242,9 @@
     <ClInclude Include="Include\Graphics\ITexture.h" />
     <ClInclude Include="Include\Graphics\IUnorderedAccessView.h" />
     <ClInclude Include="Include\Graphics\Viewport.h" />
+    <ClInclude Include="Include\OpenGL\GLBuffer.h" />
     <ClInclude Include="Include\OpenGL\GLCommon.h" />
+    <ClInclude Include="Include\OpenGL\GLConversions.h" />
     <ClInclude Include="Include\OpenGL\GLDevice.h" />
     <ClInclude Include="Include\OpenGL\GLDeviceContext.h" />
     <ClInclude Include="Include\OpenGL\GLFactory.h" />
@@ -363,6 +365,7 @@
     <ClCompile Include="Source\DXBase\DXCommon.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
     <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
+    <ClCompile Include="Source\OpenGL\GLBuffer.cpp" />
     <ClCompile Include="Source\OpenGL\GLCommon.cpp" />
     <ClCompile Include="Source\OpenGL\GLDevice.cpp" />
     <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp" />

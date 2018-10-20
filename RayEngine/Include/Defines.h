@@ -71,3 +71,6 @@ public:																\
 #if !defined(RE_IMPLEMENT_INTERFACE)
 #define RE_IMPLEMENT_INTERFACE(interface) RE_UNIQUE_OBJECT(interface)
 #endif
+
+#define RE_MAX_RENDERTARGETS 8
+#define RE_MAX_VERTEXBUFFERS 32

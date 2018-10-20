@@ -67,7 +67,7 @@ namespace RayEngine
 			WriteMask	- glStencilMask(WriteMask)
 
 			GLStencilFace:
-				glStencilOpSeparate(-, StencilFail, DepthFail, Pass)
+				glStencilOpSeparate(-, StencilFailOp, DepthFailOp, PassOp)
 				glStencilFuncSeparate(-, StencilFunc, 0, ReadMask)
 
 		///////////////////////////////////////////////////////////*/
@@ -101,11 +101,11 @@ namespace RayEngine
 				false	-	glDiable(CONSERVATIVE_RASTERIZATION_NV)
 							GL_NV_conservative_raster must be present
 
-			PolygonMode - glPolygonMode(GL_FRONT_AND_BACK, polygonMode)
+			PolygonMode - glPolygonMode(GL_FRONT_AND_BACK, PolygonMode)
 
-			CullMode - glCullFace(cullMode)
+			CullMode - glCullFace(CullMode)
 
-			FrontFace - glFrontFace(frontFace)
+			FrontFace - glFrontFace(FrontFace)
 
 			DepthClipEnable
 				false	- glEnable(GL_DEPTH_CLAMP)
@@ -149,6 +149,10 @@ namespace RayEngine
 
 		/*///////////////////////////////////////////////////////////
 
+			AlphaToCoverageEnable
+				true	- glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+				false	- glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+
 			IndependentBlendEnable 
 				true - RenderTargets index 1 - 7 are used if supported
 				false - RenderTargets[0] is only used
@@ -159,10 +163,6 @@ namespace RayEngine
 
 			BlendFactor - glBlendColor(BlendFactor[0], BlendFactor[1], BlendFactor[2], BlendFactor[3])
 
-			AlphaToCoverageEnable
-				true	- glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
-				false	- glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE)
- 
 			RenderTargets 
 				if IndependentBlendEnable == true
 					if glBlendFuncSeparatei != nullptr
@@ -221,22 +221,10 @@ namespace RayEngine
 		class GLPipelineState final : public IPipelineState
 		{
 			RE_IMPLEMENT_INTERFACE(GLPipelineState);
-		
+
 		public:
 			GLPipelineState(IDevice* pDevice, const PipelineStateInfo& info);
 			~GLPipelineState();
-
-			PIPELINE_TYPE GetPipelineType() const override final;
-
-			void SetName(const std::string& name) override final;
-
-			void QueryDevice(IDevice** ppDevice) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
-
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
 
 			inline const GLInputLayout& GetGLInputLayout() const
 			{
@@ -253,10 +241,27 @@ namespace RayEngine
 				return m_RasterizerState;
 			}
 
+			inline const GLBlendState& GetGLBlendState() const
+			{
+				return m_BlendState;
+			}
+
 			inline uint32 GetGLProgram() const
 			{
 				return m_Program;
 			}
+
+			PIPELINE_TYPE GetPipelineType() const override final;
+
+			void SetName(const std::string& name) override final;
+
+			void QueryDevice(IDevice** ppDevice) const override final;
+
+			IObject::CounterType GetReferenceCount() const override final;
+
+			IObject::CounterType Release() override final;
+
+			IObject::CounterType AddRef() override final;
 
 		private:
 			void Create(const PipelineStateInfo& info);

@@ -26,19 +26,6 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		enum BUFFER_USAGE : int32
-		{
-			BUFFER_USAGE_UNKNOWN = 0,
-			BUFFER_USAGE_CONSTANT = 1,
-			BUFFER_USAGE_VERTEX = 2,
-			BUFFER_USAGE_INDEX = 3,
-			BUFFER_USAGE_SHADER_RESOURCE = 4,
-			BUFFER_USAGE_UNORDERED_ACCESS = 5,
-		};
-
-
-
 		/*////////////////////////////////////////////////////////////
 
 			Contains info of an bufferresource. Is used for creating

@@ -26,6 +26,7 @@ failure and or malfunction of any kind.
 #include <vector>
 #include <string>
 #include "GlImpl.h"
+#include "GLConversions.h"
 
 namespace RayEngine
 {
@@ -37,22 +38,21 @@ namespace RayEngine
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		int32 GetColorSpace(FORMAT format);
+		
 		int32 GetColorBits(FORMAT format);
+		
 		int32 GetDepthBits(FORMAT format);
+		
 		int32 GetStencilBits(FORMAT format);
+		
 		bool SetPixelFormat(GLNativeDevice hDC, FORMAT backBuffer, FORMAT depthStencil);
+		
 		HWND CreateDummyWindow();
 #endif
 
-		int32 GetVertexComponents(FORMAT format);
-		int32 GetVertexFormat(FORMAT format);
-		bool NormalizedVertexFormat(FORMAT format);
-		GLNativeContext GetCurrentContext();
-		int32 ShaderTypeToGL(SHADER_TYPE type);
-		uint32 ComparisonFuncToGL(COMPARISON_FUNC func);
-		uint32 StencilOpToGL(STENCIL_OPERATION operation);
-		uint32 BlendTypeToGL(BLEND_TYPE type);
-		uint32 BlendOperationToGL(BLEND_OPERATION type);
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);
+		
+		GLNativeContext GetCurrentContext();
 	}
 }

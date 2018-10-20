@@ -44,11 +44,26 @@ namespace RayEngine
 			GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceInfo& info, bool debugLayer);
 			~GLDevice();
 
-			GLNativeDevice GetGLNativeDevice() const;
+			inline GLNativeDevice GetGLNativeDevice() const
+			{
+				return m_Device;
+			}
 
-			System::NativeWindowHandle GetNativeWindowHandle() const;
+			inline System::NativeWindowHandle GetNativeWindowHandle() const
+			{
+				return mWndHandle;
+			}
 
-			bool ExtensionSupported(const std::string& extension) const;
+			inline bool ExtensionSupported(const std::string& extension) const
+			{
+				for (int32 i = 0; i < static_cast<int32>(mExtensions.size()); i++)
+				{
+					if (extension == mExtensions[i])
+						return true;
+				}
+
+				return false;
+			}
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			

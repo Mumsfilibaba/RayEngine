@@ -40,9 +40,6 @@ namespace RayEngine
 			GLRootLayout(IDevice* pDevice, const RootLayoutInfo& info);
 			~GLRootLayout();
 
-		private:
-			void Create(const RootLayoutInfo& info);
-
 			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
@@ -52,6 +49,9 @@ namespace RayEngine
 			IObject::CounterType Release() override final;
 
 			IObject::CounterType AddRef() override final;
+
+		private:
+			void Create(const RootLayoutInfo& info);
 
 		private:
 			GLDevice* m_Device;

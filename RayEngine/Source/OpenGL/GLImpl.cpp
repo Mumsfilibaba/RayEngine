@@ -47,6 +47,9 @@ PFNGLBINDVERTEXBUFFERPROC glBindVertexBuffer = nullptr;
 PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
 PFNGLBUFFERSUBDATAPROC glBufferSubData = nullptr;
 PFNGLBINDBUFFERBASEPROC glBindBufferBase = nullptr;
+PFNGLGETBUFFERPARAMETERIVPROC glGetBufferParameteriv = nullptr;
+PFNGLMAPBUFFERRANGEPROC glMapBufferRange = nullptr;
+PFNGLUNMAPBUFFERPROC glUnmapBuffer = nullptr;
 
 //Textures
 PFNGLACTIVETEXTUREPROC glActiveTexture = nullptr;
@@ -68,6 +71,7 @@ PFNGLGETPROGRAMIVPROC glGetProgramiv = nullptr;
 PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = nullptr;
 PFNGLISPROGRAMPROC glIsProgram = nullptr;
 PFNGLISSHADERPROC glIsShader = nullptr;
+PFNGLUSEPROGRAMPROC glUseProgram = nullptr;
 
 //Patches
 PFNGLPATCHPARAMETERIPROC glPatchParameteri = nullptr;
@@ -115,9 +119,22 @@ PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate = nullptr;
 
 //Depth
 PFNGLDEPTHRANGEFPROC glDepthRangef = nullptr;
+PFNGLPOLYGONOFFSETCLAMPPROC glPolygonOffsetClamp = nullptr;
 
 //GetString
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
+
+//Blend
+PFNGLBLENDCOLORPROC glBlendColor = nullptr;
+PFNGLCOLORMASKIPROC glColorMaski = nullptr;
+PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = nullptr;
+PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei = nullptr;
+PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = nullptr;
+PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei = nullptr;
+
+//Enable
+PFNGLENABLEIPROC glEnablei = nullptr;
+PFNGLDISABLEIPROC glDisablei = nullptr;
 
 
 namespace RayEngine
@@ -141,6 +158,7 @@ namespace RayEngine
 	bool LoadOpenGL()
 	{
 		static bool initialized = false;
+		
 
 		if (!initialized)
 		{
@@ -149,6 +167,7 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(wglCreateContextAttribsARB) == nullptr) return false;
 			if (LOAD_GL_FUNC(wglSwapIntervalEXT) == nullptr) return false;
 			if (LOAD_GL_FUNC(wglGetExtensionsStringARB) == nullptr) return false;
+
 
 			//Buffers
 			if (LOAD_GL_FUNC(glGenBuffers) == nullptr) return false;
@@ -159,6 +178,10 @@ namespace RayEngine
 			if (LOAD_GL_FUNC(glDeleteBuffers) == nullptr) return false;
 			if (LOAD_GL_FUNC(glBufferSubData) == nullptr) return false;
 			if (LOAD_GL_FUNC(glBindBufferBase) == nullptr) return false;
+			if (LOAD_GL_FUNC(glGetBufferParameteriv) == nullptr) return false;
+			if (LOAD_GL_FUNC(glMapBufferRange) == nullptr) return false;
+			if (LOAD_GL_FUNC(glUnmapBuffer) == nullptr) return false;
+			if (LOAD_GL_FUNC(glUseProgram) == nullptr) return false;
 
 			//Textures
 			if (LOAD_GL_FUNC(glActiveTexture) == nullptr) return false;
@@ -227,9 +250,27 @@ namespace RayEngine
 
 			//Depth
 			if (LOAD_GL_FUNC(glDepthRangef) == nullptr) return false;
+			if (LOAD_GL_FUNC(glPolygonOffsetClamp) == nullptr)
+			{
+				glPolygonOffsetClamp = reinterpret_cast<decltype(glPolygonOffsetClamp)>(LoadFunction("PolygonOffsetClampEXT"));
+				if (glPolygonOffsetClamp == nullptr)
+					return false;
+			}
 
 			//GetString
 			if (LOAD_GL_FUNC(glGetStringi) == nullptr) return false;
+
+			//Blend
+			if (LOAD_GL_FUNC(glBlendColor) == nullptr) return false;
+			if (LOAD_GL_FUNC(glColorMaski) == nullptr) return false;
+			if (LOAD_GL_FUNC(glBlendFuncSeparate) == nullptr) return false;
+			if (LOAD_GL_FUNC(glBlendFuncSeparatei) == nullptr) return false;
+			if (LOAD_GL_FUNC(glBlendEquationSeparate) == nullptr) return false;
+			if (LOAD_GL_FUNC(glBlendEquationSeparatei) == nullptr) return false;
+
+			//Enable
+			if (LOAD_GL_FUNC(glEnablei) == nullptr) return false;
+			if (LOAD_GL_FUNC(glDisablei) == nullptr) return false;
 		}
 
 		return true;
