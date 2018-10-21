@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "AdapterInfo.h"
+#include "AdapterDesc.h"
 #include "..\Interfaces\IObject.h"
 
 namespace RayEngine

@@ -65,7 +65,7 @@ namespace RayEngine
 		{
 			using namespace Microsoft::WRL;
 
-			std::vector<AdapterInfo> adapterInfos;
+			std::vector<AdapterDesc> adapterInfos;
 			ComPtr<IDXGIAdapter1> adapter;
 			ComPtr<ID3D12Device> dummyDevice;
 
@@ -76,7 +76,7 @@ namespace RayEngine
 				{
 					if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&dummyDevice))))
 					{
-						adapterInfos.push_back(AdapterInfo());
+						adapterInfos.push_back(AdapterDesc());
 						int32 index = static_cast<int32>(adapterInfos.size() - 1);
 
 						FillAdapterInfo(index, adapterInfos[index], desc);
@@ -196,7 +196,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Factory::FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC1& desc)
+		void DX12Factory::FillAdapterInfo(int32 adapterID, AdapterDesc& info, DXGI_ADAPTER_DESC1& desc)
 		{
 			info.ApiID = adapterID;
 			info.VendorID = desc.VendorId;
@@ -208,7 +208,7 @@ namespace RayEngine
 			wcstombs(str, desc.Description, len);
 			info.ModelName = str;
 
-			info.VendorName = AdapterInfo::GetVendorString(desc.VendorId);
+			info.VendorName = AdapterDesc::GetVendorString(desc.VendorId);
 
 
 			info.Flags |= ADAPTER_FLAGS_SWAPCHAIN;

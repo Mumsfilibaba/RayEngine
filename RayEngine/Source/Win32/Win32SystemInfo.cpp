@@ -32,12 +32,12 @@ failure and or malfunction of any kind.
 namespace RayEngine
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void QuerySystemInfo(SystemInfo& info)
+	void QuerySystemDesc(SystemDesc* pDesc)
 	{
-		info.Platform = PLATFORM_WIN32;
+		pDesc->Platform = PLATFORM_WIN32;
 		
-		info.ScreenHeight = GetSystemMetrics(SM_CXSCREEN);
-		info.ScreenWidth = GetSystemMetrics(SM_CYSCREEN);
+		pDesc->ScreenHeight = GetSystemMetrics(SM_CXSCREEN);
+		pDesc->ScreenWidth = GetSystemMetrics(SM_CYSCREEN);
 	}
 }
 

@@ -440,7 +440,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkFactory::FillAdapterInfo(AdapterInfo& info, VkPhysicalDeviceFeatures& features, 
+		void VulkFactory::FillAdapterInfo(AdapterDesc& info, VkPhysicalDeviceFeatures& features, 
 			VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags)
 		{
 			info.ApiID = id;
@@ -449,7 +449,7 @@ namespace RayEngine
 
 
 			info.ModelName = properties.deviceName;
-			info.VendorName = AdapterInfo::GetVendorString(properties.vendorID);
+			info.VendorName = AdapterDesc::GetVendorString(properties.vendorID);
 
 
 			if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)

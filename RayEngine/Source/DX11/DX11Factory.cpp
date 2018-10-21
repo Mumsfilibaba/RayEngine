@@ -63,7 +63,7 @@ namespace RayEngine
 		{
 			using namespace Microsoft::WRL;
 
-			std::vector<AdapterInfo> infos;
+			std::vector<AdapterDesc> infos;
 			ComPtr<IDXGIAdapter> pAdapter = nullptr;
 			ComPtr<ID3D11Device> pDevice = nullptr;
 			ComPtr<ID3D11DeviceContext> pDeviceContext = nullptr;
@@ -81,7 +81,7 @@ namespace RayEngine
 					DXGI_ADAPTER_DESC desc = {};
 					if (SUCCEEDED(pAdapter->GetDesc(&desc)))
 					{
-						infos.push_back(AdapterInfo());
+						infos.push_back(AdapterDesc());
 						FillAdapterInfo(i, infos[infos.size() - 1], desc);
 					}
 				}
@@ -184,7 +184,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Factory::FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC& desc)
+		void DX11Factory::FillAdapterInfo(int32 adapterID, AdapterDesc& info, DXGI_ADAPTER_DESC& desc)
 		{
 			info.ApiID = adapterID;
 			info.VendorID = desc.VendorId;
@@ -196,7 +196,7 @@ namespace RayEngine
 			wcstombs(str, desc.Description, len);
 			info.ModelName = str;
 
-			info.VendorName = AdapterInfo::GetVendorString(desc.VendorId);
+			info.VendorName = AdapterDesc::GetVendorString(desc.VendorId);
 
 
 			//These are constants for D3D_FEATURE_LEVEL_11_0 the lowest level RayEngine supports

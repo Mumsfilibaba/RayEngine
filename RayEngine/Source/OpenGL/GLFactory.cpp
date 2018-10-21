@@ -278,7 +278,7 @@ namespace RayEngine
 			if (LoadOpenGL())
 			{
 				//At this point we have valid GLfunctions for 3.3
-				AdapterInfo adapterInfo = {};
+				AdapterDesc adapterInfo = {};
 				adapterInfo.VendorName = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 				adapterInfo.ModelName = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 				adapterInfo.ApiID = 0;

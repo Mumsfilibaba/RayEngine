@@ -19,28 +19,27 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Graphics\AdapterInfo.h"
+#include "..\..\Include\Graphics\AdapterDesc.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		std::string AdapterInfo::GetVendorString(int32 vendorID)
+		std::string AdapterDesc::GetVendorString(int32 vendorID)
 		{
 			switch (vendorID)
 			{
-			case AdapterInfo::AMDVendorID:			return "AMD";
-			case AdapterInfo::ImgTecVendorID:		return "ImgTec";
-			case AdapterInfo::NVIDIAVendorID:		return "NVIDIA";
-			case AdapterInfo::ARMVendorID:			return "ARM";
-			case AdapterInfo::QualcommVendorID:		return "Qualcomm";
-			case AdapterInfo::INTELVendorID:		return "INTEL";
-			case AdapterInfo::MicrosoftVendorID:	return "Microsoft";
+			case AdapterDesc::AMDVendorID:			return "AMD";
+			case AdapterDesc::ImgTecVendorID:		return "ImgTec";
+			case AdapterDesc::NVIDIAVendorID:		return "NVIDIA";
+			case AdapterDesc::ARMVendorID:			return "ARM";
+			case AdapterDesc::QualcommVendorID:		return "Qualcomm";
+			case AdapterDesc::INTELVendorID:		return "INTEL";
+			case AdapterDesc::MicrosoftVendorID:	return "Microsoft";
 			default: return "Unknown Vendor";
 			}
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,15 +50,13 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		AdapterList::AdapterList(int32 count)
 			: pAdapters(nullptr),
 			Count(count)
 		{
-			pAdapters = new AdapterInfo[count];
+			pAdapters = new AdapterDesc[count];
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +67,6 @@ namespace RayEngine
 			other.pAdapters = nullptr;
 			other.Count = 0;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,14 +80,12 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		AdapterInfo& AdapterList::operator[](int32 index)
+		AdapterDesc& AdapterList::operator[](int32 index)
 		{
 			assert(index < Count);
 			return pAdapters[index];
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

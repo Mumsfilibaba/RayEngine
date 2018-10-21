@@ -35,7 +35,7 @@ namespace RayEngine
 	namespace System
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		Window::Window(const WindowInfo& desc)
+		Window::Window(const WindowDesc& desc)
 			: m_Impl(nullptr)
 		{
 #if defined(RE_PLATFORM_WINDOWS)
@@ -197,7 +197,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void Window::GetInfo(WindowInfo& desc) const
+		void Window::GetInfo(WindowDesc& desc) const
 		{
 			assert(m_Impl != nullptr);
 			m_Impl->GetInfo(desc);

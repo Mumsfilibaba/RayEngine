@@ -68,7 +68,7 @@ namespace RayEngine
 			IObject::CounterType mReferences;
 
 		private:
-			static void FillAdapterInfo(int32 adapterID, AdapterInfo& info, DXGI_ADAPTER_DESC& desc);
+			static void FillAdapterInfo(int32 adapterID, AdapterDesc& info, DXGI_ADAPTER_DESC& desc);
 		};
 	}
 }

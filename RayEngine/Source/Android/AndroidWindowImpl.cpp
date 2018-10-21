@@ -52,7 +52,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool AndroidWindowImpl::Create(const WindowInfo& info)
+		bool AndroidWindowImpl::Create(const WindowDesc& info)
 		{
 			//Set height and width
 			m_Width = info.Width;
@@ -218,7 +218,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void AndroidWindowImpl::GetInfo(WindowInfo& info) const
+		void AndroidWindowImpl::GetInfo(WindowDesc& info) const
 		{
 			info.Width = m_Width;
 			info.Height = m_Height;

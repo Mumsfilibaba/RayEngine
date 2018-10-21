@@ -26,11 +26,11 @@ failure and or malfunction of any kind.
 
 namespace RayEngine
 {
-	void QuerySystemInfo(SystemInfo& info)
+	void QuerySystemDesc(SystemDesc* pDesc)
 	{
-		info.Platform = PLATFORM_ANDROID;
+		pDesc->Platform = PLATFORM_ANDROID;
 		
-		AndroidGetDisplaySize(info.ScreenWidth, info.ScreenHeight);
+		AndroidGetDisplaySize(pDesc->ScreenWidth, pDesc->ScreenHeight);
 	}
 }
 

@@ -211,7 +211,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IWindowImpl* Win32WindowImpl::Copy() const
 		{
-			WindowInfo info;
+			WindowDesc info;
 			GetInfo(info);
 
 			Win32WindowImpl* instance = new Win32WindowImpl();
@@ -261,7 +261,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void Win32WindowImpl::GetInfo(WindowInfo& info) const
+		void Win32WindowImpl::GetInfo(WindowDesc& info) const
 		{
 			GetWindowText(m_Hwnd, m_Title, 256);
 		}
@@ -285,7 +285,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool Win32WindowImpl::Create(const WindowInfo& info)
+		bool Win32WindowImpl::Create(const WindowDesc& info)
 		{
 			if (IsWindow(m_Hwnd))
 			{

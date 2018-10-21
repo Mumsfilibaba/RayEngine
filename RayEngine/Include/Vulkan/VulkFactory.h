@@ -71,7 +71,7 @@ namespace RayEngine
 			
 			static bool DeviceExtensionsSupported(VkPhysicalDevice& adapter, const char* const * ppNeededExtensions, int32 count);
 			
-			static void FillAdapterInfo(AdapterInfo& info, VkPhysicalDeviceFeatures& features, VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags);
+			static void FillAdapterInfo(AdapterDesc& info, VkPhysicalDeviceFeatures& features, VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags);
 			
 			static void CheckQueueFamilySupport(VkPhysicalDevice& adapter, VkQueueFamilyProperties& queuefamily, int32& supportFlags);
 

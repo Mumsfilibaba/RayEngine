@@ -51,7 +51,6 @@ namespace RayEngine
 #endif
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		enum WINDOWSTYLE
 		{
@@ -68,7 +67,6 @@ namespace RayEngine
 		};
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		enum WINDOW_FLAG
 		{
@@ -78,10 +76,10 @@ namespace RayEngine
 		};
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Struct to decribe a window
-		struct RE_API WindowInfo
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Struct to decribe a window
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		struct RE_API WindowDesc
 		{
 			//TODO: Title does not seem to work properly on win32
 
@@ -110,22 +108,19 @@ namespace RayEngine
 		};
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Class for platform implementation of a window
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Class for platform implementation of a window
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		class RE_API IWindowImpl
 		{
+			RE_INTERFACE(IWindowImpl);
+
 		public:
-			IWindowImpl(const IWindowImpl& other) = delete;
-			IWindowImpl(IWindowImpl&& other) = delete;
-			IWindowImpl& operator=(const IWindowImpl& other) = delete;
-			IWindowImpl& operator=(IWindowImpl&& other) = delete;
-			
 			IWindowImpl() {}
 			virtual ~IWindowImpl() {}
 
 			//Create platform handles for a window
-			virtual bool Create(const WindowInfo& desc) = 0;
+			virtual bool Create(const WindowDesc& desc) = 0;
 			//Show window
 			virtual void Show() const = 0;
 			//Peeks all the events of the OS and pushes them onto the eventqueue
@@ -154,7 +149,7 @@ namespace RayEngine
 			virtual int32 GetWidth() const = 0;
 			virtual int32 GetHeight() const = 0;
 			//Get struct that describes the window
-			virtual void GetInfo(WindowInfo& desc) const = 0;
+			virtual void GetInfo(WindowDesc& desc) const = 0;
 			//Returns the OS-Handle to a window
 			virtual NativeWindowHandle GetNativeHandle() const = 0;
 		};
@@ -166,7 +161,7 @@ namespace RayEngine
 		class RE_API Window
 		{
 		public:
-			Window(const WindowInfo& desc);
+			Window(const WindowDesc& desc);
 			Window(Window&& other);
 			Window(const Window& other);
 			~Window();
@@ -200,7 +195,7 @@ namespace RayEngine
 			NativeWindowHandle GetNativeHandle() const;
 
 			//Get struct that describes the window
-			void GetInfo(WindowInfo& desc) const;
+			void GetInfo(WindowDesc& desc) const;
 
 			//Operators for assignment
 			Window& operator=(const Window& other);

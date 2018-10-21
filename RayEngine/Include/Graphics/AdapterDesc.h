@@ -42,7 +42,6 @@ namespace RayEngine
 		};
 
 
-
 		/*////////////////////////////////////////////////////////////
 
 			Contains information about a adapter (graphics-card).
@@ -70,7 +69,7 @@ namespace RayEngine
 			values that the adapter support.
 
 		////////////////////////////////////////////////////////////*/
-		struct AdapterInfo
+		struct AdapterDesc
 		{
 		public:
 			std::string VendorName;
@@ -123,7 +122,6 @@ namespace RayEngine
 		};
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		struct AdapterList
 		{
@@ -137,11 +135,11 @@ namespace RayEngine
 			AdapterList(AdapterList&& other);
 			~AdapterList();
 
-			AdapterInfo& operator[](int32 index);
+			AdapterDesc& operator[](int32 index);
 			AdapterList& operator=(AdapterList&& other);
 
 		public:
-			AdapterInfo* pAdapters = nullptr;
+			AdapterDesc* pAdapters = nullptr;
 			int32 Count = 0;
 		};
 	}

@@ -35,30 +35,30 @@ int main(int args, char* argsv[])
 
 	Log log;
 
-	SystemInfo info = {};
-	QuerySystemInfo(info);
+	SystemDesc systemDesc = {};
+	QuerySystemDesc(&systemDesc);
 
 	Bitmap icon(RE_T("Walter.png"), RE_T(""), 32, 32);
 	Bitmap cursor(RE_T("Cursor.png"), RE_T(""), 24, 24);
 
 	//Create a window
-	WindowInfo windowInfo = {};
-	windowInfo.BackgroundColor.r = 0;
-	windowInfo.BackgroundColor.g = 0;
-	windowInfo.BackgroundColor.b = 0;
-	windowInfo.Flags = WINDOW_FLAG_APP_FULLSCREEN | WINDOW_FLAG_APP_NO_SLEEP;
-	windowInfo.Style = WINDOWSTYLE_STANDARD_WINDOW;
+	WindowDesc windowDesc = {};
+	windowDesc.BackgroundColor.r = 0;
+	windowDesc.BackgroundColor.g = 0;
+	windowDesc.BackgroundColor.b = 0;
+	windowDesc.Flags = WINDOW_FLAG_APP_FULLSCREEN | WINDOW_FLAG_APP_NO_SLEEP;
+	windowDesc.Style = WINDOWSTYLE_STANDARD_WINDOW;
 #if defined(RE_PLATFORM_ANDROID)
-	windowInfo.Width = info.ScreenWidth;
-	windowInfo.Height = info.ScreenHeight;
+	windowDesc.Width = info.ScreenWidth;
+	windowDesc.Height = info.ScreenHeight;
 #else
-	windowInfo.Width = 1280;
-	windowInfo.Height = 720;
-	windowInfo.Cursor = cursor;
-	windowInfo.Icon = icon;
+	windowDesc.Width = 1280;
+	windowDesc.Height = 720;
+	windowDesc.Cursor = cursor;
+	windowDesc.Icon = icon;
 #endif
 
-	Window window(windowInfo);
+	Window window(windowDesc);
 
 
 	//Create a factory for the api
@@ -76,7 +76,7 @@ int main(int args, char* argsv[])
 		for (int32 i = 0; i < adapterList.Count; i++)
 		{
 			//Do not choose an intel integrated one if there are more than 1 adapter
-			if (adapterList[i].VendorID != AdapterInfo::INTELVendorID)
+			if (adapterList[i].VendorID != AdapterDesc::INTELVendorID)
 			{
 				adapterIndex = i;
 				break;
@@ -92,7 +92,7 @@ int main(int args, char* argsv[])
 
 	//Create a device and swapchain
 	constexpr int32 bufferCount = 2;
-	AdapterInfo adapterInfo = adapterList[adapterIndex];
+	AdapterDesc adapterInfo = adapterList[adapterIndex];
 
 	DeviceDesc deviceDesc = {};
 	deviceDesc.Name = "Main Device";

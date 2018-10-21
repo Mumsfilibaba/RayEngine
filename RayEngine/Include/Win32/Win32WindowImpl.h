@@ -49,7 +49,7 @@ namespace RayEngine
 			Win32WindowImpl();
 			~Win32WindowImpl();
 
-			bool Create(const WindowInfo& desc) override final;
+			bool Create(const WindowDesc& desc) override final;
 
 			void Show() const override final;
 
@@ -72,7 +72,7 @@ namespace RayEngine
 			virtual int32 GetHeight() const override final;
 
 			NativeWindowHandle GetNativeHandle() const override final;
-			void GetInfo(WindowInfo& desc) const override final;
+			void GetInfo(WindowDesc& desc) const override final;
 
 			HWND GetHWND() const;
 			HINSTANCE GetHINSTANCE() const;

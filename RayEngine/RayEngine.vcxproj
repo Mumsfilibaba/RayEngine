@@ -226,7 +226,7 @@
     <ClInclude Include="Include\DX12\DX12DescriptorHandle.h" />
     <ClInclude Include="Include\DXBase\DXCommon.h" />
     <ClInclude Include="Include\DXBase\DXShaderBase.h" />
-    <ClInclude Include="Include\Graphics\AdapterInfo.h" />
+    <ClInclude Include="Include\Graphics\AdapterDesc.h" />
     <ClInclude Include="Include\Graphics\IDeviceContext.h" />
     <ClInclude Include="Include\Graphics\IDeviceObject.h" />
     <ClInclude Include="Include\Graphics\IBuffer.h" />

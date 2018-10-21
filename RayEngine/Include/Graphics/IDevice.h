@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "AdapterInfo.h"
+#include "AdapterDesc.h"
 #include "..\Interfaces\IObject.h"
 #include "..\System\Log.h"
 
@@ -95,7 +95,7 @@ namespace RayEngine
 		struct DeviceDesc
 		{
 			std::string Name;
-			AdapterInfo* pAdapter;
+			AdapterDesc* pAdapter;
 			int32 DepthStencilDescriptorCount;
 			int32 RendertargetDescriptorCount;
 			int32 ResourceDescriptorCount;

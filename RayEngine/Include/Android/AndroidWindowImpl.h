@@ -43,7 +43,7 @@ namespace RayEngine
 			AndroidWindowImpl();
 			~AndroidWindowImpl();
 
-			bool Create(const WindowInfo& desc) override final;
+			bool Create(const WindowDesc& desc) override final;
 
 			void Show() const override final;
 
@@ -65,7 +65,7 @@ namespace RayEngine
 			virtual int32 GetWidth() const override final;
 			virtual int32 GetHeight() const override final;
 
-			void GetInfo(WindowInfo& desc) const override final;
+			void GetInfo(WindowDesc& desc) const override final;
 
 		private:
 			std::queue<Event> m_Events;
