@@ -37,7 +37,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLDevice::GLDevice(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
+		GLDevice::GLDevice(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
 			: mImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
 			mWndHandle(RE_NULL_WINDOW),
@@ -52,7 +52,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceInfo& info, bool debugLayer)
+		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceDesc& info, bool debugLayer)
 			: mImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
 			mWndHandle(RE_NULL_WINDOW),
@@ -96,70 +96,70 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateShader(IShader** ppShader, const ShaderInfo& info)
+		bool GLDevice::CreateShader(IShader** ppShader, const ShaderDesc& info)
 		{
 			return (*ppShader = new GLShader(this, info)) != nullptr;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
+		bool GLDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
+		bool GLDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
+		bool GLDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info)
+		bool GLDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateSampler(ISampler** ppSampler, const SamplerInfo& info)
+		bool GLDevice::CreateSampler(ISampler** ppSampler, const SamplerDesc& info)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
+		bool GLDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
+		bool GLDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info)
 		{
 			return (*ppBuffer) = new GLBuffer(this, pInitialData, info);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info)
+		bool GLDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info)
 		{
 			return (*ppRootLayout = new GLRootLayout(this, info)) != nullptr;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
+		bool GLDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info)
 		{
 			return (*ppPipelineState = new GLPipelineState(this, info)) != nullptr;
 		}

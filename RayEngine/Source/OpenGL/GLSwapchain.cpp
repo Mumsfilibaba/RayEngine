@@ -28,7 +28,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLSwapchain::GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+		GLSwapchain::GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info)
 			: m_Device(nullptr),
 			mFactory(nullptr),
 			mWndHandle(RE_NULL_WINDOW),

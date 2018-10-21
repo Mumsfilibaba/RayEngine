@@ -3,7 +3,6 @@ TODO:
 -Vulkan triangle
 -Documentation
 -Use pointer for desc - Rename info to desc
--Inline converter functions
 -Static log for system
 -GLImpl - do not return false (Print what function was not loaded)
 -RootLayout should control binding of resources

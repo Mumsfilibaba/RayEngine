@@ -43,7 +43,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11RootLayout);
 
 		public:
-			DX11RootLayout(IDevice* pDevice, const RootLayoutInfo& info);
+			DX11RootLayout(IDevice* pDevice, const RootLayoutDesc& info);
 			~DX11RootLayout();
 
 			IDX11RootVariableSlot* GetDX11VariableSlot(int32 slotSndex) const;
@@ -60,13 +60,13 @@ namespace RayEngine
 
 
 		private:
-			void Create(const RootLayoutInfo& info);
+			void Create(const RootLayoutDesc& info);
 			
-			ID3D11SamplerState* CreateStaticSampler(const StaticSampler& sampler);
+			ID3D11SamplerState* CreateStaticSampler(const StaticSamplerDesc& sampler);
 			
-			IDX11RootVariableSlot* CreateVariable(const ShaderVariable& variable);
+			IDX11RootVariableSlot* CreateVariable(const ShaderVariableDesc& variable);
 			
-			DX11ShaderConstantBlock* CreateConstantBlock(const ShaderVariable& variable);
+			DX11ShaderConstantBlock* CreateConstantBlock(const ShaderVariableDesc& variable);
 
 
 		private:

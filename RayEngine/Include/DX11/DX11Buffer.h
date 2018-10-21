@@ -41,7 +41,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Buffer);
 
 		public:
-			DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
+			DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info);
 			~DX11Buffer();
 
 			int32 GetByteStride() const;
@@ -63,7 +63,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* pInitalData, const BufferInfo& info);
+			void Create(const ResourceData* pInitalData, const BufferDesc& info);
 
 		private:
 			DX11Device* m_Device;

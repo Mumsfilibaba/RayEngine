@@ -37,7 +37,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(GLRootLayout);
 
 		public:
-			GLRootLayout(IDevice* pDevice, const RootLayoutInfo& info);
+			GLRootLayout(IDevice* pDevice, const RootLayoutDesc& info);
 			~GLRootLayout();
 
 			void SetName(const std::string& name) override final;
@@ -51,7 +51,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const RootLayoutInfo& info);
+			void Create(const RootLayoutDesc& info);
 
 		private:
 			GLDevice* m_Device;

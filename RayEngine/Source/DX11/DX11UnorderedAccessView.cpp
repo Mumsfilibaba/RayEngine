@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11UnorderedAccessView::DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewInfo& info)
+		DX11UnorderedAccessView::DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc& info)
 			: m_Device(nullptr),
 			m_View(nullptr),
 			mReferences(0)
@@ -108,7 +108,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11UnorderedAccessView::Create(const UnorderedAccessViewInfo& info)
+		void DX11UnorderedAccessView::Create(const UnorderedAccessViewDesc& info)
 		{
 			using namespace System;
 

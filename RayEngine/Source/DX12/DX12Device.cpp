@@ -42,7 +42,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Device::DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
+		DX12Device::DX12Device(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
 			: mFactory(nullptr),
 			m_Adapter(nullptr),
 			m_Device(nullptr),
@@ -90,7 +90,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateShader(IShader** ppShader, const ShaderInfo& info)
+		bool DX12Device::CreateShader(IShader** ppShader, const ShaderDesc& info)
 		{
 			return ((*ppShader = new DX12Shader(this, info)) != nullptr);
 		}
@@ -98,7 +98,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
+		bool DX12Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info)
 		{
 			return ((*ppView = new DX12RenderTargetView(this, info)) != nullptr);
 		}
@@ -106,7 +106,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
+		bool DX12Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info)
 		{
 			return (*ppView = new DX12DepthStencilView(this, info));
 		}
@@ -114,7 +114,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
+		bool DX12Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info)
 		{
 			return ((*ppView = new DX12ShaderResourceView(this, info)) != nullptr);
 		}
@@ -122,7 +122,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info)
+		bool DX12Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info)
 		{
 			return ((*ppView = new DX12UnorderedAccessView(this, info)) != nullptr);
 		}
@@ -130,7 +130,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateSampler(ISampler** ppSampler, const SamplerInfo& info)
+		bool DX12Device::CreateSampler(ISampler** ppSampler, const SamplerDesc& info)
 		{
 			return ((*ppSampler = new DX12Sampler(this, info)) != nullptr);
 		}
@@ -138,7 +138,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
+		bool DX12Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info)
 		{
 			return ((*ppTexture) = new DX12Texture(this, pInitialData, info)) != nullptr;
 		}
@@ -146,7 +146,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
+		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info)
 		{
 			return ((*ppBuffer) = new DX12Buffer(this, pInitialData, info));
 		}
@@ -154,7 +154,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info)
+		bool DX12Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info)
 		{
 			return ((*ppRootLayout) = new DX12RootLayout(this, info));
 		}
@@ -162,7 +162,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
+		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info)
 		{
 			return ((*ppPipelineState = new DX12PipelineState(this, info)));
 		}
@@ -288,7 +288,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer)
+		void DX12Device::Create(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
 		{
 			using namespace System;
 

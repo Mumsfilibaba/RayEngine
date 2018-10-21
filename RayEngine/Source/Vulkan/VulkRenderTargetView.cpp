@@ -28,7 +28,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkRenderTargetView::VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
+		VulkRenderTargetView::VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc& info)
 			: VulkImageView(pDevice),
 			mReferences(0)
 		{
@@ -90,7 +90,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkRenderTargetView::Create(const RenderTargetViewInfo& info)
+		void VulkRenderTargetView::Create(const RenderTargetViewDesc& info)
 		{
 			using namespace System;
 

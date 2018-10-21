@@ -45,7 +45,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12Device);
 
 		public:
-			DX12Device(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+			DX12Device(IFactory* pFactory, const DeviceDesc& info, bool debugLayer);
 			~DX12Device();
 
 			ID3D12Device* GetD3D12Device() const;
@@ -64,25 +64,25 @@ namespace RayEngine
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
 			
-			bool CreateShader(IShader** ppShader, const ShaderInfo& info) override final;
+			bool CreateShader(IShader** ppShader, const ShaderDesc& info) override final;
 			
-			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) override final;
+			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info) override final;
 			
-			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) override final;
+			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info) override final;
 			
-			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info) override final;
 			
-			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info) override final;
 			
-			bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerDesc& info) override final;
 			
-			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) override final;
+			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info) override final;
 			
-			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) override final;
+			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info) override final;
 			
-			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info) override final;
+			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info) override final;
 			
-			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) override final;
+			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info) override final;
 			
 			void SetName(const std::string& name) override final;
 			
@@ -97,7 +97,7 @@ namespace RayEngine
 			System::Log* GetDeviceLog() override final;
 
 		private:
-			void Create(IFactory* pFactory, const DeviceInfo& info, bool debugLayer);
+			void Create(IFactory* pFactory, const DeviceDesc& info, bool debugLayer);
 
 		private:
 			DX12Factory* mFactory;

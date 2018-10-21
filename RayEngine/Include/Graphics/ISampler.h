@@ -35,7 +35,7 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct SamplerInfo
+		struct SamplerDesc
 		{
 			std::string Name = "";
 			SAMPLER_FILTER_MODE FilterMode = SAMPLER_FILTER_MODE_UNKNOWN;

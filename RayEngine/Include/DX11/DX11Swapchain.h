@@ -47,7 +47,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Swapchain);
 
 		public:
-			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
+			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info);
 			~DX11Swapchain();
 
 			void Resize(int32 width, int32 height) override final;
@@ -77,7 +77,7 @@ namespace RayEngine
 			}
 
 		private:
-			void Create(const SwapchainInfo& info);
+			void Create(const SwapchainDesc& info);
 			
 			void CreateTextures();
 

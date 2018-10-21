@@ -32,7 +32,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkRootLayout);
 
 		public:
-			VulkRootLayout(IDevice* pDevice, const RootLayoutInfo& info);
+			VulkRootLayout(IDevice* pDevice, const RootLayoutDesc& info);
 			~VulkRootLayout();
 
 			VkPipelineLayout GetVkPipelineLayout() const;
@@ -48,7 +48,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(IDevice* pDevice, const RootLayoutInfo& info);
+			void Create(IDevice* pDevice, const RootLayoutDesc& info);
 
 		private:
 			IDevice* m_Device;

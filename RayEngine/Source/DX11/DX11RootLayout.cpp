@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11RootLayout::DX11RootLayout(IDevice* pDevice, const RootLayoutInfo& info)
+		DX11RootLayout::DX11RootLayout(IDevice* pDevice, const RootLayoutDesc& info)
 			: m_Device(nullptr),
 			m_ConstantBlocks(),
 			m_StaticSamplers(),
@@ -117,7 +117,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11RootLayout::Create(const RootLayoutInfo& info)
+		void DX11RootLayout::Create(const RootLayoutDesc& info)
 		{
 			for (int32 i = 0; i < info.SamplerCount; i++)
 			{
@@ -147,7 +147,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11SamplerState* DX11RootLayout::CreateStaticSampler(const StaticSampler& sampler)
+		ID3D11SamplerState* DX11RootLayout::CreateStaticSampler(const StaticSamplerDesc& sampler)
 		{
 			using namespace System;
 
@@ -200,7 +200,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IDX11RootVariableSlot* DX11RootLayout::CreateVariable(const ShaderVariable& variable)
+		IDX11RootVariableSlot* DX11RootLayout::CreateVariable(const ShaderVariableDesc& variable)
 		{
 			switch (variable.ShaderStage)
 			{
@@ -224,7 +224,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11ShaderConstantBlock* DX11RootLayout::CreateConstantBlock(const ShaderVariable& variable)
+		DX11ShaderConstantBlock* DX11RootLayout::CreateConstantBlock(const ShaderVariableDesc& variable)
 		{
 			return new DX11ShaderConstantBlock(m_Device, variable.ConstantCount);
 		}

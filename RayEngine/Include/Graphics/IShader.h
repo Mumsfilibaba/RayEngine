@@ -58,11 +58,11 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct ShaderInfo
+		struct ShaderDesc
 		{
 			std::string Name = "";
-			std::string Source = "";
 			std::string EntryPoint = "main";
+			std::string Source = "";
 			SHADER_TYPE Type = SHADER_TYPE_UNKNOWN;
 			SHADER_SOURCE_LANG SrcLang = SHADER_SOURCE_LANG_UNKNOWN;
 			int32 Flags =

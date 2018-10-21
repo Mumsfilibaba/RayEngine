@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Sampler);
 
 		public:
-			DX11Sampler(IDevice* pDevice, const SamplerInfo& info);
+			DX11Sampler(IDevice* pDevice, const SamplerDesc& info);
 			~DX11Sampler();
 
 			ID3D11SamplerState* GetD3D11SamplerState() const;
@@ -56,7 +56,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const SamplerInfo& info);
+			void Create(const SamplerDesc& info);
 
 		private:
 			DX11Device* m_Device;

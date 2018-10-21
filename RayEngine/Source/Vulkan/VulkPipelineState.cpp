@@ -29,7 +29,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkPipelineState::VulkPipelineState(IDevice* pDevice, const PipelineStateInfo& info)
+		VulkPipelineState::VulkPipelineState(IDevice* pDevice, const PipelineStateDesc& info)
 			: m_Device(nullptr),
 			m_RootLayout(nullptr),
 			m_RenderPass(VK_NULL_HANDLE),
@@ -135,7 +135,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::Create(const PipelineStateInfo& info)
+		void VulkPipelineState::Create(const PipelineStateDesc& info)
 		{
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
 				CreateGraphicsPipeline(info);
@@ -146,7 +146,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateInfo& info)
+		void VulkPipelineState::SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateDesc& info)
 		{
 			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 			desc.flags = 0;
@@ -181,7 +181,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateInfo& info)
+		void VulkPipelineState::SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateDesc& info)
 		{
 			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 			desc.pNext = nullptr;
@@ -205,7 +205,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateComputePipeline(const PipelineStateInfo& info)
+		void VulkPipelineState::CreateComputePipeline(const PipelineStateDesc& info)
 		{
 			//TODO: Implement ComputeShaders
 		}
@@ -213,7 +213,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateGraphicsPipeline(const PipelineStateInfo& info)
+		void VulkPipelineState::CreateGraphicsPipeline(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -391,7 +391,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkPipelineState::CreateRenderPass(const PipelineStateInfo& info)
+		bool VulkPipelineState::CreateRenderPass(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -519,7 +519,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkInputElement VulkPipelineState::CreateVkInputElement(const InputElementInfo& info, int32 location)
+		VkInputElement VulkPipelineState::CreateVkInputElement(const InputElementDesc& info, int32 location)
 		{
 			VkVertexInputBindingDescription binding = {};
 			binding.stride = info.StrideBytes;
@@ -547,7 +547,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateInfo& info)
+		void VulkPipelineState::CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateDesc& info)
 		{
 			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 			desc.pNext = nullptr;
@@ -558,7 +558,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendInfo& info)
+		void VulkPipelineState::SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendDesc& info)
 		{
 			desc.blendEnable = info.BlendEnable ? VK_TRUE : VK_FALSE;
 

@@ -72,7 +72,7 @@ namespace RayEngine
 			the view can access.
 
 		///////////////////////////////////////////////////////////*/
-		struct DepthStencilViewInfo
+		struct DepthStencilViewDesc
 		{
 			std::string Name;
 			int32 Flags;

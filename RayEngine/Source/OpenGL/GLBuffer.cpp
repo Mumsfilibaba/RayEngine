@@ -6,7 +6,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLBuffer::GLBuffer(IDevice* pDevice, const ResourceData* const pInitialData, const BufferInfo& info)
+		GLBuffer::GLBuffer(IDevice* pDevice, const ResourceData* const pInitialData, const BufferDesc& info)
 			: m_Device(nullptr),
 			m_Buffer(0),
 			m_SizeBytes(0),
@@ -105,7 +105,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLBuffer::Create(const ResourceData* const pInitialData, const BufferInfo& info)
+		void GLBuffer::Create(const ResourceData* const pInitialData, const BufferDesc& info)
 		{
 			using namespace System;
 

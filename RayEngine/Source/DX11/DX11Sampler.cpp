@@ -30,7 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Sampler::DX11Sampler(IDevice* pDevice, const SamplerInfo& info)
+		DX11Sampler::DX11Sampler(IDevice* pDevice, const SamplerDesc& info)
 			: m_Device(nullptr),
 			m_SamplerState(nullptr),
 			mReferences(0)
@@ -107,7 +107,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Sampler::Create(const SamplerInfo& info)
+		void DX11Sampler::Create(const SamplerDesc& info)
 		{
 			using namespace System;
 

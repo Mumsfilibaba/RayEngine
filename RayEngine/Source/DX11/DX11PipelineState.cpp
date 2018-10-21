@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11PipelineState::DX11PipelineState(IDevice* pDevice, const PipelineStateInfo& info)
+		DX11PipelineState::DX11PipelineState(IDevice* pDevice, const PipelineStateDesc& info)
 			: m_Device(nullptr),
 			m_InputLayout(nullptr),
 			m_BlendState(nullptr),
@@ -292,7 +292,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::Create(const PipelineStateInfo& info)
+		void DX11PipelineState::Create(const PipelineStateDesc& info)
 		{
 			m_Type = info.Type;
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
@@ -304,7 +304,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateGraphicsState(const PipelineStateInfo& info)
+		void DX11PipelineState::CreateGraphicsState(const PipelineStateDesc& info)
 		{
 			if (info.GraphicsPipeline.pVertexShader != nullptr)
 				m_VS = info.GraphicsPipeline.pVertexShader->QueryReference<DX11Shader>();
@@ -327,7 +327,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateComputeState(const PipelineStateInfo& info)
+		void DX11PipelineState::CreateComputeState(const PipelineStateDesc& info)
 		{
 			if (info.ComputePipeline.pComputeShader != nullptr)
 				m_CS = info.ComputePipeline.pComputeShader->QueryReference<DX11Shader>();
@@ -336,7 +336,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateInputLayout(const PipelineStateInfo& info)
+		void DX11PipelineState::CreateInputLayout(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -375,7 +375,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateRasterizerState(const PipelineStateInfo& info)
+		void DX11PipelineState::CreateRasterizerState(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -417,7 +417,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateDepthStencilState(const PipelineStateInfo& info)
+		void DX11PipelineState::CreateDepthStencilState(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -451,7 +451,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateBlendState(const PipelineStateInfo& info)
+		void DX11PipelineState::CreateBlendState(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -514,7 +514,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC& desc, const InputElementInfo& info)
+		void DX11PipelineState::SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC& desc, const InputElementDesc& info)
 		{
 			desc.AlignedByteOffset = static_cast<uint32>(info.ElementOffset);
 			desc.Format = ReToDXFormat(info.Format);

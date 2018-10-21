@@ -70,7 +70,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLFactory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
+		bool GLFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
 		{
 			*ppDevice = new GLDevice(this, deviceInfo, m_DebugLayer);
 			return true;
@@ -79,7 +79,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
+		bool GLFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
 		{
 			*ppSwapchain = nullptr;
 			return false;
@@ -88,7 +88,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
+		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
 		{
 #if defined(RE_PLATFORM_WINDOWS)
 			GLNativeDevice dc = GetDC(swapchainInfo.WindowHandle);

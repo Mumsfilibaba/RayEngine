@@ -93,7 +93,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
+		bool DX12Factory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
 		{
 			return ((*ppDevice) = new DX12Device(this, deviceInfo, m_DebugController != nullptr)) != nullptr;
 		}
@@ -101,7 +101,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
+		bool DX12Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
 		{
 			return ((*ppSwapchain) = new DX12Swapchain(this, pDevice, swapchainInfo)) != nullptr;
 		}
@@ -109,7 +109,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
+		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
 		{
 			IDevice* pDevice = new DX12Device(this, deviceInfo, m_DebugController != nullptr);
 			ISwapchain* pSwapchain = new DX12Swapchain(this, pDevice, swapchainInfo);

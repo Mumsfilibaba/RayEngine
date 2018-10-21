@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11UnorderedAccessView);
 
 		public:
-			DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewInfo& info);
+			DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc& info);
 			~DX11UnorderedAccessView();
 
 			ID3D11UnorderedAccessView* GetD3D11UnorderedAccessView() const;
@@ -56,7 +56,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const UnorderedAccessViewInfo& info);
+			void Create(const UnorderedAccessViewDesc& info);
 
 		private:
 			DX11Device* m_Device;

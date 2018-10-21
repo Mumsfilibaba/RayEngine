@@ -27,7 +27,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkShader::VulkShader(IDevice* pDevice, const ShaderInfo& info)
+		VulkShader::VulkShader(IDevice* pDevice, const ShaderDesc& info)
 			: m_Device(nullptr),
 			m_Module(VK_NULL_HANDLE),
 			m_Type(SHADER_TYPE_UNKNOWN),
@@ -126,7 +126,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkShader::Create(const ShaderInfo& info)
+		void VulkShader::Create(const ShaderDesc& info)
 		{
 			using namespace System;
 

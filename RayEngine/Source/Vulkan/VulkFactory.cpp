@@ -239,7 +239,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
+		bool VulkFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
 		{
 			return ((*ppDevice) = new VulkDevice(this, deviceInfo)) != nullptr;
 		}
@@ -247,7 +247,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
+		bool VulkFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
 		{
 			*ppSwapchain = nullptr;
 
@@ -258,7 +258,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
+		bool VulkFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
 		{	
 			VulkDevice* pVulkDevice = new VulkDevice(this, deviceInfo);
 			(*ppDevice) = pVulkDevice;

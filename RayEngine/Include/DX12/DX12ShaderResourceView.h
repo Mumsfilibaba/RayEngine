@@ -41,7 +41,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12ShaderResourceView);
 
 		public:
-			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewInfo& info);
+			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc& info);
 			~DX12ShaderResourceView();
 
 			void SetName(const std::string& name) override final;
@@ -55,7 +55,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderResourceViewInfo& info);
+			void Create(const ShaderResourceViewDesc& info);
 
 		private:
 			DX12Device* m_Device;

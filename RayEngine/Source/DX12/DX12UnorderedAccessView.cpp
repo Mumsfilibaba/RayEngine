@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12UnorderedAccessView::DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewInfo& info)
+		DX12UnorderedAccessView::DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc& info)
 			: m_Device(nullptr),
 			mReferences(0)
 		{
@@ -98,7 +98,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12UnorderedAccessView::Create(const UnorderedAccessViewInfo& info)
+		void DX12UnorderedAccessView::Create(const UnorderedAccessViewDesc& info)
 		{			
 			ID3D12Resource* pD3D12CounterResource = nullptr;
 			if (info.pCounterResource != nullptr)

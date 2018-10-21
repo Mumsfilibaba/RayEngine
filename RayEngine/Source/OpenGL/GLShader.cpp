@@ -8,7 +8,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLShader::GLShader(IDevice* pDevice, const ShaderInfo& info)
+		GLShader::GLShader(IDevice* pDevice, const ShaderDesc& info)
 			: m_Device(nullptr),
 			m_Type(SHADER_TYPE_UNKNOWN),
 			m_Shader(0),
@@ -79,7 +79,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLShader::Create(const ShaderInfo& info)
+		void GLShader::Create(const ShaderDesc& info)
 		{
 			m_Type = info.Type;
 

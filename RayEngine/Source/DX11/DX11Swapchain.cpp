@@ -34,7 +34,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Swapchain::DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+		DX11Swapchain::DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info)
 			: m_Device(nullptr),
 			mFactory(nullptr),
 			m_Swapchain(nullptr),
@@ -149,7 +149,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Swapchain::Create(const SwapchainInfo& info)
+		void DX11Swapchain::Create(const SwapchainDesc& info)
 		{
 			using namespace System;
 
@@ -223,7 +223,7 @@ namespace RayEngine
 
 				if (m_DepthStencilFormat != FORMAT_UNKNOWN)
 				{
-					TextureInfo depthStencilInfo = {};
+					TextureDesc depthStencilInfo = {};
 					depthStencilInfo.Name = m_Name + ": DepthStencil";
 					depthStencilInfo.Flags = TEXTURE_FLAGS_DEPTH_STENCIL;
 					depthStencilInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
@@ -247,7 +247,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Swapchain::CreateViews()
 		{
-			RenderTargetViewInfo rtvInfo = {};
+			RenderTargetViewDesc rtvInfo = {};
 			rtvInfo.Name = m_Name + ": BackBuffer RTV";
 			rtvInfo.Format = m_BackBufferFormat;
 			rtvInfo.pResource = m_BackBuffer;
@@ -260,7 +260,7 @@ namespace RayEngine
 
 			if (m_DepthStencilFormat != FORMAT_UNKNOWN)
 			{
-				DepthStencilViewInfo dsvInfo = {};
+				DepthStencilViewDesc dsvInfo = {};
 				dsvInfo.Name = m_Name + ": DepthStencil DSV";
 				dsvInfo.Format = m_DepthStencilFormat;
 				dsvInfo.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;

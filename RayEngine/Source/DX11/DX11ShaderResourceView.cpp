@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11ShaderResourceView::DX11ShaderResourceView(IDevice* pDevice, const ShaderResourceViewInfo& info)
+		DX11ShaderResourceView::DX11ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc& info)
 			: m_Device(nullptr),
 			m_View(nullptr),
 			mReferences(0)
@@ -108,7 +108,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11ShaderResourceView::Create(const ShaderResourceViewInfo& info)
+		void DX11ShaderResourceView::Create(const ShaderResourceViewDesc& info)
 		{
 			using namespace System;
 

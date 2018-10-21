@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11ShaderResourceView);
 
 		public:
-			DX11ShaderResourceView(IDevice* pDevice, const ShaderResourceViewInfo& info);
+			DX11ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc& info);
 			~DX11ShaderResourceView();
 
 			ID3D11ShaderResourceView* GetD3D11ShaderResourceView() const;
@@ -56,7 +56,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderResourceViewInfo& info);
+			void Create(const ShaderResourceViewDesc& info);
 
 		private:
 			DX11Device* m_Device;

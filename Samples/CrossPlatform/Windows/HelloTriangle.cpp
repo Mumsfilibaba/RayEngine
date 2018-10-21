@@ -94,59 +94,59 @@ int main(int args, char* argsv[])
 	constexpr int32 bufferCount = 2;
 	AdapterInfo adapterInfo = adapterList[adapterIndex];
 
-	DeviceInfo deviceInfo = {};
-	deviceInfo.Name = "Main Device";
-	deviceInfo.pAdapter = &adapterInfo;
-	deviceInfo.DepthStencilDescriptorCount = 4;
-	deviceInfo.RendertargetDescriptorCount = 4;
-	deviceInfo.ResourceDescriptorCount = 16;
-	deviceInfo.SamplerDescriptorCount = 16;
+	DeviceDesc deviceDesc = {};
+	deviceDesc.Name = "Main Device";
+	deviceDesc.pAdapter = &adapterInfo;
+	deviceDesc.DepthStencilDescriptorCount = 4;
+	deviceDesc.RendertargetDescriptorCount = 4;
+	deviceDesc.ResourceDescriptorCount = 16;
+	deviceDesc.SamplerDescriptorCount = 16;
 
-	SwapchainInfo swapchainInfo = {}; 
-	swapchainInfo.Name = "SwapChain";
-	swapchainInfo.WindowHandle = window.GetNativeHandle();
-	swapchainInfo.Width = window.GetWidth();
-	swapchainInfo.Height = window.GetHeight();
-	swapchainInfo.BackBuffer.Count = bufferCount;
-	swapchainInfo.BackBuffer.Format = FORMAT_B8G8R8A8_UNORM;
-	swapchainInfo.DepthStencil.Format = FORMAT_UNKNOWN;
-	swapchainInfo.Samples = MSAA_SAMPLE_COUNT_1;
+	SwapchainDesc swapchainDesc = {}; 
+	swapchainDesc.Name = "SwapChain";
+	swapchainDesc.WindowHandle = window.GetNativeHandle();
+	swapchainDesc.Width = window.GetWidth();
+	swapchainDesc.Height = window.GetHeight();
+	swapchainDesc.BackBuffer.Count = bufferCount;
+	swapchainDesc.BackBuffer.Format = FORMAT_B8G8R8A8_UNORM;
+	swapchainDesc.DepthStencil.Format = FORMAT_UNKNOWN;
+	swapchainDesc.Samples = MSAA_SAMPLE_COUNT_1;
 
 	IDevice* pDevice = nullptr;
 	ISwapchain* pSwapchain = nullptr;
-	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceInfo, &pSwapchain, swapchainInfo);
+	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceDesc, &pSwapchain, swapchainDesc);
 
 
 	//Create shaders
-	ShaderInfo shaderInfo = {};
-	shaderInfo.Name = "VertexShader";
+	ShaderDesc shaderDesc = {};
+	shaderDesc.Name = "VertexShader";
 #if defined(RE_DEBUG)
-	shaderInfo.Flags = SHADER_FLAGS_DEBUG;
+	shaderDesc.Flags = SHADER_FLAGS_DEBUG;
 #else
-	shaderInfo.Flags = SHADER_FLAGS_NONE;
+	shaderDesc.Flags = SHADER_FLAGS_NONE;
 #endif
-	shaderInfo.Type = SHADER_TYPE_VERTEX;
-	shaderInfo.EntryPoint = "main";
+	shaderDesc.Type = SHADER_TYPE_VERTEX;
+	shaderDesc.EntryPoint = "main";
 
 	std::string source;
 	if (pFactory->GetGraphicsApi() == GRAPHICS_API_OPENGL)
 	{
-		shaderInfo.SrcLang = SHADER_SOURCE_LANG_GLSL;
+		shaderDesc.SrcLang = SHADER_SOURCE_LANG_GLSL;
 		source = ReadFullFile("vs.glsl", "Shaders/");
 	}
 	else
 	{
-		shaderInfo.SrcLang = SHADER_SOURCE_LANG_HLSL;
+		shaderDesc.SrcLang = SHADER_SOURCE_LANG_HLSL;
 		source = ReadFullFile("vs.hlsl", "Shaders/");
 	}
-	shaderInfo.Source = source;
+	shaderDesc.Source = source;
 
 	
 	IShader* pVs = nullptr;
-	pDevice->CreateShader(&pVs, shaderInfo);
+	pDevice->CreateShader(&pVs, shaderDesc);
 	
-	shaderInfo.Type = SHADER_TYPE_PIXEL;
-	shaderInfo.Name = "PixelShader";
+	shaderDesc.Type = SHADER_TYPE_PIXEL;
+	shaderDesc.Name = "PixelShader";
 	if (pFactory->GetGraphicsApi() == GRAPHICS_API_OPENGL)
 	{
 		source = ReadFullFile("ps.glsl", "Shaders/");
@@ -155,29 +155,29 @@ int main(int args, char* argsv[])
 	{
 		source = ReadFullFile("ps.hlsl", "Shaders/");
 	}
-	shaderInfo.Source = source;
+	shaderDesc.Source = source;
 	
 	IShader* pPs = nullptr;
-	pDevice->CreateShader(&pPs, shaderInfo);
+	pDevice->CreateShader(&pPs, shaderDesc);
 	
 	
 	
 	//Create a RootLayout
-	RootLayoutInfo rootLayoutInfo = {};
-	rootLayoutInfo.Name = "RootLayout";
-	rootLayoutInfo.Flags = ROOT_LAYOUT_FLAG_NONE;
-	rootLayoutInfo.PipelineType = PIPELINE_TYPE_GRAPHICS;
-	rootLayoutInfo.pStaticSamplers = nullptr;
-	rootLayoutInfo.SamplerCount = 0;
-	rootLayoutInfo.pVariables = nullptr;
-	rootLayoutInfo.VariableCount = 0;
+	RootLayoutDesc rootLayoutDesc = {};
+	rootLayoutDesc.Name = "RootLayout";
+	rootLayoutDesc.Flags = ROOT_LAYOUT_FLAG_NONE;
+	rootLayoutDesc.PipelineType = PIPELINE_TYPE_GRAPHICS;
+	rootLayoutDesc.pStaticSamplers = nullptr;
+	rootLayoutDesc.SamplerCount = 0;
+	rootLayoutDesc.pVariables = nullptr;
+	rootLayoutDesc.VariableCount = 0;
 	
 	IRootLayout* pRootLayout = nullptr;
-	pDevice->CreateRootLayout(&pRootLayout, rootLayoutInfo);
+	pDevice->CreateRootLayout(&pRootLayout, rootLayoutDesc);
 	
 	
 	//Create a defenition for an inputelement (Define a vertex)
-	InputElementInfo elementinfo = 
+	InputElementDesc elementDesc = 
 	{ 
 		"POSITION",
 		0,
@@ -190,42 +190,41 @@ int main(int args, char* argsv[])
 	};
 
 
-
 	//Create a pipelinestate
-	PipelineStateInfo pipelinestateInfo = {};
-	pipelinestateInfo.Name = "PipelineState";
-	pipelinestateInfo.Type = PIPELINE_TYPE_GRAPHICS;
-	pipelinestateInfo.pRootLayout = pRootLayout;
-	pipelinestateInfo.GraphicsPipeline.pVertexShader = pVs;
-	pipelinestateInfo.GraphicsPipeline.pPixelShader = pPs;
-	pipelinestateInfo.GraphicsPipeline.DepthStencilFormat = swapchainInfo.DepthStencil.Format;
-	pipelinestateInfo.GraphicsPipeline.RenderTargetCount = 1;
-	pipelinestateInfo.GraphicsPipeline.RenderTargetFormats[0] = swapchainInfo.BackBuffer.Format;
-	pipelinestateInfo.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
-	pipelinestateInfo.GraphicsPipeline.SampleMask = -1;
-	pipelinestateInfo.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	PipelineStateDesc pipelinestateDesc = {};
+	pipelinestateDesc.Name = "PipelineState";
+	pipelinestateDesc.Type = PIPELINE_TYPE_GRAPHICS;
+	pipelinestateDesc.pRootLayout = pRootLayout;
+	pipelinestateDesc.GraphicsPipeline.pVertexShader = pVs;
+	pipelinestateDesc.GraphicsPipeline.pPixelShader = pPs;
+	pipelinestateDesc.GraphicsPipeline.DepthStencilFormat = swapchainDesc.DepthStencil.Format;
+	pipelinestateDesc.GraphicsPipeline.RenderTargetCount = 1;
+	pipelinestateDesc.GraphicsPipeline.RenderTargetFormats[0] = swapchainDesc.BackBuffer.Format;
+	pipelinestateDesc.GraphicsPipeline.SampleCount = MSAA_SAMPLE_COUNT_1;
+	pipelinestateDesc.GraphicsPipeline.SampleMask = -1;
+	pipelinestateDesc.GraphicsPipeline.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	pipelinestateInfo.GraphicsPipeline.InputLayout.ElementCount = 1;
-	pipelinestateInfo.GraphicsPipeline.InputLayout.pElements = &elementinfo;
+	pipelinestateDesc.GraphicsPipeline.InputLayout.ElementCount = 1;
+	pipelinestateDesc.GraphicsPipeline.InputLayout.pElements = &elementDesc;
 	
-	pipelinestateInfo.GraphicsPipeline.DepthStencilState.DepthEnable = false;
-	pipelinestateInfo.GraphicsPipeline.DepthStencilState.StencilEnable = false;
-	pipelinestateInfo.GraphicsPipeline.DepthStencilState.BackFace = pipelinestateInfo.GraphicsPipeline.DepthStencilState.FrontFace;
+	pipelinestateDesc.GraphicsPipeline.DepthStencilState.DepthEnable = false;
+	pipelinestateDesc.GraphicsPipeline.DepthStencilState.StencilEnable = false;
+	pipelinestateDesc.GraphicsPipeline.DepthStencilState.BackFace = pipelinestateDesc.GraphicsPipeline.DepthStencilState.FrontFace;
 
-	pipelinestateInfo.GraphicsPipeline.RasterizerState.AntialiasedLineEnable = false;
-	pipelinestateInfo.GraphicsPipeline.RasterizerState.ConservativeRasterizerEnable = false;
-	pipelinestateInfo.GraphicsPipeline.RasterizerState.FillMode = FILL_MODE_SOLID;
-	pipelinestateInfo.GraphicsPipeline.RasterizerState.MultisampleEnable = false;
-	pipelinestateInfo.GraphicsPipeline.RasterizerState.DepthClipEnable = false;
-	pipelinestateInfo.GraphicsPipeline.RasterizerState.CullMode = CULL_MODE_NONE;
+	pipelinestateDesc.GraphicsPipeline.RasterizerState.AntialiasedLineEnable = false;
+	pipelinestateDesc.GraphicsPipeline.RasterizerState.ConservativeRasterizerEnable = false;
+	pipelinestateDesc.GraphicsPipeline.RasterizerState.FillMode = FILL_MODE_SOLID;
+	pipelinestateDesc.GraphicsPipeline.RasterizerState.MultisampleEnable = false;
+	pipelinestateDesc.GraphicsPipeline.RasterizerState.DepthClipEnable = false;
+	pipelinestateDesc.GraphicsPipeline.RasterizerState.CullMode = CULL_MODE_NONE;
 
-	pipelinestateInfo.GraphicsPipeline.BlendState.IndependentBlendEnable = false;
-	pipelinestateInfo.GraphicsPipeline.BlendState.AlphaToCoverageEnable = false;
-	pipelinestateInfo.GraphicsPipeline.BlendState.LogicOpEnable = false;
-	pipelinestateInfo.GraphicsPipeline.BlendState.RenderTargets[0].WriteMask = COLOR_WRITE_ENABLE_ALL;
+	pipelinestateDesc.GraphicsPipeline.BlendState.IndependentBlendEnable = false;
+	pipelinestateDesc.GraphicsPipeline.BlendState.AlphaToCoverageEnable = false;
+	pipelinestateDesc.GraphicsPipeline.BlendState.LogicOpEnable = false;
+	pipelinestateDesc.GraphicsPipeline.BlendState.RenderTargets[0].WriteMask = COLOR_WRITE_ENABLE_ALL;
 
 	IPipelineState* pPipelineState = nullptr;
-	pDevice->CreatePipelineState(&pPipelineState, pipelinestateInfo);
+	pDevice->CreatePipelineState(&pPipelineState, pipelinestateDesc);
 
 
 	
@@ -243,15 +242,15 @@ int main(int args, char* argsv[])
 	vbData.ByteStride = sizeof(Vector3);
 	vbData.Height = 1;
 	
-	BufferInfo vertexBufferInfo = {};
-	vertexBufferInfo.Name = "VertexBuffer";
-	vertexBufferInfo.Count = 3;
-	vertexBufferInfo.ByteStride = sizeof(Vector3);
-	vertexBufferInfo.Type = BUFFER_USAGE_VERTEX;
-	vertexBufferInfo.Usage = RESOURCE_USAGE_DEFAULT;
+	BufferDesc vertexBufferDesc = {};
+	vertexBufferDesc.Name = "VertexBuffer";
+	vertexBufferDesc.Count = 3;
+	vertexBufferDesc.ByteStride = sizeof(Vector3);
+	vertexBufferDesc.Type = BUFFER_USAGE_VERTEX;
+	vertexBufferDesc.Usage = RESOURCE_USAGE_DEFAULT;
 	
 	IBuffer* pVertexBuffer = nullptr;
-	pDevice->CreateBuffer(&pVertexBuffer, &vbData, vertexBufferInfo);
+	pDevice->CreateBuffer(&pVertexBuffer, &vbData, vertexBufferDesc);
 
 
 	//Get devicecontext

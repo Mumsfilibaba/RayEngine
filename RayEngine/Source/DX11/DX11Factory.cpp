@@ -96,7 +96,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo)
+		bool DX11Factory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
 		{
 			return ((*ppDevice) = new DX11Device(this, deviceInfo, m_DebugLayer)) != nullptr;
 		}
@@ -104,7 +104,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo)
+		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
 		{
 			return ((*ppSwapchain) = new DX11Swapchain(this, pDevice, swapchainInfo)) != nullptr;
 		}
@@ -112,7 +112,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo)
+		bool DX11Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
 		{
 			IDevice* pDevice = new DX11Device(this, deviceInfo, m_DebugLayer);
 			ISwapchain* pSwapchain = new DX11Swapchain(this, pDevice, swapchainInfo);

@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Swapchain::DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+		DX12Swapchain::DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info)
 			: mFactory(nullptr),
 			m_Context(nullptr),
 			m_Swapchain(nullptr),
@@ -142,7 +142,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Swapchain::Create(const SwapchainInfo& info)
+		void DX12Swapchain::Create(const SwapchainDesc& info)
 		{
 			using namespace System;
 
@@ -183,7 +183,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Swapchain::CreateTextures(const SwapchainInfo& info)
+		void DX12Swapchain::CreateTextures(const SwapchainDesc& info)
 		{
 			using namespace System;
 			using namespace Microsoft::WRL;

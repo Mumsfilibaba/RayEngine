@@ -41,7 +41,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12PipelineState);
 
 		public:
-			DX12PipelineState(IDevice* pdevice, const PipelineStateInfo& info);
+			DX12PipelineState(IDevice* pdevice, const PipelineStateDesc& info);
 			~DX12PipelineState();
 
 			ID3D12PipelineState* GetD3D12PipelineState() const;
@@ -60,23 +60,23 @@ namespace RayEngine
 
 
 		private:
-			void Create(const PipelineStateInfo& info);
+			void Create(const PipelineStateDesc& info);
 
-			void CreateGraphicsState(const PipelineStateInfo& info);
+			void CreateGraphicsState(const PipelineStateDesc& info);
 
-			void CreateComputeState(const PipelineStateInfo& info);
+			void CreateComputeState(const PipelineStateDesc& info);
 			
 
 		private:
 			static void SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader);
 
-			static void SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementInfo& element);
+			static void SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementDesc& element);
 
-			static void SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateInfo& info);
+			static void SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateDesc& info);
 
-			static void SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateInfo& info);
+			static void SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateDesc& info);
 
-			static void SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info);
+			static void SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateDesc& info);
 
 
 		private:

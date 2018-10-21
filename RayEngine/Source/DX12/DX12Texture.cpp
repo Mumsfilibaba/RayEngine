@@ -32,7 +32,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info)
 			: DX12Resource(),
 			m_Device(nullptr),
 			mReferences(0)
@@ -115,7 +115,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Texture::Create(const ResourceData* const pInitialData, const TextureInfo& info)
+		void DX12Texture::Create(const ResourceData* const pInitialData, const TextureDesc& info)
 		{
 			using namespace System;
 

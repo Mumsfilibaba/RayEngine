@@ -30,7 +30,6 @@ namespace RayEngine
 		class IResource;
 
 
-
 		/*///////////////////////////////////////////////////////////
 			
 			Struct that contains info of a RenderTargetView. Allows
@@ -71,7 +70,7 @@ namespace RayEngine
 			FORMAT_R8G8B8A8_UNORM only the 0-plane is available.
 
 		///////////////////////////////////////////////////////////*/
-		struct RenderTargetViewInfo
+		struct RenderTargetViewDesc
 		{
 			std::string Name;
 			FORMAT Format;
@@ -130,7 +129,6 @@ namespace RayEngine
 				} Texture3D;
 			};
 		};
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

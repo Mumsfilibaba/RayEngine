@@ -32,7 +32,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12RootLayout::DX12RootLayout(IDevice* pDevice, const RootLayoutInfo& info)
+		DX12RootLayout::DX12RootLayout(IDevice* pDevice, const RootLayoutDesc& info)
 			: m_Device(nullptr),
 			m_RootSignature(nullptr),
 			mReferences(0)
@@ -133,7 +133,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12RootLayout::Create(const RootLayoutInfo& info)
+		void DX12RootLayout::Create(const RootLayoutDesc& info)
 		{
 			using namespace System;
 			using namespace Microsoft::WRL;
@@ -234,7 +234,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_ROOT_PARAMETER1 DX12RootLayout::CreateVariable(const ShaderVariable& variable)
+		D3D12_ROOT_PARAMETER1 DX12RootLayout::CreateVariable(const ShaderVariableDesc& variable)
 		{
 			D3D12_ROOT_PARAMETER1 desc = {};
 			D3D12_DESCRIPTOR_RANGE1 range = {};
@@ -304,7 +304,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_STATIC_SAMPLER_DESC DX12RootLayout::CreateSampler(const StaticSampler& sampler)
+		D3D12_STATIC_SAMPLER_DESC DX12RootLayout::CreateSampler(const StaticSamplerDesc& sampler)
 		{
 			D3D12_STATIC_SAMPLER_DESC desc = {};
 			desc.AddressU = ReToDX12TextureAdressMode(sampler.AdressU);
@@ -334,7 +334,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12RootVariableSlot* DX12RootLayout::CreateRootVariableSlot(const ShaderVariable& variable, int32 rootSlot, bool placeDescriptorTable)
+		DX12RootVariableSlot* DX12RootLayout::CreateRootVariableSlot(const ShaderVariableDesc& variable, int32 rootSlot, bool placeDescriptorTable)
 		{
 			if (variable.ShaderStage == SHADER_TYPE_COMPUTE)
 			{

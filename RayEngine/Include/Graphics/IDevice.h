@@ -32,35 +32,34 @@ namespace RayEngine
 		class IFactory;
 		class IDeviceContext;
 		class IShader;
-		struct ShaderInfo;
+		struct ShaderDesc;
 
 		class IRenderTargetView;
-		struct RenderTargetViewInfo;
+		struct RenderTargetViewDesc;
 
 		class IDepthStencilView;
-		struct DepthStencilViewInfo;
+		struct DepthStencilViewDesc;
 		
 		class IShaderResourceView;
-		struct ShaderResourceViewInfo;
+		struct ShaderResourceViewDesc;
 
 		class IUnorderedAccessView;
-		struct UnorderedAccessViewInfo;
+		struct UnorderedAccessViewDesc;
 
 		class IBuffer;
-		struct BufferInfo;
+		struct BufferDesc;
 
 		class IRootLayout;
-		struct RootLayoutInfo;
+		struct RootLayoutDesc;
 
 		class IPipelineState;
-		struct PipelineStateInfo;
+		struct PipelineStateDesc;
 
 		class ISampler;
-		struct SamplerInfo;
+		struct SamplerDesc;
 
 		class ITexture;
-		struct TextureInfo;
-
+		struct TextureDesc;
 
 
 		/*////////////////////////////////////////////////////////////
@@ -93,7 +92,7 @@ namespace RayEngine
 			be created by the system.
 
 		////////////////////////////////////////////////////////////*/
-		struct DeviceInfo
+		struct DeviceDesc
 		{
 			std::string Name;
 			AdapterInfo* pAdapter;
@@ -160,7 +159,7 @@ namespace RayEngine
 				Returns true if ppShader is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateShader(IShader** ppShader, const ShaderInfo& info) = 0;
+			virtual bool CreateShader(IShader** ppShader, const ShaderDesc& info) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -177,7 +176,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info) = 0;
+			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -194,7 +193,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info) = 0;
+			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -211,7 +210,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info) = 0;
+			virtual bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -228,7 +227,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info) = 0;
+			virtual bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -243,7 +242,7 @@ namespace RayEngine
 				Returns true if ppSampler is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateSampler(ISampler** ppSampler, const SamplerInfo& info) = 0;
+			virtual bool CreateSampler(ISampler** ppSampler, const SamplerDesc& info) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -263,7 +262,7 @@ namespace RayEngine
 				Returns true if ppTexture is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info) = 0;
+			virtual bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -283,7 +282,7 @@ namespace RayEngine
 				Returns true if ppBuffer is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info) = 0;
+			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -301,7 +300,7 @@ namespace RayEngine
 				pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateRootLayout(IRootLayout** ppRootSignature, const RootLayoutInfo& info) = 0;
+			virtual bool CreateRootLayout(IRootLayout** ppRootSignature, const RootLayoutDesc& info) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -319,7 +318,7 @@ namespace RayEngine
 				pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info) = 0;
+			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info) = 0;
 
 
 			/*////////////////////////////////////////////////////////////

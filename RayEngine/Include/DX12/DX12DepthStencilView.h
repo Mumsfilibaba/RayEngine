@@ -41,7 +41,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12DepthStencilView);
 
 		public:
-			DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info);
+			DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc& info);
 			~DX12DepthStencilView();
 
 			void SetName(const std::string& name) override final;
@@ -55,7 +55,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const DepthStencilViewInfo& info);
+			void Create(const DepthStencilViewDesc& info);
 
 		private:
 			DX12Device* m_Device;

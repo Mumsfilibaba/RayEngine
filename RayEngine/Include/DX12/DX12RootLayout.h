@@ -42,7 +42,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12RootLayout);
 
 		public:
-			DX12RootLayout(IDevice* pDevice, const RootLayoutInfo& info);
+			DX12RootLayout(IDevice* pDevice, const RootLayoutDesc& info);
 			~DX12RootLayout();
 
 			ID3D12RootSignature* GetD3D12RootSignature() const;
@@ -65,13 +65,13 @@ namespace RayEngine
 
 
 		private:
-			void Create(const RootLayoutInfo& info);
+			void Create(const RootLayoutDesc& info);
 
-			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariable& variable);
+			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariableDesc& variable);
 
-			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSampler& sampler);
+			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSamplerDesc& sampler);
 
-			DX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariable& variable, int32 rootSlot, bool placeDescriptorTable);
+			DX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariableDesc& variable, int32 rootSlot, bool placeDescriptorTable);
 
 
 		private:

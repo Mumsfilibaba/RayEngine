@@ -29,7 +29,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info)
 			: m_Device(nullptr),
 			m_Type(TEXTURE_TYPE_UNKNOWN),
 			mReferences(0)
@@ -149,7 +149,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Texture::Create(const ResourceData* const pInitialData, const TextureInfo& info)
+		void DX11Texture::Create(const ResourceData* const pInitialData, const TextureDesc& info)
 		{
 			using namespace System;
 			DXGI_FORMAT format = ReToDXFormat(info.Format);

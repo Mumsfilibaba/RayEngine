@@ -223,7 +223,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(GLPipelineState);
 
 		public:
-			GLPipelineState(IDevice* pDevice, const PipelineStateInfo& info);
+			GLPipelineState(IDevice* pDevice, const PipelineStateDesc& info);
 			~GLPipelineState();
 
 			inline const GLInputLayout& GetGLInputLayout() const
@@ -264,21 +264,21 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const PipelineStateInfo& info);
+			void Create(const PipelineStateDesc& info);
 
-			void CreateGraphicsPipeline(const PipelineStateInfo& info);
+			void CreateGraphicsPipeline(const PipelineStateDesc& info);
 
-			void CreateComputePipeline(const PipelineStateInfo& info);
+			void CreateComputePipeline(const PipelineStateDesc& info);
 
 			void LinkShaders();
 
-			void CreateInputLayout(const PipelineStateInfo& info);
+			void CreateInputLayout(const PipelineStateDesc& info);
 
-			void CreateDepthState(const PipelineStateInfo& info);
+			void CreateDepthState(const PipelineStateDesc& info);
 
-			void CreateRasterizerState(const PipelineStateInfo& info);
+			void CreateRasterizerState(const PipelineStateDesc& info);
 
-			void CreateBlendState(const PipelineStateInfo& info);
+			void CreateBlendState(const PipelineStateDesc& info);
 
 		private:
 			GLDevice* m_Device;

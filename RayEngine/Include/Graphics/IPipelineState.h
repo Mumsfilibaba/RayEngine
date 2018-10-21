@@ -75,7 +75,7 @@ namespace RayEngine
 			StrideBytes - The number of bytes of this element.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct InputElementInfo
+		struct InputElementDesc
 		{
 			std::string Semantic;
 			int32 SemanticIndex;
@@ -90,18 +90,18 @@ namespace RayEngine
 
 		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			A structure containing an array of InputElementInfo.
+			A structure containing an array of InputElementDesc.
 			Describes all the input attributes that will be used in
 			a pipelinestate.
 
-			pElements - An array of InputElementInfo-structures.
+			pElements - An array of InputElementDesc-structures.
 
 			ElementCount - Number of elements in pElements.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct InputLayoutInfo
+		struct InputLayoutDesc
 		{
-			InputElementInfo* pElements;
+			InputElementDesc* pElements;
 			int32 ElementCount;
 		};
 
@@ -160,7 +160,7 @@ namespace RayEngine
 			AntialiasedLineEnable = false;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct RasterizerStateInfo
+		struct RasterizerStateDesc
 		{
 			bool ConservativeRasterizerEnable;
 			int32 ForcedSampleCount;
@@ -227,7 +227,7 @@ namespace RayEngine
 			BackFace.StencilFunc = COMPARISON_FUNC_ALWAYS
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct DepthStencilStateInfo
+		struct DepthStencilStateDesc
 		{
 			bool DepthEnable;
 			DEPTH_WRITE_MASK DepthWriteMask;
@@ -280,7 +280,7 @@ namespace RayEngine
 			RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct RenderTargetBlendInfo
+		struct RenderTargetBlendDesc
 		{
 			bool BlendEnable;
 			BLEND_TYPE SrcBlend;
@@ -323,13 +323,13 @@ namespace RayEngine
 			LogicOpEnable = false;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct BlendStateInfo
+		struct BlendStateDesc
 		{
 			bool AlphaToCoverageEnable;
 			bool IndependentBlendEnable;
 			bool LogicOpEnable;
 			float BlendFactor[4];
-			RenderTargetBlendInfo RenderTargets[RE_MAX_RENDERTARGETS];
+			RenderTargetBlendDesc RenderTargets[RE_MAX_RENDERTARGETS];
 		};
 
 
@@ -349,7 +349,7 @@ namespace RayEngine
 			ComputePipeline - Descibes a computepipeline;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct PipelineStateInfo
+		struct PipelineStateDesc
 		{
 			/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -358,7 +358,7 @@ namespace RayEngine
 				pComputeShader - The computeshader to use in the pipeline.
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-			struct ComputePipelineInfo
+			struct ComputePipelineDesc
 			{
 				IShader* pComputeShader;
 			};
@@ -403,17 +403,17 @@ namespace RayEngine
 				pPixelShader - Shader for the pixelstage
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-			struct GraphicsPipelineInfo
+			struct GraphicsPipelineDesc
 			{
 				int32 RenderTargetCount;
 				FORMAT RenderTargetFormats[8];
 				FORMAT DepthStencilFormat;
 				MSAA_SAMPLE_COUNT SampleCount;
 
-				InputLayoutInfo InputLayout;
-				RasterizerStateInfo RasterizerState;
-				DepthStencilStateInfo DepthStencilState;
-				BlendStateInfo BlendState;
+				InputLayoutDesc InputLayout;
+				RasterizerStateDesc RasterizerState;
+				DepthStencilStateDesc DepthStencilState;
+				BlendStateDesc BlendState;
 
 				uint32 SampleMask;
 
@@ -432,8 +432,8 @@ namespace RayEngine
 
 			union
 			{
-				GraphicsPipelineInfo GraphicsPipeline;
-				ComputePipelineInfo ComputePipeline;
+				GraphicsPipelineDesc GraphicsPipeline;
+				ComputePipelineDesc ComputePipeline;
 			};
 		};
 

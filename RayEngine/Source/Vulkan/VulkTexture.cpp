@@ -27,7 +27,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkTexture::VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info)
+		VulkTexture::VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info)
 			: m_Device(nullptr),
 			m_Image(VK_NULL_HANDLE),
 			mReferences(0)
@@ -129,7 +129,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkTexture::Create(const ResourceData* const pInitialData, const TextureInfo& info)
+		void VulkTexture::Create(const ResourceData* const pInitialData, const TextureDesc& info)
 		{
 			using namespace System;
 			

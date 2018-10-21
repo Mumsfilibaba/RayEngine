@@ -40,7 +40,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkSwapchain::VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info)
+		VulkSwapchain::VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info)
 			: mFactory(nullptr),
 			m_Device(nullptr),
 			m_CommandQueue(nullptr),
@@ -186,7 +186,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkSwapchain::Create(const SwapchainInfo& info)
+		void VulkSwapchain::Create(const SwapchainDesc& info)
 		{
 			using namespace System;
 

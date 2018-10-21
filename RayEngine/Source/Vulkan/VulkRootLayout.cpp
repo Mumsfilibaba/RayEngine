@@ -27,7 +27,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkRootLayout::VulkRootLayout(IDevice* pDevice, const RootLayoutInfo& info)
+		VulkRootLayout::VulkRootLayout(IDevice* pDevice, const RootLayoutDesc& info)
 			: m_Device(nullptr),
 			m_Layout(VK_NULL_HANDLE),
 			mReferences(0)
@@ -110,7 +110,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkRootLayout::Create(IDevice* pDevice, const RootLayoutInfo& info)
+		void VulkRootLayout::Create(IDevice* pDevice, const RootLayoutDesc& info)
 		{
 			using namespace System;
 

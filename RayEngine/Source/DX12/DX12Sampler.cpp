@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Sampler::DX12Sampler(IDevice* pDevice, const SamplerInfo& info)
+		DX12Sampler::DX12Sampler(IDevice* pDevice, const SamplerDesc& info)
 			: m_Device(nullptr),
 			mReferences(0)
 		{
@@ -114,7 +114,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Sampler::Create(const SamplerInfo& info)
+		void DX12Sampler::Create(const SamplerDesc& info)
 		{
 			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12SamplerHeap();
 			m_SamplerState = pDX12Heap->GetNext(nullptr);

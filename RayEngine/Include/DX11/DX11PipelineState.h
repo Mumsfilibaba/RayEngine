@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11PipelineState);
 
 		public:
-			DX11PipelineState(IDevice* pdevice, const PipelineStateInfo& info);
+			DX11PipelineState(IDevice* pdevice, const PipelineStateDesc& info);
 			~DX11PipelineState();
 
 			ID3D11InputLayout* GetD3D11InputLayout() const;
@@ -94,23 +94,23 @@ namespace RayEngine
 		private:
 			void ReleaseInterfaces();
 			
-			void Create(const PipelineStateInfo& info);
+			void Create(const PipelineStateDesc& info);
 			
-			void CreateGraphicsState(const PipelineStateInfo& info);
+			void CreateGraphicsState(const PipelineStateDesc& info);
 			
-			void CreateComputeState(const PipelineStateInfo& info);
+			void CreateComputeState(const PipelineStateDesc& info);
 			
-			void CreateInputLayout(const PipelineStateInfo& info);
+			void CreateInputLayout(const PipelineStateDesc& info);
 			
-			void CreateRasterizerState(const PipelineStateInfo& info);
+			void CreateRasterizerState(const PipelineStateDesc& info);
 			
-			void CreateDepthStencilState(const PipelineStateInfo& info);
+			void CreateDepthStencilState(const PipelineStateDesc& info);
 			
-			void CreateBlendState(const PipelineStateInfo& info);
+			void CreateBlendState(const PipelineStateDesc& info);
 
 
 		private:
-			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC& desc, const InputElementInfo& info);
+			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC& desc, const InputElementDesc& info);
 
 		private:
 			DX11Device* m_Device;

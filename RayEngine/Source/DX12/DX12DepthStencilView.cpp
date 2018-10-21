@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DepthStencilView::DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info)
+		DX12DepthStencilView::DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc& info)
 			: DX12View(),
 			m_Device(nullptr),
 			mReferences(0)
@@ -99,7 +99,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DepthStencilView::Create(const DepthStencilViewInfo& info)
+		void DX12DepthStencilView::Create(const DepthStencilViewDesc& info)
 		{
 			m_Resource = info.pResource->QueryReference<DX12Resource>();
 			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();

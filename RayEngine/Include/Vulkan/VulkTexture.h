@@ -38,7 +38,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkTexture);
 
 		public:
-			VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
+			VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info);
 			VulkTexture(IDevice* pDevice, VkImage image);
 			~VulkTexture();
 
@@ -57,7 +57,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(const ResourceData* const pInitialData, const TextureDesc& info);
 
 		private:
 			VulkDevice* m_Device;

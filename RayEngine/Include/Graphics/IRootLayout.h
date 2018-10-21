@@ -36,7 +36,6 @@ namespace RayEngine
 		class ISampler;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		enum STATIC_SAMPLER_BORDER_COLOR : int32
 		{
@@ -47,7 +46,6 @@ namespace RayEngine
 		};
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		enum SHADER_USAGE : int32
 		{
@@ -55,7 +53,6 @@ namespace RayEngine
 			SHADER_USAGE_DYNAMIC = 1,
 			SHADER_USAGE_STATIC = 2,
 		};
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,14 +67,12 @@ namespace RayEngine
 		};
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		enum ROOT_LAYOUT_FLAGS : int32
 		{
 			ROOT_LAYOUT_FLAG_NONE = 0,
 			ROOT_LAYOUT_FLAG_DISABLE_INPUT_LAYOUT = (1 << 0)
 		};
-
 
 
 		/*////////////////////////////////////////////////////////////
@@ -107,7 +102,7 @@ namespace RayEngine
 		ShaderSpaces.
 
 		////////////////////////////////////////////////////////////*/
-		struct ShaderVariable
+		struct ShaderVariableDesc
 		{
 			SHADER_TYPE ShaderStage = SHADER_TYPE_UNKNOWN;
 			VARIABLE_TYPE Type = VARIABLE_TYPE_UNKNOWN;
@@ -122,7 +117,7 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct StaticSampler
+		struct StaticSamplerDesc
 		{
 			SHADER_TYPE ShaderStage = SHADER_TYPE_UNKNOWN;
 			SAMPLER_FILTER_MODE FilterMode = SAMPLER_FILTER_MODE_UNKNOWN;
@@ -144,14 +139,14 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct RootLayoutInfo
+		struct RootLayoutDesc
 		{
 			std::string Name;
 			PIPELINE_TYPE PipelineType;
 			int32 Flags;
-			ShaderVariable* pVariables;
+			ShaderVariableDesc* pVariables;
 			int32 VariableCount;
-			StaticSampler* pStaticSamplers;
+			StaticSamplerDesc* pStaticSamplers;
 			int32 SamplerCount;
 		};
 

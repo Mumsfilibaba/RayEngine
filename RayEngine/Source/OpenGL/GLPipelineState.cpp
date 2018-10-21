@@ -7,7 +7,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLPipelineState::GLPipelineState(IDevice* pDevice, const PipelineStateInfo& info)
+		GLPipelineState::GLPipelineState(IDevice* pDevice, const PipelineStateDesc& info)
 			: m_Device(nullptr),
 			m_References(0)
 		{
@@ -78,7 +78,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::Create(const PipelineStateInfo& info)
+		void GLPipelineState::Create(const PipelineStateDesc& info)
 		{
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
 				CreateGraphicsPipeline(info);
@@ -88,7 +88,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateGraphicsPipeline(const PipelineStateInfo& info)
+		void GLPipelineState::CreateGraphicsPipeline(const PipelineStateDesc& info)
 		{
 			m_Program = glCreateProgram();
 			if (info.GraphicsPipeline.pVertexShader != nullptr)
@@ -126,7 +126,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateComputePipeline(const PipelineStateInfo& info)
+		void GLPipelineState::CreateComputePipeline(const PipelineStateDesc& info)
 		{
 			m_Program = glCreateProgram();
 			if (info.GraphicsPipeline.pGeometryShader != nullptr)
@@ -165,12 +165,12 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateInputLayout(const PipelineStateInfo& info)
+		void GLPipelineState::CreateInputLayout(const PipelineStateDesc& info)
 		{
 			m_InputLayout.ElementCount = info.GraphicsPipeline.InputLayout.ElementCount;
 			m_InputLayout.pElements = new GLInputLayoutElement[m_InputLayout.ElementCount];
 
-			InputElementInfo* pElements = info.GraphicsPipeline.InputLayout.pElements;
+			InputElementDesc* pElements = info.GraphicsPipeline.InputLayout.pElements;
 			for (uint32 i = 0; i < m_InputLayout.ElementCount; i++)
 			{
 				m_InputLayout.pElements[i].Stride = pElements[i].StrideBytes;
@@ -184,7 +184,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateDepthState(const PipelineStateInfo& info)
+		void GLPipelineState::CreateDepthState(const PipelineStateDesc& info)
 		{
 			m_DepthState.DepthEnable = info.GraphicsPipeline.DepthStencilState.DepthEnable;
 			m_DepthState.DepthFunc = ComparisonFuncToGL(info.GraphicsPipeline.DepthStencilState.DepthFunc);
@@ -214,7 +214,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateRasterizerState(const PipelineStateInfo& info)
+		void GLPipelineState::CreateRasterizerState(const PipelineStateDesc& info)
 		{
 			m_RasterizerState.ConservativeRasterizerEnable = info.GraphicsPipeline.RasterizerState.ConservativeRasterizerEnable;
 			
@@ -245,7 +245,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateBlendState(const PipelineStateInfo& info)
+		void GLPipelineState::CreateBlendState(const PipelineStateDesc& info)
 		{
 			m_BlendState.AlphaToCoverageEnable = info.GraphicsPipeline.BlendState.AlphaToCoverageEnable;
 			m_BlendState.IndependentBlendEnable = info.GraphicsPipeline.BlendState.IndependentBlendEnable;

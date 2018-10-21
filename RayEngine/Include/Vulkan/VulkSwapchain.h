@@ -41,7 +41,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkSwapchain);
 
 		public:
-			VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
+			VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info);
 			~VulkSwapchain();
 
 			VkSurfaceKHR GetVkSurfaceKHR() const;
@@ -67,7 +67,7 @@ namespace RayEngine
 		private:
 			void ReleaseObjects();
 			
-			void Create(const SwapchainInfo& info);
+			void Create(const SwapchainDesc& info);
 
 		private:
 			static VkExtent2D GetSupportedSize(const VkSurfaceCapabilitiesKHR& capabilities, int32 width, int32 height);

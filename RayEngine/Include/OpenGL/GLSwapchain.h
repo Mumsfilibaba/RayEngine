@@ -43,7 +43,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(GLSwapchain);
 
 		public:
-			GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainInfo& info);
+			GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info);
 			~GLSwapchain();
 
 			void Resize(int32 width, int32 height) override final;

@@ -49,7 +49,7 @@ namespace RayEngine
 			number of bytes.
 
 		////////////////////////////////////////////////////////////*/
-		struct BufferInfo
+		struct BufferDesc
 		{
 			std::string Name;
 			RESOURCE_USAGE Usage;

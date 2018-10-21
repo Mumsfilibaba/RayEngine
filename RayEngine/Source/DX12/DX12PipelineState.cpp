@@ -32,7 +32,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateInfo& info)
+		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateDesc& info)
 			: m_Device(nullptr),
 			m_PipelineState(nullptr),
 			m_Type(PIPELINE_TYPE_UNKNOWN),
@@ -118,7 +118,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::Create(const PipelineStateInfo& info)
+		void DX12PipelineState::Create(const PipelineStateDesc& info)
 		{
 			if (info.Type == PIPELINE_TYPE_GRAPHICS)
 				CreateGraphicsState(info);
@@ -133,7 +133,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateGraphicsState(const PipelineStateInfo& info)
+		void DX12PipelineState::CreateGraphicsState(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -214,7 +214,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateComputeState(const PipelineStateInfo& info)
+		void DX12PipelineState::CreateComputeState(const PipelineStateDesc& info)
 		{
 			using namespace System;
 
@@ -252,7 +252,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementInfo& element)
+		void DX12PipelineState::SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementDesc& element)
 		{
 			desc.SemanticName = element.Semantic.c_str();
 			desc.SemanticIndex = element.SemanticIndex;
@@ -274,7 +274,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateInfo& info)
+		void DX12PipelineState::SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateDesc& info)
 		{
 			desc.ConservativeRaster = info.ConservativeRasterizerEnable ? 
 				D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON : D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
@@ -302,7 +302,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateInfo& info)
+		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateDesc& info)
 		{
 			desc.DepthFunc = ReToDX12ComparisonFunc(info.DepthFunc);
 			desc.DepthEnable = info.DepthEnable;
@@ -323,7 +323,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateInfo& info)
+		void DX12PipelineState::SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateDesc& info)
 		{
 			desc.AlphaToCoverageEnable = info.AlphaToCoverageEnable;
 			desc.IndependentBlendEnable = info.IndependentBlendEnable;

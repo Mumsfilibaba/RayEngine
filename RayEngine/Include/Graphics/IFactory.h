@@ -29,10 +29,10 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class IDevice;
-		struct DeviceInfo;
+		struct DeviceDesc;
 
 		class ISwapchain;
-		struct SwapchainInfo;
+		struct SwapchainDesc;
 
 
 
@@ -68,7 +68,7 @@ namespace RayEngine
 				the device to be created.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateDevice(IDevice** ppDevice, const DeviceInfo& deviceInfo) = 0;
+			virtual bool CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ namespace RayEngine
 				the swapchain to be created.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainInfo& swapchainInfo) = 0;
+			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo) = 0;
 
 
 			/*////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ namespace RayEngine
 				the swapchain to be created.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceInfo& deviceInfo, ISwapchain** ppSwapchain, const SwapchainInfo& swapchainInfo) = 0;
+			virtual bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo) = 0;
 
 
 			/*////////////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkShader);
 
 		public:
-			VulkShader(IDevice* pDevice, const ShaderInfo& info);
+			VulkShader(IDevice* pDevice, const ShaderDesc& info);
 			~VulkShader();
 
 			const std::string& GetEntryPoint() const;
@@ -53,7 +53,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderInfo& info);
+			void Create(const ShaderDesc& info);
 
 		private:
 			VulkDevice* m_Device;

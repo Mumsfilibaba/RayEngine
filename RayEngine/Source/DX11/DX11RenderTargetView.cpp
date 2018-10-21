@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11RenderTargetView::DX11RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
+		DX11RenderTargetView::DX11RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc& info)
 			: m_Device(nullptr),
 			m_View(nullptr),
 			mReferences(0)
@@ -108,7 +108,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11RenderTargetView::Create(const RenderTargetViewInfo& info)
+		void DX11RenderTargetView::Create(const RenderTargetViewDesc& info)
 		{
 			using namespace System;
 

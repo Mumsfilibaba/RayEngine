@@ -59,7 +59,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Shader);
 
 		public:
-			DX11Shader(IDevice* pDevice, const ShaderInfo& info);
+			DX11Shader(IDevice* pDevice, const ShaderDesc& info);
 			~DX11Shader();
 
 			template<typename D3D11ShaderType>
@@ -82,7 +82,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderInfo& info);
+			void Create(const ShaderDesc& info);
 
 		private:
 			DX11Device* m_Device;

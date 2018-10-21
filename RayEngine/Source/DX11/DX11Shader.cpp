@@ -30,7 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderInfo& info)
+		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderDesc& info)
 			: DXShaderBase(),
 			m_Device(nullptr),
 			m_Shader(nullptr),
@@ -108,7 +108,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Shader::Create(const ShaderInfo& info)
+		void DX11Shader::Create(const ShaderDesc& info)
 		{
 			using namespace System;
 

@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12RenderTargetView::DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewInfo& info)
+		DX12RenderTargetView::DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc& info)
 			: DX12View(),
 			m_Device(nullptr),
 			mReferences(0)
@@ -99,7 +99,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12RenderTargetView::Create(const RenderTargetViewInfo& info)
+		void DX12RenderTargetView::Create(const RenderTargetViewDesc& info)
 		{
 			m_Resource = info.pResource->QueryReference<DX12Resource>();
 			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();

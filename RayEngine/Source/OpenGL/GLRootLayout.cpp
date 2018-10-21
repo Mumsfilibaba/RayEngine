@@ -27,7 +27,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLRootLayout::GLRootLayout(IDevice* pDevice, const RootLayoutInfo& info)
+		GLRootLayout::GLRootLayout(IDevice* pDevice, const RootLayoutDesc& info)
 			: m_Device(nullptr),
 			mReferences(0)
 		{
@@ -45,7 +45,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLRootLayout::Create(const RootLayoutInfo& info)
+		void GLRootLayout::Create(const RootLayoutDesc& info)
 		{
 		}
 

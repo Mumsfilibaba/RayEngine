@@ -39,7 +39,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkPipelineState);
 
 		public:
-			VulkPipelineState(IDevice* pdevice, const PipelineStateInfo& info);
+			VulkPipelineState(IDevice* pdevice, const PipelineStateDesc& info);
 			~VulkPipelineState();
 
 			VkPipeline GetVkPipeline() const;
@@ -59,18 +59,18 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const PipelineStateInfo& info);
-			void CreateComputePipeline(const PipelineStateInfo& info);
-			void CreateGraphicsPipeline(const PipelineStateInfo& info);
-			bool CreateRenderPass(const PipelineStateInfo& info);
+			void Create(const PipelineStateDesc& info);
+			void CreateComputePipeline(const PipelineStateDesc& info);
+			void CreateGraphicsPipeline(const PipelineStateDesc& info);
+			bool CreateRenderPass(const PipelineStateDesc& info);
 
 		private:
 			static VkPipelineShaderStageCreateInfo CreateVkPipelineShaderStageCreateInfo(const IShader* pShader);
-			static VkInputElement CreateVkInputElement(const InputElementInfo& info, int32 location);
-			static void CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateInfo& info);
-			static void SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendInfo& info);
-			static void SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateInfo& info);
-			static void SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateInfo& info);
+			static VkInputElement CreateVkInputElement(const InputElementDesc& info, int32 location);
+			static void CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateDesc& info);
+			static void SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendDesc& info);
+			static void SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateDesc& info);
+			static void SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateDesc& info);
 
 		private:
 			VulkDevice* m_Device;

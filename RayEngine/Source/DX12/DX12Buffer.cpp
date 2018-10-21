@@ -32,7 +32,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
+		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info)
 			: m_Device(nullptr),
 			m_BufferType(BUFFER_USAGE_UNKNOWN),
 			m_MappedSubresource(-1),
@@ -155,7 +155,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Buffer::Create(const ResourceData* pInitalData, const BufferInfo& info)
+		void DX12Buffer::Create(const ResourceData* pInitalData, const BufferDesc& info)
 		{
 			using namespace System;
 
@@ -228,7 +228,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Buffer::CreateView(const BufferInfo& info)
+		void DX12Buffer::CreateView(const BufferDesc& info)
 		{
 			const DX12Device* pDX12Device = m_Device;
 			if (info.Usage == BUFFER_USAGE_CONSTANT)

@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Texture);
 
 		public:
-			DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
+			DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info);
 			DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource);
 			~DX11Texture();
 
@@ -61,7 +61,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(const ResourceData* const pInitialData, const TextureDesc& info);
 
 		private:
 			DX11Device* m_Device;

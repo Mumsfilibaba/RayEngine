@@ -30,7 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11DepthStencilView::DX11DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info)
+		DX11DepthStencilView::DX11DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc& info)
 			: m_Device(nullptr),
 			m_View(nullptr),
 			mReferences(0)
@@ -107,7 +107,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11DepthStencilView::Create(const DepthStencilViewInfo& info)
+		void DX11DepthStencilView::Create(const DepthStencilViewDesc& info)
 		{
 			using namespace System;
 

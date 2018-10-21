@@ -42,7 +42,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12Texture);
 
 		public:
-			DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureInfo& info);
+			DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info);
 
 			DX12Texture(IDevice* pDevice, ID3D12Resource* pResource);
 
@@ -59,7 +59,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const TextureInfo& info);
+			void Create(const ResourceData* const pInitialData, const TextureDesc& info);
 
 		private:
 			DX12Device* m_Device;

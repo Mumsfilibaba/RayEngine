@@ -33,7 +33,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceInfo& deviceInfo)
+		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceDesc& deviceInfo)
 			: mFactory(nullptr),
 			m_Device(nullptr),
 			m_Adapter(nullptr),
@@ -62,7 +62,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderInfo& info)
+		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderDesc& info)
 		{
 			return ((*ppShader = new VulkShader(this, info)));
 		}
@@ -70,7 +70,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewInfo& info)
+		bool VulkDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info)
 		{
 			return ((*ppView = new VulkRenderTargetView(this, info)));
 		}
@@ -78,7 +78,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewInfo& info)
+		bool VulkDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info)
 		{
 			return false;
 		}
@@ -86,7 +86,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewInfo& info)
+		bool VulkDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info)
 		{
 			return false;
 		}
@@ -94,7 +94,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewInfo& info)
+		bool VulkDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info)
 		{
 			return false;
 		}
@@ -102,7 +102,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateSampler(ISampler** ppSampler, const SamplerInfo& info)
+		bool VulkDevice::CreateSampler(ISampler** ppSampler, const SamplerDesc& info)
 		{
 			return false;
 		}
@@ -110,7 +110,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureInfo& info)
+		bool VulkDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info)
 		{
 			return ((*ppTexture = new VulkTexture(this, pInitialData, info)));
 		}
@@ -118,7 +118,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferInfo& info)
+		bool VulkDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info)
 		{
 			return false;
 		}
@@ -126,7 +126,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutInfo& info)
+		bool VulkDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info)
 		{
 			return ((*ppRootLayout= new VulkRootLayout(this, info)));
 		}
@@ -134,7 +134,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateInfo& info)
+		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info)
 		{
 			return ((*ppPipelineState = new VulkPipelineState(this, info)));
 		}
@@ -221,7 +221,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkDevice::Create(const DeviceInfo& deviceInfo)
+		void VulkDevice::Create(const DeviceDesc& deviceInfo)
 		{
 			using namespace System;
 

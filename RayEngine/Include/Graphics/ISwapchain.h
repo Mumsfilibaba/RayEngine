@@ -34,7 +34,6 @@ namespace RayEngine
 		class IRenderTargetView;
 
 
-
 		/*////////////////////////////////////////////////////////////
 
 			A structure containg info about a swapchain.
@@ -53,7 +52,7 @@ namespace RayEngine
 			Height - The height of the buffers.
 
 		////////////////////////////////////////////////////////////*/
-		struct SwapchainInfo
+		struct SwapchainDesc
 		{
 			std::string Name;
 			System::NativeWindowHandle WindowHandle;
@@ -72,7 +71,6 @@ namespace RayEngine
 				FORMAT Format;
 			} DepthStencil;
 		};
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

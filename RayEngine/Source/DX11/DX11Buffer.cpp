@@ -30,7 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Buffer::DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info)
+		DX11Buffer::DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info)
 			: m_Device(nullptr),
 			m_Resource(nullptr),
 			m_Context(nullptr),
@@ -137,7 +137,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Buffer::Create(const ResourceData* pInitalData, const BufferInfo& info)
+		void DX11Buffer::Create(const ResourceData* pInitalData, const BufferDesc& info)
 		{
 			using namespace System;
 

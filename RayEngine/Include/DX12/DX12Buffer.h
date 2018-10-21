@@ -41,7 +41,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12Buffer);
 
 		public:
-			DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferInfo& info);
+			DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info);
 			~DX12Buffer();
 
 			DX12DescriptorHandle GetDX12DescriptorHandle() const;
@@ -65,9 +65,9 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* pInitalData, const BufferInfo& info);
+			void Create(const ResourceData* pInitalData, const BufferDesc& info);
 			
-			void CreateView(const BufferInfo& usage);
+			void CreateView(const BufferDesc& usage);
 
 
 		private:

@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11DepthStencilView);
 
 		public:
-			DX11DepthStencilView(IDevice* pDevice, const DepthStencilViewInfo& info);
+			DX11DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc& info);
 			~DX11DepthStencilView();
 
 			ID3D11DepthStencilView* GetD3D11DepthStencilView() const;
@@ -56,7 +56,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const DepthStencilViewInfo& info);
+			void Create(const DepthStencilViewDesc& info);
 
 		private:
 			DX11Device* m_Device;
