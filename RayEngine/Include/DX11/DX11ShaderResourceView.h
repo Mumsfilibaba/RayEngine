@@ -33,17 +33,19 @@ namespace RayEngine
 		class DX11Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11ShaderResourceView final : public IShaderResourceView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11ShaderResourceView);
 
 		public:
-			DX11ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc& info);
+			DX11ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc* pDesc);
 			~DX11ShaderResourceView();
 
-			ID3D11ShaderResourceView* GetD3D11ShaderResourceView() const;
+			inline ID3D11ShaderResourceView* GetD3D11ShaderResourceView() const
+			{
+				return m_View;
+			}
 
 			void SetName(const std::string& name) override final;
 			
@@ -56,13 +58,13 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderResourceViewDesc& info);
+			void Create(const ShaderResourceViewDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
 			ID3D11ShaderResourceView* m_View;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

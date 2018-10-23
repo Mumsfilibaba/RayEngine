@@ -31,16 +31,15 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Sampler::DX12Sampler(IDevice* pDevice, const SamplerDesc& info)
+		DX12Sampler::DX12Sampler(IDevice* pDevice, const SamplerDesc* pDesc)
 			: m_Device(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,61 +48,40 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_CPU_DESCRIPTOR_HANDLE DX12Sampler::GetD3D12CpuDescriptorHandle() const
-		{
-			return m_SamplerState.CpuDescriptor;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_GPU_DESCRIPTOR_HANDLE DX12Sampler::GetD3D12GpuDescriptorHandle() const
-		{
-			return m_SamplerState.GpuDescriptor;
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Sampler::SetName(const std::string& name)
 		{
 			//Not relevant
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Sampler::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
 		}
-
-
+	
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Sampler::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Sampler::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Sampler::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -112,28 +90,27 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Sampler::Create(const SamplerDesc& info)
+		void DX12Sampler::Create(const SamplerDesc* pDesc)
 		{
 			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12SamplerHeap();
 			m_SamplerState = pDX12Heap->GetNext(nullptr);
 
 
 			D3D12_SAMPLER_DESC desc = {};
-			desc.AddressU = ReToDX12TextureAdressMode(info.AdressU);
-			desc.AddressV = ReToDX12TextureAdressMode(info.AdressV);
-			desc.AddressW = ReToDX12TextureAdressMode(info.AdressW);
-			desc.ComparisonFunc = ReToDX12ComparisonFunc(info.ComparisonFunc);
-			desc.Filter = ReToDX12Filter(info.FilterMode);
-			desc.MaxAnisotropy = info.MaxAnistropy;
-			desc.MipLODBias = info.MipLODBias;
-			desc.MinLOD = info.MinLOD;
-			desc.MaxLOD = info.MaxLOD;
-			desc.BorderColor[0] = info.BorderColor.R;
-			desc.BorderColor[1] = info.BorderColor.G;
-			desc.BorderColor[2] = info.BorderColor.B;
-			desc.BorderColor[3] = info.BorderColor.A;
+			desc.AddressU = ReToDX12TextureAdressMode(pDesc->AdressU);
+			desc.AddressV = ReToDX12TextureAdressMode(pDesc->AdressV);
+			desc.AddressW = ReToDX12TextureAdressMode(pDesc->AdressW);
+			desc.ComparisonFunc = ReToDX12ComparisonFunc(pDesc->ComparisonFunc);
+			desc.Filter = ReToDX12Filter(pDesc->FilterMode);
+			desc.MaxAnisotropy = pDesc->MaxAnistropy;
+			desc.MipLODBias = pDesc->MipLODBias;
+			desc.MinLOD = pDesc->MinLOD;
+			desc.MaxLOD = pDesc->MaxLOD;
+			desc.BorderColor[0] = pDesc->BorderColor.R;
+			desc.BorderColor[1] = pDesc->BorderColor.G;
+			desc.BorderColor[2] = pDesc->BorderColor.B;
+			desc.BorderColor[3] = pDesc->BorderColor.A;
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			pD3D12Device->CreateSampler(&desc, m_SamplerState.CpuDescriptor);

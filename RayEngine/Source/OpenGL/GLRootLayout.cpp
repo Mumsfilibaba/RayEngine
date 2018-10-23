@@ -27,14 +27,14 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLRootLayout::GLRootLayout(IDevice* pDevice, const RootLayoutDesc& info)
+		GLRootLayout::GLRootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc)
 			: m_Device(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
 
 
@@ -45,7 +45,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLRootLayout::Create(const RootLayoutDesc& info)
+		void GLRootLayout::Create(const RootLayoutDesc* pDesc)
 		{
 		}
 
@@ -66,14 +66,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLRootLayout::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLRootLayout::Release()
 		{
-			IObject::CounterType refs = --mReferences;
+			IObject::CounterType refs = --m_References;
 			if (refs < 1)
 				delete this;
 
@@ -84,7 +84,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLRootLayout::AddRef()
 		{
-			return ++mReferences;
+			return ++m_References;
 		}
 	}
 }

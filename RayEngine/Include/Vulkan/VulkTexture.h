@@ -31,20 +31,22 @@ namespace RayEngine
 		class VulkDevice;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class VulkTexture final : public ITexture
 		{
 			RE_IMPLEMENT_INTERFACE(VulkTexture);
 
 		public:
-			VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info);
+			VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc);
 			VulkTexture(IDevice* pDevice, VkImage image);
 			~VulkTexture();
 
-			void InvalidateResource();
+			inline VkImage GetVkImage() const
+			{
+				return m_Image;
+			}
 
-			VkImage GetVkImage() const;
+			void InvalidateResource();
 			
 			void SetName(const std::string& name) override final;
 			
@@ -57,14 +59,14 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const TextureDesc& info);
+			void Create(const ResourceData* const pInitialData, const TextureDesc* pDesc);
 
 		private:
 			VulkDevice* m_Device;
 			
 			VkImage m_Image;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

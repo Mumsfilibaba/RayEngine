@@ -17,7 +17,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(GLBuffer);
 
 		public:
-			GLBuffer(IDevice* pDevice, const ResourceData* const pInitialData, const BufferDesc& info);
+			GLBuffer(IDevice* pDevice, const ResourceData* const pInitialData, const BufferDesc* pDesc);
 			~GLBuffer();
 
 			inline uint32 GetGLBuffer() const
@@ -40,7 +40,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const BufferDesc& info);
+			void Create(const ResourceData* const pInitialData, const BufferDesc* pDesc);
 
 		private:
 			GLDevice* m_Device;

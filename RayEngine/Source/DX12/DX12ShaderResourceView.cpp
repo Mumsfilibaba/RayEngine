@@ -31,24 +31,22 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12ShaderResourceView::DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc& info)
+		DX12ShaderResourceView::DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc* pDesc)
 			: DX12View(),
 			m_Device(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12ShaderResourceView::~DX12ShaderResourceView()
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +56,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12ShaderResourceView::QueryDevice(IDevice** ppDevice) const
 		{
@@ -66,29 +63,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12ShaderResourceView::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12ShaderResourceView::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12ShaderResourceView::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -97,11 +91,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12ShaderResourceView::Create(const ShaderResourceViewDesc& info)
+		void DX12ShaderResourceView::Create(const ShaderResourceViewDesc* pDesc)
 		{
-			m_Resource = info.pResource->QueryReference<DX12Resource>();
+			m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
 			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();
 
 			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12ResourceHeap();
@@ -109,85 +102,85 @@ namespace RayEngine
 
 
 			D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
-			if (info.ViewDimension == VIEWDIMENSION_BUFFER)
+			if (pDesc->ViewDimension == VIEWDIMENSION_BUFFER)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 				
-				if (info.Flags & SHADER_RESOURCE_VIEW_FLAG_RAW_BUFFER)
+				if (pDesc->Flags & SHADER_RESOURCE_VIEW_FLAG_RAW_BUFFER)
 					desc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_RAW;
 				else
 					desc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
-				desc.Buffer.FirstElement = info.Buffer.StartElement;
-				desc.Buffer.NumElements = info.Buffer.ElementCount;
-				desc.Buffer.StructureByteStride = info.Buffer.ElementStrideBytes;
+				desc.Buffer.FirstElement = pDesc->Buffer.StartElement;
+				desc.Buffer.NumElements = pDesc->Buffer.ElementCount;
+				desc.Buffer.StructureByteStride = pDesc->Buffer.ElementStrideBytes;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE1D)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE1D)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
-				desc.Texture1D.MipLevels = info.Texture1D.MipLevels;
-				desc.Texture1D.MostDetailedMip = info.Texture1D.MostDetailedMip;
-				desc.Texture1D.ResourceMinLODClamp = info.Texture1D.MinLODClamp;
+				desc.Texture1D.MipLevels = pDesc->Texture1D.MipLevels;
+				desc.Texture1D.MostDetailedMip = pDesc->Texture1D.MostDetailedMip;
+				desc.Texture1D.ResourceMinLODClamp = pDesc->Texture1D.MinLODClamp;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE1D_ARRAY)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE1D_ARRAY)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1DARRAY;
-				desc.Texture1DArray.MipLevels = info.Texture1DArray.MipLevels;
-				desc.Texture1DArray.MostDetailedMip = info.Texture1DArray.MostDetailedMip;
-				desc.Texture1DArray.ArraySize = info.Texture1DArray.ArraySize;
-				desc.Texture1DArray.FirstArraySlice = info.Texture1DArray.FirstArraySlice;
-				desc.Texture1DArray.ResourceMinLODClamp = info.Texture1DArray.MinLODClamp;
+				desc.Texture1DArray.MipLevels = pDesc->Texture1DArray.MipLevels;
+				desc.Texture1DArray.MostDetailedMip = pDesc->Texture1DArray.MostDetailedMip;
+				desc.Texture1DArray.ArraySize = pDesc->Texture1DArray.ArraySize;
+				desc.Texture1DArray.FirstArraySlice = pDesc->Texture1DArray.FirstArraySlice;
+				desc.Texture1DArray.ResourceMinLODClamp = pDesc->Texture1DArray.MinLODClamp;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2D)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE2D)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-				desc.Texture2D.MipLevels = info.Texture2D.MipLevels;
-				desc.Texture2D.MostDetailedMip = info.Texture2D.MostDetailedMip;
-				desc.Texture2D.PlaneSlice = info.Texture2D.PlaneSlice;
-				desc.Texture2D.ResourceMinLODClamp = info.Texture2D.MinLODClamp;
+				desc.Texture2D.MipLevels = pDesc->Texture2D.MipLevels;
+				desc.Texture2D.MostDetailedMip = pDesc->Texture2D.MostDetailedMip;
+				desc.Texture2D.PlaneSlice = pDesc->Texture2D.PlaneSlice;
+				desc.Texture2D.ResourceMinLODClamp = pDesc->Texture2D.MinLODClamp;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2DMS)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE2DMS)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DMS;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2D_ARRAY)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE2D_ARRAY)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
-				desc.Texture2DArray.MipLevels = info.Texture2DArray.MipLevels;
-				desc.Texture2DArray.MostDetailedMip = info.Texture2DArray.MostDetailedMip;
-				desc.Texture2DArray.ArraySize = info.Texture2DArray.ArraySize;
-				desc.Texture2DArray.FirstArraySlice = info.Texture2DArray.FirstArraySlice;
-				desc.Texture2DArray.PlaneSlice = info.Texture2DArray.PlaneSlice;
-				desc.Texture2DArray.ResourceMinLODClamp = info.Texture2DArray.MinLODClamp;
+				desc.Texture2DArray.MipLevels = pDesc->Texture2DArray.MipLevels;
+				desc.Texture2DArray.MostDetailedMip = pDesc->Texture2DArray.MostDetailedMip;
+				desc.Texture2DArray.ArraySize = pDesc->Texture2DArray.ArraySize;
+				desc.Texture2DArray.FirstArraySlice = pDesc->Texture2DArray.FirstArraySlice;
+				desc.Texture2DArray.PlaneSlice = pDesc->Texture2DArray.PlaneSlice;
+				desc.Texture2DArray.ResourceMinLODClamp = pDesc->Texture2DArray.MinLODClamp;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2DMS_ARRAY)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE2DMS_ARRAY)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DMSARRAY;
-				desc.Texture2DMSArray.ArraySize = info.Texture2DMSArray.ArraySize;
-				desc.Texture2DMSArray.FirstArraySlice = info.Texture2DMSArray.FirstArraySlice;
+				desc.Texture2DMSArray.ArraySize = pDesc->Texture2DMSArray.ArraySize;
+				desc.Texture2DMSArray.FirstArraySlice = pDesc->Texture2DMSArray.FirstArraySlice;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE3D)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE3D)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
-				desc.Texture3D.MipLevels = info.Texture3D.MipLevels;
-				desc.Texture3D.MostDetailedMip = info.Texture3D.MostDetailedMip;
-				desc.Texture3D.ResourceMinLODClamp = info.Texture3D.MinLODClamp;
+				desc.Texture3D.MipLevels = pDesc->Texture3D.MipLevels;
+				desc.Texture3D.MostDetailedMip = pDesc->Texture3D.MostDetailedMip;
+				desc.Texture3D.ResourceMinLODClamp = pDesc->Texture3D.MinLODClamp;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE_CUBEMAP)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE_CUBEMAP)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
-				desc.TextureCube.MipLevels = info.TextureCube.MipLevels;
-				desc.TextureCube.MostDetailedMip = info.TextureCube.MostDetailedMip;
-				desc.TextureCube.ResourceMinLODClamp = info.TextureCube.MinLODClamp;
+				desc.TextureCube.MipLevels = pDesc->TextureCube.MipLevels;
+				desc.TextureCube.MostDetailedMip = pDesc->TextureCube.MostDetailedMip;
+				desc.TextureCube.ResourceMinLODClamp = pDesc->TextureCube.MinLODClamp;
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE_CUBEMAP_ARRAY)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE_CUBEMAP_ARRAY)
 			{
 				desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBEARRAY;
-				desc.TextureCubeArray.MipLevels = info.TextureCube.MipLevels;
-				desc.TextureCubeArray.MostDetailedMip = info.TextureCubeArray.MostDetailedMip;
-				desc.TextureCubeArray.First2DArrayFace = info.TextureCubeArray.First2DArrayFace;
-				desc.TextureCubeArray.NumCubes = info.TextureCubeArray.CubeCount;
-				desc.TextureCubeArray.ResourceMinLODClamp = info.TextureCubeArray.MinLODClamp;
+				desc.TextureCubeArray.MipLevels = pDesc->TextureCube.MipLevels;
+				desc.TextureCubeArray.MostDetailedMip = pDesc->TextureCubeArray.MostDetailedMip;
+				desc.TextureCubeArray.First2DArrayFace = pDesc->TextureCubeArray.First2DArrayFace;
+				desc.TextureCubeArray.NumCubes = pDesc->TextureCubeArray.CubeCount;
+				desc.TextureCubeArray.ResourceMinLODClamp = pDesc->TextureCubeArray.MinLODClamp;
 			}
 
 

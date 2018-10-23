@@ -92,11 +92,11 @@ int main(int args, char* argsv[])
 
 	//Create a device and swapchain
 	constexpr int32 bufferCount = 2;
-	AdapterDesc adapterInfo = adapterList[adapterIndex];
+	AdapterDesc adapterDesc = adapterList[adapterIndex];
 
 	DeviceDesc deviceDesc = {};
 	deviceDesc.Name = "Main Device";
-	deviceDesc.pAdapter = &adapterInfo;
+	deviceDesc.pAdapter = &adapterDesc;
 	deviceDesc.DepthStencilDescriptorCount = 4;
 	deviceDesc.RendertargetDescriptorCount = 4;
 	deviceDesc.ResourceDescriptorCount = 16;
@@ -114,7 +114,7 @@ int main(int args, char* argsv[])
 
 	IDevice* pDevice = nullptr;
 	ISwapchain* pSwapchain = nullptr;
-	pFactory->CreateDeviceAndSwapchain(&pDevice, deviceDesc, &pSwapchain, swapchainDesc);
+	pFactory->CreateDeviceAndSwapchain(&pDevice, &deviceDesc, &pSwapchain, &swapchainDesc);
 
 
 	//Create shaders
@@ -143,7 +143,7 @@ int main(int args, char* argsv[])
 
 	
 	IShader* pVs = nullptr;
-	pDevice->CreateShader(&pVs, shaderDesc);
+	pDevice->CreateShader(&pVs, &shaderDesc);
 	
 	shaderDesc.Type = SHADER_TYPE_PIXEL;
 	shaderDesc.Name = "PixelShader";
@@ -158,7 +158,7 @@ int main(int args, char* argsv[])
 	shaderDesc.Source = source;
 	
 	IShader* pPs = nullptr;
-	pDevice->CreateShader(&pPs, shaderDesc);
+	pDevice->CreateShader(&pPs, &shaderDesc);
 	
 	
 	
@@ -173,7 +173,7 @@ int main(int args, char* argsv[])
 	rootLayoutDesc.VariableCount = 0;
 	
 	IRootLayout* pRootLayout = nullptr;
-	pDevice->CreateRootLayout(&pRootLayout, rootLayoutDesc);
+	pDevice->CreateRootLayout(&pRootLayout, &rootLayoutDesc);
 	
 	
 	//Create a defenition for an inputelement (Define a vertex)
@@ -224,7 +224,7 @@ int main(int args, char* argsv[])
 	pipelinestateDesc.GraphicsPipeline.BlendState.RenderTargets[0].WriteMask = COLOR_WRITE_ENABLE_ALL;
 
 	IPipelineState* pPipelineState = nullptr;
-	pDevice->CreatePipelineState(&pPipelineState, pipelinestateDesc);
+	pDevice->CreatePipelineState(&pPipelineState, &pipelinestateDesc);
 
 
 	
@@ -250,7 +250,7 @@ int main(int args, char* argsv[])
 	vertexBufferDesc.Usage = RESOURCE_USAGE_DEFAULT;
 	
 	IBuffer* pVertexBuffer = nullptr;
-	pDevice->CreateBuffer(&pVertexBuffer, &vbData, vertexBufferDesc);
+	pDevice->CreateBuffer(&pVertexBuffer, &vbData, &vertexBufferDesc);
 
 
 	//Get devicecontext

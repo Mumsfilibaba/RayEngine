@@ -29,24 +29,23 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info)
+		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 			: m_Device(nullptr),
 			m_Type(TEXTURE_TYPE_UNKNOWN),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			Create(pInitialData, info);
+			Create(pInitialData, pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Texture::DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource)
 			: m_Device(nullptr),
 			m_Type(TEXTURE_TYPE_2D),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
@@ -54,7 +53,6 @@ namespace RayEngine
 			pResource->AddRef();
 			m_Texture2D = pResource;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,32 +71,7 @@ namespace RayEngine
 				D3DRelease_S(m_Texture3D);
 			}
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11Texture1D* DX11Texture::GetD3D11Texture1D() const
-		{
-			return m_Texture1D;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////s
-		ID3D11Texture2D* DX11Texture::GetD3D11Texture2D() const
-		{
-			return m_Texture2D;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11Texture3D* DX11Texture::GetD3D11Texture3D() const
-		{
-			return m_Texture3D;
-		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Texture::SetName(const std::string& name)
@@ -107,38 +80,34 @@ namespace RayEngine
 			pDeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Texture::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Texture::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Texture::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Texture::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -146,38 +115,37 @@ namespace RayEngine
 			return counter;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Texture::Create(const ResourceData* const pInitialData, const TextureDesc& info)
+		void DX11Texture::Create(const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
 			using namespace System;
-			DXGI_FORMAT format = ReToDXFormat(info.Format);
+			DXGI_FORMAT format = ReToDXFormat(pDesc->Format);
 
 			uint32 bindFlags = 0;
-			if (info.Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
+			if (pDesc->Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
 				bindFlags = D3D11_BIND_DEPTH_STENCIL;
-			else if (info.Flags & TEXTURE_FLAGS_RENDERTARGET)
+			else if (pDesc->Flags & TEXTURE_FLAGS_RENDERTARGET)
 				bindFlags = D3D11_BIND_RENDER_TARGET;
-			else if (info.Flags == TEXTURE_FLAGS_SHADER_RESOURCE)
+			else if (pDesc->Flags == TEXTURE_FLAGS_SHADER_RESOURCE)
 				bindFlags = D3D11_BIND_SHADER_RESOURCE;
-			else if (info.Flags == TEXTURE_FLAGS_UNORDERED_ACCESS)
+			else if (pDesc->Flags == TEXTURE_FLAGS_UNORDERED_ACCESS)
 				bindFlags = D3D11_BIND_UNORDERED_ACCESS;
 
 
 			uint32 cpuAccessFlags = 0;
-			if (info.CpuAccess & CPU_ACCESS_FLAG_WRITE)
+			if (pDesc->CpuAccess & CPU_ACCESS_FLAG_WRITE)
 				cpuAccessFlags |= D3D11_CPU_ACCESS_WRITE;
-			if (info.CpuAccess & CPU_ACCESS_FLAG_READ)
+			if (pDesc->CpuAccess & CPU_ACCESS_FLAG_READ)
 				cpuAccessFlags |= D3D11_CPU_ACCESS_READ;
 
 
 			D3D11_USAGE usage;
-			if (info.Usage == RESOURCE_USAGE_DEFAULT)
+			if (pDesc->Usage == RESOURCE_USAGE_DEFAULT)
 				usage = D3D11_USAGE_DEFAULT;
-			else if (info.Usage == RESOURCE_USAGE_DYNAMIC)
+			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
 				usage = D3D11_USAGE_DYNAMIC;
-			else if (info.Usage == RESOURCE_USAGE_STATIC)
+			else if (pDesc->Usage == RESOURCE_USAGE_STATIC)
 				usage = D3D11_USAGE_IMMUTABLE;
 
 
@@ -200,7 +168,7 @@ namespace RayEngine
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			ID3D11DeviceChild* pD3D11DeviceChild = nullptr;
 
-			if (info.Type == TEXTURE_TYPE_1D)
+			if (pDesc->Type == TEXTURE_TYPE_1D)
 			{
 				D3D11_TEXTURE1D_DESC desc = {};
 				desc.Format = format;
@@ -208,14 +176,14 @@ namespace RayEngine
 				desc.CPUAccessFlags = cpuAccessFlags;
 				desc.Usage = usage;
 				desc.MiscFlags = miscFlags;
-				desc.Width = info.Width;
-				desc.MipLevels = info.MipLevels;
-				desc.ArraySize = info.DepthOrArraySize;
+				desc.Width = pDesc->Width;
+				desc.MipLevels = pDesc->MipLevels;
+				desc.ArraySize = pDesc->DepthOrArraySize;
 
 				hr = pD3D11Device->CreateTexture1D(&desc, pInitData, &m_Texture1D);
 				pD3D11DeviceChild = m_Texture1D;
 			}
-			else if (info.Type == TEXTURE_TYPE_2D)
+			else if (pDesc->Type == TEXTURE_TYPE_2D)
 			{
 				D3D11_TEXTURE2D_DESC desc = {};
 				desc.Format = format;
@@ -223,20 +191,20 @@ namespace RayEngine
 				desc.CPUAccessFlags = cpuAccessFlags;
 				desc.Usage = usage;
 				desc.MiscFlags = miscFlags;
-				desc.Width = info.Width;
-				desc.Height = info.Height;
-				desc.SampleDesc.Count = info.SampleCount;
+				desc.Width = pDesc->Width;
+				desc.Height = pDesc->Height;
+				desc.SampleDesc.Count = pDesc->SampleCount;
 
 				desc.SampleDesc.Quality = 0;
-				GetHighestSupportingSamples(pD3D11Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, info.SampleCount, format);
+				GetHighestSupportingSamples(pD3D11Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, pDesc->SampleCount, format);
 				
-				desc.MipLevels = info.MipLevels;
-				desc.ArraySize = info.DepthOrArraySize;
+				desc.MipLevels = pDesc->MipLevels;
+				desc.ArraySize = pDesc->DepthOrArraySize;
 
 				hr = pD3D11Device->CreateTexture2D(&desc, pInitData, &m_Texture2D);
 				pD3D11DeviceChild = m_Texture2D;
 			}
-			else if (info.Type == TEXTURE_TYPE_3D)
+			else if (pDesc->Type == TEXTURE_TYPE_3D)
 			{
 				D3D11_TEXTURE3D_DESC desc = {};
 				desc.Format = format;
@@ -244,10 +212,10 @@ namespace RayEngine
 				desc.CPUAccessFlags = cpuAccessFlags;
 				desc.Usage = usage;
 				desc.MiscFlags = miscFlags;
-				desc.Height = info.Height;
-				desc.Width = info.Width;
-				desc.MipLevels = info.MipLevels;
-				desc.Depth = info.DepthOrArraySize;
+				desc.Height = pDesc->Height;
+				desc.Width = pDesc->Width;
+				desc.MipLevels = pDesc->MipLevels;
+				desc.Depth = pDesc->DepthOrArraySize;
 
 				hr = pD3D11Device->CreateTexture3D(&desc, pInitData, &m_Texture3D);
 				pD3D11DeviceChild = m_Texture3D;
@@ -260,7 +228,7 @@ namespace RayEngine
 			}
 			else
 			{
-				pD3D11DeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+				pD3D11DeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

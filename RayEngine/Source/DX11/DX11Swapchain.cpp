@@ -34,9 +34,9 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Swapchain::DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info)
+		DX11Swapchain::DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc)
 			: m_Device(nullptr),
-			mFactory(nullptr),
+			m_Factory(nullptr),
 			m_Swapchain(nullptr),
 			m_BackBuffer(nullptr),
 			m_DepthStencil(nullptr),
@@ -48,15 +48,14 @@ namespace RayEngine
 			m_Flags(0),
 			m_DepthStencilFormat(FORMAT_UNKNOWN),
 			m_BackBufferFormat(FORMAT_UNKNOWN),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			mFactory = reinterpret_cast<DX11Factory*>(pFactory);
+			m_Factory = reinterpret_cast<DX11Factory*>(pFactory);
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +65,6 @@ namespace RayEngine
 			
 			ReleaseResources();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,13 +82,11 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Swapchain::SetName(const std::string& name)
 		{
 			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,44 +96,39 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Swapchain::QueryFactory(IFactory ** ppFactory) const
+		void DX11Swapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = mFactory->QueryReference<DX11Factory>();
+			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Swapchain::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Swapchain::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Swapchain::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
 
 			return counter;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,17 +138,16 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Swapchain::Create(const SwapchainDesc& info)
+		void DX11Swapchain::Create(const SwapchainDesc* pDesc)
 		{
 			using namespace System;
 
 			DXGI_SWAP_CHAIN_DESC desc = {};
-			desc.BufferCount = info.BackBuffer.Count;
-			desc.BufferDesc.Format = ReToDXFormat(info.BackBuffer.Format);
-			desc.BufferDesc.Height = info.Height;
-			desc.BufferDesc.Width = info.Width;
+			desc.BufferCount = pDesc->BackBuffer.Count;
+			desc.BufferDesc.Format = ReToDXFormat(pDesc->BackBuffer.Format);
+			desc.BufferDesc.Height = pDesc->Height;
+			desc.BufferDesc.Width = pDesc->Width;
 			desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 			desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 			desc.BufferDesc.RefreshRate.Denominator = 1;
@@ -173,11 +163,11 @@ namespace RayEngine
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 			desc.Windowed = true;
 			
-			desc.OutputWindow = info.WindowHandle;
+			desc.OutputWindow = pDesc->WindowHandle;
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
-			IDXGIFactory* pDXGIFactory = mFactory->GetDXGIFactory();
+			IDXGIFactory* pDXGIFactory = m_Factory->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->CreateSwapChain(pD3D11Device, &desc, &m_Swapchain);
 			if (FAILED(hr))
 			{
@@ -186,19 +176,18 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Name = info.Name;
-				m_Width = info.Width;
-				m_Height = info.Height;
-				m_BackBufferFormat = info.BackBuffer.Format;
-				m_DepthStencilFormat = info.DepthStencil.Format;
+				m_Name = pDesc->Name;
+				m_Width = pDesc->Width;
+				m_Height = pDesc->Height;
+				m_BackBufferFormat = pDesc->BackBuffer.Format;
+				m_DepthStencilFormat = pDesc->DepthStencil.Format;
 
-				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}				
 
 			CreateTextures();
 			CreateViews();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,11 +226,10 @@ namespace RayEngine
 					depthStencilInfo.Type = TEXTURE_TYPE_2D;
 					depthStencilInfo.Usage = RESOURCE_USAGE_DEFAULT;
 
-					m_DepthStencil = new DX11Texture(m_Device, nullptr, depthStencilInfo);
+					m_DepthStencil = new DX11Texture(m_Device, nullptr, &depthStencilInfo);
 				}
 			}
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +243,7 @@ namespace RayEngine
 			rtvInfo.Texture2D.MipSlice = 0;
 			rtvInfo.Texture2D.PlaneSlice = 0;
 
-			m_Rtv = new DX11RenderTargetView(m_Device, rtvInfo);
+			m_Rtv = new DX11RenderTargetView(m_Device, &rtvInfo);
 
 
 			if (m_DepthStencilFormat != FORMAT_UNKNOWN)
@@ -269,11 +257,10 @@ namespace RayEngine
 				dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 				dsvInfo.Texture2D.MipSlice = 0;
 
-				m_Dsv = new DX11DepthStencilView(m_Device, dsvInfo);
+				m_Dsv = new DX11DepthStencilView(m_Device, &dsvInfo);
 			}
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Swapchain::ReleaseResources()

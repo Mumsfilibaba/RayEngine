@@ -28,14 +28,13 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkRenderTargetView::VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc& info)
+		VulkRenderTargetView::VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc)
 			: VulkImageView(pDevice),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,12 +43,10 @@ namespace RayEngine
 		}
 
 
-
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkRenderTargetView::SetName(const std::string & name)
+		void VulkRenderTargetView::SetName(const std::string& name)
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,49 +56,45 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkRenderTargetView::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkRenderTargetView::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 			
 			return counter;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkRenderTargetView::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkRenderTargetView::Create(const RenderTargetViewDesc& info)
+		void VulkRenderTargetView::Create(const RenderTargetViewDesc* pDesc)
 		{
 			using namespace System;
 
-			VkImage vkImage = reinterpret_cast<const VulkTexture*>(info.pResource)->GetVkImage();
+			VkImage vkImage = reinterpret_cast<const VulkTexture*>(pDesc->pResource)->GetVkImage();
 			VkImageViewCreateInfo desc = {};
 			desc.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 			desc.pNext = nullptr;
 			desc.flags = 0;
 			
 			desc.image = vkImage;
-			desc.format = ReToVkFormat(info.Format);
+			desc.format = ReToVkFormat(pDesc->Format);
 
 			desc.viewType = VK_IMAGE_VIEW_TYPE_2D;
 			

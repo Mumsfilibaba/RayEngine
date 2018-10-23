@@ -34,14 +34,13 @@ namespace RayEngine
 		class DX12Texture;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12Swapchain final : public ISwapchain
 		{
 			RE_IMPLEMENT_INTERFACE(DX12Swapchain);
 
 		public:
-			DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info);
+			DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
 			~DX12Swapchain();
 
 			void Resize(int32 width, int32 height) override final;
@@ -61,12 +60,12 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const SwapchainDesc& info);
+			void Create(const SwapchainDesc* pDesc);
 			
-			void CreateTextures(const SwapchainDesc& info);
+			void CreateTextures(const SwapchainDesc* pDesc);
 
 		private:
-			DX12Factory* mFactory;
+			DX12Factory* m_Factory;
 			DX12Device* m_Device;
 			DX12DeviceContext* m_Context;
 			IDXGISwapChain1* m_Swapchain;
@@ -75,7 +74,7 @@ namespace RayEngine
 			
 			mutable int32 m_CurrentBuffer;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

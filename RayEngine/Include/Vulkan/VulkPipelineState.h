@@ -32,19 +32,24 @@ namespace RayEngine
 		typedef std::pair<VkVertexInputAttributeDescription, VkVertexInputBindingDescription> VkInputElement;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class VulkPipelineState final : public IPipelineState
 		{
 			RE_IMPLEMENT_INTERFACE(VulkPipelineState);
 
 		public:
-			VulkPipelineState(IDevice* pdevice, const PipelineStateDesc& info);
+			VulkPipelineState(IDevice* pdevice, const PipelineStateDesc* pDesc);
 			~VulkPipelineState();
 
-			VkPipeline GetVkPipeline() const;
+			inline VkPipeline GetVkPipeline() const
+			{
+				return m_Pipeline;
+			}
 			
-			VkRenderPass GetVkRenderPass() const;
+			inline VkRenderPass GetVkRenderPass() const
+			{
+				return m_RenderPass;
+			}
 
 			PIPELINE_TYPE GetPipelineType() const override final;
 
@@ -59,18 +64,26 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const PipelineStateDesc& info);
-			void CreateComputePipeline(const PipelineStateDesc& info);
-			void CreateGraphicsPipeline(const PipelineStateDesc& info);
-			bool CreateRenderPass(const PipelineStateDesc& info);
+			void Create(const PipelineStateDesc* pDesc);
+
+			void CreateComputePipeline(const PipelineStateDesc* pDesc);
+			
+			void CreateGraphicsPipeline(const PipelineStateDesc* pDesc);
+
+			bool CreateRenderPass(const PipelineStateDesc* pDesc);
 
 		private:
 			static VkPipelineShaderStageCreateInfo CreateVkPipelineShaderStageCreateInfo(const IShader* pShader);
-			static VkInputElement CreateVkInputElement(const InputElementDesc& info, int32 location);
-			static void CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateDesc& info);
-			static void SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendDesc& info);
-			static void SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateDesc& info);
-			static void SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateDesc& info);
+			
+			static VkInputElement CreateVkInputElement(const InputElementDesc* pDesc, int32 location);
+			
+			static void CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo* pInfo, const PipelineStateDesc* pDesc);
+			
+			static void SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState* pInfo, const RenderTargetBlendDesc* pDesc);
+			
+			static void SetRasterizerState(VkPipelineRasterizationStateCreateInfo* pInfo, const RasterizerStateDesc* pDesc);
+			
+			static void SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo* pInfo, const DepthStencilStateDesc* pDesc);
 
 		private:
 			VulkDevice* m_Device;
@@ -81,7 +94,7 @@ namespace RayEngine
 			
 			PIPELINE_TYPE m_Type;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

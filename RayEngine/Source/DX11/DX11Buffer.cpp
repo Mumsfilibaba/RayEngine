@@ -30,18 +30,18 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Buffer::DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info)
+		DX11Buffer::DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc* pDesc)
 			: m_Device(nullptr),
 			m_Resource(nullptr),
 			m_Context(nullptr),
 			m_ByteStride(0),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
 
-			Create(pInitalData, info);
+			Create(pInitalData, pDesc);
 		}
 
 
@@ -51,20 +51,6 @@ namespace RayEngine
 			D3DRelease_S(m_Resource);
 
 			ReRelease_S(m_Context);
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11Buffer* DX11Buffer::GetD3D11Buffer() const
-		{
-			return m_Resource;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		int32 DX11Buffer::GetByteStride() const
-		{
-			return m_ByteStride;
 		}
 
 
@@ -111,23 +97,23 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Buffer::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Buffer::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Buffer::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -137,35 +123,35 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Buffer::Create(const ResourceData* pInitalData, const BufferDesc& info)
+		void DX11Buffer::Create(const ResourceData* pInitalData, const BufferDesc* pDesc)
 		{
 			using namespace System;
 
 			D3D11_BUFFER_DESC desc = {};
-			desc.ByteWidth = info.ByteStride * info.Count;
+			desc.ByteWidth = pDesc->ByteStride * pDesc->Count;
 
 			desc.BindFlags = 0;
-			if (info.Type == BUFFER_USAGE_VERTEX)
+			if (pDesc->Type == BUFFER_USAGE_VERTEX)
 				desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			else if (info.Type == BUFFER_USAGE_INDEX)
+			else if (pDesc->Type == BUFFER_USAGE_INDEX)
 				desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			else if (info.Type == BUFFER_USAGE_CONSTANT)
+			else if (pDesc->Type == BUFFER_USAGE_CONSTANT)
 				desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			
 			desc.CPUAccessFlags = 0;
-			if (info.CpuAccess & CPU_ACCESS_FLAG_WRITE)
+			if (pDesc->CpuAccess & CPU_ACCESS_FLAG_WRITE)
 				desc.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
-			if (info.CpuAccess & CPU_ACCESS_FLAG_READ)
+			if (pDesc->CpuAccess & CPU_ACCESS_FLAG_READ)
 				desc.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
 
 			desc.MiscFlags = 0;
-			desc.StructureByteStride = m_ByteStride = info.ByteStride;
+			desc.StructureByteStride = m_ByteStride = pDesc->ByteStride;
 			
-			if (info.Usage == RESOURCE_USAGE_DEFAULT)
+			if (pDesc->Usage == RESOURCE_USAGE_DEFAULT)
 				desc.Usage = D3D11_USAGE_DEFAULT;
-			else if (info.Usage == RESOURCE_USAGE_DYNAMIC)
+			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
 				desc.Usage = D3D11_USAGE_DYNAMIC;
-			else if (info.Usage == RESOURCE_USAGE_STATIC)
+			else if (pDesc->Usage == RESOURCE_USAGE_STATIC)
 				desc.Usage = D3D11_USAGE_IMMUTABLE;
 
 
@@ -186,7 +172,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+				m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

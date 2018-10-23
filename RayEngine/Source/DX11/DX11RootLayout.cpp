@@ -31,19 +31,18 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11RootLayout::DX11RootLayout(IDevice* pDevice, const RootLayoutDesc& info)
+		DX11RootLayout::DX11RootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc)
 			: m_Device(nullptr),
 			m_ConstantBlocks(),
 			m_StaticSamplers(),
 			m_VariableSlots(),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,20 +60,11 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IDX11RootVariableSlot* DX11RootLayout::GetDX11VariableSlot(int32 slotIndex) const
-		{
-			return m_VariableSlots[slotIndex];
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11RootLayout::SetName(const std::string& name)
 		{
+			//Not releveant for now
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,29 +74,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11RootLayout::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11RootLayout::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11RootLayout::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -115,13 +102,12 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11RootLayout::Create(const RootLayoutDesc& info)
+		void DX11RootLayout::Create(const RootLayoutDesc* pDesc)
 		{
-			for (int32 i = 0; i < info.SamplerCount; i++)
+			for (int32 i = 0; i < pDesc->SamplerCount; i++)
 			{
-				ID3D11SamplerState* pD3D11Sampler = CreateStaticSampler(info.pStaticSamplers[i]);
+				ID3D11SamplerState* pD3D11Sampler = CreateStaticSampler(&pDesc->pStaticSamplers[i]);
 				if (pD3D11Sampler != nullptr)
 				{
 					m_StaticSamplers.push_back(pD3D11Sampler);
@@ -133,50 +119,48 @@ namespace RayEngine
 			}
 
 
-
-			for (int32 i = 0; i < info.VariableCount; i++)
+			for (int32 i = 0; i < pDesc->VariableCount; i++)
 			{
-				if (info.pVariables[i].Type == VARIABLE_TYPE_SHADER_CONSTANTS)
-					m_ConstantBlocks.push_back(CreateConstantBlock(info.pVariables[i]));
+				if (pDesc->pVariables[i].Type == VARIABLE_TYPE_SHADER_CONSTANTS)
+					m_ConstantBlocks.push_back(CreateConstantBlock(&pDesc->pVariables[i]));
 
 
-				m_VariableSlots.push_back(CreateVariable(info.pVariables[i]));
+				m_VariableSlots.push_back(CreateVariable(&pDesc->pVariables[i]));
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11SamplerState* DX11RootLayout::CreateStaticSampler(const StaticSamplerDesc& sampler)
+		ID3D11SamplerState* DX11RootLayout::CreateStaticSampler(const StaticSamplerDesc* pSampler)
 		{
 			using namespace System;
 
 			D3D11_SAMPLER_DESC desc = {};
-			desc.AddressU = ReToDX11TextureAdressMode(sampler.AdressU);
-			desc.AddressV = ReToDX11TextureAdressMode(sampler.AdressV);
-			desc.AddressW = ReToDX11TextureAdressMode(sampler.AdressW);
-			desc.ComparisonFunc = ReToDX11ComparisonFunc(sampler.ComparisonFunc);
-			desc.Filter = ReToDX11Filter(sampler.FilterMode);
-			desc.MaxAnisotropy = sampler.MaxAnistropy;
-			desc.MinLOD = sampler.MinLOD;
-			desc.MaxLOD = sampler.MaxLOD;
-			desc.MipLODBias = sampler.MipLODBias;
+			desc.AddressU = ReToDX11TextureAdressMode(pSampler->AdressU);
+			desc.AddressV = ReToDX11TextureAdressMode(pSampler->AdressV);
+			desc.AddressW = ReToDX11TextureAdressMode(pSampler->AdressW);
+			desc.ComparisonFunc = ReToDX11ComparisonFunc(pSampler->ComparisonFunc);
+			desc.Filter = ReToDX11Filter(pSampler->FilterMode);
+			desc.MaxAnisotropy = pSampler->MaxAnistropy;
+			desc.MinLOD = pSampler->MinLOD;
+			desc.MaxLOD = pSampler->MaxLOD;
+			desc.MipLODBias = pSampler->MipLODBias;
 
-			if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_TRANSPARENT_BLACK)
+			if (pSampler->BorderColor == STATIC_SAMPLER_BORDER_COLOR_TRANSPARENT_BLACK)
 			{
 				desc.BorderColor[0] = 0.0f;
 				desc.BorderColor[1] = 0.0f;
 				desc.BorderColor[2] = 0.0f;
 				desc.BorderColor[3] = 0.0f;
 			}
-			else if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_BLACK)
+			else if (pSampler->BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_BLACK)
 			{
 				desc.BorderColor[0] = 0.0f;
 				desc.BorderColor[1] = 0.0f;
 				desc.BorderColor[2] = 0.0f;
 				desc.BorderColor[3] = 1.0f;
 			}
-			else if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_WHITE)
+			else if (pSampler->BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_WHITE)
 			{
 				desc.BorderColor[0] = 1.0f;
 				desc.BorderColor[1] = 1.0f;
@@ -200,33 +184,32 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IDX11RootVariableSlot* DX11RootLayout::CreateVariable(const ShaderVariableDesc& variable)
+		IDX11RootVariableSlot* DX11RootLayout::CreateVariable(const ShaderVariableDesc* pVariable)
 		{
-			switch (variable.ShaderStage)
+			switch (pVariable->ShaderStage)
 			{
 			case SHADER_TYPE_VERTEX: 
-				new DX11RootVariableSlotImpl<ID3D11VertexShader>(variable.ShaderRegister);
+				new DX11RootVariableSlotImpl<ID3D11VertexShader>(pVariable->ShaderRegister);
 			case SHADER_TYPE_HULL:
-				new DX11RootVariableSlotImpl<ID3D11HullShader>(variable.ShaderRegister);
+				new DX11RootVariableSlotImpl<ID3D11HullShader>(pVariable->ShaderRegister);
 			case SHADER_TYPE_DOMAIN:
-				new DX11RootVariableSlotImpl<ID3D11DomainShader>(variable.ShaderRegister);
+				new DX11RootVariableSlotImpl<ID3D11DomainShader>(pVariable->ShaderRegister);
 			case SHADER_TYPE_GEOMETRY:
-				new DX11RootVariableSlotImpl<ID3D11GeometryShader>(variable.ShaderRegister);
+				new DX11RootVariableSlotImpl<ID3D11GeometryShader>(pVariable->ShaderRegister);
 			case SHADER_TYPE_PIXEL:
-				new DX11RootVariableSlotImpl<ID3D11PixelShader>(variable.ShaderRegister);
+				new DX11RootVariableSlotImpl<ID3D11PixelShader>(pVariable->ShaderRegister);
 			case SHADER_TYPE_COMPUTE:
-				new DX11RootVariableSlotImpl<ID3D11ComputeShader>(variable.ShaderRegister);
+				new DX11RootVariableSlotImpl<ID3D11ComputeShader>(pVariable->ShaderRegister);
 			case SHADER_TYPE_UNKNOWN:
 			default: return nullptr;
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11ShaderConstantBlock* DX11RootLayout::CreateConstantBlock(const ShaderVariableDesc& variable)
+		DX11ShaderConstantBlock* DX11RootLayout::CreateConstantBlock(const ShaderVariableDesc* pVariable)
 		{
-			return new DX11ShaderConstantBlock(m_Device, variable.ConstantCount);
+			return new DX11ShaderConstantBlock(m_Device, pVariable->ConstantCount);
 		}
 	}
 }

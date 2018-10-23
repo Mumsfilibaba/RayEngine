@@ -29,24 +29,22 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Shader::DX12Shader(IDevice* pDevice, const ShaderDesc& info)
+		DX12Shader::DX12Shader(IDevice* pDevice, const ShaderDesc* pDesc)
 			: DXShaderBase(),
 			m_Device(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Shader::~DX12Shader()
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,13 +54,11 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Shader::SetName(const std::string& name)
 		{
 			//Not relevant
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,29 +68,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Shader::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Shader::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Shader::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -105,16 +98,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Shader::Create(const ShaderDesc& info)
+		void DX12Shader::Create(const ShaderDesc* pDesc)
 		{
 			using namespace System;
 
 			int32 flags = 0;
-			if (info.Flags & SHADER_FLAGS_DEBUG)
+			if (pDesc->Flags & SHADER_FLAGS_DEBUG)
 				flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
 			std::string errorString;
-			if (!CompileFromString(info.Source, info.EntryPoint, info.Type, flags, errorString))
+			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not compile shader" + errorString);
 				return;

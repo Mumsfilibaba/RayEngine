@@ -27,7 +27,7 @@ namespace RayEngine
 	{
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VulkDeviceContext::VulkDeviceContext(IDevice* pDevice, bool isDeffered)
-			: mReferences(0)
+			: m_References(0)
 		{
 		}
 
@@ -204,7 +204,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDeviceContext::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
@@ -212,8 +212,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDeviceContext::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
@@ -224,8 +224,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDeviceContext::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 	}
 }

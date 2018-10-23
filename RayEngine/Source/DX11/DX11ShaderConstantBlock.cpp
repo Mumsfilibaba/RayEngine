@@ -33,7 +33,7 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_ConstantBuffer(nullptr),
 			m_Constants(),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
@@ -86,7 +86,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11ShaderConstantBlock::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
@@ -94,8 +94,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11ShaderConstantBlock::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
 
@@ -103,8 +103,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11ShaderConstantBlock::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;

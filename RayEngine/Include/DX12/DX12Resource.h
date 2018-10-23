@@ -37,15 +37,32 @@ namespace RayEngine
 			DX12Resource& operator=(DX12Resource&& other) = delete;
 
 		protected:
-			DX12Resource();
-			~DX12Resource();
+			inline DX12Resource()
+				: m_Resource(nullptr),
+				m_State(D3D12_RESOURCE_STATE_COMMON)
+			{
+			}
+
+			inline ~DX12Resource()
+			{
+				D3DRelease_S(m_Resource);
+			}
 
 		public:
-			ID3D12Resource* GetD3D12Resource() const;
-			
-			D3D12_RESOURCE_STATES GetD3D12State() const;
-			
-			void SetD3D12State(D3D12_RESOURCE_STATES state) const;
+			inline ID3D12Resource* GetD3D12Resource() const
+			{
+				return m_Resource;
+			}
+
+			inline D3D12_RESOURCE_STATES GetD3D12State() const
+			{
+				return m_State;
+			}
+
+			inline void SetD3D12State(D3D12_RESOURCE_STATES state) const
+			{
+				m_State = state;
+			}
 
 		protected:
 			ID3D12Resource* m_Resource;

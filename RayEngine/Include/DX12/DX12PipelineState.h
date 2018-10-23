@@ -34,17 +34,19 @@ namespace RayEngine
 		class DX12Shader;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12PipelineState final : public IPipelineState
 		{
 			RE_IMPLEMENT_INTERFACE(DX12PipelineState);
 
 		public:
-			DX12PipelineState(IDevice* pdevice, const PipelineStateDesc& info);
+			DX12PipelineState(IDevice* pdevice, const PipelineStateDesc* pDesc);
 			~DX12PipelineState();
 
-			ID3D12PipelineState* GetD3D12PipelineState() const;
+			inline ID3D12PipelineState* GetD3D12PipelineState() const
+			{
+				return m_PipelineState;
+			}
 
 			PIPELINE_TYPE GetPipelineType() const override final;
 
@@ -58,26 +60,23 @@ namespace RayEngine
 
 			IObject::CounterType AddRef() override final;
 
-
 		private:
-			void Create(const PipelineStateDesc& info);
+			void Create(const PipelineStateDesc* pDesc);
 
-			void CreateGraphicsState(const PipelineStateDesc& info);
+			void CreateGraphicsState(const PipelineStateDesc* pDesc);
 
-			void CreateComputeState(const PipelineStateDesc& info);
+			void CreateComputeState(const PipelineStateDesc* pDesc);
 			
-
 		private:
-			static void SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader);
+			static void SetShaderByteCode(D3D12_SHADER_BYTECODE* pByteCode, const DX12Shader* pShader);
 
-			static void SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementDesc& element);
+			static void SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC* pD3D12Desc, const InputElementDesc* pDesc);
 
-			static void SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateDesc& info);
+			static void SetRasterizerDesc(D3D12_RASTERIZER_DESC* pD3D12Desc, const RasterizerStateDesc* pDesc);
 
-			static void SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateDesc& info);
+			static void SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC* pD3D12Desc, const DepthStencilStateDesc* pDesc);
 
-			static void SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateDesc& info);
-
+			static void SetBlendDesc(D3D12_BLEND_DESC* pD3D12Desc, const BlendStateDesc* pDesc);
 
 		private:
 			DX12Device* m_Device;
@@ -85,7 +84,7 @@ namespace RayEngine
 			
 			PIPELINE_TYPE m_Type;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

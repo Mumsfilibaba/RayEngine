@@ -41,12 +41,18 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Buffer);
 
 		public:
-			DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info);
+			DX11Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc* pDesc);
 			~DX11Buffer();
 
-			int32 GetByteStride() const;
+			inline int32 GetByteStride() const
+			{
+				return m_ByteStride;
+			}
 			
-			ID3D11Buffer* GetD3D11Buffer() const;
+			inline ID3D11Buffer* GetD3D11Buffer() const
+			{
+				return m_Resource;
+			}
 
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			
@@ -63,7 +69,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* pInitalData, const BufferDesc& info);
+			void Create(const ResourceData* pInitalData, const BufferDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
@@ -72,7 +78,7 @@ namespace RayEngine
 			
 			int32 m_ByteStride;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

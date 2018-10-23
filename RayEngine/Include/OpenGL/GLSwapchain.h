@@ -36,14 +36,13 @@ namespace RayEngine
 		class GLTexture;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class GLSwapchain final : public ISwapchain
 		{
 			RE_IMPLEMENT_INTERFACE(GLSwapchain);
 
 		public:
-			GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info);
+			GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
 			~GLSwapchain();
 
 			void Resize(int32 width, int32 height) override final;
@@ -67,12 +66,12 @@ namespace RayEngine
 
 		private:
 			GLDevice * m_Device;
-			GLFactory* mFactory;
+			GLFactory* m_Factory;
 			
-			System::NativeWindowHandle mWndHandle;
+			System::NativeWindowHandle m_WndHandle;
 			GLNativeDevice m_NativeDevice;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

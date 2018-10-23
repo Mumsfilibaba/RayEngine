@@ -34,14 +34,13 @@ namespace RayEngine
 		class DX12Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12UnorderedAccessView final : public IUnorderedAccessView, public DX12View
 		{
 			RE_IMPLEMENT_INTERFACE(DX12UnorderedAccessView);
 
 		public:
-			DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc& info);
+			DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc* pDesc);
 			~DX12UnorderedAccessView();
 
 			void SetName(const std::string& name) override final;
@@ -55,12 +54,12 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const UnorderedAccessViewDesc& info);
+			void Create(const UnorderedAccessViewDesc* pDesc);
 
 		private:
 			DX12Device* m_Device;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

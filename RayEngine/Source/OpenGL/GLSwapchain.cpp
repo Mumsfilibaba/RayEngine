@@ -28,20 +28,19 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLSwapchain::GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info)
+		GLSwapchain::GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc)
 			: m_Device(nullptr),
-			mFactory(nullptr),
-			mWndHandle(RE_NULL_WINDOW),
+			m_Factory(nullptr),
+			m_WndHandle(RE_NULL_WINDOW),
 			m_NativeDevice(RE_GL_NULL_NATIVE_DEVICE),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
-			mFactory = reinterpret_cast<GLFactory*>(pFactory);
+			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
 
 			Create();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,43 +80,41 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = mFactory->QueryReference<GLFactory>();
+			(*ppFactory) = m_Factory->QueryReference<GLFactory>();
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLSwapchain::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLSwapchain::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLSwapchain::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLSwapchain::Create()
 		{
 			m_NativeDevice = m_Device->GetGLNativeDevice();
-			mWndHandle = m_Device->GetNativeWindowHandle();
+			m_WndHandle = m_Device->GetNativeWindowHandle();
 		}
 	}
 }

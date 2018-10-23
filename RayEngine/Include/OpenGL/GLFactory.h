@@ -55,11 +55,11 @@ namespace RayEngine
 			
 			void EnumerateAdapters(AdapterList& list) const override final;
 			
-			bool CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo) override final;
+			bool CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc) override final;
 			
-			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo) override final;
+			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc) override final;
 			
-			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo) override final;
+			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc) override final;
 
 			void SetName(const std::string& name) override final;
 			
@@ -81,7 +81,7 @@ namespace RayEngine
 
 			std::vector<std::string> m_Extensions;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 
 			bool m_DebugLayer;
 		};

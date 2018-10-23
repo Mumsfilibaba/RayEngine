@@ -151,7 +151,7 @@ namespace RayEngine
 				dispatchcall.
 
 				pBuffer - A pointer to an IBuffer interface. Can be 
-				nullptr if no ConstantBuffer is desired or to unbind the 
+				nullptr if no SRVCBVUAV is desired or to unbind the 
 				current.
 
 				startRootIndex - Index of the shadervariable in the

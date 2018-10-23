@@ -653,12 +653,6 @@
     <ClCompile Include="Source\Vulkan\VulkTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX12\DX12Resource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DX12\DX12View.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Vulkan\VulkImageView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -764,7 +758,7 @@
     <ClCompile Include="Source\OpenGL\VAOCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\AdapterInfo.cpp">
+    <ClCompile Include="Source\Graphics\AdapterDesc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

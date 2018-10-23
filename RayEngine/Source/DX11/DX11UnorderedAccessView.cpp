@@ -31,17 +31,16 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11UnorderedAccessView::DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc& info)
+		DX11UnorderedAccessView::DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc* pDesc)
 			: m_Device(nullptr),
 			m_View(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,21 +50,11 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11UnorderedAccessView* DX11UnorderedAccessView::GetD3D11UnorderedAccessView() const
-		{
-			return m_View;
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11UnorderedAccessView::SetName(const std::string& name)
 		{
 			m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,29 +64,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11UnorderedAccessView::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11UnorderedAccessView::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11UnorderedAccessView::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -106,71 +92,70 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11UnorderedAccessView::Create(const UnorderedAccessViewDesc& info)
+		void DX11UnorderedAccessView::Create(const UnorderedAccessViewDesc* pDesc)
 		{
 			using namespace System;
 
 			D3D11_UNORDERED_ACCESS_VIEW_DESC desc = {};
-			desc.Format = ReToDXFormat(info.Format);
+			desc.Format = ReToDXFormat(pDesc->Format);
 
 			ID3D11Resource* pD3D11Resource = nullptr;
-			if (info.ViewDimension == VIEWDIMENSION_BUFFER)
+			if (pDesc->ViewDimension == VIEWDIMENSION_BUFFER)
 			{
 				desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 				desc.Buffer.Flags = 0;
 
-				if (info.Flags & UNORDERED_ACCESS_VIEW_FLAG_BUFFER_RAW)
+				if (pDesc->Flags & UNORDERED_ACCESS_VIEW_FLAG_BUFFER_RAW)
 					desc.Buffer.Flags |= D3D11_BUFFER_UAV_FLAG_RAW;
-				if (info.Flags & UNORDERED_ACCESS_VIEW_FLAG_BUFFER_COUNTER)
+				if (pDesc->Flags & UNORDERED_ACCESS_VIEW_FLAG_BUFFER_COUNTER)
 					desc.Buffer.Flags |= D3D11_BUFFER_UAV_FLAG_COUNTER;
 
-				desc.Buffer.FirstElement = info.Buffer.StartElement;
-				desc.Buffer.NumElements = info.Buffer.ElementCount;
+				desc.Buffer.FirstElement = pDesc->Buffer.StartElement;
+				desc.Buffer.NumElements = pDesc->Buffer.ElementCount;
 
-				pD3D11Resource = reinterpret_cast<const DX11Buffer*>(info.pResource)->GetD3D11Buffer();
+				pD3D11Resource = reinterpret_cast<const DX11Buffer*>(pDesc->pResource)->GetD3D11Buffer();
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE1D)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE1D)
 			{
 				desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE1D;
-				desc.Texture1D.MipSlice = info.Texture1D.MipSlice;
+				desc.Texture1D.MipSlice = pDesc->Texture1D.MipSlice;
 
-				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture1D();
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(pDesc->pResource)->GetD3D11Texture1D();
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE1D_ARRAY)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE1D_ARRAY)
 			{
 				desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE1DARRAY;
-				desc.Texture1DArray.MipSlice = info.Texture1DArray.MipSlice;
-				desc.Texture1DArray.ArraySize = info.Texture1DArray.ArraySize;
-				desc.Texture1DArray.FirstArraySlice = info.Texture1DArray.FirstArraySlice;
+				desc.Texture1DArray.MipSlice = pDesc->Texture1DArray.MipSlice;
+				desc.Texture1DArray.ArraySize = pDesc->Texture1DArray.ArraySize;
+				desc.Texture1DArray.FirstArraySlice = pDesc->Texture1DArray.FirstArraySlice;
 
-				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture1D();
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(pDesc->pResource)->GetD3D11Texture1D();
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2D)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE2D)
 			{
 				desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-				desc.Texture2D.MipSlice = info.Texture2D.MipSlice;
+				desc.Texture2D.MipSlice = pDesc->Texture2D.MipSlice;
 
-				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(pDesc->pResource)->GetD3D11Texture2D();
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE2D_ARRAY)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE2D_ARRAY)
 			{
 				desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
-				desc.Texture2DArray.MipSlice = info.Texture2DArray.MipSlice;
-				desc.Texture2DArray.ArraySize = info.Texture2DArray.ArraySize;
-				desc.Texture2DArray.FirstArraySlice = info.Texture2DArray.FirstArraySlice;
+				desc.Texture2DArray.MipSlice = pDesc->Texture2DArray.MipSlice;
+				desc.Texture2DArray.ArraySize = pDesc->Texture2DArray.ArraySize;
+				desc.Texture2DArray.FirstArraySlice = pDesc->Texture2DArray.FirstArraySlice;
 
-				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture2D();
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(pDesc->pResource)->GetD3D11Texture2D();
 			}
-			else if (info.ViewDimension == VIEWDIMENSION_TEXTURE3D)
+			else if (pDesc->ViewDimension == VIEWDIMENSION_TEXTURE3D)
 			{
 				desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE3D;
-				desc.Texture3D.MipSlice = info.Texture3D.MipSlice;
-				desc.Texture3D.FirstWSlice = info.Texture3D.FirstDepthSlice;
-				desc.Texture3D.WSize = info.Texture3D.DepthSliceCount;
+				desc.Texture3D.MipSlice = pDesc->Texture3D.MipSlice;
+				desc.Texture3D.FirstWSlice = pDesc->Texture3D.FirstDepthSlice;
+				desc.Texture3D.WSize = pDesc->Texture3D.DepthSliceCount;
 
-				pD3D11Resource = reinterpret_cast<const DX11Texture*>(info.pResource)->GetD3D11Texture3D();
+				pD3D11Resource = reinterpret_cast<const DX11Texture*>(pDesc->pResource)->GetD3D11Texture3D();
 			}
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
@@ -182,7 +167,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+				m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

@@ -40,8 +40,8 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(GLDevice);
 
 		public:
-			GLDevice(IFactory* pFactory, const DeviceDesc& info, bool debugLayer);
-			GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceDesc& info, bool debugLayer);
+			GLDevice(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
+			GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceDesc* pDesc, bool debugLayer);
 			~GLDevice();
 
 			inline GLNativeDevice GetGLNativeDevice() const
@@ -51,7 +51,7 @@ namespace RayEngine
 
 			inline System::NativeWindowHandle GetNativeWindowHandle() const
 			{
-				return mWndHandle;
+				return m_WndHandle;
 			}
 
 			inline bool ExtensionSupported(const std::string& extension) const
@@ -69,25 +69,25 @@ namespace RayEngine
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
 			
-			bool CreateShader(IShader** ppShader, const ShaderDesc& info) override final;
+			bool CreateShader(IShader** ppShader, const ShaderDesc* pDesc) override final;
 			
-			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info) override final;
+			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc) override final;
 			
-			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info) override final;
+			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc) override final;
 			
-			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc) override final;
 			
-			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc) override final;
 			
-			bool CreateSampler(ISampler** ppSampler, const SamplerDesc& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc) override final;
 			
-			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info) override final;
+			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc) override final;
 			
-			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info) override final;
+			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc) override final;
 			
-			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info) override final;
+			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc) override final;
 			
-			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info) override final;
+			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
 
 			void SetName(const std::string& name) override final;
 			
@@ -111,18 +111,18 @@ namespace RayEngine
 			void CreateNativeContext(bool debugLayer);
 
 		private:
-			GLFactory* mFactory;
+			GLFactory* m_Factory;
 			GLDeviceContext* mImmediateContext;
 			
 			GLNativeDevice m_Device;
 			GLNativeContext m_NativeContext;
-			System::NativeWindowHandle mWndHandle;
+			System::NativeWindowHandle m_WndHandle;
 
 			bool mCreatedWindow;
 
 			mutable System::Log mLog;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 
 			std::vector<std::string> mExtensions;
 		};

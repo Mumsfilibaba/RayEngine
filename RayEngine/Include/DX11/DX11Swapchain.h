@@ -47,8 +47,18 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Swapchain);
 
 		public:
-			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info);
+			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
 			~DX11Swapchain();
+
+			inline DX11RenderTargetView* GetDX11RenderTargetView() const
+			{
+				return m_Rtv;
+			}
+
+			inline DX11DepthStencilView* GetDX11DepthStencilView() const
+			{
+				return m_Dsv;
+			}
 
 			void Resize(int32 width, int32 height) override final;
 
@@ -66,18 +76,8 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
-			inline DX11RenderTargetView* GetDX11RenderTargetView() const
-			{
-				return m_Rtv;
-			}
-
-			inline DX11DepthStencilView* GetDX11DepthStencilView() const
-			{
-				return m_Dsv;
-			}
-
 		private:
-			void Create(const SwapchainDesc& info);
+			void Create(const SwapchainDesc* pDesc);
 			
 			void CreateTextures();
 
@@ -87,7 +87,7 @@ namespace RayEngine
 
 		private:
 			DX11Device* m_Device;
-			DX11Factory* mFactory;
+			DX11Factory* m_Factory;
 			IDXGISwapChain* m_Swapchain;			
 			DX11Texture* m_BackBuffer;
 			DX11Texture* m_DepthStencil;
@@ -100,7 +100,7 @@ namespace RayEngine
 			uint32 m_Flags;
 			FORMAT m_DepthStencilFormat;
 			FORMAT m_BackBufferFormat;
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

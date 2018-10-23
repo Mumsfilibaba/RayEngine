@@ -34,14 +34,13 @@ namespace RayEngine
 		class DX12Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12ShaderResourceView final : public IShaderResourceView, public DX12View
 		{
 			RE_IMPLEMENT_INTERFACE(DX12ShaderResourceView);
 
 		public:
-			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc& info);
+			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc* pDesc);
 			~DX12ShaderResourceView();
 
 			void SetName(const std::string& name) override final;
@@ -55,12 +54,12 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderResourceViewDesc& info);
+			void Create(const ShaderResourceViewDesc* pDesc);
 
 		private:
 			DX12Device* m_Device;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

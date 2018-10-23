@@ -37,15 +37,18 @@ namespace RayEngine
 			DX12Factory(bool debugLayer);
 			~DX12Factory();
 
-			IDXGIFactory5* GetDXGIFactory() const;
+			inline IDXGIFactory5* GetDXGIFactory() const
+			{
+				return m_Factory;
+			}
 			
 			void EnumerateAdapters(AdapterList& list) const override final;
 
-			bool CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo) override final;
+			bool CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc) override final;
 
-			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo) override final;
+			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc) override final;
 
-			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo) override final;
+			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc) override final;
 
 			void SetName(const std::string& name) override final;
 
@@ -62,12 +65,12 @@ namespace RayEngine
 
 		private:
 			ID3D12Debug* m_DebugController;
-			IDXGIFactory5* mFactory;
+			IDXGIFactory5* m_Factory;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 
 		private:
-			static void FillAdapterInfo(int32 adapterID, AdapterDesc& info, DXGI_ADAPTER_DESC1& desc);
+			static void FillAdapterDesc(int32 adapterID, AdapterDesc* pDesc, DXGI_ADAPTER_DESC1* pDXGIDesc);
 		};
 	}
 }

@@ -38,51 +38,68 @@ namespace RayEngine
 		class DX12DynamicUploadHeap;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12Device final : public IDevice
 		{
 			RE_IMPLEMENT_INTERFACE(DX12Device);
 
 		public:
-			DX12Device(IFactory* pFactory, const DeviceDesc& info, bool debugLayer);
+			DX12Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
 			~DX12Device();
 
-			ID3D12Device* GetD3D12Device() const;
-			
-			DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const;
-			
-			DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const;
-			
-			DX12DescriptorHeap* GetDX12ResourceHeap() const;
-			
-			DX12DescriptorHeap* GetDX12SamplerHeap() const;
-			
-			DX12DynamicUploadHeap* GetDX12UploadHeap() const;
+			inline ID3D12Device* GetD3D12Device() const
+			{
+				return m_Device;
+			}
+
+			DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const
+			{
+				return m_DsvHeap;
+			}
+
+			DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const
+			{
+				return m_RtvHeap;
+			}
+
+			DX12DescriptorHeap* GetDX12ResourceHeap() const
+			{
+				return m_ResourceHeap;
+			}
+
+			DX12DescriptorHeap* GetDX12SamplerHeap() const
+			{
+				return m_SamplerHeap;
+			}
+
+			DX12DynamicUploadHeap* GetDX12UploadHeap() const
+			{
+				return m_UploadHeap;
+			}
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
 			
-			bool CreateShader(IShader** ppShader, const ShaderDesc& info) override final;
+			bool CreateShader(IShader** ppShader, const ShaderDesc* pDesc) override final;
 			
-			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info) override final;
+			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc) override final;
 			
-			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info) override final;
+			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc) override final;
 			
-			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc) override final;
 			
-			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc) override final;
 			
-			bool CreateSampler(ISampler** ppSampler, const SamplerDesc& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc) override final;
 			
-			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info) override final;
+			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc) override final;
 			
-			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info) override final;
+			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc) override final;
 			
-			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info) override final;
+			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc) override final;
 			
-			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info) override final;
+			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
 			
 			void SetName(const std::string& name) override final;
 			
@@ -97,10 +114,10 @@ namespace RayEngine
 			System::Log* GetDeviceLog() override final;
 
 		private:
-			void Create(IFactory* pFactory, const DeviceDesc& info, bool debugLayer);
+			void Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
 
 		private:
-			DX12Factory* mFactory;
+			DX12Factory* m_Factory;
 			IDXGIAdapter1* m_Adapter;
 			ID3D12Device* m_Device;
 			ID3D12DebugDevice* m_DebugDevice;
@@ -113,7 +130,7 @@ namespace RayEngine
 
 			mutable System::Log mLog;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

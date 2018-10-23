@@ -32,26 +32,24 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info)
+		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc* pDesc)
 			: m_Device(nullptr),
 			m_BufferType(BUFFER_USAGE_UNKNOWN),
 			m_MappedSubresource(-1),
 			m_Views(),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(pInitalData, info);
+			Create(pInitalData, pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Buffer::~DX12Buffer()
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,14 +71,12 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Buffer::Unmap()
 		{
 			m_Resource->Unmap(m_MappedSubresource, nullptr);
 			m_MappedSubresource = -1;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +86,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Buffer::QueryDevice(IDevice** ppDevice) const
 		{
@@ -98,29 +93,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Buffer::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Buffer::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Buffer::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -129,39 +121,14 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DescriptorHandle DX12Buffer::GetDX12DescriptorHandle() const
-		{
-			return m_Views.ConstantBuffer;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_VERTEX_BUFFER_VIEW DX12Buffer::GetD3D12VertexBufferView() const
-		{
-			return m_Views.Vertex;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_INDEX_BUFFER_VIEW DX12Buffer::GetD3D12IndexBufferView() const
-		{
-			return m_Views.Index;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Buffer::Create(const ResourceData* pInitalData, const BufferDesc& info)
+		void DX12Buffer::Create(const ResourceData* pInitalData, const BufferDesc* pDesc)
 		{
 			using namespace System;
 
 			D3D12_RESOURCE_DESC desc = {};
 			desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-			desc.Width = info.ByteStride * info.Count;
+			desc.Width = pDesc->ByteStride * pDesc->Count;
 			desc.Height = 1;
 			desc.DepthOrArraySize = 1;
 			desc.SampleDesc.Count = 1;
@@ -178,9 +145,9 @@ namespace RayEngine
 			heapProp.CreationNodeMask = 1;
 			heapProp.VisibleNodeMask = 1;
 
-			if (info.Usage == RESOURCE_USAGE_DEFAULT || info.Usage == RESOURCE_USAGE_STATIC)
+			if (pDesc->Usage == RESOURCE_USAGE_DEFAULT || pDesc->Usage == RESOURCE_USAGE_STATIC)
 				heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
-			else if (info.Usage == RESOURCE_USAGE_DYNAMIC)
+			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
 				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 
@@ -195,12 +162,12 @@ namespace RayEngine
 			}
 			else
 			{
-				CreateView(info);
+				CreateView(pDesc);
 				
 				m_State = startingState;
-				m_BufferType = info.Type;
+				m_BufferType = pDesc->Type;
 
-				D3D12SetName(m_Resource, info.Name);
+				D3D12SetName(m_Resource, pDesc->Name);
 			}
 
 
@@ -226,27 +193,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Buffer::CreateView(const BufferDesc& info)
+		void DX12Buffer::CreateView(const BufferDesc* pDesc)
 		{
 			const DX12Device* pDX12Device = m_Device;
-			if (info.Usage == BUFFER_USAGE_CONSTANT)
+			if (pDesc->Usage == BUFFER_USAGE_CONSTANT || pDesc->Usage == BUFFER_USAGE_SHADER_RESOURCE || pDesc->Usage == BUFFER_USAGE_UNORDERED_ACCESS)
 			{
-				m_Views.ConstantBuffer = pDX12Device->GetDX12ResourceHeap()->GetNext(this);
-				m_Views.ConstantBuffer.GpuResourceAdress = m_Resource->GetGPUVirtualAddress();
+				m_Views.SRVCBVUAV = pDX12Device->GetDX12ResourceHeap()->GetNext(this);
+				m_Views.SRVCBVUAV.GpuResourceAdress = m_Resource->GetGPUVirtualAddress();
 			}
-			else if (info.Usage == BUFFER_USAGE_VERTEX)
+			else if (pDesc->Usage == BUFFER_USAGE_VERTEX)
 			{
 				m_Views.Vertex.BufferLocation = GetD3D12Resource()->GetGPUVirtualAddress();
-				m_Views.Vertex.StrideInBytes = info.ByteStride;
-				m_Views.Vertex.SizeInBytes = info.ByteStride * info.Count;
+				m_Views.Vertex.StrideInBytes = pDesc->ByteStride;
+				m_Views.Vertex.SizeInBytes = pDesc->ByteStride * pDesc->Count;
 			}
-			else if (info.Usage == BUFFER_USAGE_INDEX)
+			else if (pDesc->Usage == BUFFER_USAGE_INDEX)
 			{
 				m_Views.Index.BufferLocation = GetD3D12Resource()->GetGPUVirtualAddress();
 				m_Views.Index.Format = DXGI_FORMAT_R32_FLOAT;
-				m_Views.Index.SizeInBytes = info.ByteStride * info.Usage;
+				m_Views.Index.SizeInBytes = pDesc->ByteStride * pDesc->Usage;
 			}
 		}
 	}

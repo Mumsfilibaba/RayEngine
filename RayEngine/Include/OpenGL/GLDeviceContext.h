@@ -35,7 +35,6 @@ namespace RayEngine
 		class GLPipelineState;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class GLDeviceContext final : public IDeviceContext
 		{
@@ -117,7 +116,7 @@ namespace RayEngine
 
 			mutable uint32 m_PrimitiveTopology;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

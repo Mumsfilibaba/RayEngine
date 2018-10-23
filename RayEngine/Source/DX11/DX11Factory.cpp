@@ -32,30 +32,20 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Factory::DX11Factory(bool debugLayer)
-			: mFactory(nullptr),
+			: m_Factory(nullptr),
 			m_DebugLayer(debugLayer),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			Create();
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Factory::~DX11Factory()
 		{
-			D3DRelease_S(mFactory);
+			D3DRelease_S(m_Factory);
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IDXGIFactory* DX11Factory::GetDXGIFactory() const
-		{
-			return mFactory;
-		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +53,7 @@ namespace RayEngine
 		{
 			using namespace Microsoft::WRL;
 
-			std::vector<AdapterDesc> infos;
+			std::vector<AdapterDesc> adapters;
 			ComPtr<IDXGIAdapter> pAdapter = nullptr;
 			ComPtr<ID3D11Device> pDevice = nullptr;
 			ComPtr<ID3D11DeviceContext> pDeviceContext = nullptr;
@@ -71,7 +61,7 @@ namespace RayEngine
 			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 
-			for (int32 i = 0; mFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; i++)
+			for (int32 i = 0; m_Factory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; i++)
 			{
 				HRESULT hr = D3D11CreateDevice(pAdapter.Get(), D3D_DRIVER_TYPE_UNKNOWN, 0, 0, &supportedFeatureLevel, 1,
 					D3D11_SDK_VERSION, &pDevice, &featureLevel, &pDeviceContext);
@@ -81,88 +71,80 @@ namespace RayEngine
 					DXGI_ADAPTER_DESC desc = {};
 					if (SUCCEEDED(pAdapter->GetDesc(&desc)))
 					{
-						infos.push_back(AdapterDesc());
-						FillAdapterInfo(i, infos[infos.size() - 1], desc);
+						adapters.push_back(AdapterDesc());
+						FillAdapterDesc(i, &adapters[adapters.size() - 1], &desc);
 					}
 				}
 			}
 
 
-			list = AdapterList(static_cast<int32>(infos.size()));
+			list = AdapterList(static_cast<int32>(adapters.size()));
 			for (int32 i = 0; i < list.Count; i++)
-				list[i] = infos[i];
+				list[i] = adapters[i];
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
+		bool DX11Factory::CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc)
 		{
-			return ((*ppDevice) = new DX11Device(this, deviceInfo, m_DebugLayer)) != nullptr;
+			return ((*ppDevice) = new DX11Device(this, pDesc, m_DebugLayer)) != nullptr;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
+		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc)
 		{
-			return ((*ppSwapchain) = new DX11Swapchain(this, pDevice, swapchainInfo)) != nullptr;
+			return ((*ppSwapchain) = new DX11Swapchain(this, pDevice, pDesc)) != nullptr;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
+		bool DX11Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{
-			IDevice* pDevice = new DX11Device(this, deviceInfo, m_DebugLayer);
-			ISwapchain* pSwapchain = new DX11Swapchain(this, pDevice, swapchainInfo);
+			IDevice* pDevice = new DX11Device(this, pDeviceDesc, m_DebugLayer);
+			ISwapchain* pSwapchain = new DX11Swapchain(this, pDevice, pSwapchainDesc);
 
 			(*ppDevice) = pDevice;
 			(*ppSwapchain) = pSwapchain;
 
 			return (pDevice != nullptr) && (pSwapchain != nullptr);
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Factory::SetName(const std::string& name)
 		{
-			mFactory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GRAPHICS_API DX11Factory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_D3D11;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Factory::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Factory::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Factory::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -171,55 +153,53 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Factory::Create()
 		{
-			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&mFactory))))
+			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory))))
 			{
 				return;
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Factory::FillAdapterInfo(int32 adapterID, AdapterDesc& info, DXGI_ADAPTER_DESC& desc)
+		void DX11Factory::FillAdapterDesc(int32 adapterID, AdapterDesc* pDesc, DXGI_ADAPTER_DESC* pDXGIDesc)
 		{
-			info.ApiID = adapterID;
-			info.VendorID = desc.VendorId;
-			info.DeviceID = desc.DeviceId;
+			pDesc->ApiID = adapterID;
+			pDesc->VendorID = pDXGIDesc->VendorId;
+			pDesc->DeviceID = pDXGIDesc->DeviceId;
 
 
-			constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
+			constexpr int32 len = sizeof(pDXGIDesc->Description) / sizeof(WCHAR);
 			char str[len];
-			wcstombs(str, desc.Description, len);
-			info.ModelName = str;
+			wcstombs(str, pDXGIDesc->Description, len);
+			pDesc->ModelName = str;
 
-			info.VendorName = AdapterDesc::GetVendorString(desc.VendorId);
+			pDesc->VendorName = AdapterDesc::GetVendorString(pDXGIDesc->VendorId);
 
 
 			//These are constants for D3D_FEATURE_LEVEL_11_0 the lowest level RayEngine supports
-			info.Flags |= ADAPTER_FLAGS_SWAPCHAIN;
-			info.Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
-			info.Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
-			info.Flags |= ADAPTER_FLAGS_COMPUTE;
-			info.Flags |= ADAPTER_FLAGS_GRAPHICS;
+			pDesc->Flags |= ADAPTER_FLAGS_SWAPCHAIN;
+			pDesc->Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
+			pDesc->Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
+			pDesc->Flags |= ADAPTER_FLAGS_COMPUTE;
+			pDesc->Flags |= ADAPTER_FLAGS_GRAPHICS;
 
 
-			info.Limits.RenderTargetCount = 8;
+			pDesc->Limits.RenderTargetCount = 8;
 
-			info.Limits.Texture1D.Width = 16384;
+			pDesc->Limits.Texture1D.Width = 16384;
 
-			info.Limits.Texture2D.Width = 16384;
-			info.Limits.Texture2D.Height = 16384;
+			pDesc->Limits.Texture2D.Width = 16384;
+			pDesc->Limits.Texture2D.Height = 16384;
 
-			info.Limits.Texture3D.Width = 2048;
-			info.Limits.Texture3D.Height = 2048;
-			info.Limits.Texture3D.Depth = 2048;
+			pDesc->Limits.Texture3D.Width = 2048;
+			pDesc->Limits.Texture3D.Height = 2048;
+			pDesc->Limits.Texture3D.Depth = 2048;
 
-			info.Limits.TextureCube.Width = 16384;
-			info.Limits.TextureCube.Height = 16384;
+			pDesc->Limits.TextureCube.Width = 16384;
+			pDesc->Limits.TextureCube.Height = 16384;
 		}
 	}
 }

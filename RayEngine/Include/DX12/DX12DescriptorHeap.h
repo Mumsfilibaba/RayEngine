@@ -44,7 +44,10 @@ namespace RayEngine
 			DX12DescriptorHeap(IDevice* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
 			~DX12DescriptorHeap();
 
-			int32 GetDescriptorsLeft() const;
+			inline int32 GetDescriptorsLeft() const
+			{
+				return m_Count - m_UsedCount;
+			}
 
 			DX12DescriptorHandle GetNext(const DX12Resource* pResource) const;
 
@@ -69,7 +72,7 @@ namespace RayEngine
 			int32 m_Count;
 			mutable int32 m_UsedCount;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

@@ -32,35 +32,32 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateDesc& info)
+		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateDesc* pDesc)
 			: m_Device(nullptr),
 			m_PipelineState(nullptr),
 			m_Type(PIPELINE_TYPE_UNKNOWN),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12PipelineState::~DX12PipelineState()
 		{
 			D3DRelease_S(m_PipelineState);
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		PIPELINE_TYPE DX12PipelineState::GetPipelineType() const
 		{
 			return m_Type;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetName(const std::string& name)
@@ -68,38 +65,34 @@ namespace RayEngine
 			D3D12SetName(m_PipelineState, name);
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::QueryDevice(IDevice ** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12PipelineState::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12PipelineState::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12PipelineState::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -108,45 +101,35 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D12PipelineState* DX12PipelineState::GetD3D12PipelineState() const
+		void DX12PipelineState::Create(const PipelineStateDesc* pDesc)
 		{
-			return m_PipelineState;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::Create(const PipelineStateDesc& info)
-		{
-			if (info.Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsState(info);
-			else if (info.Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputeState(info);
+			if (pDesc->Type == PIPELINE_TYPE_GRAPHICS)
+				CreateGraphicsState(pDesc);
+			else if (pDesc->Type == PIPELINE_TYPE_COMPUTE)
+				CreateComputeState(pDesc);
 
 
 			if (m_PipelineState != nullptr)
-				D3D12SetName(m_PipelineState, info.Name);
+				D3D12SetName(m_PipelineState, pDesc->Name);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateGraphicsState(const PipelineStateDesc& info)
+		void DX12PipelineState::CreateGraphicsState(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
 			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
-			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
+			inputLayout.resize(pDesc->GraphicsPipeline.InputLayout.ElementCount);
 
 			for (int32 i = 0; i < static_cast<int32>(inputLayout.size()); i++)
 			{
-				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.pElements[i]);
+				SetInputElementDesc(&inputLayout[i], &pDesc->GraphicsPipeline.InputLayout.pElements[i]);
 			}
 
 
-			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(info.pRootLayout)->GetD3D12RootSignature();
+			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(pDesc->pRootLayout)->GetD3D12RootSignature();
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
 			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 			desc.pRootSignature = pD3D12RootSignature;
@@ -160,16 +143,16 @@ namespace RayEngine
 			//desc.StreamOutput.RasterizedStream;
 
 			//TODO: Fix rendertarget count etc
-			desc.NumRenderTargets = info.GraphicsPipeline.RenderTargetCount;
+			desc.NumRenderTargets = pDesc->GraphicsPipeline.RenderTargetCount;
 			for (uint32 i = 0; i < desc.NumRenderTargets; i++)
-				desc.RTVFormats[i] = ReToDXFormat(info.GraphicsPipeline.RenderTargetFormats[i]);
+				desc.RTVFormats[i] = ReToDXFormat(pDesc->GraphicsPipeline.RenderTargetFormats[i]);
 			
 
-			desc.DSVFormat = ReToDXFormat(info.GraphicsPipeline.DepthStencilFormat);
-			desc.SampleDesc.Count = info.GraphicsPipeline.SampleCount;
+			desc.DSVFormat = ReToDXFormat(pDesc->GraphicsPipeline.DepthStencilFormat);
+			desc.SampleDesc.Count = pDesc->GraphicsPipeline.SampleCount;
 
 
-			D3D_PRIMITIVE_TOPOLOGY topology = ReToDXTopology(info.GraphicsPipeline.Topology);
+			D3D_PRIMITIVE_TOPOLOGY topology = ReToDXTopology(pDesc->GraphicsPipeline.Topology);
 			if (topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST || topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP)
 				desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 			else if (topology == D3D_PRIMITIVE_TOPOLOGY_LINELIST || topology == D3D_PRIMITIVE_TOPOLOGY_LINESTRIP)
@@ -188,19 +171,19 @@ namespace RayEngine
 
 
 			//TODO: Make sure shader is of correct type
-			SetShaderByteCode(desc.VS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pVertexShader));
-			SetShaderByteCode(desc.HS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pHullShader));
-			SetShaderByteCode(desc.DS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pDomainShader));
-			SetShaderByteCode(desc.GS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pGeometryShader));
-			SetShaderByteCode(desc.PS, reinterpret_cast<DX12Shader*>(info.GraphicsPipeline.pPixelShader));
+			SetShaderByteCode(&desc.VS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pVertexShader));
+			SetShaderByteCode(&desc.HS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pHullShader));
+			SetShaderByteCode(&desc.DS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pDomainShader));
+			SetShaderByteCode(&desc.GS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pGeometryShader));
+			SetShaderByteCode(&desc.PS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pPixelShader));
 		
 
-			SetRasterizerDesc(desc.RasterizerState, info.GraphicsPipeline.RasterizerState);
+			SetRasterizerDesc(&desc.RasterizerState, &pDesc->GraphicsPipeline.RasterizerState);
 
-			SetDepthStencilDesc(desc.DepthStencilState, info.GraphicsPipeline.DepthStencilState);
+			SetDepthStencilDesc(&desc.DepthStencilState, &pDesc->GraphicsPipeline.DepthStencilState);
 
-			SetBlendDesc(desc.BlendState, info.GraphicsPipeline.BlendState);
-			desc.SampleMask = info.GraphicsPipeline.SampleMask;
+			SetBlendDesc(&desc.BlendState, &pDesc->GraphicsPipeline.BlendState);
+			desc.SampleMask = pDesc->GraphicsPipeline.SampleMask;
 	
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
@@ -212,19 +195,18 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateComputeState(const PipelineStateDesc& info)
+		void DX12PipelineState::CreateComputeState(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
-			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(info.pRootLayout)->GetD3D12RootSignature();
+			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(pDesc->pRootLayout)->GetD3D12RootSignature();
 			D3D12_COMPUTE_PIPELINE_STATE_DESC desc = { };
 			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 			desc.pRootSignature = pD3D12RootSignature;
 			desc.NodeMask = 0;
 
-			SetShaderByteCode(desc.CS, reinterpret_cast<DX12Shader*>(info.ComputePipeline.pComputeShader));
+			SetShaderByteCode(&desc.CS, reinterpret_cast<DX12Shader*>(pDesc->ComputePipeline.pComputeShader));
 
 			desc.CachedPSO.CachedBlobSizeInBytes = 0;
 			desc.CachedPSO.pCachedBlob = nullptr;
@@ -238,122 +220,119 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetShaderByteCode(D3D12_SHADER_BYTECODE& byteCode, const DX12Shader* shader)
+		void DX12PipelineState::SetShaderByteCode(D3D12_SHADER_BYTECODE* pByteCode, const DX12Shader* pShader)
 		{
-			if (shader == nullptr)
+			if (pShader == nullptr)
 				return;
 
-			byteCode.BytecodeLength = shader->GetD3D12ByteCode().BytecodeLength;
-			byteCode.pShaderBytecode = shader->GetD3D12ByteCode().pShaderBytecode;
+			pByteCode->BytecodeLength = pShader->GetD3D12ByteCode().BytecodeLength;
+			pByteCode->pShaderBytecode = pShader->GetD3D12ByteCode().pShaderBytecode;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC& desc, const InputElementDesc& element)
+		void DX12PipelineState::SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC* pD3D12Desc, const InputElementDesc* pDesc)
 		{
-			desc.SemanticName = element.Semantic.c_str();
-			desc.SemanticIndex = element.SemanticIndex;
+			pD3D12Desc->SemanticName = pDesc->Semantic.c_str();
+			pD3D12Desc->SemanticIndex = pDesc->SemanticIndex;
 
-			desc.Format = ReToDXFormat(element.Format);
+			pD3D12Desc->Format = ReToDXFormat(pDesc->Format);
 
-			desc.InputSlot = element.InputSlot;
+			pD3D12Desc->InputSlot = pDesc->InputSlot;
 
-			desc.AlignedByteOffset = element.ElementOffset;
+			pD3D12Desc->AlignedByteOffset = pDesc->ElementOffset;
 			
-			if (element.StepType == ELEMENT_STEP_TYPE_VERTEX)
-				desc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-			else if (element.StepType == ELEMENT_STEP_TYPE_INSTANCE)
-				desc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
+			if (pDesc->StepType == ELEMENT_STEP_TYPE_VERTEX)
+				pD3D12Desc->InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+			else if (pDesc->StepType == ELEMENT_STEP_TYPE_INSTANCE)
+				pD3D12Desc->InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
 
-			desc.InstanceDataStepRate = element.DataStepRate;
+			pD3D12Desc->InstanceDataStepRate = pDesc->DataStepRate;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetRasterizerDesc(D3D12_RASTERIZER_DESC& desc, const RasterizerStateDesc& info)
+		void DX12PipelineState::SetRasterizerDesc(D3D12_RASTERIZER_DESC* pD3D12Desc, const RasterizerStateDesc* pDesc)
 		{
-			desc.ConservativeRaster = info.ConservativeRasterizerEnable ? 
+			pD3D12Desc->ConservativeRaster = pDesc->ConservativeRasterizerEnable ? 
 				D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON : D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
-			desc.AntialiasedLineEnable = info.AntialiasedLineEnable;
-			desc.FrontCounterClockwise = false;
-			desc.MultisampleEnable = false;
-			desc.ForcedSampleCount = 0;
+			pD3D12Desc->AntialiasedLineEnable = pDesc->AntialiasedLineEnable;
+			pD3D12Desc->FrontCounterClockwise = false;
+			pD3D12Desc->MultisampleEnable = false;
+			pD3D12Desc->ForcedSampleCount = 0;
 		
-			if (info.CullMode == CULL_MODE_BACK)
-				desc.CullMode = D3D12_CULL_MODE_BACK;
-			else if (info.CullMode == CULL_MODE_FRONT)
-				desc.CullMode = D3D12_CULL_MODE_FRONT;
-			else if (info.CullMode == CULL_MODE_NONE)
-				desc.CullMode = D3D12_CULL_MODE_NONE;
+			if (pDesc->CullMode == CULL_MODE_BACK)
+				pD3D12Desc->CullMode = D3D12_CULL_MODE_BACK;
+			else if (pDesc->CullMode == CULL_MODE_FRONT)
+				pD3D12Desc->CullMode = D3D12_CULL_MODE_FRONT;
+			else if (pDesc->CullMode == CULL_MODE_NONE)
+				pD3D12Desc->CullMode = D3D12_CULL_MODE_NONE;
 
 
-			desc.DepthBias = info.DepthBias;
-			desc.DepthBiasClamp = info.DepthBiasClamp;
-			desc.DepthClipEnable = info.DepthClipEnable;
+			pD3D12Desc->DepthBias = pDesc->DepthBias;
+			pD3D12Desc->DepthBiasClamp = pDesc->DepthBiasClamp;
+			pD3D12Desc->DepthClipEnable = pDesc->DepthClipEnable;
 
-			desc.FillMode = (info.FillMode == FILL_MODE_SOLID) ? D3D12_FILL_MODE_SOLID : D3D12_FILL_MODE_WIREFRAME;
-			desc.SlopeScaledDepthBias = info.SlopeScaleDepthBias;
+			pD3D12Desc->FillMode = (pDesc->FillMode == FILL_MODE_SOLID) ? D3D12_FILL_MODE_SOLID : D3D12_FILL_MODE_WIREFRAME;
+			pD3D12Desc->SlopeScaledDepthBias = pDesc->SlopeScaleDepthBias;
 		}
 
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC& desc, const DepthStencilStateDesc& info)
+		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC* pD3D12Desc, const DepthStencilStateDesc* pDesc)
 		{
-			desc.DepthFunc = ReToDX12ComparisonFunc(info.DepthFunc);
-			desc.DepthEnable = info.DepthEnable;
-			desc.StencilEnable = info.StencilEnable;
+			pD3D12Desc->DepthFunc = ReToDX12ComparisonFunc(pDesc->DepthFunc);
+			pD3D12Desc->DepthEnable = pDesc->DepthEnable;
+			pD3D12Desc->StencilEnable = pDesc->StencilEnable;
 
-			if (info.DepthWriteMask == DEPTH_WRITE_MASK_ALL)
-				desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-			else if (info.DepthWriteMask == DEPTH_WRITE_MASK_ZERO)
-				desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+			if (pDesc->DepthWriteMask == DEPTH_WRITE_MASK_ALL)
+				pD3D12Desc->DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+			else if (pDesc->DepthWriteMask == DEPTH_WRITE_MASK_ZERO)
+				pD3D12Desc->DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
-			desc.StencilReadMask = info.StencilReadMask;
-			desc.StencilWriteMask = info.StencilWriteMask;
+			pD3D12Desc->StencilReadMask = pDesc->StencilReadMask;
+			pD3D12Desc->StencilWriteMask = pDesc->StencilWriteMask;
 
-			desc.BackFace = ReToDX12StencilOpDesc(info.BackFace);
-			desc.FrontFace = ReToDX12StencilOpDesc(info.BackFace);
+			pD3D12Desc->BackFace = ReToDX12StencilOpDesc(pDesc->BackFace);
+			pD3D12Desc->FrontFace = ReToDX12StencilOpDesc(pDesc->BackFace);
 		}
 
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetBlendDesc(D3D12_BLEND_DESC& desc, const BlendStateDesc& info)
+		void DX12PipelineState::SetBlendDesc(D3D12_BLEND_DESC* pD3D12Desc, const BlendStateDesc* pDesc)
 		{
-			desc.AlphaToCoverageEnable = info.AlphaToCoverageEnable;
-			desc.IndependentBlendEnable = info.IndependentBlendEnable;
+			pD3D12Desc->AlphaToCoverageEnable = pDesc->AlphaToCoverageEnable;
+			pD3D12Desc->IndependentBlendEnable = pDesc->IndependentBlendEnable;
 
 			for (int32 i = 0; i < 8; i++)
 			{
-				desc.RenderTarget[i].LogicOpEnable = info.LogicOpEnable;
-				desc.RenderTarget[i].BlendEnable = info.RenderTargets[i].BlendEnable;
-				desc.RenderTarget[i].SrcBlend = ReToDX12Blend(info.RenderTargets[i].SrcBlend);
-				desc.RenderTarget[i].DestBlend = ReToDX12Blend(info.RenderTargets[i].DstBlend);
-				desc.RenderTarget[i].BlendOp = ReToDX12BlendOp(info.RenderTargets[i].BlendOperation);
-				desc.RenderTarget[i].SrcBlendAlpha = ReToDX12Blend(info.RenderTargets[i].SrcAlphaBlend);
-				desc.RenderTarget[i].DestBlendAlpha = ReToDX12Blend(info.RenderTargets[i].DstAlphaBlend);
-				desc.RenderTarget[i].BlendOpAlpha = ReToDX12BlendOp(info.RenderTargets[i].AlphaBlendOperation);
-				desc.RenderTarget[i].LogicOp = D3D12_LOGIC_OP_NOOP;
+				pD3D12Desc->RenderTarget[i].LogicOpEnable = pDesc->LogicOpEnable;
+				pD3D12Desc->RenderTarget[i].BlendEnable = pDesc->RenderTargets[i].BlendEnable;
+				pD3D12Desc->RenderTarget[i].SrcBlend = ReToDX12Blend(pDesc->RenderTargets[i].SrcBlend);
+				pD3D12Desc->RenderTarget[i].DestBlend = ReToDX12Blend(pDesc->RenderTargets[i].DstBlend);
+				pD3D12Desc->RenderTarget[i].BlendOp = ReToDX12BlendOp(pDesc->RenderTargets[i].BlendOperation);
+				pD3D12Desc->RenderTarget[i].SrcBlendAlpha = ReToDX12Blend(pDesc->RenderTargets[i].SrcAlphaBlend);
+				pD3D12Desc->RenderTarget[i].DestBlendAlpha = ReToDX12Blend(pDesc->RenderTargets[i].DstAlphaBlend);
+				pD3D12Desc->RenderTarget[i].BlendOpAlpha = ReToDX12BlendOp(pDesc->RenderTargets[i].AlphaBlendOperation);
+				pD3D12Desc->RenderTarget[i].LogicOp = D3D12_LOGIC_OP_NOOP;
 
-				if (info.RenderTargets[i].WriteMask == COLOR_WRITE_ENABLE_ALL)
+				if (pDesc->RenderTargets[i].WriteMask == COLOR_WRITE_ENABLE_ALL)
 				{
-					desc.RenderTarget[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+					pD3D12Desc->RenderTarget[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 				}
 				else
 				{
-					if (info.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
-						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_RED;
-					if (info.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
-						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_GREEN;
-					if (info.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
-						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_BLUE;
-					if (info.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
-						desc.RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_ALPHA;
+					if (pDesc->RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
+						pD3D12Desc->RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_RED;
+					if (pDesc->RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
+						pD3D12Desc->RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_GREEN;
+					if (pDesc->RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
+						pD3D12Desc->RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_BLUE;
+					if (pDesc->RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
+						pD3D12Desc->RenderTarget[i].RenderTargetWriteMask |= D3D12_COLOR_WRITE_ENABLE_ALPHA;
 				}
 			}
 		}

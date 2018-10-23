@@ -43,34 +43,37 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Device);
 
 		public:
-			DX11Device(IFactory* pFactory, const DeviceDesc& info, bool debugLayer);
+			DX11Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
 			~DX11Device();
 
-			ID3D11Device* GetD3D11Device() const;
+			inline ID3D11Device* GetD3D11Device() const
+			{
+				return m_Device;
+			}
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
 			
-			bool CreateShader(IShader** ppShader, const ShaderDesc& info) override final;
+			bool CreateShader(IShader** ppShader, const ShaderDesc* pDesc) override final;
 			
-			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info) override final;
+			bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc) override final;
 			
-			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info) override final;
+			bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc) override final;
 			
-			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info) override final;
+			bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc) override final;
 			
-			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info) override final;
+			bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc) override final;
 			
-			bool CreateSampler(ISampler** ppSampler, const SamplerDesc& info) override final;
+			bool CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc) override final;
 			
-			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info) override final;
+			bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc) override final;
 			
-			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info) override final;
+			bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc) override final;
 			
-			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info) override final;
+			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc) override final;
 			
-			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info) override final;
+			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
 		
 			void SetName(const std::string& name) override final;
 			
@@ -84,12 +87,11 @@ namespace RayEngine
 
 			System::Log* GetDeviceLog() override final;
 
+		private:
+			void Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
 
 		private:
-			void Create(IFactory* pFactory, const DeviceDesc& info, bool debugLayer);
-
-		private:
-			DX11Factory* mFactory;
+			DX11Factory* m_Factory;
 			DX11DeviceContext* mImmediateContext;
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;
@@ -99,7 +101,7 @@ namespace RayEngine
 			
 			System::Log mLog;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 			IObject::CounterType m_InternalReferences;
 		};
 	}

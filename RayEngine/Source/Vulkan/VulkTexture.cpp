@@ -27,29 +27,27 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkTexture::VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info)
+		VulkTexture::VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 			: m_Device(nullptr),
 			m_Image(VK_NULL_HANDLE),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = pDevice->QueryReference<VulkDevice>();
 
-			Create(pInitialData, info);
+			Create(pInitialData, pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VulkTexture::VulkTexture(IDevice* pDevice, VkImage image)
 			: m_Device(nullptr),
 			m_Image(image),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = pDevice->QueryReference<VulkDevice>();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +64,7 @@ namespace RayEngine
 			ReRelease_S(m_Device);
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkTexture::InvalidateResource()
 		{
@@ -75,61 +72,47 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkImage VulkTexture::GetVkImage() const
-		{
-			return m_Image;
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkTexture::SetName(const std::string& name)
 		{
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkTexture::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkTexture::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkTexture::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkTexture::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkTexture::Create(const ResourceData* const pInitialData, const TextureDesc& info)
+		void VulkTexture::Create(const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
 			using namespace System;
 			
@@ -144,26 +127,26 @@ namespace RayEngine
 			//desc.tiling = ;
 			//desc.usage = ;
 
-			if (info.Type == TEXTURE_TYPE_1D)
+			if (pDesc->Type == TEXTURE_TYPE_1D)
 			{
 				desc.imageType = VK_IMAGE_TYPE_1D;
 			}
-			else if (info.Type == TEXTURE_TYPE_2D)
+			else if (pDesc->Type == TEXTURE_TYPE_2D)
 			{
 				desc.imageType = VK_IMAGE_TYPE_2D;
 			}
-			else if (info.Type == TEXTURE_TYPE_3D)
+			else if (pDesc->Type == TEXTURE_TYPE_3D)
 			{
 				desc.imageType = VK_IMAGE_TYPE_3D;
 			}
 
-			desc.format = ReToVkFormat(info.Format);
+			desc.format = ReToVkFormat(pDesc->Format);
 			//desc.flags = ;
-			desc.arrayLayers = info.DepthOrArraySize;
-			desc.mipLevels = info.MipLevels;
-			desc.extent.width = info.Width;
-			desc.extent.height = info.Height;
-			desc.extent.depth = info.DepthOrArraySize;
+			desc.arrayLayers = pDesc->DepthOrArraySize;
+			desc.mipLevels = pDesc->MipLevels;
+			desc.extent.width = pDesc->Width;
+			desc.extent.height = pDesc->Height;
+			desc.extent.depth = pDesc->DepthOrArraySize;
 
 			VkDevice vkDevice = m_Device->GetVkDevice();
 			VkResult result = vkCreateImage(vkDevice, &desc, nullptr, &m_Image);

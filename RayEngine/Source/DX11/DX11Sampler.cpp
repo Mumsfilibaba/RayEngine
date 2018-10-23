@@ -30,17 +30,16 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Sampler::DX11Sampler(IDevice* pDevice, const SamplerDesc& info)
+		DX11Sampler::DX11Sampler(IDevice* pDevice, const SamplerDesc* pDesc)
 			: m_Device(nullptr),
 			m_SamplerState(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 			
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,21 +49,11 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11SamplerState* DX11Sampler::GetD3D11SamplerState() const
-		{
-			return m_SamplerState;
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Sampler::SetName(const std::string& name)
 		{
 			m_SamplerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,29 +63,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Sampler::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Sampler::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Sampler::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -105,26 +91,25 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Sampler::Create(const SamplerDesc& info)
+		void DX11Sampler::Create(const SamplerDesc* pDesc)
 		{
 			using namespace System;
 
 			D3D11_SAMPLER_DESC desc = {};
-			desc.AddressU = ReToDX11TextureAdressMode(info.AdressU);
-			desc.AddressV = ReToDX11TextureAdressMode(info.AdressV);
-			desc.AddressW = ReToDX11TextureAdressMode(info.AdressW);
-			desc.ComparisonFunc = ReToDX11ComparisonFunc(info.ComparisonFunc);
-			desc.Filter = ReToDX11Filter(info.FilterMode);
-			desc.MaxAnisotropy = info.MaxAnistropy;
-			desc.MinLOD = info.MinLOD;
-			desc.MaxLOD = info.MaxLOD;
-			desc.MipLODBias = info.MipLODBias;
-			desc.BorderColor[0] = info.BorderColor.R;
-			desc.BorderColor[1] = info.BorderColor.G;
-			desc.BorderColor[2] = info.BorderColor.B;
-			desc.BorderColor[3] = info.BorderColor.A;
+			desc.AddressU = ReToDX11TextureAdressMode(pDesc->AdressU);
+			desc.AddressV = ReToDX11TextureAdressMode(pDesc->AdressV);
+			desc.AddressW = ReToDX11TextureAdressMode(pDesc->AdressW);
+			desc.ComparisonFunc = ReToDX11ComparisonFunc(pDesc->ComparisonFunc);
+			desc.Filter = ReToDX11Filter(pDesc->FilterMode);
+			desc.MaxAnisotropy = pDesc->MaxAnistropy;
+			desc.MinLOD = pDesc->MinLOD;
+			desc.MaxLOD = pDesc->MaxLOD;
+			desc.MipLODBias = pDesc->MipLODBias;
+			desc.BorderColor[0] = pDesc->BorderColor.R;
+			desc.BorderColor[1] = pDesc->BorderColor.G;
+			desc.BorderColor[2] = pDesc->BorderColor.B;
+			desc.BorderColor[3] = pDesc->BorderColor.A;
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
@@ -135,7 +120,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_SamplerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+				m_SamplerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

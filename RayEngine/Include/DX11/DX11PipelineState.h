@@ -23,7 +23,7 @@ failure and or malfunction of any kind.
 #include "..\Graphics\IPipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\DX11\DX11Common.h"
+#include "..\DX11\DX11Shader.h"
 
 namespace RayEngine
 {
@@ -40,44 +40,98 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11PipelineState);
 
 		public:
-			DX11PipelineState(IDevice* pdevice, const PipelineStateDesc& info);
+			DX11PipelineState(IDevice* pdevice, const PipelineStateDesc* pDesc);
 			~DX11PipelineState();
 
-			ID3D11InputLayout* GetD3D11InputLayout() const;
+			inline ID3D11InputLayout* GetD3D11InputLayout() const
+			{
+				return m_InputLayout;
+			}
 			
-			ID3D11RasterizerState* GetD3D11RasterizerState() const;
+			inline ID3D11RasterizerState* GetD3D11RasterizerState() const
+			{
+				return m_RasterizerState;
+			}
 			
-			ID3D11DepthStencilState* GetD3D11DepthStencilState() const;
+			inline ID3D11DepthStencilState* GetD3D11DepthStencilState() const
+			{
+				return m_DepthStencilState;
+			}
 			
-			ID3D11BlendState* GetD3D11BlendState() const;
+			inline ID3D11BlendState* GetD3D11BlendState() const
+			{
+				return m_BlendState;
+			}
 			
-			const float* GetBlendFactor() const;
+			inline const float* GetBlendFactor() const
+			{
+				return m_BlendFactor;
+			}
 			
-			uint8 GetSampleMask() const;
+			inline uint8 GetSampleMask() const
+			{
+				return m_SampleMask;
+			}
 			
-			ID3D11VertexShader* GetD3D11VertexShader() const;
+			inline ID3D11VertexShader* GetD3D11VertexShader() const
+			{
+				return (m_VS == nullptr) ? nullptr : m_VS->GetD3D11Shader<ID3D11VertexShader>();
+			}
 			
-			ID3D11HullShader* GetD3D11HullShader() const;
+			inline ID3D11HullShader* GetD3D11HullShader() const
+			{
+				return (m_HS == nullptr) ? nullptr : m_HS->GetD3D11Shader<ID3D11HullShader>();
+			}
 			
-			ID3D11DomainShader* GetD3D11DomainShader() const;
+			inline ID3D11DomainShader* GetD3D11DomainShader() const
+			{
+				return (m_DS == nullptr) ? nullptr : m_DS->GetD3D11Shader<ID3D11DomainShader>();
+			}
 			
-			ID3D11GeometryShader* GetD3D11GeometryShader() const;
+			inline ID3D11GeometryShader* GetD3D11GeometryShader() const
+			{
+				return (m_GS == nullptr) ? nullptr : m_GS->GetD3D11Shader<ID3D11GeometryShader>();
+			}
 			
-			ID3D11PixelShader* GetD3D11PixelShader() const;
+			inline ID3D11PixelShader* GetD3D11PixelShader() const
+			{
+				return (m_PS == nullptr) ? nullptr : m_PS->GetD3D11Shader<ID3D11PixelShader>();
+			}
 			
-			ID3D11ComputeShader* GetD3D11ComputeShader() const;
+			inline ID3D11ComputeShader* GetD3D11ComputeShader() const
+			{
+				return (m_CS == nullptr) ? nullptr : m_CS->GetD3D11Shader<ID3D11ComputeShader>();
+			}
 			
-			DX11Shader* GetDX11VertexShader() const;
+			inline DX11Shader* GetDX11VertexShader() const
+			{
+				return m_VS;
+			}
 			
-			DX11Shader* GetDX11HullShader() const;
+			inline DX11Shader* GetDX11HullShader() const
+			{
+				return m_HS;
+			}
 			
-			DX11Shader* GetDX11DomainShader() const;
+			inline DX11Shader* GetDX11DomainShader() const
+			{
+				return m_DS;
+			}
 			
-			DX11Shader* GetDX11GeometryShader() const;
+			inline DX11Shader* GetDX11GeometryShader() const
+			{
+				return m_GS;
+			}
 			
-			DX11Shader* GetDX11PixelShader() const;
-			
-			DX11Shader* GetDX11ComputeShader() const;
+			inline DX11Shader* GetDX11PixelShader() const
+			{
+				return m_PS;
+			}
+
+			inline DX11Shader* GetDX11ComputeShader() const
+			{
+				return m_CS;
+			}
 
 			PIPELINE_TYPE GetPipelineType() const override final;
 
@@ -94,23 +148,22 @@ namespace RayEngine
 		private:
 			void ReleaseInterfaces();
 			
-			void Create(const PipelineStateDesc& info);
+			void Create(const PipelineStateDesc* pDesc);
 			
-			void CreateGraphicsState(const PipelineStateDesc& info);
+			void CreateGraphicsState(const PipelineStateDesc* pDesc);
 			
-			void CreateComputeState(const PipelineStateDesc& info);
+			void CreateComputeState(const PipelineStateDesc* pDesc);
 			
-			void CreateInputLayout(const PipelineStateDesc& info);
+			void CreateInputLayout(const PipelineStateDesc* pDesc);
 			
-			void CreateRasterizerState(const PipelineStateDesc& info);
+			void CreateRasterizerState(const PipelineStateDesc* pDesc);
 			
-			void CreateDepthStencilState(const PipelineStateDesc& info);
+			void CreateDepthStencilState(const PipelineStateDesc* pDesc);
 			
-			void CreateBlendState(const PipelineStateDesc& info);
-
+			void CreateBlendState(const PipelineStateDesc* pDesc);
 
 		private:
-			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC& desc, const InputElementDesc& info);
+			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC* desc, const InputElementDesc* info);
 
 		private:
 			DX11Device* m_Device;
@@ -131,7 +184,7 @@ namespace RayEngine
 			
 			PIPELINE_TYPE m_Type;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

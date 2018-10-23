@@ -49,13 +49,25 @@ namespace RayEngine
 			DX12DeviceContext(IDevice* pDevice, bool isDeffered);
 			~DX12DeviceContext();
 
-			ID3D12Fence* GetD3D12Fence() const;
-			
-			ID3D12CommandQueue* GetD3D12CommandQueue() const;
-			
-			DX12CommandList* GetDX12List() const;
-			
-			DX12CommandList* GetDX12ComputeList() const;
+			inline ID3D12Fence* GetD3D12Fence() const
+			{
+				return m_Fence;
+			}
+
+			inline ID3D12CommandQueue* GetD3D12CommandQueue() const
+			{
+				return m_Queue;
+			}
+
+			inline DX12CommandList* GetDX12List() const
+			{
+				return m_List;
+			}
+
+			inline DX12CommandList* GetDX12ComputeList() const
+			{
+				return m_ComputeList;
+			}
 
 			void CopyResource(DX12Resource* pDst, DX12Resource* pSrc) const;
 			
@@ -125,7 +137,6 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
-
 		private:
 			void Create(bool isDeffered);
 			
@@ -137,13 +148,12 @@ namespace RayEngine
 
 			D3D12_RESOURCE_BARRIER CreateTransitionBarrier(DX12Resource* pResource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
 
-
 		private:
 			DX12Device* m_Device;
 			mutable DX12RootLayout* m_CurrentRootLayout;
-			ID3D12CommandQueue* m_Queue;
 			DX12CommandList* m_List;
 			DX12CommandList* m_ComputeList;
+			ID3D12CommandQueue* m_Queue;
 			ID3D12Fence* m_Fence;
 			
 			bool m_IsDeffered;
@@ -154,7 +164,7 @@ namespace RayEngine
 			
 			mutable std::vector<D3D12_RESOURCE_BARRIER> m_DefferedBarriers;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

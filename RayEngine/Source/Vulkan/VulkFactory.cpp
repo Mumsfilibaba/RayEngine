@@ -39,13 +39,12 @@ namespace RayEngine
 		VulkFactory::VulkFactory(bool debugLayers)
 			: m_Instance(nullptr),
 			m_DbgCallback(0),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 
 			Create(debugLayers);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,15 +62,6 @@ namespace RayEngine
 				m_Instance = nullptr;
 			}
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkInstance VulkFactory::GetVkInstance() const
-		{
-			return m_Instance;
-		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +160,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkFactory::EnumerateAdapters(AdapterList& list) const
 		{
@@ -223,7 +212,7 @@ namespace RayEngine
 				int32 highestQueueSupport = 0;
 				for (int32 j = 0; j < static_cast<int32>(queueFamilies.size()); j++)
 				{
-					CheckQueueFamilySupport(devices[i], queueFamilies[j], queueSupport);
+					CheckQueueFamilySupport(&devices[i], &queueFamilies[j], &queueSupport);
 
 					if (queueSupport > highestQueueSupport)
 						highestQueueSupport = queueSupport;
@@ -232,22 +221,20 @@ namespace RayEngine
 				supportFlags |= highestQueueSupport;
 
 
-				FillAdapterInfo(list[i], features, properties, i, supportFlags);
+				FillAdapterDesc(&list[i], &features, &properties, i, supportFlags);
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
+		bool VulkFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc)
 		{
-			return ((*ppDevice) = new VulkDevice(this, deviceInfo)) != nullptr;
+			return ((*ppDevice) = new VulkDevice(this, pDesc)) != nullptr;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
+		bool VulkFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc)
 		{
 			*ppSwapchain = nullptr;
 
@@ -256,20 +243,18 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
+		bool VulkFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{	
-			VulkDevice* pVulkDevice = new VulkDevice(this, deviceInfo);
+			VulkDevice* pVulkDevice = new VulkDevice(this, pDeviceDesc);
 			(*ppDevice) = pVulkDevice;
 			
-			VulkSwapchain* pVulkSwapchain = new VulkSwapchain(this, pVulkDevice, swapchainInfo);
+			VulkSwapchain* pVulkSwapchain = new VulkSwapchain(this, pVulkDevice, pSwapchainDesc);
 			(*ppSwapchain) = pVulkSwapchain;
 
 			return pVulkSwapchain != nullptr;
 		}
 		
-
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkFactory::SetName(const std::string& name)
@@ -278,42 +263,37 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GRAPHICS_API VulkFactory::GetGraphicsApi() const
 		{
 			return GRAPHICS_API_VULKAN;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkFactory::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkFactory::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkFactory::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -401,7 +381,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkFactory::DeviceExtensionsSupported(VkPhysicalDevice& adapter, const char * const * neededExtensions, int32 count)
+		bool VulkFactory::DeviceExtensionsSupported(VkPhysicalDevice adapter, const char * const * neededExtensions, int32 count)
 		{
 			uint32 extensionCount = 0;
 			VkResult result = vkEnumerateDeviceExtensionProperties(adapter, nullptr, &extensionCount, nullptr);
@@ -440,55 +420,52 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkFactory::FillAdapterInfo(AdapterDesc& info, VkPhysicalDeviceFeatures& features, 
-			VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags)
+		void VulkFactory::FillAdapterDesc(AdapterDesc* pDesc, VkPhysicalDeviceFeatures* pFeatures, VkPhysicalDeviceProperties* pProperties, int32 id, int32 supportFlags)
 		{
-			info.ApiID = id;
-			info.VendorID = properties.vendorID;
-			info.DeviceID = properties.deviceID;
+			pDesc->ApiID = id;
+			pDesc->VendorID = pProperties->vendorID;
+			pDesc->DeviceID = pProperties->deviceID;
 
 
-			info.ModelName = properties.deviceName;
-			info.VendorName = AdapterDesc::GetVendorString(properties.vendorID);
+			pDesc->ModelName = pProperties->deviceName;
+			pDesc->VendorName = AdapterDesc::GetVendorString(pProperties->vendorID);
 
 
-			if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
+			if (pProperties->deviceType == VK_PHYSICAL_DEVICE_TYPE_CPU)
 				supportFlags |= ADAPTER_FLAGS_SOFTWARE;
 
-			if (features.geometryShader)
+			if (pFeatures->geometryShader)
 				supportFlags |= ADAPTER_FLAGS_GEOMETRYSHADER;
-			if (features.tessellationShader)
+			if (pFeatures->tessellationShader)
 				supportFlags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
 
 
-			info.Limits.Texture1D.Width = properties.limits.maxImageDimension1D;
+			pDesc->Limits.Texture1D.Width = pProperties->limits.maxImageDimension1D;
 
-			info.Limits.Texture2D.Width = properties.limits.maxImageDimension2D;
-			info.Limits.Texture2D.Height = properties.limits.maxImageDimension2D;
+			pDesc->Limits.Texture2D.Width = pProperties->limits.maxImageDimension2D;
+			pDesc->Limits.Texture2D.Height = pProperties->limits.maxImageDimension2D;
 
-			info.Limits.Texture3D.Width = properties.limits.maxImageDimension3D;
-			info.Limits.Texture3D.Height = properties.limits.maxImageDimension3D;
-			info.Limits.Texture3D.Depth = properties.limits.maxImageDimension3D;
+			pDesc->Limits.Texture3D.Width = pProperties->limits.maxImageDimension3D;
+			pDesc->Limits.Texture3D.Height = pProperties->limits.maxImageDimension3D;
+			pDesc->Limits.Texture3D.Depth = pProperties->limits.maxImageDimension3D;
 
-			info.Limits.TextureCube.Width = properties.limits.maxImageDimensionCube;
-			info.Limits.TextureCube.Height = properties.limits.maxImageDimensionCube;
+			pDesc->Limits.TextureCube.Width = pProperties->limits.maxImageDimensionCube;
+			pDesc->Limits.TextureCube.Height = pProperties->limits.maxImageDimensionCube;
 
-			info.Limits.RenderTargetCount = properties.limits.maxColorAttachments;
+			pDesc->Limits.RenderTargetCount = pProperties->limits.maxColorAttachments;
 
-			info.Flags = supportFlags;
+			pDesc->Flags = supportFlags;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkFactory::CheckQueueFamilySupport(VkPhysicalDevice& adapter, VkQueueFamilyProperties& queuefamily, int32& supportFlags)
+		void VulkFactory::CheckQueueFamilySupport(VkPhysicalDevice* pAdapter, VkQueueFamilyProperties* pQueuefamily, int32* pSupportFlags)
 		{
-			if (queuefamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-				supportFlags |= ADAPTER_FLAGS_GRAPHICS;
-			if (queuefamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
-				supportFlags |= ADAPTER_FLAGS_COMPUTE;
+			if (pQueuefamily->queueFlags & VK_QUEUE_GRAPHICS_BIT)
+				*pSupportFlags |= ADAPTER_FLAGS_GRAPHICS;
+			if (pQueuefamily->queueFlags & VK_QUEUE_COMPUTE_BIT)
+				*pSupportFlags |= ADAPTER_FLAGS_COMPUTE;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

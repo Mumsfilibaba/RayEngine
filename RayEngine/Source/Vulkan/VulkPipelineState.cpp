@@ -29,20 +29,19 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkPipelineState::VulkPipelineState(IDevice* pDevice, const PipelineStateDesc& info)
+		VulkPipelineState::VulkPipelineState(IDevice* pDevice, const PipelineStateDesc* pDesc)
 			: m_Device(nullptr),
 			m_RootLayout(nullptr),
 			m_RenderPass(VK_NULL_HANDLE),
 			m_Pipeline(VK_NULL_HANDLE),
 			m_Type(PIPELINE_TYPE_UNKNOWN),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = pDevice->QueryReference<VulkDevice>();
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,34 +66,17 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkPipeline VulkPipelineState::GetVkPipeline() const
-		{
-			return m_Pipeline;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkRenderPass VulkPipelineState::GetVkRenderPass() const
-		{
-			return m_RenderPass;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		PIPELINE_TYPE VulkPipelineState::GetPipelineType() const
 		{
 			return m_Type;
 		}
 
 
-
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkPipelineState::SetName(const std::string& name)
 		{
+			// not relvant yet
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,138 +86,132 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkPipelineState::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkPipelineState::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkPipelineState::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void VulkPipelineState::Create(const PipelineStateDesc* pDesc)
+		{
+			if (pDesc->Type == PIPELINE_TYPE_GRAPHICS)
+				CreateGraphicsPipeline(pDesc);
+			else if (pDesc->Type == PIPELINE_TYPE_COMPUTE)
+				CreateComputePipeline(pDesc);
 		}
 
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::Create(const PipelineStateDesc& info)
+		void VulkPipelineState::SetRasterizerState(VkPipelineRasterizationStateCreateInfo* pInfo, const RasterizerStateDesc* pDesc)
 		{
-			if (info.Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsPipeline(info);
-			else if (info.Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputePipeline(info);
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::SetRasterizerState(VkPipelineRasterizationStateCreateInfo& desc, const RasterizerStateDesc& info)
-		{
-			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-			desc.flags = 0;
-			desc.pNext = nullptr;
+			pInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+			pInfo->flags = 0;
+			pInfo->pNext = nullptr;
 			//TODO: Look up depthclamp
-			desc.depthClampEnable = info.DepthClipEnable ? VK_TRUE : VK_FALSE;
-			desc.rasterizerDiscardEnable = VK_FALSE;
+			pInfo->depthClampEnable = pDesc->DepthClipEnable ? VK_TRUE : VK_FALSE;
+			pInfo->rasterizerDiscardEnable = VK_FALSE;
 			
-			if (info.FillMode == FILL_MODE_SOLID)
-				desc.polygonMode = VK_POLYGON_MODE_FILL;
-			else if (info.FillMode == FILL_MODE_WIREFRAME)
-				desc.polygonMode = VK_POLYGON_MODE_LINE;
+			if (pDesc->FillMode == FILL_MODE_SOLID)
+				pInfo->polygonMode = VK_POLYGON_MODE_FILL;
+			else if (pDesc->FillMode == FILL_MODE_WIREFRAME)
+				pInfo->polygonMode = VK_POLYGON_MODE_LINE;
 
-			if (info.CullMode == CULL_MODE_BACK)
-				desc.cullMode = VK_CULL_MODE_BACK_BIT;
-			else if (info.CullMode == CULL_MODE_FRONT)
-				desc.cullMode = VK_CULL_MODE_FRONT_BIT;
-			else if (info.CullMode == CULL_MODE_NONE)
-				desc.cullMode = VK_CULL_MODE_NONE;
+			if (pDesc->CullMode == CULL_MODE_BACK)
+				pInfo->cullMode = VK_CULL_MODE_BACK_BIT;
+			else if (pDesc->CullMode == CULL_MODE_FRONT)
+				pInfo->cullMode = VK_CULL_MODE_FRONT_BIT;
+			else if (pDesc->CullMode == CULL_MODE_NONE)
+				pInfo->cullMode = VK_CULL_MODE_NONE;
 
 			//TODO: Wider?
-			desc.lineWidth = 1.0f;
+			pInfo->lineWidth = 1.0f;
 
-			desc.frontFace = info.FrontCounterClockwise ? VK_FRONT_FACE_COUNTER_CLOCKWISE : VK_FRONT_FACE_CLOCKWISE;
+			pInfo->frontFace = pDesc->FrontCounterClockwise ? VK_FRONT_FACE_COUNTER_CLOCKWISE : VK_FRONT_FACE_CLOCKWISE;
 			
-			desc.depthBiasEnable = (info.DepthBias > 0);
-			desc.depthBiasClamp = info.DepthBiasClamp;
-			desc.depthBiasSlopeFactor = info.SlopeScaleDepthBias;
-			desc.depthBiasConstantFactor = static_cast<float>(info.DepthBias);
+			pInfo->depthBiasEnable = (pDesc->DepthBias > 0);
+			pInfo->depthBiasClamp = pDesc->DepthBiasClamp;
+			pInfo->depthBiasSlopeFactor = pDesc->SlopeScaleDepthBias;
+			pInfo->depthBiasConstantFactor = static_cast<float>(pDesc->DepthBias);
 		}
 
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo& desc, const DepthStencilStateDesc& info)
+		void VulkPipelineState::SetDepthStencilState(VkPipelineDepthStencilStateCreateInfo* pInfo, const DepthStencilStateDesc* pDesc)
 		{
-			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-			desc.pNext = nullptr;
-			desc.flags = 0;
+			pInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+			pInfo->pNext = nullptr;
+			pInfo->flags = 0;
 
-			desc.depthTestEnable = info.DepthEnable ? VK_TRUE : VK_FALSE;
-			desc.depthWriteEnable = desc.depthTestEnable;
+			pInfo->depthTestEnable = pDesc->DepthEnable ? VK_TRUE : VK_FALSE;
+			pInfo->depthWriteEnable = pInfo->depthTestEnable;
 
-			desc.depthCompareOp = ReToVkCompareOp(info.DepthFunc);
-			desc.depthBoundsTestEnable = VK_FALSE; //Maybe?
+			pInfo->depthCompareOp = ReToVkCompareOp(pDesc->DepthFunc);
+			pInfo->depthBoundsTestEnable = VK_FALSE; //Maybe?
 
-			desc.stencilTestEnable = info.StencilEnable ? VK_TRUE : VK_FALSE;
+			pInfo->stencilTestEnable = pDesc->StencilEnable ? VK_TRUE : VK_FALSE;
 
-			desc.front = ReToVkStencilOpState(info.FrontFace);
-			desc.back = ReToVkStencilOpState(info.BackFace);
+			pInfo->front = ReToVkStencilOpState(pDesc->FrontFace);
+			pInfo->back = ReToVkStencilOpState(pDesc->BackFace);
 			
-			desc.minDepthBounds = 0.0f;
-			desc.maxDepthBounds = 0.0f;
+			pInfo->minDepthBounds = 0.0f;
+			pInfo->maxDepthBounds = 0.0f;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateComputePipeline(const PipelineStateDesc& info)
+		void VulkPipelineState::CreateComputePipeline(const PipelineStateDesc* pDesc)
 		{
 			//TODO: Implement ComputeShaders
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateGraphicsPipeline(const PipelineStateDesc& info)
+		void VulkPipelineState::CreateGraphicsPipeline(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
 			std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
-			if (info.GraphicsPipeline.pVertexShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(info.GraphicsPipeline.pVertexShader));
+			if (pDesc->GraphicsPipeline.pVertexShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(pDesc->GraphicsPipeline.pVertexShader));
 
-			if (info.GraphicsPipeline.pHullShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(info.GraphicsPipeline.pHullShader));
+			if (pDesc->GraphicsPipeline.pHullShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(pDesc->GraphicsPipeline.pHullShader));
 
-			if (info.GraphicsPipeline.pDomainShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(info.GraphicsPipeline.pDomainShader));
+			if (pDesc->GraphicsPipeline.pDomainShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(pDesc->GraphicsPipeline.pDomainShader));
 
-			if (info.GraphicsPipeline.pGeometryShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(info.GraphicsPipeline.pGeometryShader));
+			if (pDesc->GraphicsPipeline.pGeometryShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(pDesc->GraphicsPipeline.pGeometryShader));
 
-			if (info.GraphicsPipeline.pPixelShader!= nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(info.GraphicsPipeline.pPixelShader));
+			if (pDesc->GraphicsPipeline.pPixelShader!= nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(pDesc->GraphicsPipeline.pPixelShader));
 
 
 
-			int32 elementCount = info.GraphicsPipeline.InputLayout.ElementCount;
+			int32 elementCount = pDesc->GraphicsPipeline.InputLayout.ElementCount;
 			std::vector<VkVertexInputBindingDescription> vertexBindings;
 			vertexBindings.resize(elementCount);
 			
@@ -244,7 +220,7 @@ namespace RayEngine
 
 			for (int32 i = 0; i < elementCount; i++)
 			{
-				VkInputElement element = CreateVkInputElement(info.GraphicsPipeline.InputLayout.pElements[i], i);
+				VkInputElement element = CreateVkInputElement(&pDesc->GraphicsPipeline.InputLayout.pElements[i], i);
 
 				vertexAttributes[i] = element.first;
 				vertexBindings[i] = element.second;
@@ -263,7 +239,7 @@ namespace RayEngine
 
 
 			VkPipelineInputAssemblyStateCreateInfo inputAssemblyState = {};
-			CreateInputAssemblyStateInfo(inputAssemblyState, info);
+			CreateInputAssemblyStateInfo(&inputAssemblyState, pDesc);
 
 
 
@@ -295,30 +271,30 @@ namespace RayEngine
 
 
 			std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments;
-			colorBlendAttachments.resize(info.GraphicsPipeline.RenderTargetCount);
+			colorBlendAttachments.resize(pDesc->GraphicsPipeline.RenderTargetCount);
 
-			for (int32 i = 0; i < info.GraphicsPipeline.RenderTargetCount; i++)
-				SetColorBlendAttachmentState(colorBlendAttachments[i], info.GraphicsPipeline.BlendState.RenderTargets[i]);
+			for (int32 i = 0; i < pDesc->GraphicsPipeline.RenderTargetCount; i++)
+				SetColorBlendAttachmentState(&colorBlendAttachments[i], &pDesc->GraphicsPipeline.BlendState.RenderTargets[i]);
 
 			VkPipelineColorBlendStateCreateInfo blendState = {};
 			blendState.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 			blendState.pNext = nullptr;
 			blendState.flags = 0;
 
-			blendState.logicOpEnable = info.GraphicsPipeline.BlendState.LogicOpEnable ? VK_TRUE : VK_FALSE;
+			blendState.logicOpEnable = pDesc->GraphicsPipeline.BlendState.LogicOpEnable ? VK_TRUE : VK_FALSE;
 			blendState.logicOp = VK_LOGIC_OP_NO_OP;
-			blendState.attachmentCount = info.GraphicsPipeline.RenderTargetCount;
+			blendState.attachmentCount = pDesc->GraphicsPipeline.RenderTargetCount;
 			blendState.pAttachments = colorBlendAttachments.data();
 
-			blendState.blendConstants[0] = info.GraphicsPipeline.BlendState.BlendFactor[0];
-			blendState.blendConstants[1] = info.GraphicsPipeline.BlendState.BlendFactor[1];
-			blendState.blendConstants[2] = info.GraphicsPipeline.BlendState.BlendFactor[2];
-			blendState.blendConstants[3] = info.GraphicsPipeline.BlendState.BlendFactor[3];
+			blendState.blendConstants[0] = pDesc->GraphicsPipeline.BlendState.BlendFactor[0];
+			blendState.blendConstants[1] = pDesc->GraphicsPipeline.BlendState.BlendFactor[1];
+			blendState.blendConstants[2] = pDesc->GraphicsPipeline.BlendState.BlendFactor[2];
+			blendState.blendConstants[3] = pDesc->GraphicsPipeline.BlendState.BlendFactor[3];
 
 
 
 			VkPipelineRasterizationStateCreateInfo rasterizerState = {};
-			SetRasterizerState(rasterizerState, info.GraphicsPipeline.RasterizerState);
+			SetRasterizerState(&rasterizerState, &pDesc->GraphicsPipeline.RasterizerState);
 
 
 
@@ -337,15 +313,15 @@ namespace RayEngine
 			multisamplingState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 			VkSampleMask sampleMask = 0xFFFFFFFF;
 			multisamplingState.pSampleMask = &sampleMask;
-			//multisamplingState.rasterizationSamples = ReToVkSampleCount(info.GraphicsPipeline.SampleCount);
+			//multisamplingState.rasterizationSamples = ReToVkSampleCount(pDesc->GraphicsPipeline.SampleCount);
 
 
 			
 			VkPipelineDepthStencilStateCreateInfo depthStencilState = {};
-			SetDepthStencilState(depthStencilState, info.GraphicsPipeline.DepthStencilState);
+			SetDepthStencilState(&depthStencilState, &pDesc->GraphicsPipeline.DepthStencilState);
 
 
-			if (!CreateRenderPass(info))
+			if (!CreateRenderPass(pDesc))
 				return;
 
 
@@ -368,7 +344,7 @@ namespace RayEngine
 			desc.pColorBlendState = &blendState;
 			desc.pDynamicState = &dynamicState;
 
-			m_RootLayout = info.pRootLayout->QueryReference<VulkRootLayout>();
+			m_RootLayout = pDesc->pRootLayout->QueryReference<VulkRootLayout>();
 			VkPipelineLayout vkLayout = m_RootLayout->GetVkPipelineLayout();
 			desc.layout = vkLayout;
 
@@ -389,24 +365,23 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkPipelineState::CreateRenderPass(const PipelineStateDesc& info)
+		bool VulkPipelineState::CreateRenderPass(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
 			std::vector<VkAttachmentDescription> attachments;
-			attachments.resize(info.GraphicsPipeline.RenderTargetCount);
+			attachments.resize(pDesc->GraphicsPipeline.RenderTargetCount);
 
 			std::vector<VkAttachmentReference> attachmentsRefs;
-			attachmentsRefs.resize(info.GraphicsPipeline.RenderTargetCount);
+			attachmentsRefs.resize(pDesc->GraphicsPipeline.RenderTargetCount);
 
-			for (int32 i = 0; i < info.GraphicsPipeline.RenderTargetCount; i++)
+			for (int32 i = 0; i < pDesc->GraphicsPipeline.RenderTargetCount; i++)
 			{
 				VkAttachmentDescription& desc = attachments[i];
-				desc.format = ReToVkFormat(info.GraphicsPipeline.RenderTargetFormats[i]);
+				desc.format = ReToVkFormat(pDesc->GraphicsPipeline.RenderTargetFormats[i]);
 
-				desc.samples = ReToVkSampleCount(info.GraphicsPipeline.SampleCount);
+				desc.samples = ReToVkSampleCount(pDesc->GraphicsPipeline.SampleCount);
 
 				//TODO: Fix operation based on if it is a color or depth/stencil attachment
 				desc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -424,11 +399,11 @@ namespace RayEngine
 
 
 
-			if (info.GraphicsPipeline.DepthStencilFormat != FORMAT_UNKNOWN)
+			if (pDesc->GraphicsPipeline.DepthStencilFormat != FORMAT_UNKNOWN)
 			{
 				VkAttachmentDescription attachment = {};
-				attachment.format = ReToVkFormat(info.GraphicsPipeline.DepthStencilFormat);
-				attachment.samples = ReToVkSampleCount(info.GraphicsPipeline.SampleCount);
+				attachment.format = ReToVkFormat(pDesc->GraphicsPipeline.DepthStencilFormat);
+				attachment.samples = ReToVkSampleCount(pDesc->GraphicsPipeline.SampleCount);
 
 				//TODO: Fix operation based on if it is a color or depth/stencil attachment
 				attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -519,23 +494,23 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkInputElement VulkPipelineState::CreateVkInputElement(const InputElementDesc& info, int32 location)
+		VkInputElement VulkPipelineState::CreateVkInputElement(const InputElementDesc* pDesc, int32 location)
 		{
 			VkVertexInputBindingDescription binding = {};
-			binding.stride = info.StrideBytes;
-			binding.binding = info.InputSlot;
+			binding.stride = pDesc->StrideBytes;
+			binding.binding = pDesc->InputSlot;
 
-			if (info.StepType == ELEMENT_STEP_TYPE_VERTEX)
+			if (pDesc->StepType == ELEMENT_STEP_TYPE_VERTEX)
 				binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-			else if (info.StepType == ELEMENT_STEP_TYPE_INSTANCE)
+			else if (pDesc->StepType == ELEMENT_STEP_TYPE_INSTANCE)
 				binding.inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
 
 
 			VkVertexInputAttributeDescription attribute = {};
 			attribute.binding = binding.binding;
-			attribute.format = ReToVkFormat(info.Format);
+			attribute.format = ReToVkFormat(pDesc->Format);
 			attribute.location = location;
-			attribute.offset = info.ElementOffset;
+			attribute.offset = pDesc->ElementOffset;
 
 
 			VkInputElement element;
@@ -547,36 +522,36 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo& desc, const PipelineStateDesc& info)
+		void VulkPipelineState::CreateInputAssemblyStateInfo(VkPipelineInputAssemblyStateCreateInfo* pInfo, const PipelineStateDesc* pDesc)
 		{
-			desc.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-			desc.pNext = nullptr;
-			desc.flags = 0;
-			desc.topology = ReToVkPrimitiveTopology(info.GraphicsPipeline.Topology);
-			desc.primitiveRestartEnable = VK_FALSE;
+			pInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+			pInfo->pNext = nullptr;
+			pInfo->flags = 0;
+			pInfo->topology = ReToVkPrimitiveTopology(pDesc->GraphicsPipeline.Topology);
+			pInfo->primitiveRestartEnable = VK_FALSE;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState& desc, const RenderTargetBlendDesc& info)
+		void VulkPipelineState::SetColorBlendAttachmentState(VkPipelineColorBlendAttachmentState* pInfo, const RenderTargetBlendDesc* pDesc)
 		{
-			desc.blendEnable = info.BlendEnable ? VK_TRUE : VK_FALSE;
+			pInfo->blendEnable = pDesc->BlendEnable ? VK_TRUE : VK_FALSE;
 
-			if (info.WriteMask & COLOR_WRITE_ENABLE_RED)
-				desc.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
-			if (info.WriteMask & COLOR_WRITE_ENABLE_GREEN)
-				desc.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
-			if (info.WriteMask & COLOR_WRITE_ENABLE_BLUE)
-				desc.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
-			if (info.WriteMask & COLOR_WRITE_ENABLE_ALPHA)
-				desc.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
+			if (pDesc->WriteMask & COLOR_WRITE_ENABLE_RED)
+				pInfo->colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
+			if (pDesc->WriteMask & COLOR_WRITE_ENABLE_GREEN)
+				pInfo->colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
+			if (pDesc->WriteMask & COLOR_WRITE_ENABLE_BLUE)
+				pInfo->colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
+			if (pDesc->WriteMask & COLOR_WRITE_ENABLE_ALPHA)
+				pInfo->colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
 
-			desc.srcColorBlendFactor = ReToVkBlendFactor(info.SrcBlend);
-			desc.dstColorBlendFactor = ReToVkBlendFactor(info.DstBlend); 
-			desc.colorBlendOp = ReToVkBlendOp(info.BlendOperation);
-			desc.srcAlphaBlendFactor = ReToVkBlendFactor(info.SrcAlphaBlend);
-			desc.dstAlphaBlendFactor = ReToVkBlendFactor(info.DstAlphaBlend);
-			desc.alphaBlendOp = ReToVkBlendOp(info.AlphaBlendOperation);
+			pInfo->srcColorBlendFactor = ReToVkBlendFactor(pDesc->SrcBlend);
+			pInfo->dstColorBlendFactor = ReToVkBlendFactor(pDesc->DstBlend); 
+			pInfo->colorBlendOp = ReToVkBlendOp(pDesc->BlendOperation);
+			pInfo->srcAlphaBlendFactor = ReToVkBlendFactor(pDesc->SrcAlphaBlend);
+			pInfo->dstAlphaBlendFactor = ReToVkBlendFactor(pDesc->DstAlphaBlend);
+			pInfo->alphaBlendOp = ReToVkBlendOp(pDesc->AlphaBlendOperation);
 		}
 	}
 }

@@ -35,15 +35,18 @@ namespace RayEngine
 			VulkFactory(bool debugLayers);
 			~VulkFactory();
 
-			VkInstance GetVkInstance() const;
+			inline VkInstance GetVkInstance() const
+			{
+				return m_Instance;
+			}
 
 			void EnumerateAdapters(AdapterList& list) const override final;
 			
-			bool CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo) override final;
+			bool CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc) override final;
 			
-			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo) override final;
+			bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc) override final;
 			
-			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo) override final;
+			bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc) override final;
 
 			void SetName(const std::string& name) override final;
 			
@@ -62,18 +65,18 @@ namespace RayEngine
 			VkInstance m_Instance;
 			VkDebugReportCallbackEXT m_DbgCallback;
 		
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 
 		public:
 			static bool InstanceLayersSupported(const char* const * ppNeededLayers, int32 count);
 			
 			static bool InstanceExtensionsSupported(const char* const * ppNeededExtensions, int32 count);
 			
-			static bool DeviceExtensionsSupported(VkPhysicalDevice& adapter, const char* const * ppNeededExtensions, int32 count);
+			static bool DeviceExtensionsSupported(VkPhysicalDevice adapter, const char* const * ppNeededExtensions, int32 count);
 			
-			static void FillAdapterInfo(AdapterDesc& info, VkPhysicalDeviceFeatures& features, VkPhysicalDeviceProperties& properties, int32 id, int32 supportFlags);
+			static void FillAdapterDesc(AdapterDesc* pDesc, VkPhysicalDeviceFeatures* pFeatures, VkPhysicalDeviceProperties* pProperties, int32 id, int32 supportFlags);
 			
-			static void CheckQueueFamilySupport(VkPhysicalDevice& adapter, VkQueueFamilyProperties& queuefamily, int32& supportFlags);
+			static void CheckQueueFamilySupport(VkPhysicalDevice* pAdapter, VkQueueFamilyProperties* pQueuefamily, int32* pSupportFlags);
 
 		private:
 			static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, 

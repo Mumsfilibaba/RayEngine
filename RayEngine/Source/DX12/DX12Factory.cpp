@@ -33,31 +33,21 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Factory::DX12Factory(bool debugLayer)
-			: mFactory(nullptr),
+			: m_Factory(nullptr),
 			m_DebugController(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			Create(debugLayer);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Factory::~DX12Factory()
 		{
-			D3DRelease_S(mFactory);
+			D3DRelease_S(m_Factory);
 			D3DRelease_S(m_DebugController);
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IDXGIFactory5* DX12Factory::GetDXGIFactory() const
-		{
-			return mFactory;
-		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +59,7 @@ namespace RayEngine
 			ComPtr<IDXGIAdapter1> adapter;
 			ComPtr<ID3D12Device> dummyDevice;
 
-			for (uint32 i = 0; mFactory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
+			for (uint32 i = 0; m_Factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
 			{
 				DXGI_ADAPTER_DESC1 desc = {};
 				if (SUCCEEDED(adapter->GetDesc1(&desc)))
@@ -79,7 +69,7 @@ namespace RayEngine
 						adapterInfos.push_back(AdapterDesc());
 						int32 index = static_cast<int32>(adapterInfos.size() - 1);
 
-						FillAdapterInfo(index, adapterInfos[index], desc);
+						FillAdapterDesc(index, &adapterInfos[index], &desc);
 					}
 				}
 			}
@@ -91,28 +81,25 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
+		bool DX12Factory::CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc)
 		{
-			return ((*ppDevice) = new DX12Device(this, deviceInfo, m_DebugController != nullptr)) != nullptr;
+			return ((*ppDevice) = new DX12Device(this, pDesc, m_DebugController != nullptr)) != nullptr;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
+		bool DX12Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc)
 		{
-			return ((*ppSwapchain) = new DX12Swapchain(this, pDevice, swapchainInfo)) != nullptr;
+			return ((*ppSwapchain) = new DX12Swapchain(this, pDevice, pDesc)) != nullptr;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
+		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{
-			IDevice* pDevice = new DX12Device(this, deviceInfo, m_DebugController != nullptr);
-			ISwapchain* pSwapchain = new DX12Swapchain(this, pDevice, swapchainInfo);
+			IDevice* pDevice = new DX12Device(this, pDeviceDesc, m_DebugController != nullptr);
+			ISwapchain* pSwapchain = new DX12Swapchain(this, pDevice, pSwapchainDesc);
 
 			(*ppDevice) = pDevice;
 			(*ppSwapchain) = pSwapchain;
@@ -121,13 +108,11 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Factory::SetName(const std::string& name)
 		{
-			mFactory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,38 +121,34 @@ namespace RayEngine
 			return GRAPHICS_API_D3D12;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Factory::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Factory::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Factory::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
 
 			return counter;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Factory::Create(bool debugLayer)
@@ -187,55 +168,54 @@ namespace RayEngine
 			}
 
 
-			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&mFactory))))
+			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
 			{
 				return;
 			}
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Factory::FillAdapterInfo(int32 adapterID, AdapterDesc& info, DXGI_ADAPTER_DESC1& desc)
+		void DX12Factory::FillAdapterDesc(int32 adapterID, AdapterDesc* pDesc, DXGI_ADAPTER_DESC1* pDXGIDesc)
 		{
-			info.ApiID = adapterID;
-			info.VendorID = desc.VendorId;
-			info.DeviceID = desc.DeviceId;
+			pDesc->ApiID = adapterID;
+			pDesc->VendorID = pDXGIDesc->VendorId;
+			pDesc->DeviceID = pDXGIDesc->DeviceId;
 
 
-			constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
+			constexpr int32 len = sizeof(pDXGIDesc->Description) / sizeof(WCHAR);
 			char str[len];
-			wcstombs(str, desc.Description, len);
-			info.ModelName = str;
+			wcstombs(str, pDXGIDesc->Description, len);
+			pDesc->ModelName = str;
 
-			info.VendorName = AdapterDesc::GetVendorString(desc.VendorId);
+			pDesc->VendorName = AdapterDesc::GetVendorString(pDXGIDesc->VendorId);
 
 
-			info.Flags |= ADAPTER_FLAGS_SWAPCHAIN;
-			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-				info.Flags |= ADAPTER_FLAGS_SOFTWARE;
+			pDesc->Flags |= ADAPTER_FLAGS_SWAPCHAIN;
+			if (pDXGIDesc->Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+				pDesc->Flags |= ADAPTER_FLAGS_SOFTWARE;
 
 
 			//These are constants for D3D_FEATURE_LEVEL_11_0 the lowest level RayEngine supports
-			info.Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
-			info.Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
-			info.Flags |= ADAPTER_FLAGS_COMPUTE;
-			info.Flags |= ADAPTER_FLAGS_GRAPHICS;
+			pDesc->Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
+			pDesc->Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
+			pDesc->Flags |= ADAPTER_FLAGS_COMPUTE;
+			pDesc->Flags |= ADAPTER_FLAGS_GRAPHICS;
 
 
-			info.Limits.RenderTargetCount = 8;
+			pDesc->Limits.RenderTargetCount = 8;
 
-			info.Limits.Texture1D.Width = 16384;
+			pDesc->Limits.Texture1D.Width = 16384;
 			
-			info.Limits.Texture2D.Width = 16384;
-			info.Limits.Texture2D.Height = 16384;
+			pDesc->Limits.Texture2D.Width = 16384;
+			pDesc->Limits.Texture2D.Height = 16384;
 
-			info.Limits.Texture3D.Width = 2048;
-			info.Limits.Texture3D.Height = 2048;
-			info.Limits.Texture3D.Depth = 2048;
+			pDesc->Limits.Texture3D.Width = 2048;
+			pDesc->Limits.Texture3D.Height = 2048;
+			pDesc->Limits.Texture3D.Depth = 2048;
 
-			info.Limits.TextureCube.Width = 16384;
-			info.Limits.TextureCube.Height = 16384;
+			pDesc->Limits.TextureCube.Width = 16384;
+			pDesc->Limits.TextureCube.Height = 16384;
 		}
 	}
 }

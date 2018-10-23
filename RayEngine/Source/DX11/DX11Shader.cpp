@@ -30,16 +30,16 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderDesc& info)
+		DX11Shader::DX11Shader(IDevice* pDevice, const ShaderDesc* pDesc)
 			: DXShaderBase(),
 			m_Device(nullptr),
 			m_Shader(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
 
 
@@ -79,7 +79,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Shader::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
@@ -87,8 +87,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Shader::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
 
@@ -96,8 +96,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Shader::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -108,17 +108,17 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Shader::Create(const ShaderDesc& info)
+		void DX11Shader::Create(const ShaderDesc* pDesc)
 		{
 			using namespace System;
 
 			int32 flags = 0;
-			if (info.Flags & SHADER_FLAGS_DEBUG)
+			if (pDesc->Flags & SHADER_FLAGS_DEBUG)
 				flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
 
 			std::string errorString;
-			if (!CompileFromString(info.Source, info.EntryPoint, info.Type, flags, errorString))
+			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not compile shader. " + errorString);
 				return;
@@ -181,7 +181,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Shader->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+				m_Shader->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

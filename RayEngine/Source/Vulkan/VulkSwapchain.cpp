@@ -40,22 +40,21 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkSwapchain::VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info)
-			: mFactory(nullptr),
+		VulkSwapchain::VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc)
+			: m_Factory(nullptr),
 			m_Device(nullptr),
 			m_CommandQueue(nullptr),
 			m_Swapchain(0),
 			m_Surface(0),
 			m_Format(),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			mFactory = pFactory->QueryReference<VulkFactory>();
+			m_Factory = pFactory->QueryReference<VulkFactory>();
 			m_Device = pDevice->QueryReference<VulkDevice>();
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,28 +64,10 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkSwapchainKHR VulkSwapchain::GetVkSwapchainKHR() const
-		{
-			return m_Swapchain;
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkSwapchain::Resize(int32 width, int32 height)
 		{
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkSurfaceKHR VulkSwapchain::GetVkSurfaceKHR() const
-		{
-			return m_Surface;
-		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,12 +76,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkSwapchain::SetName(const std::string& name)
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,42 +89,37 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = mFactory->QueryReference<VulkFactory>();
+			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkSwapchain::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkSwapchain::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkSwapchain::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +127,7 @@ namespace RayEngine
 		{
 			if (m_Surface != 0)
 			{
-				VkInstance instance = reinterpret_cast<VulkFactory*>(mFactory)->GetVkInstance();
+				VkInstance instance = reinterpret_cast<VulkFactory*>(m_Factory)->GetVkInstance();
 
 				vkDestroySurfaceKHR(instance, m_Surface, nullptr);
 				m_Surface = 0;
@@ -168,7 +142,7 @@ namespace RayEngine
 			}
 
 
-			ReRelease_S(mFactory);
+			ReRelease_S(m_Factory);
 			ReRelease_S(m_Device);
 			//Release DeviceContext
 
@@ -184,14 +158,13 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkSwapchain::Create(const SwapchainDesc& info)
+		void VulkSwapchain::Create(const SwapchainDesc* pDesc)
 		{
 			using namespace System;
 
-			VkInstance instance = mFactory->GetVkInstance();
-			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, info.WindowHandle);
+			VkInstance instance = m_Factory->GetVkInstance();
+			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, pDesc->WindowHandle);
 			if (result != VK_SUCCESS)
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
@@ -227,21 +200,21 @@ namespace RayEngine
 			}
 
 
-			m_Format = GetSupportedFormat(m_Device, m_Surface, ReToVkFormat(info.BackBuffer.Format));
+			m_Format = GetSupportedFormat(m_Device, m_Surface, ReToVkFormat(pDesc->BackBuffer.Format));
 			if (m_Format.format == VK_FORMAT_UNDEFINED)
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Format is not supported.");
 				return;
 			}
 
-			VkExtent2D size = GetSupportedSize(capabilities, info.Width, info.Height);
+			VkExtent2D size = GetSupportedSize(&capabilities, pDesc->Width, pDesc->Height);
 
 			VkSwapchainCreateInfoKHR scInfo = {};
 			scInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 			scInfo.pNext = nullptr;
 			scInfo.flags = 0;
 			scInfo.oldSwapchain = 0;
-			scInfo.minImageCount = info.BackBuffer.Count;
+			scInfo.minImageCount = pDesc->BackBuffer.Count;
 			scInfo.surface = m_Surface;
 			scInfo.imageFormat = m_Format.format;
 			scInfo.imageColorSpace = m_Format.colorSpace;
@@ -279,23 +252,21 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkExtent2D VulkSwapchain::GetSupportedSize(const VkSurfaceCapabilitiesKHR& capabilities, int32 width, int32 height)
+		VkExtent2D VulkSwapchain::GetSupportedSize(const VkSurfaceCapabilitiesKHR* pCapabilities, int32 width, int32 height)
 		{
-			if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
-				return capabilities.currentExtent;
+			if (pCapabilities->currentExtent.width != std::numeric_limits<uint32_t>::max())
+				return pCapabilities->currentExtent;
 
 			VkExtent2D dimension = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 
-			dimension.width = std::max(capabilities.minImageExtent.width,
-				std::min(capabilities.maxImageExtent.width, dimension.width));
-			dimension.height = std::max(capabilities.minImageExtent.height,
-				std::min(capabilities.maxImageExtent.height, dimension.height));
+			dimension.width = std::max(pCapabilities->minImageExtent.width,
+				std::min(pCapabilities->maxImageExtent.width, dimension.width));
+			dimension.height = std::max(pCapabilities->minImageExtent.height,
+				std::min(pCapabilities->maxImageExtent.height, dimension.height));
 
 			return dimension;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -40,10 +40,13 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11RenderTargetView);
 
 		public:
-			DX11RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc& info);
+			DX11RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc);
 			~DX11RenderTargetView();
 
-			ID3D11RenderTargetView* GetD3D11RenderTargetView() const;
+			inline ID3D11RenderTargetView* GetD3D11RenderTargetView() const
+			{
+				return m_View;
+			}
 			
 			void SetName(const std::string& name) override final;
 			
@@ -56,13 +59,13 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const RenderTargetViewDesc& info);
+			void Create(const RenderTargetViewDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
 			ID3D11RenderTargetView* m_View;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

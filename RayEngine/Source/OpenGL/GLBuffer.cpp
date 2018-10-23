@@ -6,7 +6,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLBuffer::GLBuffer(IDevice* pDevice, const ResourceData* const pInitialData, const BufferDesc& info)
+		GLBuffer::GLBuffer(IDevice* pDevice, const ResourceData* const pInitialData, const BufferDesc* pDesc)
 			: m_Device(nullptr),
 			m_Buffer(0),
 			m_SizeBytes(0),
@@ -18,7 +18,7 @@ namespace RayEngine
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
 
-			Create(pInitialData, info);
+			Create(pInitialData, pDesc);
 		}
 
 
@@ -105,15 +105,15 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLBuffer::Create(const ResourceData* const pInitialData, const BufferDesc& info)
+		void GLBuffer::Create(const ResourceData* const pInitialData, const BufferDesc* pDesc)
 		{
 			using namespace System;
 
-			uint32 type = BufferUsageToGL(info.Type);
-			uint32 usage = ResourceUsageToGL(info.Usage);
+			uint32 type = BufferUsageToGL(pDesc->Type);
+			uint32 usage = ResourceUsageToGL(pDesc->Usage);
 			uint32 buffer = 0;
-			uint32 cpuAccess = CPUAccessToGL(info.CpuAccess);
-			uint32 sizeBytes = info.Count * info.ByteStride;
+			uint32 cpuAccess = CPUAccessToGL(pDesc->CpuAccess);
+			uint32 sizeBytes = pDesc->Count * pDesc->ByteStride;
 
 			glGenBuffers(1, &buffer);
 			glBindBuffer(type, buffer);
@@ -126,7 +126,7 @@ namespace RayEngine
 
 			int32 size = 0;
 			glGetBufferParameteriv(type, GL_BUFFER_SIZE, &size);
-			if (size < info.ByteStride * info.Count)
+			if (size < pDesc->ByteStride * pDesc->Count)
 			{
 				glBindBuffer(type, 0);
 				

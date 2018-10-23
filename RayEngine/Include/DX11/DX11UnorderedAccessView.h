@@ -33,17 +33,19 @@ namespace RayEngine
 		class DX11Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11UnorderedAccessView final : public IUnorderedAccessView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11UnorderedAccessView);
 
 		public:
-			DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc& info);
+			DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc* pDesc);
 			~DX11UnorderedAccessView();
 
-			ID3D11UnorderedAccessView* GetD3D11UnorderedAccessView() const;
+			inline ID3D11UnorderedAccessView* GetD3D11UnorderedAccessView() const
+			{
+				return m_View;
+			}
 			
 			void SetName(const std::string& name) override final;
 			
@@ -56,13 +58,13 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const UnorderedAccessViewDesc& info);
+			void Create(const UnorderedAccessViewDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
 			ID3D11UnorderedAccessView* m_View;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

@@ -20,40 +20,52 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "DX12DescriptorHandle.h"
+#include "..\Graphics\IResource.h"
+#include "DX12Resource.h"
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12DescriptorHandle.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12Device;
-		class DX12Resource;
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12View
 		{
-		public:
-			DX12View(const DX12View& other) = delete;
-			DX12View& operator=(const DX12View& other) = delete;
-			DX12View(DX12View&& other) = delete;
-			DX12View& operator=(DX12View&& other) = delete;
+			RE_UNIQUE_OBJECT(DX12View);
 
 		protected:
-			DX12View();
-			~DX12View();
+			inline DX12View()
+				: m_Resource(nullptr),
+				m_View()
+			{
+			}
+
+			inline ~DX12View()
+			{
+				IResource* pResource = reinterpret_cast<IResource*>(m_Resource);
+				ReRelease_S(pResource);
+			}
 
 		public:
-			DX12Resource* GetD3D12Resource() const;
+			inline DX12Resource* GetD3D12Resource() const
+			{
+				return m_Resource;
+			}
 
-			DX12DescriptorHandle GetDX12DescriptorHandle() const;
+			inline DX12DescriptorHandle GetDX12DescriptorHandleSRVCBVUAV() const
+			{
+				return m_View;
+			}
 
-			D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const;
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const
+			{
+				return m_View.CpuDescriptor;
+			}
 
-			D3D12_GPU_DESCRIPTOR_HANDLE GetD3D12GpuDescriptorHandle() const;
+			inline D3D12_GPU_DESCRIPTOR_HANDLE GetD3D12GpuDescriptorHandle() const
+			{
+				return m_View.GpuDescriptor;
+			}
 
 		protected:
 			DX12Resource* m_Resource;

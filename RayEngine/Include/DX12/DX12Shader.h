@@ -42,7 +42,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12Shader);
 
 		public:
-			DX12Shader(IDevice* pDevice, const ShaderDesc& info);
+			DX12Shader(IDevice* pDevice, const ShaderDesc* pDesc);
 			~DX12Shader();
 
 			D3D12_SHADER_BYTECODE GetD3D12ByteCode() const;
@@ -60,12 +60,12 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderDesc& info);
+			void Create(const ShaderDesc* pDesc);
 
 		private:
 			DX12Device* m_Device;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

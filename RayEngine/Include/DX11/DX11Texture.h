@@ -40,15 +40,24 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Texture);
 
 		public:
-			DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info);
+			DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc);
 			DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource);
 			~DX11Texture();
 
-			ID3D11Texture1D* GetD3D11Texture1D() const;
+			inline ID3D11Texture1D* GetD3D11Texture1D() const
+			{
+				return m_Texture1D;
+			}
 			
-			ID3D11Texture2D* GetD3D11Texture2D() const;
+			inline ID3D11Texture2D* GetD3D11Texture2D() const
+			{
+				return m_Texture2D;
+			}
 			
-			ID3D11Texture3D* GetD3D11Texture3D() const;
+			inline ID3D11Texture3D* GetD3D11Texture3D() const
+			{
+				return m_Texture3D;
+			}
 
 			void SetName(const std::string& name) override final;
 			
@@ -61,7 +70,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* const pInitialData, const TextureDesc& info);
+			void Create(const ResourceData* const pInitialData, const TextureDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
@@ -74,7 +83,7 @@ namespace RayEngine
 
 			TEXTURE_TYPE m_Type;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

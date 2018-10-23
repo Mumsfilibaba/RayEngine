@@ -36,17 +36,19 @@ namespace RayEngine
 		class DX11ShaderConstantBlock;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11RootLayout : public IRootLayout
 		{
 			RE_IMPLEMENT_INTERFACE(DX11RootLayout);
 
 		public:
-			DX11RootLayout(IDevice* pDevice, const RootLayoutDesc& info);
+			DX11RootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc);
 			~DX11RootLayout();
 
-			IDX11RootVariableSlot* GetDX11VariableSlot(int32 slotSndex) const;
+			inline IDX11RootVariableSlot* GetDX11VariableSlot(int32 slotIndex) const
+			{
+				return m_VariableSlots[slotIndex];
+			}
 
 			void SetName(const std::string& name) override final;
 			
@@ -58,16 +60,14 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
-
 		private:
-			void Create(const RootLayoutDesc& info);
+			void Create(const RootLayoutDesc* pDesc);
 			
-			ID3D11SamplerState* CreateStaticSampler(const StaticSamplerDesc& sampler);
+			ID3D11SamplerState* CreateStaticSampler(const StaticSamplerDesc* pDesc);
 			
-			IDX11RootVariableSlot* CreateVariable(const ShaderVariableDesc& variable);
+			IDX11RootVariableSlot* CreateVariable(const ShaderVariableDesc* pDesc);
 			
-			DX11ShaderConstantBlock* CreateConstantBlock(const ShaderVariableDesc& variable);
-
+			DX11ShaderConstantBlock* CreateConstantBlock(const ShaderVariableDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
@@ -76,7 +76,7 @@ namespace RayEngine
 			std::vector<ID3D11SamplerState*> m_StaticSamplers;
 			std::vector<IDX11RootVariableSlot*> m_VariableSlots;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

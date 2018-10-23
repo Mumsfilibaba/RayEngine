@@ -34,21 +34,29 @@ namespace RayEngine
 		class DX12Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12Buffer final : public IBuffer, public DX12Resource
 		{
 			RE_IMPLEMENT_INTERFACE(DX12Buffer);
 
 		public:
-			DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc& info);
+			DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc* pDesc);
 			~DX12Buffer();
 
-			DX12DescriptorHandle GetDX12DescriptorHandle() const;
-			
-			D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const;
-			
-			D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const;
+			inline DX12DescriptorHandle GetDX12DescriptorHandleSRVCBVUAV() const
+			{
+				return m_Views.SRVCBVUAV;
+			}
+
+			inline D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const
+			{
+				return m_Views.Vertex;
+			}
+
+			inline D3D12_INDEX_BUFFER_VIEW GetD3D12IndexBufferView() const
+			{
+				return m_Views.Index;
+			}
 
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			
@@ -65,9 +73,9 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ResourceData* pInitalData, const BufferDesc& info);
+			void Create(const ResourceData* pInitalData, const BufferDesc* pDesc);
 			
-			void CreateView(const BufferDesc& usage);
+			void CreateView(const BufferDesc* pDesc);
 
 
 		private:
@@ -77,14 +85,14 @@ namespace RayEngine
 			
 			union 
 			{
-				DX12DescriptorHandle ConstantBuffer;
+				DX12DescriptorHandle SRVCBVUAV;
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;
 
 			int32 m_MappedSubresource;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

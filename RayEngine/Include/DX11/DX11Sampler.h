@@ -33,17 +33,19 @@ namespace RayEngine
 		class DX11Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11Sampler final : public ISampler
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Sampler);
 
 		public:
-			DX11Sampler(IDevice* pDevice, const SamplerDesc& info);
+			DX11Sampler(IDevice* pDevice, const SamplerDesc* pDesc);
 			~DX11Sampler();
 
-			ID3D11SamplerState* GetD3D11SamplerState() const;
+			inline ID3D11SamplerState* GetD3D11SamplerState() const
+			{
+				return m_SamplerState;
+			}
 
 			void SetName(const std::string& name) override final;
 			
@@ -56,13 +58,13 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const SamplerDesc& info);
+			void Create(const SamplerDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
 			ID3D11SamplerState* m_SamplerState;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

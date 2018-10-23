@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12RenderTargetView);
 
 		public:
-			DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc& info);
+			DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc);
 			~DX12RenderTargetView();
 
 			void SetName(const std::string& name) override final;
@@ -54,12 +54,12 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const RenderTargetViewDesc& info);
+			void Create(const RenderTargetViewDesc* pDesc);
 
 		private:
 			DX12Device* m_Device;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

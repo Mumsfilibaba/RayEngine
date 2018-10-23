@@ -33,7 +33,6 @@ namespace RayEngine
 		class DX12Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12DynamicUploadHeap final : public DX12Resource, public IDeviceObject
 		{
@@ -43,9 +42,12 @@ namespace RayEngine
 			DX12DynamicUploadHeap(IDevice* pDevice, uint32 alignment, uint32 sizeInBytes);
 			~DX12DynamicUploadHeap();
 
-			void SetData(const void* pData, int32 size);
+			inline ID3D12Heap* GetD3D12Heap() const
+			{
+				return m_Heap;
+			}
 
-			ID3D12Heap* GetD3D12Heap() const;
+			void SetData(const void* pData, int32 size);
 
 			void SetName(const std::string& name) override final;
 			
@@ -66,7 +68,7 @@ namespace RayEngine
 
 			int32 m_SizeInBytes;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

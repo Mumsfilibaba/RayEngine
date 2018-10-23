@@ -33,24 +33,23 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceDesc& deviceInfo)
-			: mFactory(nullptr),
+		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceDesc* pDesc)
+			: m_Factory(nullptr),
 			m_Device(nullptr),
 			m_Adapter(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			mFactory = pFactory->QueryReference<VulkFactory>();
+			m_Factory = pFactory->QueryReference<VulkFactory>();
 
-			Create(deviceInfo);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VulkDevice::~VulkDevice()
 		{
-			ReRelease_S(mFactory);
+			ReRelease_S(m_Factory);
 
 			if (m_Device != nullptr)
 			{
@@ -60,85 +59,74 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderDesc& info)
+		bool VulkDevice::CreateShader(IShader** ppShader, const ShaderDesc* pDesc)
 		{
-			return ((*ppShader = new VulkShader(this, info)));
+			return ((*ppShader = new VulkShader(this, pDesc)));
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info)
+		bool VulkDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc)
 		{
-			return ((*ppView = new VulkRenderTargetView(this, info)));
+			return ((*ppView = new VulkRenderTargetView(this, pDesc)));
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info)
+		bool VulkDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc)
 		{
 			return false;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info)
+		bool VulkDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc)
 		{
 			return false;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info)
+		bool VulkDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc)
 		{
 			return false;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateSampler(ISampler** ppSampler, const SamplerDesc& info)
+		bool VulkDevice::CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc)
 		{
 			return false;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info)
+		bool VulkDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
-			return ((*ppTexture = new VulkTexture(this, pInitialData, info)));
+			return ((*ppTexture = new VulkTexture(this, pInitialData, pDesc)));
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info)
+		bool VulkDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc)
 		{
 			return false;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info)
+		bool VulkDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc)
 		{
-			return ((*ppRootLayout= new VulkRootLayout(this, info)));
+			return ((*ppRootLayout= new VulkRootLayout(this, pDesc)));
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info)
+		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc)
 		{
-			return ((*ppPipelineState = new VulkPipelineState(this, info)));
+			return ((*ppPipelineState = new VulkPipelineState(this, pDesc)));
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,42 +136,37 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkDevice::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = mFactory->QueryReference<VulkFactory>();
+			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDevice::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDevice::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDevice::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,39 +176,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkDevice VulkDevice::GetVkDevice() const
-		{
-			return m_Device;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkPhysicalDevice VulkDevice::GetVkPhysicalDevice() const
-		{
-			return m_Adapter;
-		}
-
-		bool VulkDevice::GetImmediateContext(IDeviceContext ** ppContext)
-		{
-			return false;
-		}
-
-		bool VulkDevice::CreateDefferedContext(IDeviceContext ** ppContext)
+		bool VulkDevice::GetImmediateContext(IDeviceContext** ppContext)
 		{
 			return false;
 		}
 
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		bool VulkDevice::CreateDefferedContext(IDeviceContext** ppContext)
+		{
+			return false;
+		}
+
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkDevice::Create(const DeviceDesc& deviceInfo)
+		void VulkDevice::Create(const DeviceDesc* pDesc)
 		{
 			using namespace System;
 
-			VkInstance instance = mFactory->GetVkInstance();
+			VkInstance instance = m_Factory->GetVkInstance();
 
 			uint32 adapterCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(instance, &adapterCount, nullptr);
@@ -245,7 +215,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Adapter = adapters[deviceInfo.pAdapter->ApiID];
+				m_Adapter = adapters[pDesc->pAdapter->ApiID];
 			}
 
 

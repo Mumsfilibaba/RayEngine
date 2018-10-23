@@ -356,7 +356,6 @@
     <ClCompile Include="Source\DX12\DX12Factory.cpp" />
     <ClCompile Include="Source\DX12\DX12PipelineState.cpp" />
     <ClCompile Include="Source\DX12\DX12RenderTargetView.cpp" />
-    <ClCompile Include="Source\DX12\DX12Resource.cpp" />
     <ClCompile Include="Source\DX12\DX12RootLayout.cpp" />
     <ClCompile Include="Source\DX12\DX12RootVariableSlot.cpp" />
     <ClCompile Include="Source\DX12\DX12Sampler.cpp" />
@@ -365,9 +364,8 @@
     <ClCompile Include="Source\DX12\DX12Swapchain.cpp" />
     <ClCompile Include="Source\DX12\DX12Texture.cpp" />
     <ClCompile Include="Source\DX12\DX12UnorderedAccessView.cpp" />
-    <ClCompile Include="Source\DX12\DX12View.cpp" />
     <ClCompile Include="Source\DXBase\DXShaderBase.cpp" />
-    <ClCompile Include="Source\Graphics\AdapterInfo.cpp" />
+    <ClCompile Include="Source\Graphics\AdapterDesc.cpp" />
     <ClCompile Include="Source\OpenGL\GLBuffer.cpp" />
     <ClCompile Include="Source\OpenGL\GLCommon.cpp" />
     <ClCompile Include="Source\OpenGL\GLDevice.cpp" />

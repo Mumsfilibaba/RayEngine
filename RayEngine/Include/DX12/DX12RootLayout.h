@@ -35,23 +35,34 @@ namespace RayEngine
 		class DX12RootVariableSlot;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12RootLayout : public IRootLayout
 		{
 			RE_IMPLEMENT_INTERFACE(DX12RootLayout);
 
 		public:
-			DX12RootLayout(IDevice* pDevice, const RootLayoutDesc& info);
+			DX12RootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc);
 			~DX12RootLayout();
 
-			ID3D12RootSignature* GetD3D12RootSignature() const;
+			inline ID3D12RootSignature* GetD3D12RootSignature() const
+			{
+				return m_RootSignature;
+			}
 			
-			DX12RootVariableSlot* GetDX12RootVariableSlot(int32 index) const;
+			inline DX12RootVariableSlot* GetDX12RootVariableSlot(int32 index) const
+			{
+				return m_VariableSlots[index];
+			}
+
+			inline DX12RootVariableSlot* const * GetDX12RootVariableSlotArray(int32 index) const
+			{
+				return m_VariableSlots.data();
+			}
 			
-			DX12RootVariableSlot* const * GetDX12RootVariableSlotArray(int32 index) const;
-			
-			int32 GetDX12RootVariableSlotCount() const;
+			inline int32 GetDX12RootVariableSlotCount() const
+			{
+				return static_cast<int32>(m_VariableSlots.size());
+			}
 
 			void SetName(const std::string& name) override final;
 
@@ -65,13 +76,13 @@ namespace RayEngine
 
 
 		private:
-			void Create(const RootLayoutDesc& info);
+			void Create(const RootLayoutDesc* pDesc);
 
-			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariableDesc& variable);
+			D3D12_ROOT_PARAMETER1 CreateVariable(const ShaderVariableDesc* pVariable);
 
-			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSamplerDesc& sampler);
+			D3D12_STATIC_SAMPLER_DESC CreateSampler(const StaticSamplerDesc* pSampler);
 
-			DX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariableDesc& variable, int32 rootSlot, bool placeDescriptorTable);
+			DX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariableDesc* pVariable, int32 rootSlot, bool placeDescriptorTable);
 
 
 		private:
@@ -80,7 +91,7 @@ namespace RayEngine
 
 			std::vector<DX12RootVariableSlot*> m_VariableSlots;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

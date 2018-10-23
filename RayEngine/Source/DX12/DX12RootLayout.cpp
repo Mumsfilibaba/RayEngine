@@ -32,17 +32,16 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12RootLayout::DX12RootLayout(IDevice* pDevice, const RootLayoutDesc& info)
+		DX12RootLayout::DX12RootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc)
 			: m_Device(nullptr),
 			m_RootSignature(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,45 +51,11 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D12RootSignature* DX12RootLayout::GetD3D12RootSignature() const
-		{
-			return m_RootSignature;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12RootVariableSlot* DX12RootLayout::GetDX12RootVariableSlot(int32 index) const
-		{
-			return m_VariableSlots[index];
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12RootVariableSlot* const * DX12RootLayout::GetDX12RootVariableSlotArray(int32 index) const
-		{
-			return m_VariableSlots.data();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		int32 DX12RootLayout::GetDX12RootVariableSlotCount() const
-		{
-			return static_cast<int32>(m_VariableSlots.size());
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12RootLayout::SetName(const std::string& name)
 		{
 			D3D12SetName(m_RootSignature, name);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,40 +65,36 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12RootLayout::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12RootLayout::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
 
 			return counter;
 		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12RootLayout::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12RootLayout::Create(const RootLayoutDesc& info)
+		void DX12RootLayout::Create(const RootLayoutDesc* pDesc)
 		{
 			using namespace System;
 			using namespace Microsoft::WRL;
@@ -152,33 +113,33 @@ namespace RayEngine
 
 
 			std::vector<D3D12_ROOT_PARAMETER1> params;
-			params.resize(info.VariableCount);
+			params.resize(pDesc->VariableCount);
 
 
 			//TODO: Different types
 			//TODO: Multiple Descriptors
 			int32 usedShaders = 0;
-			m_VariableSlots.resize(info.VariableCount);
+			m_VariableSlots.resize(pDesc->VariableCount);
 			
 
-			for (int32 i = 0; i < info.VariableCount; i++)
+			for (int32 i = 0; i < pDesc->VariableCount; i++)
 			{
-				D3D12_ROOT_PARAMETER1 parameter = CreateVariable(info.pVariables[i]);
+				D3D12_ROOT_PARAMETER1 parameter = CreateVariable(&pDesc->pVariables[i]);
 				params[i] = parameter;
 
 				usedShaders |= parameter.ShaderVisibility;
 
-				DX12RootVariableSlot* slot = CreateRootVariableSlot(info.pVariables[i], i, info.pVariables[i].ShaderUsage == SHADER_USAGE_STATIC);
+				DX12RootVariableSlot* slot = CreateRootVariableSlot(&pDesc->pVariables[i], i, pDesc->pVariables[i].ShaderUsage == SHADER_USAGE_STATIC);
 				m_VariableSlots[i] = slot;
 			}
 
 
 			std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers;
-			staticSamplers.resize(info.SamplerCount);
+			staticSamplers.resize(pDesc->SamplerCount);
 
-			for (int32 i = 0; i < info.SamplerCount; i++)
+			for (int32 i = 0; i < pDesc->SamplerCount; i++)
 			{
-				D3D12_STATIC_SAMPLER_DESC sampler = CreateSampler(info.pStaticSamplers[i]);
+				D3D12_STATIC_SAMPLER_DESC sampler = CreateSampler(&pDesc->pStaticSamplers[i]);
 				staticSamplers[i] = sampler;
 			}
 
@@ -188,7 +149,7 @@ namespace RayEngine
 			desc.NumStaticSamplers = static_cast<uint32>(staticSamplers.size());
 			desc.pStaticSamplers = staticSamplers.data();
 
-			if (!(info.Flags & ROOT_LAYOUT_FLAG_DISABLE_INPUT_LAYOUT))
+			if (!(pDesc->Flags & ROOT_LAYOUT_FLAG_DISABLE_INPUT_LAYOUT))
 				desc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 			if (!(usedShaders & D3D12_SHADER_VISIBILITY_VERTEX))
@@ -227,19 +188,19 @@ namespace RayEngine
 			}
 			else
 			{
-				D3D12SetName(m_RootSignature, info.Name);
+				D3D12SetName(m_RootSignature, pDesc->Name);
 			}
 		}
 
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_ROOT_PARAMETER1 DX12RootLayout::CreateVariable(const ShaderVariableDesc& variable)
+		D3D12_ROOT_PARAMETER1 DX12RootLayout::CreateVariable(const ShaderVariableDesc* pVariable)
 		{
 			D3D12_ROOT_PARAMETER1 desc = {};
 			D3D12_DESCRIPTOR_RANGE1 range = {};
 
-			if (variable.Type == VARIABLE_TYPE_SAMPLER || variable.ShaderUsage == SHADER_USAGE_STATIC)
+			if (pVariable->Type == VARIABLE_TYPE_SAMPLER || pVariable->ShaderUsage == SHADER_USAGE_STATIC)
 			{
 				desc.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 
@@ -250,93 +211,91 @@ namespace RayEngine
 				range.Flags = D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC;
 				range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-				range.RegisterSpace = variable.ShaderSpace;
-				range.BaseShaderRegister = variable.ShaderRegister;
+				range.RegisterSpace = pVariable->ShaderSpace;
+				range.BaseShaderRegister = pVariable->ShaderRegister;
 
-				if (variable.Type == VARIABLE_TYPE_UNIFORMBUFFER)
+				if (pVariable->Type == VARIABLE_TYPE_UNIFORMBUFFER)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-				else if (variable.Type == VARIABLE_TYPE_TEXTURE)
+				else if (pVariable->Type == VARIABLE_TYPE_TEXTURE)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-				else if (variable.Type == VARIABLE_TYPE_UNORDERED_ACCESS)
+				else if (pVariable->Type == VARIABLE_TYPE_UNORDERED_ACCESS)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
-				else if (variable.Type == VARIABLE_TYPE_SAMPLER)
+				else if (pVariable->Type == VARIABLE_TYPE_SAMPLER)
 					range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
 
 
 				desc.DescriptorTable.NumDescriptorRanges = 1;
 				desc.DescriptorTable.pDescriptorRanges = &range;
 			}
-			else if (variable.Type != VARIABLE_TYPE_SHADER_CONSTANTS || variable.ShaderUsage == SHADER_USAGE_DYNAMIC)
+			else if (pVariable->Type != VARIABLE_TYPE_SHADER_CONSTANTS || pVariable->ShaderUsage == SHADER_USAGE_DYNAMIC)
 			{
-				if (variable.Type == VARIABLE_TYPE_UNIFORMBUFFER)
+				if (pVariable->Type == VARIABLE_TYPE_UNIFORMBUFFER)
 					desc.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-				else if (variable.Type == VARIABLE_TYPE_TEXTURE)
+				else if (pVariable->Type == VARIABLE_TYPE_TEXTURE)
 					desc.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-				else if (variable.Type == VARIABLE_TYPE_TEXTURE)
+				else if (pVariable->Type == VARIABLE_TYPE_TEXTURE)
 					desc.ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 
-				desc.Descriptor.ShaderRegister = variable.ShaderRegister;
-				desc.Descriptor.RegisterSpace = variable.ShaderSpace;
+				desc.Descriptor.ShaderRegister = pVariable->ShaderRegister;
+				desc.Descriptor.RegisterSpace = pVariable->ShaderSpace;
 				//TODO: Different flags
 				desc.Descriptor.Flags = D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC;
 			}
-			else if (variable.Type == VARIABLE_TYPE_SHADER_CONSTANTS)
+			else if (pVariable->Type == VARIABLE_TYPE_SHADER_CONSTANTS)
 			{
 			}
 
 
-			if (variable.ShaderStage == SHADER_TYPE_VERTEX)
+			if (pVariable->ShaderStage == SHADER_TYPE_VERTEX)
 				desc.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-			else if (variable.ShaderStage == SHADER_TYPE_HULL)
+			else if (pVariable->ShaderStage == SHADER_TYPE_HULL)
 				desc.ShaderVisibility = D3D12_SHADER_VISIBILITY_HULL;
-			else if (variable.ShaderStage == SHADER_TYPE_DOMAIN)
+			else if (pVariable->ShaderStage == SHADER_TYPE_DOMAIN)
 				desc.ShaderVisibility = D3D12_SHADER_VISIBILITY_DOMAIN;
-			else if (variable.ShaderStage == SHADER_TYPE_GEOMETRY)
+			else if (pVariable->ShaderStage == SHADER_TYPE_GEOMETRY)
 				desc.ShaderVisibility = D3D12_SHADER_VISIBILITY_GEOMETRY;
-			else if (variable.ShaderStage == SHADER_TYPE_PIXEL)
+			else if (pVariable->ShaderStage == SHADER_TYPE_PIXEL)
 				desc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-			else if (variable.ShaderStage == SHADER_TYPE_COMPUTE)
+			else if (pVariable->ShaderStage == SHADER_TYPE_COMPUTE)
 				desc.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 			return desc;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		D3D12_STATIC_SAMPLER_DESC DX12RootLayout::CreateSampler(const StaticSamplerDesc& sampler)
+		D3D12_STATIC_SAMPLER_DESC DX12RootLayout::CreateSampler(const StaticSamplerDesc* pSampler)
 		{
 			D3D12_STATIC_SAMPLER_DESC desc = {};
-			desc.AddressU = ReToDX12TextureAdressMode(sampler.AdressU);
-			desc.AddressV = ReToDX12TextureAdressMode(sampler.AdressV);
-			desc.AddressW = ReToDX12TextureAdressMode(sampler.AdressW);
-			desc.ComparisonFunc = ReToDX12ComparisonFunc(sampler.ComparisonFunc);
-			desc.Filter = ReToDX12Filter(sampler.FilterMode);
-			desc.MaxAnisotropy = sampler.MaxAnistropy;
-			desc.MipLODBias = sampler.MipLODBias;
-			desc.MinLOD = sampler.MinLOD;
-			desc.MaxLOD = sampler.MaxLOD;
-			desc.ShaderVisibility = ReShaderTypeToDX12ShaderVisibility(sampler.ShaderStage);
+			desc.AddressU = ReToDX12TextureAdressMode(pSampler->AdressU);
+			desc.AddressV = ReToDX12TextureAdressMode(pSampler->AdressV);
+			desc.AddressW = ReToDX12TextureAdressMode(pSampler->AdressW);
+			desc.ComparisonFunc = ReToDX12ComparisonFunc(pSampler->ComparisonFunc);
+			desc.Filter = ReToDX12Filter(pSampler->FilterMode);
+			desc.MaxAnisotropy = pSampler->MaxAnistropy;
+			desc.MipLODBias = pSampler->MipLODBias;
+			desc.MinLOD = pSampler->MinLOD;
+			desc.MaxLOD = pSampler->MaxLOD;
+			desc.ShaderVisibility = ReShaderTypeToDX12ShaderVisibility(pSampler->ShaderStage);
 
-			if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_TRANSPARENT_BLACK)
+			if (pSampler->BorderColor == STATIC_SAMPLER_BORDER_COLOR_TRANSPARENT_BLACK)
 				desc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-			else if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_BLACK)
+			else if (pSampler->BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_BLACK)
 				desc.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
-			else if (sampler.BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_WHITE)
+			else if (pSampler->BorderColor == STATIC_SAMPLER_BORDER_COLOR_OPAQUE_WHITE)
 				desc.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE;
 
-			desc.RegisterSpace = sampler.ShaderSpace;
-			desc.ShaderRegister = sampler.ShaderRegister;
+			desc.RegisterSpace = pSampler->ShaderSpace;
+			desc.ShaderRegister = pSampler->ShaderRegister;
 
 			return desc;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12RootVariableSlot* DX12RootLayout::CreateRootVariableSlot(const ShaderVariableDesc& variable, int32 rootSlot, bool placeDescriptorTable)
+		DX12RootVariableSlot* DX12RootLayout::CreateRootVariableSlot(const ShaderVariableDesc* pVariable, int32 rootSlot, bool placeDescriptorTable)
 		{
-			if (variable.ShaderStage == SHADER_TYPE_COMPUTE)
+			if (pVariable->ShaderStage == SHADER_TYPE_COMPUTE)
 			{
 				if (placeDescriptorTable)
 					return new DX12ComputeDescriptorRootSlot(D3D12_RESOURCE_STATE_COMMON, rootSlot);

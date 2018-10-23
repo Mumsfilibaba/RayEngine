@@ -32,7 +32,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkRenderTargetView);
 
 		public:
-			VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc& info);
+			VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc);
 			~VulkRenderTargetView();
 
 			void SetName(const std::string& name) override final;
@@ -46,10 +46,10 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const RenderTargetViewDesc& info);
+			void Create(const RenderTargetViewDesc* pDesc);
 
 		private:
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

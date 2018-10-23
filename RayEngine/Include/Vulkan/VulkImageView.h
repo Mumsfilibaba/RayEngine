@@ -29,18 +29,17 @@ namespace RayEngine
 	{
 		class VulkImageView
 		{
-		public:
-			VulkImageView(const VulkImageView& other) = delete;
-			VulkImageView& operator=(const VulkImageView& other) = delete;
-			VulkImageView(VulkImageView&& other) = delete;
-			VulkImageView& operator=(VulkImageView&& other) = delete;
+			RE_UNIQUE_OBJECT(VulkImageView);
 
 		protected:
 			VulkImageView(IDevice* pDevice);
 			~VulkImageView();
 
 		public:
-			VkImageView GetVkImageView() const;
+			inline VkImageView GetVkImageView() const
+			{
+				return m_View;
+			}
 
 		protected:
 			IDevice* m_Device;

@@ -42,8 +42,8 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Device::DX12Device(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
-			: mFactory(nullptr),
+		DX12Device::DX12Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
+			: m_Factory(nullptr),
 			m_Adapter(nullptr),
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
@@ -53,23 +53,22 @@ namespace RayEngine
 			m_DsvHeap(nullptr),
 			m_RtvHeap(nullptr),
 			m_SamplerHeap(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			mFactory = pFactory->QueryReference<DX12Factory>();
+			m_Factory = pFactory->QueryReference<DX12Factory>();
 			
 			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
-			m_UploadHeap->SetName(info.Name + ": Dynamic Upload-Heap");
+			m_UploadHeap->SetName(pDesc->Name + ": Dynamic Upload-Heap");
 
-			Create(pFactory, info, debugLayer);
+			Create(pFactory, pDesc, debugLayer);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Device::~DX12Device()
 		{
-			ReRelease_S(mFactory);
+			ReRelease_S(m_Factory);
 			ReRelease_S(m_DsvHeap);
 			ReRelease_S(m_RtvHeap);
 			ReRelease_S(m_ResourceHeap);
@@ -88,85 +87,74 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateShader(IShader** ppShader, const ShaderDesc& info)
+		bool DX12Device::CreateShader(IShader** ppShader, const ShaderDesc* pDesc)
 		{
-			return ((*ppShader = new DX12Shader(this, info)) != nullptr);
+			return ((*ppShader = new DX12Shader(this, pDesc)) != nullptr);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info)
+		bool DX12Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc)
 		{
-			return ((*ppView = new DX12RenderTargetView(this, info)) != nullptr);
+			return ((*ppView = new DX12RenderTargetView(this, pDesc)) != nullptr);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info)
+		bool DX12Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc)
 		{
-			return (*ppView = new DX12DepthStencilView(this, info));
+			return (*ppView = new DX12DepthStencilView(this, pDesc));
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info)
+		bool DX12Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc)
 		{
-			return ((*ppView = new DX12ShaderResourceView(this, info)) != nullptr);
+			return ((*ppView = new DX12ShaderResourceView(this, pDesc)) != nullptr);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info)
+		bool DX12Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc)
 		{
-			return ((*ppView = new DX12UnorderedAccessView(this, info)) != nullptr);
+			return ((*ppView = new DX12UnorderedAccessView(this, pDesc)) != nullptr);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateSampler(ISampler** ppSampler, const SamplerDesc& info)
+		bool DX12Device::CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc)
 		{
-			return ((*ppSampler = new DX12Sampler(this, info)) != nullptr);
+			return ((*ppSampler = new DX12Sampler(this, pDesc)) != nullptr);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info)
+		bool DX12Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
-			return ((*ppTexture) = new DX12Texture(this, pInitialData, info)) != nullptr;
+			return ((*ppTexture) = new DX12Texture(this, pInitialData, pDesc)) != nullptr;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info)
+		bool DX12Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc)
 		{
-			return ((*ppBuffer) = new DX12Buffer(this, pInitialData, info));
+			return ((*ppBuffer) = new DX12Buffer(this, pInitialData, pDesc));
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info)
+		bool DX12Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc)
 		{
-			return ((*ppRootLayout) = new DX12RootLayout(this, info));
+			return ((*ppRootLayout) = new DX12RootLayout(this, pDesc));
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info)
+		bool DX12Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc)
 		{
-			return ((*ppPipelineState = new DX12PipelineState(this, info)));
+			return ((*ppPipelineState = new DX12PipelineState(this, pDesc)));
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,44 +164,39 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Device::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = mFactory->QueryReference<DX12Factory>();
+			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
 
 			return counter;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,59 +207,10 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D12Device* DX12Device::GetD3D12Device() const
-		{
-			return m_Device;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DescriptorHeap* DX12Device::GetDX12DepthStencilViewHeap() const
-		{
-			return m_DsvHeap;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DescriptorHeap* DX12Device::GetDX12RenderTargetViewHeap() const
-		{
-			return m_RtvHeap;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DescriptorHeap* DX12Device::GetDX12ResourceHeap() const
-		{
-			return m_ResourceHeap;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DescriptorHeap* DX12Device::GetDX12SamplerHeap() const
-		{
-			return m_SamplerHeap;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DynamicUploadHeap* DX12Device::GetDX12UploadHeap() const
-		{
-			return m_UploadHeap;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX12Device::GetImmediateContext(IDeviceContext** ppContext)
 		{
 			return ((*ppContext) = mImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,16 +218,15 @@ namespace RayEngine
 		{
 			return ((*ppContext) = new DX12DeviceContext(this, true)) != nullptr;
 		}
-		
-
+	
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::Create(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
+		void DX12Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
 		{
 			using namespace System;
 
 			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
-			HRESULT hr = pDXGIFactory->EnumAdapters1(info.pAdapter->ApiID, &m_Adapter);
+			HRESULT hr = pDXGIFactory->EnumAdapters1(pDesc->pAdapter->ApiID, &m_Adapter);
 			if (SUCCEEDED(hr))
 			{
 				hr = D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
@@ -310,21 +243,21 @@ namespace RayEngine
 					}
 
 
-					m_DsvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, info.DepthStencilDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_DsvHeap->SetName(info.Name + ": DSV-Heap");
+					m_DsvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, pDesc->DepthStencilDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_DsvHeap->SetName(pDesc->Name + ": DSV-Heap");
 
-					m_RtvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, info.RendertargetDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap->SetName(info.Name + ": RTV-Heap");
+					m_RtvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, pDesc->RendertargetDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+					m_RtvHeap->SetName(pDesc->Name + ": RTV-Heap");
 
-					m_ResourceHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, info.ResourceDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-					m_ResourceHeap->SetName(info.Name + ": Resource-Heap (CBV/SRV)");
+					m_ResourceHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, pDesc->ResourceDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_ResourceHeap->SetName(pDesc->Name + ": Resource-Heap (CBV/SRV)");
 
-					m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, info.SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-					m_SamplerHeap->SetName(info.Name + ": Sampler-Heap");
+					m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, pDesc->SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+					m_SamplerHeap->SetName(pDesc->Name + ": Sampler-Heap");
 
 					mImmediateContext = new DX12DeviceContext(this, false);
 
-					D3D12SetName(m_Device, info.Name);
+					D3D12SetName(m_Device, pDesc->Name);
 				}
 				else
 				{

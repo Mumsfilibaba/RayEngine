@@ -37,30 +37,30 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLDevice::GLDevice(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
+		GLDevice::GLDevice(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
 			: mImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
-			mWndHandle(RE_NULL_WINDOW),
+			m_WndHandle(RE_NULL_WINDOW),
 			mCreatedWindow(false),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			mFactory = reinterpret_cast<GLFactory*>(pFactory);
+			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
 
 			Create(debugLayer);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceDesc& info, bool debugLayer)
+		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceDesc* pDesc, bool debugLayer)
 			: mImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
-			mWndHandle(RE_NULL_WINDOW),
+			m_WndHandle(RE_NULL_WINDOW),
 			mCreatedWindow(false),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			mFactory = reinterpret_cast<GLFactory*>(pFactory);
+			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
 
 			Create(nativeWindow, nativeDevice, debugLayer);
 		}
@@ -73,10 +73,10 @@ namespace RayEngine
 
 #if defined(RE_PLATFORM_WINDOWS)
 			if (m_Device != RE_GL_NULL_NATIVE_DEVICE)
-				ReleaseDC(mWndHandle, m_Device);
+				ReleaseDC(m_WndHandle, m_Device);
 
-			if (mWndHandle != RE_NULL_WINDOW && mCreatedWindow)
-				DestroyWindow(mWndHandle);
+			if (m_WndHandle != RE_NULL_WINDOW && mCreatedWindow)
+				DestroyWindow(m_WndHandle);
 #endif
 		}
 
@@ -96,72 +96,72 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateShader(IShader** ppShader, const ShaderDesc& info)
+		bool GLDevice::CreateShader(IShader** ppShader, const ShaderDesc* pDesc)
 		{
-			return (*ppShader = new GLShader(this, info)) != nullptr;
+			return (*ppShader = new GLShader(this, pDesc)) != nullptr;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info)
+		bool GLDevice::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info)
+		bool GLDevice::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info)
+		bool GLDevice::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info)
+		bool GLDevice::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateSampler(ISampler** ppSampler, const SamplerDesc& info)
+		bool GLDevice::CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info)
+		bool GLDevice::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
 			return false;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info)
+		bool GLDevice::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc)
 		{
-			return (*ppBuffer) = new GLBuffer(this, pInitialData, info);
+			return (*ppBuffer) = new GLBuffer(this, pInitialData, pDesc);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info)
+		bool GLDevice::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc)
 		{
-			return (*ppRootLayout = new GLRootLayout(this, info)) != nullptr;
+			return (*ppRootLayout = new GLRootLayout(this, pDesc)) != nullptr;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info)
+		bool GLDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc)
 		{
-			return (*ppPipelineState = new GLPipelineState(this, info)) != nullptr;
+			return (*ppPipelineState = new GLPipelineState(this, pDesc)) != nullptr;
 		}
 
 
@@ -175,22 +175,22 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDevice::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = mFactory->QueryReference<GLFactory>();
+			(*ppFactory) = m_Factory->QueryReference<GLFactory>();
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::Release()
 		{
-			IObject::CounterType counter = --mReferences;
-			if (mReferences < 1)
+			IObject::CounterType counter = --m_References;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
@@ -200,8 +200,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
 
 
@@ -216,10 +216,10 @@ namespace RayEngine
 		void GLDevice::Create(bool debugLayer)
 		{
 #if defined(RE_PLATFORM_WINDOWS)
-			mWndHandle = CreateDummyWindow();
+			m_WndHandle = CreateDummyWindow();
 			mCreatedWindow = true;
 			
-			m_Device = GetDC(mWndHandle);
+			m_Device = GetDC(m_WndHandle);
 			if (!SetPixelFormat(m_Device, FORMAT_B8G8R8A8_UNORM, FORMAT_UNKNOWN))
 			{
 				return;
@@ -233,7 +233,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDevice::Create(System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, bool debugLayer)
 		{
-			mWndHandle = nativeWindow;
+			m_WndHandle = nativeWindow;
 			m_Device = nativeDevice;
 
 			CreateContext(debugLayer);

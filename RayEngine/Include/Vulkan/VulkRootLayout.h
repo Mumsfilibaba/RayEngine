@@ -32,10 +32,13 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkRootLayout);
 
 		public:
-			VulkRootLayout(IDevice* pDevice, const RootLayoutDesc& info);
+			VulkRootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc);
 			~VulkRootLayout();
 
-			VkPipelineLayout GetVkPipelineLayout() const;
+			inline VkPipelineLayout GetVkPipelineLayout() const
+			{
+				return m_Layout;
+			}
 
 			void SetName(const std::string& name) override final;
 			
@@ -48,14 +51,14 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(IDevice* pDevice, const RootLayoutDesc& info);
+			void Create(IDevice* pDevice, const RootLayoutDesc* pDesc);
 
 		private:
 			IDevice* m_Device;
 			
 			VkPipelineLayout m_Layout;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

@@ -35,7 +35,6 @@ namespace RayEngine
 		struct SwapchainDesc;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class IFactory : public IObject
 		{
@@ -68,7 +67,7 @@ namespace RayEngine
 				the device to be created.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo) = 0;
+			virtual bool CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -84,7 +83,7 @@ namespace RayEngine
 				the swapchain to be created.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo) = 0;
+			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc) = 0;
 
 
 			/*////////////////////////////////////////////////////////////
@@ -106,7 +105,7 @@ namespace RayEngine
 				the swapchain to be created.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo) = 0;
+			virtual bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc) = 0;
 
 
 			/*////////////////////////////////////////////////////////////

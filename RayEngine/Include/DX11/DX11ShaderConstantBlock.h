@@ -34,7 +34,6 @@ namespace RayEngine
 		class DX11Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11ShaderConstantBlock final : public IDeviceObject
 		{
@@ -66,7 +65,7 @@ namespace RayEngine
 			ID3D11Buffer* m_ConstantBuffer;
 			
 			std::vector<uint32> m_Constants;
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

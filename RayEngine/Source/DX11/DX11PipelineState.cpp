@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11PipelineState::DX11PipelineState(IDevice* pDevice, const PipelineStateDesc& info)
+		DX11PipelineState::DX11PipelineState(IDevice* pDevice, const PipelineStateDesc* pDesc)
 			: m_Device(nullptr),
 			m_InputLayout(nullptr),
 			m_BlendState(nullptr),
@@ -45,14 +45,13 @@ namespace RayEngine
 			m_CS(nullptr),
 			m_SampleMask(0),
 			m_Type(PIPELINE_TYPE_UNKNOWN),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,157 +61,11 @@ namespace RayEngine
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11InputLayout* DX11PipelineState::GetD3D11InputLayout() const
-		{
-			return m_InputLayout;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11RasterizerState* DX11PipelineState::GetD3D11RasterizerState() const
-		{
-			return m_RasterizerState;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11DepthStencilState* DX11PipelineState::GetD3D11DepthStencilState() const
-		{
-			return m_DepthStencilState;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11BlendState* DX11PipelineState::GetD3D11BlendState() const
-		{
-			return m_BlendState;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		const float* DX11PipelineState::GetBlendFactor() const
-		{
-			return m_BlendFactor;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		uint8 DX11PipelineState::GetSampleMask() const
-		{
-			return m_SampleMask;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11VertexShader* DX11PipelineState::GetD3D11VertexShader() const
-		{
-			return (m_VS == nullptr) ? nullptr : m_VS->GetD3D11Shader<ID3D11VertexShader>();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11HullShader* DX11PipelineState::GetD3D11HullShader() const
-		{
-			return (m_HS == nullptr) ? nullptr : m_HS->GetD3D11Shader<ID3D11HullShader>();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11DomainShader* DX11PipelineState::GetD3D11DomainShader() const
-		{
-			return (m_DS == nullptr) ? nullptr : m_DS->GetD3D11Shader<ID3D11DomainShader>();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11GeometryShader* DX11PipelineState::GetD3D11GeometryShader() const
-		{
-			return (m_GS == nullptr) ? nullptr : m_GS->GetD3D11Shader<ID3D11GeometryShader>();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11PixelShader* DX11PipelineState::GetD3D11PixelShader() const
-		{
-			return (m_PS == nullptr) ? nullptr : m_PS->GetD3D11Shader<ID3D11PixelShader>();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11ComputeShader* DX11PipelineState::GetD3D11ComputeShader() const
-		{
-			return (m_CS == nullptr) ? nullptr : m_CS->GetD3D11Shader<ID3D11ComputeShader>();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader* DX11PipelineState::GetDX11VertexShader() const
-		{
-			return m_VS;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader* DX11PipelineState::GetDX11HullShader() const
-		{
-			return m_HS;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader* DX11PipelineState::GetDX11DomainShader() const
-		{
-			return m_DS;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader* DX11PipelineState::GetDX11GeometryShader() const
-		{
-			return m_GS;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader* DX11PipelineState::GetDX11PixelShader() const
-		{
-			return m_PS;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Shader* DX11PipelineState::GetDX11ComputeShader() const
-		{
-			return m_CS;
-		}
-
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		PIPELINE_TYPE DX11PipelineState::GetPipelineType() const
 		{
 			return m_Type;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +85,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::QueryDevice(IDevice** ppDevice) const
 		{
@@ -240,36 +92,32 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11PipelineState::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11PipelineState::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11PipelineState::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
 
 			return counter;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,57 +138,54 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::Create(const PipelineStateDesc& info)
+		void DX11PipelineState::Create(const PipelineStateDesc* pDesc)
 		{
-			m_Type = info.Type;
-			if (info.Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsState(info);
-			else if (info.Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputeState(info);
+			m_Type = pDesc->Type;
+			if (pDesc->Type == PIPELINE_TYPE_GRAPHICS)
+				CreateGraphicsState(pDesc);
+			else if (pDesc->Type == PIPELINE_TYPE_COMPUTE)
+				CreateComputeState(pDesc);
 		}
 
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateGraphicsState(const PipelineStateDesc& info)
+		void DX11PipelineState::CreateGraphicsState(const PipelineStateDesc* pDesc)
 		{
-			if (info.GraphicsPipeline.pVertexShader != nullptr)
-				m_VS = info.GraphicsPipeline.pVertexShader->QueryReference<DX11Shader>();
-			if (info.GraphicsPipeline.pHullShader != nullptr)
-				m_HS = info.GraphicsPipeline.pHullShader->QueryReference<DX11Shader>();
-			if (info.GraphicsPipeline.pDomainShader != nullptr)
-				m_DS = info.GraphicsPipeline.pDomainShader->QueryReference<DX11Shader>();
-			if (info.GraphicsPipeline.pGeometryShader != nullptr)
-				m_GS = info.GraphicsPipeline.pGeometryShader->QueryReference<DX11Shader>();
-			if (info.GraphicsPipeline.pPixelShader != nullptr)
-				m_PS = info.GraphicsPipeline.pPixelShader->QueryReference<DX11Shader>();
+			if (pDesc->GraphicsPipeline.pVertexShader != nullptr)
+				m_VS = pDesc->GraphicsPipeline.pVertexShader->QueryReference<DX11Shader>();
+			if (pDesc->GraphicsPipeline.pHullShader != nullptr)
+				m_HS = pDesc->GraphicsPipeline.pHullShader->QueryReference<DX11Shader>();
+			if (pDesc->GraphicsPipeline.pDomainShader != nullptr)
+				m_DS = pDesc->GraphicsPipeline.pDomainShader->QueryReference<DX11Shader>();
+			if (pDesc->GraphicsPipeline.pGeometryShader != nullptr)
+				m_GS = pDesc->GraphicsPipeline.pGeometryShader->QueryReference<DX11Shader>();
+			if (pDesc->GraphicsPipeline.pPixelShader != nullptr)
+				m_PS = pDesc->GraphicsPipeline.pPixelShader->QueryReference<DX11Shader>();
 
 
-			CreateInputLayout(info);
-			CreateBlendState(info);
-			CreateRasterizerState(info);
-			CreateDepthStencilState(info);
+			CreateInputLayout(pDesc);
+			CreateBlendState(pDesc);
+			CreateRasterizerState(pDesc);
+			CreateDepthStencilState(pDesc);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateComputeState(const PipelineStateDesc& info)
+		void DX11PipelineState::CreateComputeState(const PipelineStateDesc* pDesc)
 		{
-			if (info.ComputePipeline.pComputeShader != nullptr)
-				m_CS = info.ComputePipeline.pComputeShader->QueryReference<DX11Shader>();
+			if (pDesc->ComputePipeline.pComputeShader != nullptr)
+				m_CS = pDesc->ComputePipeline.pComputeShader->QueryReference<DX11Shader>();
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateInputLayout(const PipelineStateDesc& info)
+		void DX11PipelineState::CreateInputLayout(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
-			if (info.GraphicsPipeline.InputLayout.ElementCount < 1)
+			if (pDesc->GraphicsPipeline.InputLayout.ElementCount < 1)
 				return;
 
 
@@ -351,10 +196,10 @@ namespace RayEngine
 			}
 
 			std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout;
-			inputLayout.resize(info.GraphicsPipeline.InputLayout.ElementCount);
+			inputLayout.resize(pDesc->GraphicsPipeline.InputLayout.ElementCount);
 
-			for (int32 i = 0; i < info.GraphicsPipeline.InputLayout.ElementCount; i++)
-				SetInputElementDesc(inputLayout[i], info.GraphicsPipeline.InputLayout.pElements[i]);
+			for (int32 i = 0; i < pDesc->GraphicsPipeline.InputLayout.ElementCount; i++)
+				SetInputElementDesc(&inputLayout[i], &pDesc->GraphicsPipeline.InputLayout.pElements[i]);
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			ID3DBlob* pD3DBlob = m_VS->GetBlob();
@@ -367,39 +212,38 @@ namespace RayEngine
 			}
 			else
 			{
-				std::string name = info.Name + ": InputLayout";
+				std::string name = pDesc->Name + ": InputLayout";
 				m_InputLayout->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateRasterizerState(const PipelineStateDesc& info)
+		void DX11PipelineState::CreateRasterizerState(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
 			D3D11_RASTERIZER_DESC desc = {};
-			desc.FillMode = (info.GraphicsPipeline.RasterizerState.FillMode == FILL_MODE_SOLID) 
+			desc.FillMode = (pDesc->GraphicsPipeline.RasterizerState.FillMode == FILL_MODE_SOLID) 
 				? D3D11_FILL_SOLID : D3D11_FILL_WIREFRAME;
 
-			if (info.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_BACK)
+			if (pDesc->GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_BACK)
 				desc.CullMode = D3D11_CULL_BACK;
-			else if (info.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_FRONT)
+			else if (pDesc->GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_FRONT)
 				desc.CullMode = D3D11_CULL_FRONT;
-			else if (info.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_NONE)
+			else if (pDesc->GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_NONE)
 				desc.CullMode = D3D11_CULL_NONE;
 
-			desc.FrontCounterClockwise = info.GraphicsPipeline.RasterizerState.FrontCounterClockwise;
+			desc.FrontCounterClockwise = pDesc->GraphicsPipeline.RasterizerState.FrontCounterClockwise;
 
-			desc.DepthClipEnable = info.GraphicsPipeline.RasterizerState.DepthClipEnable;
-			desc.DepthBias = info.GraphicsPipeline.RasterizerState.DepthBias;
-			desc.DepthBiasClamp = info.GraphicsPipeline.RasterizerState.DepthBiasClamp;
-			desc.SlopeScaledDepthBias = info.GraphicsPipeline.RasterizerState.SlopeScaleDepthBias;
+			desc.DepthClipEnable = pDesc->GraphicsPipeline.RasterizerState.DepthClipEnable;
+			desc.DepthBias = pDesc->GraphicsPipeline.RasterizerState.DepthBias;
+			desc.DepthBiasClamp = pDesc->GraphicsPipeline.RasterizerState.DepthBiasClamp;
+			desc.SlopeScaledDepthBias = pDesc->GraphicsPipeline.RasterizerState.SlopeScaleDepthBias;
 			
-			desc.ScissorEnable = info.GraphicsPipeline.RasterizerState.ScissorEnable;
-			desc.MultisampleEnable = info.GraphicsPipeline.RasterizerState.MultisampleEnable;
-			desc.AntialiasedLineEnable = info.GraphicsPipeline.RasterizerState.AntialiasedLineEnable;
+			desc.ScissorEnable = pDesc->GraphicsPipeline.RasterizerState.ScissorEnable;
+			desc.MultisampleEnable = pDesc->GraphicsPipeline.RasterizerState.MultisampleEnable;
+			desc.AntialiasedLineEnable = pDesc->GraphicsPipeline.RasterizerState.AntialiasedLineEnable;
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateRasterizerState(&desc, &m_RasterizerState);
@@ -409,30 +253,29 @@ namespace RayEngine
 			}
 			else
 			{
-				std::string name = info.Name + ": RasterizerState";
+				std::string name = pDesc->Name + ": RasterizerState";
 				m_RasterizerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateDepthStencilState(const PipelineStateDesc& info)
+		void DX11PipelineState::CreateDepthStencilState(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
 			D3D11_DEPTH_STENCIL_DESC desc = {};
-			desc.DepthEnable = info.GraphicsPipeline.DepthStencilState.DepthEnable;
-			desc.DepthFunc = ReToDX11ComparisonFunc(info.GraphicsPipeline.DepthStencilState.DepthFunc);
-			desc.DepthWriteMask = (info.GraphicsPipeline.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ALL) 
+			desc.DepthEnable = pDesc->GraphicsPipeline.DepthStencilState.DepthEnable;
+			desc.DepthFunc = ReToDX11ComparisonFunc(pDesc->GraphicsPipeline.DepthStencilState.DepthFunc);
+			desc.DepthWriteMask = (pDesc->GraphicsPipeline.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ALL) 
 				? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
 
-			desc.StencilEnable = info.GraphicsPipeline.DepthStencilState.StencilEnable;
-			desc.StencilReadMask = info.GraphicsPipeline.DepthStencilState.StencilReadMask;
-			desc.StencilWriteMask = info.GraphicsPipeline.DepthStencilState.StencilWriteMask;
+			desc.StencilEnable = pDesc->GraphicsPipeline.DepthStencilState.StencilEnable;
+			desc.StencilReadMask = pDesc->GraphicsPipeline.DepthStencilState.StencilReadMask;
+			desc.StencilWriteMask = pDesc->GraphicsPipeline.DepthStencilState.StencilWriteMask;
 
-			desc.BackFace = ReToDX11StencilOpDesc(info.GraphicsPipeline.DepthStencilState.BackFace);
-			desc.FrontFace = ReToDX11StencilOpDesc(info.GraphicsPipeline.DepthStencilState.FrontFace);
+			desc.BackFace = ReToDX11StencilOpDesc(pDesc->GraphicsPipeline.DepthStencilState.BackFace);
+			desc.FrontFace = ReToDX11StencilOpDesc(pDesc->GraphicsPipeline.DepthStencilState.FrontFace);
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
@@ -443,59 +286,58 @@ namespace RayEngine
 			}
 			else
 			{
-				std::string name = info.Name + ": DepthStencilState";
+				std::string name = pDesc->Name + ": DepthStencilState";
 				m_DepthStencilState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::CreateBlendState(const PipelineStateDesc& info)
+		void DX11PipelineState::CreateBlendState(const PipelineStateDesc* pDesc)
 		{
 			using namespace System;
 
 			D3D11_BLEND_DESC desc = {};
-			desc.AlphaToCoverageEnable = info.GraphicsPipeline.BlendState.AlphaToCoverageEnable;
-			desc.IndependentBlendEnable = info.GraphicsPipeline.BlendState.IndependentBlendEnable;
+			desc.AlphaToCoverageEnable = pDesc->GraphicsPipeline.BlendState.AlphaToCoverageEnable;
+			desc.IndependentBlendEnable = pDesc->GraphicsPipeline.BlendState.IndependentBlendEnable;
 			
 			for (int32 i = 0; i < 8; i++)
 			{
-				desc.RenderTarget[i].BlendEnable = info.GraphicsPipeline.BlendState.RenderTargets[i].BlendEnable;
+				desc.RenderTarget[i].BlendEnable = pDesc->GraphicsPipeline.BlendState.RenderTargets[i].BlendEnable;
 				
-				desc.RenderTarget[i].SrcBlend = ReToDX11Blend(info.GraphicsPipeline.BlendState.RenderTargets[i].SrcBlend);
-				desc.RenderTarget[i].DestBlend = ReToDX11Blend(info.GraphicsPipeline.BlendState.RenderTargets[i].DstBlend);
-				desc.RenderTarget[i].BlendOp = ReToDX11BlendOp(info.GraphicsPipeline.BlendState.RenderTargets[i].BlendOperation);
+				desc.RenderTarget[i].SrcBlend = ReToDX11Blend(pDesc->GraphicsPipeline.BlendState.RenderTargets[i].SrcBlend);
+				desc.RenderTarget[i].DestBlend = ReToDX11Blend(pDesc->GraphicsPipeline.BlendState.RenderTargets[i].DstBlend);
+				desc.RenderTarget[i].BlendOp = ReToDX11BlendOp(pDesc->GraphicsPipeline.BlendState.RenderTargets[i].BlendOperation);
 				
-				desc.RenderTarget[i].SrcBlendAlpha = ReToDX11Blend(info.GraphicsPipeline.BlendState.RenderTargets[i].SrcAlphaBlend);
-				desc.RenderTarget[i].DestBlendAlpha = ReToDX11Blend(info.GraphicsPipeline.BlendState.RenderTargets[i].DstAlphaBlend);
-				desc.RenderTarget[i].BlendOpAlpha = ReToDX11BlendOp(info.GraphicsPipeline.BlendState.RenderTargets[i].AlphaBlendOperation);
+				desc.RenderTarget[i].SrcBlendAlpha = ReToDX11Blend(pDesc->GraphicsPipeline.BlendState.RenderTargets[i].SrcAlphaBlend);
+				desc.RenderTarget[i].DestBlendAlpha = ReToDX11Blend(pDesc->GraphicsPipeline.BlendState.RenderTargets[i].DstAlphaBlend);
+				desc.RenderTarget[i].BlendOpAlpha = ReToDX11BlendOp(pDesc->GraphicsPipeline.BlendState.RenderTargets[i].AlphaBlendOperation);
 
 				uint8 renderTargetWriteMask = 0;
-				if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask == COLOR_WRITE_ENABLE_ALL)
+				if (pDesc->GraphicsPipeline.BlendState.RenderTargets[i].WriteMask == COLOR_WRITE_ENABLE_ALL)
 				{
 					renderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 				}
 				else
 				{
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
+					if (pDesc->GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_RED;
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
+					if (pDesc->GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_GREEN;
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
+					if (pDesc->GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_BLUE;
-					if (info.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
+					if (pDesc->GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_ALPHA;
 				}
 
 				desc.RenderTarget[i].RenderTargetWriteMask = renderTargetWriteMask;
 			}
 
-			m_BlendFactor[0] = info.GraphicsPipeline.BlendState.BlendFactor[0];
-			m_BlendFactor[1] = info.GraphicsPipeline.BlendState.BlendFactor[1];
-			m_BlendFactor[2] = info.GraphicsPipeline.BlendState.BlendFactor[2];
-			m_BlendFactor[3] = info.GraphicsPipeline.BlendState.BlendFactor[3];
-			m_SampleMask = info.GraphicsPipeline.SampleMask;
+			m_BlendFactor[0] = pDesc->GraphicsPipeline.BlendState.BlendFactor[0];
+			m_BlendFactor[1] = pDesc->GraphicsPipeline.BlendState.BlendFactor[1];
+			m_BlendFactor[2] = pDesc->GraphicsPipeline.BlendState.BlendFactor[2];
+			m_BlendFactor[3] = pDesc->GraphicsPipeline.BlendState.BlendFactor[3];
+			m_SampleMask = pDesc->GraphicsPipeline.SampleMask;
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
@@ -506,23 +348,22 @@ namespace RayEngine
 			}
 			else
 			{
-				std::string name = info.Name + ": BlendState";
+				std::string name = pDesc->Name + ": BlendState";
 				m_BlendState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC& desc, const InputElementDesc& info)
+		void DX11PipelineState::SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC* pD3D11desc, const InputElementDesc* pDesc)
 		{
-			desc.AlignedByteOffset = static_cast<uint32>(info.ElementOffset);
-			desc.Format = ReToDXFormat(info.Format);
-			desc.InputSlot = static_cast<uint32>(info.InputSlot);
-			desc.InputSlotClass = (info.StepType == ELEMENT_STEP_TYPE_VERTEX) ? D3D11_INPUT_PER_VERTEX_DATA : D3D11_INPUT_PER_INSTANCE_DATA;
-			desc.InstanceDataStepRate = static_cast<uint32>(info.DataStepRate);
-			desc.SemanticName = info.Semantic.c_str();
-			desc.SemanticIndex = info.SemanticIndex;
+			pD3D11desc->AlignedByteOffset = static_cast<uint32>(pDesc->ElementOffset);
+			pD3D11desc->Format = ReToDXFormat(pDesc->Format);
+			pD3D11desc->InputSlot = static_cast<uint32>(pDesc->InputSlot);
+			pD3D11desc->InputSlotClass = (pDesc->StepType == ELEMENT_STEP_TYPE_VERTEX) ? D3D11_INPUT_PER_VERTEX_DATA : D3D11_INPUT_PER_INSTANCE_DATA;
+			pD3D11desc->InstanceDataStepRate = static_cast<uint32>(pDesc->DataStepRate);
+			pD3D11desc->SemanticName = pDesc->Semantic.c_str();
+			pD3D11desc->SemanticIndex = pDesc->SemanticIndex;
 		}
 	}
 }

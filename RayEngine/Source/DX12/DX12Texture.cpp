@@ -32,18 +32,16 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc& info)
+		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 			: DX12Resource(),
 			m_Device(nullptr),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(pInitialData, info);
+			Create(pInitialData, pDesc);
 		}
-
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,12 +57,10 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Texture::~DX12Texture()
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +70,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Texture::QueryDevice(IDevice** ppDevice) const
 		{
@@ -82,29 +77,26 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -113,39 +105,38 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Texture::Create(const ResourceData* const pInitialData, const TextureDesc& info)
+		void DX12Texture::Create(const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
 			using namespace System;
 
-			DXGI_FORMAT format = ReToDXFormat(info.Format);
+			DXGI_FORMAT format = ReToDXFormat(pDesc->Format);
 
 			D3D12_CLEAR_VALUE* pClearValue = nullptr;
 			D3D12_CLEAR_VALUE clearValue = {};
 			clearValue.Format = format;
-			clearValue.Color[0] = info.OptimizedColor[0];
-			clearValue.Color[1] = info.OptimizedColor[1];
-			clearValue.Color[2] = info.OptimizedColor[2];
-			clearValue.Color[3] = info.OptimizedColor[3];
+			clearValue.Color[0] = pDesc->OptimizedColor[0];
+			clearValue.Color[1] = pDesc->OptimizedColor[1];
+			clearValue.Color[2] = pDesc->OptimizedColor[2];
+			clearValue.Color[3] = pDesc->OptimizedColor[3];
 
-			clearValue.DepthStencil.Depth = info.DepthStencil.OptimizedDepth;
-			clearValue.DepthStencil.Stencil = info.DepthStencil.OptimizedStencil;
+			clearValue.DepthStencil.Depth = pDesc->DepthStencil.OptimizedDepth;
+			clearValue.DepthStencil.Stencil = pDesc->DepthStencil.OptimizedStencil;
 
 			D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
-			if (info.Flags & TEXTURE_FLAGS_RENDERTARGET)
+			if (pDesc->Flags & TEXTURE_FLAGS_RENDERTARGET)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 				pClearValue = &clearValue;
 			}
 
-			if (info.Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
+			if (pDesc->Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 				pClearValue = &clearValue;
 			}
 
-			if (info.Flags & TEXTURE_FLAGS_UNORDERED_ACCESS)
+			if (pDesc->Flags & TEXTURE_FLAGS_UNORDERED_ACCESS)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 			}
@@ -153,27 +144,27 @@ namespace RayEngine
 
 
 			D3D12_RESOURCE_DESC desc = {};
-			desc.Width = info.Width;
-			desc.Height = info.Height;
-			desc.DepthOrArraySize = info.DepthOrArraySize;
-			desc.SampleDesc.Count = info.SampleCount;
+			desc.Width = pDesc->Width;
+			desc.Height = pDesc->Height;
+			desc.DepthOrArraySize = pDesc->DepthOrArraySize;
+			desc.SampleDesc.Count = pDesc->SampleCount;
 			desc.SampleDesc.Quality = 0;
 			desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 			desc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
 			desc.Flags = flags;
-			desc.MipLevels = info.MipLevels;
+			desc.MipLevels = pDesc->MipLevels;
 			desc.Format = format;
 
-			if (info.Type == TEXTURE_TYPE_1D)
+			if (pDesc->Type == TEXTURE_TYPE_1D)
 			{
 				desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE1D;
 				desc.Height = 1;
 			}
-			else if (info.Type == TEXTURE_TYPE_2D)
+			else if (pDesc->Type == TEXTURE_TYPE_2D)
 			{
 				desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 			}
-			else if (info.Type == TEXTURE_TYPE_3D)
+			else if (pDesc->Type == TEXTURE_TYPE_3D)
 			{
 				desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 			}
@@ -185,9 +176,9 @@ namespace RayEngine
 			heapProp.CreationNodeMask = 1;
 			heapProp.VisibleNodeMask = 1;
 
-			if (info.Usage == RESOURCE_USAGE_DEFAULT || info.Usage == RESOURCE_USAGE_STATIC)
+			if (pDesc->Usage == RESOURCE_USAGE_DEFAULT || pDesc->Usage == RESOURCE_USAGE_STATIC)
 				heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
-			else if (info.Usage == RESOURCE_USAGE_DYNAMIC)
+			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
 				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 
@@ -203,7 +194,7 @@ namespace RayEngine
 			else
 			{
 				m_State = startingState;
-				D3D12SetName(m_Resource, info.Name);
+				D3D12SetName(m_Resource, pDesc->Name);
 			}
 
 
@@ -220,7 +211,7 @@ namespace RayEngine
 				int32 subresoures[] = { 0, 0 };
 			
 				pContext->TransitionResourceGroup(resources, states, subresoures, 2);
-				pContext->CopyTexture(this, uploadHeap, format, info.Width, info.Height, info.DepthOrArraySize, pInitialData->ByteStride);
+				pContext->CopyTexture(this, uploadHeap, format, pDesc->Width, pDesc->Height, pDesc->DepthOrArraySize, pInitialData->ByteStride);
 
 				ReRelease_S(pContext);
 			}

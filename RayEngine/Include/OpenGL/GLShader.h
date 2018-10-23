@@ -37,7 +37,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(GLShader);
 
 		public:
-			GLShader(IDevice* pDevice, const ShaderDesc& info);
+			GLShader(IDevice* pDevice, const ShaderDesc* pDesc);
 			~GLShader();
 
 			inline int32 GetGLShaderID() const
@@ -58,7 +58,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const ShaderDesc& info);
+			void Create(const ShaderDesc* pDesc);
 
 			void CompileGLSL(const std::string& src);
 
@@ -69,7 +69,7 @@ namespace RayEngine
 
 			int32 m_Shader;
 
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

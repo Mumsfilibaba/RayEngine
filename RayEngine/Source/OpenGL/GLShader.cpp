@@ -8,16 +8,16 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLShader::GLShader(IDevice* pDevice, const ShaderDesc& info)
+		GLShader::GLShader(IDevice* pDevice, const ShaderDesc* pDesc)
 			: m_Device(nullptr),
 			m_Type(SHADER_TYPE_UNKNOWN),
 			m_Shader(0),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
 
-			Create(info);
+			Create(pDesc);
 		}
 
 
@@ -56,15 +56,15 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLShader::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLShader::Release()
 		{
-			IObject::CounterType refs = --mReferences;
-			if (mReferences < 1)
+			IObject::CounterType refs = --m_References;
+			if (m_References < 1)
 				delete this;
 
 			return refs;
@@ -74,17 +74,17 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLShader::AddRef()
 		{
-			return ++mReferences;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLShader::Create(const ShaderDesc& info)
+		void GLShader::Create(const ShaderDesc* pDesc)
 		{
-			m_Type = info.Type;
+			m_Type = pDesc->Type;
 
-			if (info.SrcLang == SHADER_SOURCE_LANG_GLSL)
-				CompileGLSL(info.Source);
+			if (pDesc->SrcLang == SHADER_SOURCE_LANG_GLSL)
+				CompileGLSL(pDesc->Source);
 		}
 
 

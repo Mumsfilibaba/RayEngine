@@ -159,7 +159,7 @@ namespace RayEngine
 				Returns true if ppShader is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateShader(IShader** ppShader, const ShaderDesc& info) = 0;
+			virtual bool CreateShader(IShader** ppShader, const ShaderDesc* pDesc) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info) = 0;
+			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -193,7 +193,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info) = 0;
+			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -210,7 +210,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info) = 0;
+			virtual bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -227,7 +227,7 @@ namespace RayEngine
 				Returns true if ppView is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info) = 0;
+			virtual bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ namespace RayEngine
 				Returns true if ppSampler is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateSampler(ISampler** ppSampler, const SamplerDesc& info) = 0;
+			virtual bool CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ namespace RayEngine
 				Returns true if ppTexture is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info) = 0;
+			virtual bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ namespace RayEngine
 				Returns true if ppBuffer is equal to a valid pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info) = 0;
+			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc) = 0;
 			
 			
 			/*////////////////////////////////////////////////////////////
@@ -300,7 +300,7 @@ namespace RayEngine
 				pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreateRootLayout(IRootLayout** ppRootSignature, const RootLayoutDesc& info) = 0;
+			virtual bool CreateRootLayout(IRootLayout** ppRootSignature, const RootLayoutDesc* pDesc) = 0;
 			
 
 			/*////////////////////////////////////////////////////////////
@@ -318,7 +318,7 @@ namespace RayEngine
 				pointer.
 
 			////////////////////////////////////////////////////////////*/
-			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info) = 0;
+			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) = 0;
 
 
 			/*////////////////////////////////////////////////////////////

@@ -34,19 +34,24 @@ namespace RayEngine
 		class VulkFactory;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class VulkSwapchain final : public ISwapchain
 		{
 			RE_IMPLEMENT_INTERFACE(VulkSwapchain);
 
 		public:
-			VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc& info);
+			VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
 			~VulkSwapchain();
 
-			VkSurfaceKHR GetVkSurfaceKHR() const;
+			inline VkSurfaceKHR GetVkSurfaceKHR() const
+			{
+				return m_Surface;
+			}
 			
-			VkSwapchainKHR GetVkSwapchainKHR() const;
+			inline VkSwapchainKHR GetVkSwapchainKHR() const
+			{
+				return m_Swapchain;
+			}
 
 			void Resize(int32 width, int32 height) override final;
 
@@ -67,16 +72,16 @@ namespace RayEngine
 		private:
 			void ReleaseObjects();
 			
-			void Create(const SwapchainDesc& info);
+			void Create(const SwapchainDesc* pDesc);
 
 		private:
-			static VkExtent2D GetSupportedSize(const VkSurfaceCapabilitiesKHR& capabilities, int32 width, int32 height);
+			static VkExtent2D GetSupportedSize(const VkSurfaceCapabilitiesKHR* pCapabilities, int32 width, int32 height);
 			
 			static VkSurfaceFormatKHR GetSupportedFormat(VulkDevice* pDevice, VkSurfaceKHR surface, VkFormat desiredFormat);
 
 		private:
 			VulkDevice* m_Device;
-			VulkFactory* mFactory;
+			VulkFactory* m_Factory;
 			VulkDeviceContext* m_CommandQueue;
 			
 			VkSurfaceFormatKHR m_Format;
@@ -85,7 +90,7 @@ namespace RayEngine
 			
 			std::vector<VulkTexture*> m_Textures;
 			
-			IObject::CounterType mReferences;
+			IObject::CounterType m_References;
 		};
 	}
 }

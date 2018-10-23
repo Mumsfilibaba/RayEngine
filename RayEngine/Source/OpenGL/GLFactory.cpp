@@ -36,19 +36,17 @@ namespace RayEngine
 			: m_AdapterList(),
 			m_Extensions(),
 			m_DebugLayer(debugLayer),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
 			Create(debugLayer);
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLFactory::~GLFactory()
 		{
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,31 +66,28 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc& deviceInfo)
+		bool GLFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc)
 		{
-			*ppDevice = new GLDevice(this, deviceInfo, m_DebugLayer);
+			*ppDevice = new GLDevice(this, pDesc, m_DebugLayer);
 			return true;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc& swapchainInfo)
+		bool GLFactory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc)
 		{
 			*ppSwapchain = nullptr;
 			return false;
 		}
 
-
-
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc& deviceInfo, ISwapchain** ppSwapchain, const SwapchainDesc& swapchainInfo)
+		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{
 #if defined(RE_PLATFORM_WINDOWS)
-			GLNativeDevice dc = GetDC(swapchainInfo.WindowHandle);
-			if (!SetPixelFormat(dc, swapchainInfo.BackBuffer.Format, swapchainInfo.DepthStencil.Format))
+			GLNativeDevice dc = GetDC(pSwapchainDesc->WindowHandle);
+			if (!SetPixelFormat(dc, pSwapchainDesc->BackBuffer.Format, pSwapchainDesc->DepthStencil.Format))
 			{
 				*ppDevice = nullptr;
 				*ppSwapchain = nullptr;
@@ -100,11 +95,10 @@ namespace RayEngine
 			}
 #endif
 
-			*ppDevice = new GLDevice(this, swapchainInfo.WindowHandle, dc, deviceInfo, m_DebugLayer);
-			*ppSwapchain = new GLSwapchain(this, *ppDevice, swapchainInfo);
+			*ppDevice = new GLDevice(this, pSwapchainDesc->WindowHandle, dc, pDeviceDesc, m_DebugLayer);
+			*ppSwapchain = new GLSwapchain(this, *ppDevice, pSwapchainDesc);
 			return true;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +108,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GRAPHICS_API GLFactory::GetGraphicsApi() const
 		{
@@ -122,40 +115,30 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLFactory::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLFactory::Release()
 		{
-			IObject::CounterType counter = mReferences--;
-			if (mReferences < 1)
+			IObject::CounterType counter = m_References--;
+			if (m_References < 1)
 				delete this;
 
 			return counter;
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLFactory::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined RE_PLATFORM_WINDOWS
-
-#endif
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

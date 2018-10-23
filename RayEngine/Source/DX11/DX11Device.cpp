@@ -41,28 +41,27 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Device::DX11Device(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
-			: mFactory(nullptr),
+		DX11Device::DX11Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
+			: m_Factory(nullptr),
 			m_Adapter(nullptr),
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			mImmediateContext(nullptr),
 			m_FeatureLevel(),
-			mReferences(0)
+			m_References(0)
 		{
 			AddRef();
-			mFactory = pFactory->QueryReference<DX11Factory>();
+			m_Factory = pFactory->QueryReference<DX11Factory>();
 			
-			Create(pFactory, info, debugLayer);
+			Create(pFactory, pDesc, debugLayer);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Device::~DX11Device()
 		{
 			ReRelease_S(mImmediateContext);
-			ReRelease_S(mFactory);
+			ReRelease_S(m_Factory);
 			
 			D3DRelease_S(m_Adapter);
 			D3DRelease_S(m_Device);
@@ -73,15 +72,6 @@ namespace RayEngine
 				D3DRelease(m_DebugDevice);
 			}
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11Device* DX11Device::GetD3D11Device() const
-		{
-			return m_Device;
-		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,13 +85,11 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX11Device::CreateDefferedContext(IDeviceContext** ppContext)
 		{
 			return ((*ppContext) = new DX11DeviceContext(this, true));
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,37 +102,33 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Device::QueryFactory(IFactory** ppFactory) const
 		{
-			(*ppFactory) = mFactory->QueryReference<DX11Factory>();
+			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Device::GetReferenceCount() const
 		{
-			return mReferences;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Device::AddRef()
 		{
-			mReferences++;
-			return mReferences;
+			m_References++;
+			return m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Device::Release()
 		{
-			mReferences--;
-			IObject::CounterType counter = mReferences;
+			m_References--;
+			IObject::CounterType counter = m_References;
 
 			if (counter < 1)
 				delete this;
@@ -153,85 +137,75 @@ namespace RayEngine
 		}
 
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		bool DX11Device::CreateShader(IShader** ppShader, const ShaderDesc* pDesc)
+		{
+			return ((*ppShader = new DX11Shader(this, pDesc)));
+		}
+
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateShader(IShader** ppShader, const ShaderDesc& info)
+		bool DX11Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc)
 		{
-			return ((*ppShader = new DX11Shader(this, info)));
+			return ((*ppView = new DX11RenderTargetView(this, pDesc)) != nullptr);
 		}
 
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc& info)
+		bool DX11Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc)
 		{
-			return ((*ppView = new DX11RenderTargetView(this, info)) != nullptr);
+			return ((*ppView = new DX11DepthStencilView(this, pDesc)) != nullptr);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc& info)
+		bool DX11Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc)
 		{
-			return ((*ppView = new DX11DepthStencilView(this, info)) != nullptr);
+			return ((*ppView = new DX11ShaderResourceView(this, pDesc)) != nullptr);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc& info)
+		bool DX11Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc)
 		{
-			return ((*ppView = new DX11ShaderResourceView(this, info)) != nullptr);
+			return ((*ppView = new DX11UnorderedAccessView(this, pDesc)) != nullptr);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc& info)
+		bool DX11Device::CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc)
 		{
-			return ((*ppView = new DX11UnorderedAccessView(this, info)) != nullptr);
+			return ((*ppSampler = new DX11Sampler(this, pDesc)));;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateSampler(ISampler** ppSampler, const SamplerDesc& info)
+		bool DX11Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
-			return ((*ppSampler = new DX11Sampler(this, info)));;
+			return ((*ppTexture = new DX11Texture(this, pInitialData, pDesc)) != nullptr);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc& info)
+		bool DX11Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc)
 		{
-			return ((*ppTexture = new DX11Texture(this, pInitialData, info)) != nullptr);
+			return ((*ppBuffer = new DX11Buffer(this, pInitialData, pDesc)));
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc& info)
+		bool DX11Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc)
 		{
-			return ((*ppBuffer = new DX11Buffer(this, pInitialData, info)));
+			return ((*ppRootLayout = new DX11RootLayout(this, pDesc)));
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc& info)
+		bool DX11Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc)
 		{
-			return ((*ppRootLayout = new DX11RootLayout(this, info)));
+			return ((*ppPipelineState = new DX11PipelineState(this, pDesc)));
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX11Device::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc& info)
-		{
-			return ((*ppPipelineState = new DX11PipelineState(this, info)));
-		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,14 +215,13 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Device::Create(IFactory* pFactory, const DeviceDesc& info, bool debugLayer)
+		void DX11Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
 		{
 			using namespace System;
 
 			IDXGIFactory* pDXGIFactory = reinterpret_cast<DX11Factory*>(pFactory)->GetDXGIFactory();
-			HRESULT hr = pDXGIFactory->EnumAdapters(info.pAdapter->ApiID, &m_Adapter);
+			HRESULT hr = pDXGIFactory->EnumAdapters(pDesc->pAdapter->ApiID, &m_Adapter);
 			if (FAILED(hr))
 			{
 				mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not retrive adapter. " + DXErrorString(hr));
@@ -270,7 +243,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(info.Name.size()), info.Name.c_str());
+				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 
 				mImmediateContext = new DX11DeviceContext(this, false);
 			}
