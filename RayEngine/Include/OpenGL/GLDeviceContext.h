@@ -33,6 +33,7 @@ namespace RayEngine
 		class GLBuffer;
 		class GLRootLayout;
 		class GLPipelineState;
+		class GLSwapchain;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,6 +106,7 @@ namespace RayEngine
 			GLDevice* m_Device;
 			mutable GLRootLayout* m_CurrentRootLayout;
 			mutable GLPipelineState* m_CurrentPipelineState;
+			mutable GLSwapchain* m_pCurrentSwapchain;
 			
 			mutable GLBuffer* m_VertexBuffers[RE_MAX_VERTEXBUFFERS];
 
