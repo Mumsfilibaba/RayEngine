@@ -53,7 +53,7 @@ namespace RayEngine
 			GLFactory(bool debugLayer);
 			~GLFactory();
 			
-			void EnumerateAdapters(AdapterList& list) const override final;
+			void EnumerateAdapters(AdapterList* pList) const override final;
 			
 			bool CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc) override final;
 			

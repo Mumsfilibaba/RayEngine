@@ -68,6 +68,8 @@ namespace RayEngine
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(RootLayoutDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 
 			IObject::CounterType Release() override final;
@@ -88,6 +90,8 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			ID3D12RootSignature* m_RootSignature;
+
+			RootLayoutDesc m_Desc;
 
 			std::vector<DX12RootVariableSlot*> m_VariableSlots;
 

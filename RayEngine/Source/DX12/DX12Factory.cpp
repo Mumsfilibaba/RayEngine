@@ -51,7 +51,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Factory::EnumerateAdapters(AdapterList& list) const
+		void DX12Factory::EnumerateAdapters(AdapterList* pList) const
 		{
 			using namespace Microsoft::WRL;
 
@@ -75,9 +75,9 @@ namespace RayEngine
 			}
 
 
-			list = AdapterList(static_cast<int32>(adapterInfos.size()));
-			for (int32 i = 0; i < list.Count; i++)
-				list[i] = adapterInfos[i];
+			*pList = AdapterList(static_cast<int32>(adapterInfos.size()));
+			for (int32 i = 0; i < pList->Count; i++)
+				(*pList)[i] = adapterInfos[i];
 		}
 
 

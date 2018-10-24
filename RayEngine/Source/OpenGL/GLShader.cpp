@@ -10,7 +10,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLShader::GLShader(IDevice* pDevice, const ShaderDesc* pDesc)
 			: m_Device(nullptr),
-			m_Type(SHADER_TYPE_UNKNOWN),
+			m_Desc(),
 			m_Shader(0),
 			m_References(0)
 		{
@@ -33,13 +33,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		SHADER_TYPE GLShader::GetType() const
-		{
-			return m_Type;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLShader::SetName(const std::string& name)
 		{
 			//Not relevant
@@ -50,6 +43,13 @@ namespace RayEngine
 		void GLShader::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<GLDevice>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLShader::GetDesc(ShaderDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -81,7 +81,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLShader::Create(const ShaderDesc* pDesc)
 		{
-			m_Type = pDesc->Type;
+			m_Desc = *pDesc;
 
 			if (pDesc->SrcLang == SHADER_SOURCE_LANG_GLSL)
 				CompileGLSL(pDesc->Source);
@@ -93,7 +93,7 @@ namespace RayEngine
 		{
 			using namespace System;
 
-			m_Shader = glCreateShader(ShaderTypeToGL(m_Type));
+			m_Shader = glCreateShader(ShaderTypeToGL(m_Desc.Type));
 
 			const char* pSrc = src.c_str();
 			int32 len = static_cast<int32>(src.size());

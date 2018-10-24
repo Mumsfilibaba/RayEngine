@@ -33,6 +33,7 @@ namespace RayEngine
 		DX11DepthStencilView::DX11DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc* pDesc)
 			: m_Device(nullptr),
 			m_View(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -60,6 +61,13 @@ namespace RayEngine
 		void DX11DepthStencilView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11DepthStencilView::GetDesc(DepthStencilViewDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -163,6 +171,8 @@ namespace RayEngine
 			}
 			else
 			{
+				m_Desc = *pDesc;
+
 				m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}

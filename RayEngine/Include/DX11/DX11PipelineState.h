@@ -72,6 +72,11 @@ namespace RayEngine
 			{
 				return m_SampleMask;
 			}
+
+			inline PIPELINE_TYPE GetPipelineType() const
+			{
+				return m_Desc.Type;
+			}
 			
 			inline ID3D11VertexShader* GetD3D11VertexShader() const
 			{
@@ -133,11 +138,11 @@ namespace RayEngine
 				return m_CS;
 			}
 
-			PIPELINE_TYPE GetPipelineType() const override final;
-
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(PipelineStateDesc* pDesc) const;
 
 			IObject::CounterType GetReferenceCount() const override final;
 			
@@ -150,20 +155,20 @@ namespace RayEngine
 			
 			void Create(const PipelineStateDesc* pDesc);
 			
-			void CreateGraphicsState(const PipelineStateDesc* pDesc);
+			void CreateGraphicsState();
 			
-			void CreateComputeState(const PipelineStateDesc* pDesc);
+			void CreateComputeState();
 			
-			void CreateInputLayout(const PipelineStateDesc* pDesc);
+			void CreateInputLayout();
 			
-			void CreateRasterizerState(const PipelineStateDesc* pDesc);
+			void CreateRasterizerState();
 			
-			void CreateDepthStencilState(const PipelineStateDesc* pDesc);
+			void CreateDepthStencilState();
 			
-			void CreateBlendState(const PipelineStateDesc* pDesc);
+			void CreateBlendState();
 
 		private:
-			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC* desc, const InputElementDesc* info);
+			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC* pD3D11Desc, const InputElementDesc* pDesc);
 
 		private:
 			DX11Device* m_Device;
@@ -178,11 +183,11 @@ namespace RayEngine
 			DX11Shader* m_PS;
 			DX11Shader* m_CS;
 			
+			PipelineStateDesc m_Desc;
+
 			float m_BlendFactor[4];
 			
 			uint32 m_SampleMask;
-			
-			PIPELINE_TYPE m_Type;
 
 			IObject::CounterType m_References;
 		};

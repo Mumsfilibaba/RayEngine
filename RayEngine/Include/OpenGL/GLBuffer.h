@@ -33,6 +33,8 @@ namespace RayEngine
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(BufferDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 
 			IObject::CounterType Release() override final;
@@ -44,6 +46,8 @@ namespace RayEngine
 
 		private:
 			GLDevice* m_Device;
+
+			BufferDesc m_Desc;
 
 			uint32 m_Buffer;
 			uint32 m_SizeBytes;

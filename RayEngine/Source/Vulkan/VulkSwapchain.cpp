@@ -44,9 +44,10 @@ namespace RayEngine
 			: m_Factory(nullptr),
 			m_Device(nullptr),
 			m_CommandQueue(nullptr),
-			m_Swapchain(0),
-			m_Surface(0),
+			m_Swapchain(VK_NULL_HANDLE),
+			m_Surface(VK_NULL_HANDLE),
 			m_Format(),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -79,6 +80,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkSwapchain::SetName(const std::string& name)
 		{
+			//Not relevant
 		}
 
 
@@ -93,6 +95,13 @@ namespace RayEngine
 		void VulkSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void VulkSwapchain::GetDesc(SwapchainDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 

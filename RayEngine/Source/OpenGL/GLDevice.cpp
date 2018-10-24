@@ -38,14 +38,17 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
-			: mImmediateContext(nullptr),
+			: m_ImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
 			m_WndHandle(RE_NULL_WINDOW),
-			mCreatedWindow(false),
+			m_CreatedWindow(false),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
+
+			m_Desc = *pDesc;
 
 			Create(debugLayer);
 		}
@@ -53,14 +56,17 @@ namespace RayEngine
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(IFactory* pFactory, System::NativeWindowHandle nativeWindow, GLNativeDevice nativeDevice, const DeviceDesc* pDesc, bool debugLayer)
-			: mImmediateContext(nullptr),
+			: m_ImmediateContext(nullptr),
 			m_Device(RE_GL_NULL_NATIVE_DEVICE),
 			m_WndHandle(RE_NULL_WINDOW),
-			mCreatedWindow(false),
+			m_CreatedWindow(false),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
 			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
+
+			m_Desc = *pDesc;
 
 			Create(nativeWindow, nativeDevice, debugLayer);
 		}
@@ -69,13 +75,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDevice::~GLDevice()
 		{
-			ReRelease_S(mImmediateContext);
+			ReRelease_S(m_ImmediateContext);
 
 #if defined(RE_PLATFORM_WINDOWS)
 			if (m_Device != RE_GL_NULL_NATIVE_DEVICE)
 				ReleaseDC(m_WndHandle, m_Device);
 
-			if (m_WndHandle != RE_NULL_WINDOW && mCreatedWindow)
+			if (m_WndHandle != RE_NULL_WINDOW && m_CreatedWindow)
 				DestroyWindow(m_WndHandle);
 #endif
 		}
@@ -84,7 +90,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool GLDevice::GetImmediateContext(IDeviceContext** ppContext)
 		{
-			return (*ppContext = mImmediateContext->QueryReference<GLDeviceContext>()) != nullptr;
+			return (*ppContext = m_ImmediateContext->QueryReference<GLDeviceContext>()) != nullptr;
 		}
 
 
@@ -180,6 +186,13 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLDevice::GetDesc(DeviceDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::GetReferenceCount() const
 		{
 			return m_References;
@@ -217,7 +230,7 @@ namespace RayEngine
 		{
 #if defined(RE_PLATFORM_WINDOWS)
 			m_WndHandle = CreateDummyWindow();
-			mCreatedWindow = true;
+			m_CreatedWindow = true;
 			
 			m_Device = GetDC(m_WndHandle);
 			if (!SetPixelFormat(m_Device, FORMAT_B8G8R8A8_UNORM, FORMAT_UNKNOWN))
@@ -244,7 +257,7 @@ namespace RayEngine
 		void GLDevice::CreateContext(bool debugLayer)
 		{
 			CreateNativeContext(debugLayer);
-			mImmediateContext = new GLDeviceContext(this, false);
+			m_ImmediateContext = new GLDeviceContext(this, false);
 		}
 
 

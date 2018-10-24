@@ -34,9 +34,9 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc* pDesc)
 			: m_Device(nullptr),
-			m_BufferType(BUFFER_USAGE_UNKNOWN),
 			m_MappedSubresource(-1),
 			m_Views(),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -90,6 +90,13 @@ namespace RayEngine
 		void DX12Buffer::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Buffer::GetDesc(BufferDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -165,7 +172,7 @@ namespace RayEngine
 				CreateView(pDesc);
 				
 				m_State = startingState;
-				m_BufferType = pDesc->Type;
+				m_Desc = *pDesc;
 
 				D3D12SetName(m_Resource, pDesc->Name);
 			}

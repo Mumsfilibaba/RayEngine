@@ -47,11 +47,11 @@ namespace RayEngine
 
 			D3D12_SHADER_BYTECODE GetD3D12ByteCode() const;
 
-			SHADER_TYPE GetType() const override final;
-
 			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(ShaderDesc* pDesc) const override final;
 
 			IObject::CounterType GetReferenceCount() const override final;
 
@@ -64,6 +64,8 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
+
+			ShaderDesc m_Desc;
 
 			IObject::CounterType m_References;
 		};

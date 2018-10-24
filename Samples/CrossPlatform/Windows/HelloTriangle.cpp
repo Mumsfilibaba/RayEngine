@@ -69,7 +69,7 @@ int main(int args, char* argsv[])
 	int32 adapterIndex = 0;
 	int32 adapterCount = 0;
 	AdapterList adapterList = {};
-	pFactory->EnumerateAdapters(adapterList);
+	pFactory->EnumerateAdapters(&adapterList);
 
 	if (adapterList.Count > 1)
 	{
@@ -159,7 +159,6 @@ int main(int args, char* argsv[])
 	
 	IShader* pPs = nullptr;
 	pDevice->CreateShader(&pPs, &shaderDesc);
-	
 	
 	
 	//Create a RootLayout
@@ -318,15 +317,17 @@ int main(int args, char* argsv[])
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
 	
-		pDeviceContext->SetViewports(viewport);
+		pDeviceContext->SetViewports(&viewport);
 	
 	
 		//Set the scissor rect
-		Math::Rectangle scissorRect = {};
-		scissorRect.BottomRight.x = static_cast<float>(window.GetWidth());
-		scissorRect.BottomRight.y = static_cast<float>(window.GetHeight());
+		Rect scissorRect = {};
+		scissorRect.Top = 0;
+		scissorRect.Left = 0;
+		scissorRect.Right = window.GetWidth();
+		scissorRect.Bottom = window.GetHeight();
 		
-		pDeviceContext->SetScissorRects(scissorRect);
+		pDeviceContext->SetScissorRects(&scissorRect);
 	
 		//Set PipelineState and RootLayout
 		pDeviceContext->SetPipelineState(pPipelineState);

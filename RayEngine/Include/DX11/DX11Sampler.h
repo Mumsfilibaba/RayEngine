@@ -51,6 +51,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(SamplerDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -63,6 +65,8 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			ID3D11SamplerState* m_SamplerState;
+
+			SamplerDesc m_Desc;
 
 			IObject::CounterType m_References;
 		};

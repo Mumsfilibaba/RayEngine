@@ -51,6 +51,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(ShaderResourceViewDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -64,6 +66,8 @@ namespace RayEngine
 			DX11Device* m_Device;
 			ID3D11ShaderResourceView* m_View;
 			
+			ShaderResourceViewDesc m_Desc;
+
 			IObject::CounterType m_References;
 		};
 	}

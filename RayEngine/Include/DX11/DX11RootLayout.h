@@ -54,6 +54,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(RootLayoutDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -75,6 +77,8 @@ namespace RayEngine
 			std::vector<DX11ShaderConstantBlock*> m_ConstantBlocks;
 			std::vector<ID3D11SamplerState*> m_StaticSamplers;
 			std::vector<IDX11RootVariableSlot*> m_VariableSlots;
+
+			RootLayoutDesc m_Desc;
 
 			IObject::CounterType m_References;
 		};

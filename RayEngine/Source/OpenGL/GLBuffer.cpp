@@ -8,6 +8,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLBuffer::GLBuffer(IDevice* pDevice, const ResourceData* const pInitialData, const BufferDesc* pDesc)
 			: m_Device(nullptr),
+			m_Desc(),
 			m_Buffer(0),
 			m_SizeBytes(0),
 			m_CpuAccess(0),
@@ -80,6 +81,13 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLBuffer::GetDesc(BufferDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLBuffer::GetReferenceCount() const
 		{
 			return m_References;
@@ -134,6 +142,10 @@ namespace RayEngine
 				buffer = 0;
 
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: Failed to allocate enough memory for buffer.");
+			}
+			else
+			{
+				m_Desc = *pDesc;
 			}
 
 			glBindBuffer(type, 0);

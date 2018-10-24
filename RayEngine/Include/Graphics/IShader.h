@@ -35,7 +35,6 @@ namespace RayEngine
 		class ITexture;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		enum SHADER_SOURCE_LANG : int32
 		{
@@ -43,7 +42,6 @@ namespace RayEngine
 			SHADER_SOURCE_LANG_GLSL = 1,
 			SHADER_SOURCE_LANG_HLSL = 2,
 		};
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,25 +52,18 @@ namespace RayEngine
 		};
 
 
-
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
 		struct ShaderDesc
 		{
-			std::string Name = "";
-			std::string EntryPoint = "main";
-			std::string Source = "";
-			SHADER_TYPE Type = SHADER_TYPE_UNKNOWN;
-			SHADER_SOURCE_LANG SrcLang = SHADER_SOURCE_LANG_UNKNOWN;
-			int32 Flags =
-#if defined(RE_DEBUG)
-				SHADER_FLAGS_DEBUG;
-#else
-				SHADER_FLAGS_NONE;
-#endif
+			std::string Name;
+			std::string EntryPoint;
+			std::string Source;
+			SHADER_TYPE Type;
+			SHADER_SOURCE_LANG SrcLang;
+			int32 Flags;
 		};
-
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,8 +75,15 @@ namespace RayEngine
 			IShader() {}
 			~IShader() {}
 
-			//Retrives the shadertype
-			virtual SHADER_TYPE GetType() const = 0;
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetDesc(ShaderDesc* pDesc) const = 0;
 		};
 	}
 }

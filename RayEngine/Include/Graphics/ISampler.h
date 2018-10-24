@@ -57,7 +57,6 @@ namespace RayEngine
 		};
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class ISampler : public IDeviceObject
 		{
@@ -66,6 +65,16 @@ namespace RayEngine
 		public:
 			ISampler() {}
 			~ISampler() {}
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetDesc(SamplerDesc* pDesc) const  = 0;
 		};
 	}
 }

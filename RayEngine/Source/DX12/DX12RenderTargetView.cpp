@@ -34,6 +34,7 @@ namespace RayEngine
 		DX12RenderTargetView::DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc)
 			: DX12View(),
 			m_Device(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -60,6 +61,13 @@ namespace RayEngine
 		void DX12RenderTargetView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12RenderTargetView::GetDesc(RenderTargetViewDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 		
 
@@ -156,6 +164,8 @@ namespace RayEngine
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			pD3D12Device->CreateRenderTargetView(pD3D12Resource, &desc, m_View.CpuDescriptor);
+
+			m_Desc = *pDesc;
 		}
 	}
 }

@@ -36,7 +36,6 @@ namespace RayEngine
 		class DX11DeviceContext;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11Device final : public IDevice
 		{
@@ -79,6 +78,8 @@ namespace RayEngine
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
 
+			void GetDesc(DeviceDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -92,13 +93,15 @@ namespace RayEngine
 
 		private:
 			DX11Factory* m_Factory;
-			DX11DeviceContext* mImmediateContext;
+			DX11DeviceContext* m_ImmediateContext;
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;
 			ID3D11Debug* m_DebugDevice;
 			
 			D3D_FEATURE_LEVEL m_FeatureLevel;
 			
+			DeviceDesc m_Desc;
+
 			System::Log mLog;
 
 			IObject::CounterType m_References;

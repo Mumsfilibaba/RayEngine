@@ -21,7 +21,6 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "IDeviceObject.h"
-#include "..\Math\Rectangle.h"
 
 namespace RayEngine
 {
@@ -40,7 +39,7 @@ namespace RayEngine
 		class ISwapchain;
 
 		struct Viewport;
-
+		struct Rect;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +64,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const = 0;
 			
-
 			/*////////////////////////////////////////////////////////////
 
 				Clears a DepthStencilView.
@@ -81,7 +79,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 
 				Sets the swapchain to use. This will set the default 
@@ -92,7 +89,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void SetSwapChain(ISwapchain* pSwapchain) const = 0;
-
 
 			/*////////////////////////////////////////////////////////////
 
@@ -112,7 +108,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Sets ShaderResources to be used in a draw- or 
@@ -127,7 +122,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const = 0;
-			
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -144,7 +138,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 
 				Sets ConstantBuffers to be used in a draw- or
@@ -160,7 +153,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetConstantBuffers(IBuffer* pBuffer, int32 startRootIndex) const = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Sets Sampler to be used in a draw- or dispatchcall.
@@ -175,7 +167,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetSamplers(ISampler* pSampler, int32 startRootIndex) const = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Sets the current state of the pipeline to be used in a 
@@ -187,7 +178,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetPipelineState(IPipelineState* pPipelineState) const = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 
 				Sets the RootLayout of the pipeline to be used in a
@@ -198,7 +188,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void SetRootLayout(IRootLayout* pRootLayout) const = 0;
-
 
 			/*////////////////////////////////////////////////////////////
 
@@ -212,7 +201,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Sets the viewport to be used in a drawcall.
@@ -221,8 +209,7 @@ namespace RayEngine
 				render to.
 
 			////////////////////////////////////////////////////////////*/
-			virtual void SetViewports(const Viewport& viewport) const = 0;
-			
+			virtual void SetViewports(const Viewport* pViewport) const = 0;
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -234,7 +221,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 
 				Sets a scissior rectangle to be used when rasterizing.
@@ -243,8 +229,7 @@ namespace RayEngine
 				rect - A Rectangle-structure defining the area to keep.
 
 			////////////////////////////////////////////////////////////*/
-			virtual void SetScissorRects(const Math::Rectangle& rect) const = 0;
-
+			virtual void SetScissorRects(const Rect* pRect) const = 0;
 
 			/*////////////////////////////////////////////////////////////
 
@@ -257,7 +242,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void Draw(int32 startVertex, int32 vertexCount) const = 0;
-
 
 			/*////////////////////////////////////////////////////////////
 
@@ -273,7 +257,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const = 0;
-			
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -294,7 +277,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const = 0;
-
 
 			/*////////////////////////////////////////////////////////////
 
@@ -319,7 +301,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				A dispatch call starting a compute pipeline with ceratain
@@ -337,7 +318,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Executes a deffered context and resets the context state
@@ -347,8 +327,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const = 0;
-
-
 
 			/*////////////////////////////////////////////////////////////
 

@@ -70,6 +70,17 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		AdapterList::AdapterList(const AdapterList& other)
+			: pAdapters(nullptr),
+			Count(other.Count)
+		{
+			pAdapters = new AdapterDesc[Count];
+			for (int32 i = 0; i < Count; i++)
+				pAdapters[i] = other.pAdapters[i];
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		AdapterList::~AdapterList()
 		{
 			if (pAdapters != nullptr)
@@ -77,6 +88,8 @@ namespace RayEngine
 				delete[] pAdapters;
 				pAdapters = nullptr;
 			}
+
+			Count = 0;
 		}
 
 
@@ -98,6 +111,28 @@ namespace RayEngine
 
 				other.pAdapters = nullptr;
 				other.Count = 0;
+			}
+
+			return *this;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		AdapterList& AdapterList::operator=(const AdapterList& other)
+		{
+			if (this != &other)
+			{
+				if (pAdapters != nullptr)
+				{
+					delete[] pAdapters;
+					pAdapters = nullptr;
+				}
+
+				Count = other.Count;
+
+				pAdapters = new AdapterDesc[Count];
+				for (int32 i = 0; i < Count; i++)
+					pAdapters[i] = other.pAdapters[i];
 			}
 
 			return *this;

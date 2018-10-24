@@ -66,6 +66,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(BufferDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -81,7 +83,7 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			
-			BUFFER_USAGE m_BufferType;
+			BufferDesc m_Desc;
 			
 			union 
 			{

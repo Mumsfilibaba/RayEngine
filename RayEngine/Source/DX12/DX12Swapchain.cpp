@@ -37,6 +37,7 @@ namespace RayEngine
 			m_Swapchain(nullptr),
 			m_CurrentBuffer(0),
 			m_Textures(),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -90,6 +91,13 @@ namespace RayEngine
 		void DX12Swapchain::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Swapchain::GetDesc(SwapchainDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 		
 
@@ -162,6 +170,8 @@ namespace RayEngine
 			}
 			else
 			{
+				m_Desc = *pDesc;
+
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 				
 				pDXGIFactory->MakeWindowAssociation(pDesc->WindowHandle, DXGI_MWA_NO_ALT_ENTER);
@@ -169,7 +179,6 @@ namespace RayEngine
 				CreateTextures(pDesc);
 			}
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

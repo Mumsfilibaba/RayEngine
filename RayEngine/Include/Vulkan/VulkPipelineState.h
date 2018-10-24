@@ -51,11 +51,11 @@ namespace RayEngine
 				return m_RenderPass;
 			}
 
-			PIPELINE_TYPE GetPipelineType() const override final;
-
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(PipelineStateDesc* pDesc) const;
 
 			IObject::CounterType GetReferenceCount() const override final;
 			
@@ -66,11 +66,11 @@ namespace RayEngine
 		private:
 			void Create(const PipelineStateDesc* pDesc);
 
-			void CreateComputePipeline(const PipelineStateDesc* pDesc);
+			void CreateComputePipeline();
 			
-			void CreateGraphicsPipeline(const PipelineStateDesc* pDesc);
+			void CreateGraphicsPipeline();
 
-			bool CreateRenderPass(const PipelineStateDesc* pDesc);
+			bool CreateRenderPass();
 
 		private:
 			static VkPipelineShaderStageCreateInfo CreateVkPipelineShaderStageCreateInfo(const IShader* pShader);
@@ -92,7 +92,7 @@ namespace RayEngine
 			VkPipeline m_Pipeline;
 			VkRenderPass m_RenderPass;
 			
-			PIPELINE_TYPE m_Type;
+			PipelineStateDesc m_Desc;
 			
 			IObject::CounterType m_References;
 		};

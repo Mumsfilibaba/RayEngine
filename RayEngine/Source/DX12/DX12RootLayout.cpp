@@ -35,6 +35,7 @@ namespace RayEngine
 		DX12RootLayout::DX12RootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc)
 			: m_Device(nullptr),
 			m_RootSignature(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -62,6 +63,13 @@ namespace RayEngine
 		void DX12RootLayout::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12RootLayout::GetDesc(RootLayoutDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -188,6 +196,8 @@ namespace RayEngine
 			}
 			else
 			{
+				m_Desc = *pDesc;
+
 				D3D12SetName(m_RootSignature, pDesc->Name);
 			}
 		}

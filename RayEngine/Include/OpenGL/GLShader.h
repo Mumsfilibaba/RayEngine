@@ -45,11 +45,11 @@ namespace RayEngine
 				return m_Shader;
 			}
 
-			SHADER_TYPE GetType() const override final;
-
 			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(ShaderDesc* pDesc) const override final;
 
 			IObject::CounterType GetReferenceCount() const override final;
 
@@ -65,7 +65,7 @@ namespace RayEngine
 		private:
 			GLDevice* m_Device;
 			
-			SHADER_TYPE m_Type;
+			ShaderDesc m_Desc;
 
 			int32 m_Shader;
 

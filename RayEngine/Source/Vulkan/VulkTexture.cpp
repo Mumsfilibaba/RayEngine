@@ -30,6 +30,7 @@ namespace RayEngine
 		VulkTexture::VulkTexture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 			: m_Device(nullptr),
 			m_Image(VK_NULL_HANDLE),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -75,6 +76,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkTexture::SetName(const std::string& name)
 		{
+			//Not releveant
 		}
 
 		
@@ -82,6 +84,13 @@ namespace RayEngine
 		void VulkTexture::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void VulkTexture::GetDesc(TextureDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 		
@@ -153,6 +162,10 @@ namespace RayEngine
 			if (result != VK_SUCCESS)
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create image.");
+			}
+			else
+			{
+				m_Desc = *pDesc;
 			}
 		}
 	}

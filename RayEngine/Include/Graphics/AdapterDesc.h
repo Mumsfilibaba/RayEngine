@@ -126,17 +126,15 @@ namespace RayEngine
 		struct AdapterList
 		{
 		public:
-			AdapterList(const AdapterList& other) = delete;
-			AdapterList& operator=(const AdapterList& other) = delete;
-
-		public:
 			AdapterList();
 			AdapterList(int32 count);
 			AdapterList(AdapterList&& other);
+			AdapterList(const AdapterList& other);
 			~AdapterList();
 
 			AdapterDesc& operator[](int32 index);
 			AdapterList& operator=(AdapterList&& other);
+			AdapterList& operator=(const AdapterList& other);
 
 		public:
 			AdapterDesc* pAdapters = nullptr;

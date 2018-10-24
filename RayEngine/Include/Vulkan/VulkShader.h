@@ -36,15 +36,26 @@ namespace RayEngine
 			VulkShader(IDevice* pDevice, const ShaderDesc* pDesc);
 			~VulkShader();
 
-			const std::string& GetEntryPoint() const;
+			inline const std::string& GetEntryPoint() const
+			{
+				return m_Desc.EntryPoint;
+			}
 			
-			VkShaderModule GetVkShaderModule() const;
-			
-			SHADER_TYPE GetType() const override final;
+			inline VkShaderModule GetVkShaderModule() const
+			{
+				return m_Module;
+			}
+
+			inline SHADER_TYPE GetType() const
+			{
+				return m_Desc.Type;
+			}
 
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(ShaderDesc* pDesc) const override final;
 
 			IObject::CounterType GetReferenceCount() const override final;
 			
@@ -60,9 +71,7 @@ namespace RayEngine
 			
 			VkShaderModule m_Module;
 			
-			std::string m_EntryPoint;
-			
-			SHADER_TYPE m_Type;
+			ShaderDesc m_Desc;
 		
 			IObject::CounterType m_References;
 		};

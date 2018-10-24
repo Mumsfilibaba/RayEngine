@@ -334,6 +334,82 @@ namespace RayEngine
 
 
 		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+			A structure describing a compute pipeline.
+
+			pComputeShader - The computeshader to use in the pipeline.
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		struct ComputePipelineDesc
+		{
+			IShader* pComputeShader;
+		};
+
+
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			A structure describing the graphics pipeline.
+
+			RenderTargetCount - Number of rendertargets to use.
+
+			RenderTargetFormats - The format of each rendertarget
+			that will be used.
+
+			DepthStencilFormat - The format of the depthstencil.
+
+			SampleCount - The samples of the rendertargets.
+
+			InputLayout - Describes the input to the vertexshader.
+
+			RasterizerState - Describes how the outputimage will be
+			rasterized.
+
+			DepthStencilState - Descibes how depth- and
+			stenciltesting will be performed.
+
+			BlendState - Describes how blending will be performed.
+
+			SampleMask - Samplemask for the blendstate.
+
+			Topology - The topology to use for the tesselation and
+			geometrystages.
+
+			pVertexShader - Shader for the vertexstage
+
+			pHullShader - Shader for the tesselationstage
+
+			pDomainShader - Shader for the tesselationstage
+
+			pGeometryShader - Shader for the geometrystage
+
+			pPixelShader - Shader for the pixelstage
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		struct GraphicsPipelineDesc
+		{
+			int32 RenderTargetCount;
+			FORMAT RenderTargetFormats[8];
+			FORMAT DepthStencilFormat;
+			MSAA_SAMPLE_COUNT SampleCount;
+
+			InputLayoutDesc InputLayout;
+			RasterizerStateDesc RasterizerState;
+			DepthStencilStateDesc DepthStencilState;
+			BlendStateDesc BlendState;
+
+			uint32 SampleMask;
+
+			PRIMITIVE_TOPOLOGY Topology;
+
+			IShader* pVertexShader;
+			IShader* pHullShader;
+			IShader* pDomainShader;
+			IShader* pGeometryShader;
+			IShader* pPixelShader;
+		};
+
+
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			Describes a pipelinestate
 
@@ -351,81 +427,6 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		struct PipelineStateDesc
 		{
-			/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-				A structure describing a compute pipeline.
-
-				pComputeShader - The computeshader to use in the pipeline.
-
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-			struct ComputePipelineDesc
-			{
-				IShader* pComputeShader;
-			};
-
-
-			/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-				A structure describing the graphics pipeline.
-
-				RenderTargetCount - Number of rendertargets to use.
-
-				RenderTargetFormats - The format of each rendertarget
-				that will be used.
-
-				DepthStencilFormat - The format of the depthstencil.
-
-				SampleCount - The samples of the rendertargets.
-
-				InputLayout - Describes the input to the vertexshader.
-
-				RasterizerState - Describes how the outputimage will be 
-				rasterized.
-
-				DepthStencilState - Descibes how depth- and 
-				stenciltesting will be performed.
-
-				BlendState - Describes how blending will be performed.
-
-				SampleMask - Samplemask for the blendstate.
-
-				Topology - The topology to use for the tesselation and
-				geometrystages.
-
-				pVertexShader - Shader for the vertexstage
-
-				pHullShader - Shader for the tesselationstage
-
-				pDomainShader - Shader for the tesselationstage
-
-				pGeometryShader - Shader for the geometrystage
-
-				pPixelShader - Shader for the pixelstage
-
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-			struct GraphicsPipelineDesc
-			{
-				int32 RenderTargetCount;
-				FORMAT RenderTargetFormats[8];
-				FORMAT DepthStencilFormat;
-				MSAA_SAMPLE_COUNT SampleCount;
-
-				InputLayoutDesc InputLayout;
-				RasterizerStateDesc RasterizerState;
-				DepthStencilStateDesc DepthStencilState;
-				BlendStateDesc BlendState;
-
-				uint32 SampleMask;
-
-				PRIMITIVE_TOPOLOGY Topology;
-
-				IShader* pVertexShader;
-				IShader* pHullShader;
-				IShader* pDomainShader;
-				IShader* pGeometryShader;
-				IShader* pPixelShader;
-			};
-
 			std::string Name;
 			PIPELINE_TYPE Type;
 			IRootLayout* pRootLayout;
@@ -439,6 +440,50 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		inline void CopyPipelineStateDesc(PipelineStateDesc* pDest, const PipelineStateDesc* pSrc)
+		{
+			pDest->Name = pSrc->Name;
+			pDest->Type = pSrc->Type;
+			pDest->pRootLayout = pSrc->pRootLayout;
+
+			if (pDest->Type == PIPELINE_TYPE_GRAPHICS)
+			{
+				pDest->GraphicsPipeline.BlendState = pSrc->GraphicsPipeline.BlendState;
+				pDest->GraphicsPipeline.DepthStencilState = pSrc->GraphicsPipeline.DepthStencilState;
+				pDest->GraphicsPipeline.RasterizerState = pSrc->GraphicsPipeline.RasterizerState;
+				
+				if (pSrc->GraphicsPipeline.InputLayout.pElements != nullptr)
+				{
+					pDest->GraphicsPipeline.InputLayout.ElementCount = pSrc->GraphicsPipeline.InputLayout.ElementCount;
+					pDest->GraphicsPipeline.InputLayout.pElements = new InputElementDesc[pDest->GraphicsPipeline.InputLayout.ElementCount];
+					
+					for (int32 i = 0; i < pDest->GraphicsPipeline.InputLayout.ElementCount; i++)
+						pDest->GraphicsPipeline.InputLayout.pElements[i] = pSrc->GraphicsPipeline.InputLayout.pElements[i];
+				}
+
+				pDest->GraphicsPipeline.DepthStencilFormat = pSrc->GraphicsPipeline.DepthStencilFormat;
+				pDest->GraphicsPipeline.RenderTargetCount = pSrc->GraphicsPipeline.RenderTargetCount;
+				pDest->GraphicsPipeline.SampleCount = pSrc->GraphicsPipeline.SampleCount;
+				pDest->GraphicsPipeline.SampleMask = pSrc->GraphicsPipeline.SampleMask;
+				pDest->GraphicsPipeline.Topology = pSrc->GraphicsPipeline.Topology;
+				
+				for (uint32 i = 0; i < RE_MAX_RENDERTARGETS; i++)
+					pDest->GraphicsPipeline.RenderTargetFormats[i] = pSrc->GraphicsPipeline.RenderTargetFormats[i];
+
+				pDest->GraphicsPipeline.pVertexShader = pSrc->GraphicsPipeline.pVertexShader;
+				pDest->GraphicsPipeline.pHullShader = pSrc->GraphicsPipeline.pHullShader;
+				pDest->GraphicsPipeline.pDomainShader = pSrc->GraphicsPipeline.pDomainShader;
+				pDest->GraphicsPipeline.pGeometryShader = pSrc->GraphicsPipeline.pGeometryShader;
+				pDest->GraphicsPipeline.pPixelShader = pSrc->GraphicsPipeline.pPixelShader;
+			}
+			else if (pDest->Type == PIPELINE_TYPE_COMPUTE)
+			{
+				pDest->ComputePipeline.pComputeShader = pSrc->ComputePipeline.pComputeShader;
+			}
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class IPipelineState : public IDeviceObject
 		{
 			RE_INTERFACE(IPipelineState);
@@ -448,9 +493,14 @@ namespace RayEngine
 			~IPipelineState() {}
 
 			/*////////////////////////////////////////////////////////////
-				Return the type of the pipeline.
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
 			////////////////////////////////////////////////////////////*/
-			virtual PIPELINE_TYPE GetPipelineType() const = 0;
+			virtual void GetDesc(PipelineStateDesc* pDesc) const = 0;
 		};
 	}
 }

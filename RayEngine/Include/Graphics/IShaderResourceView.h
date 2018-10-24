@@ -128,7 +128,6 @@ namespace RayEngine
 		};
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class IShaderResourceView : public IDeviceObject
 		{
@@ -137,6 +136,16 @@ namespace RayEngine
 		public:
 			IShaderResourceView() {}
 			~IShaderResourceView() {}
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetDesc(ShaderResourceViewDesc* pDesc) const = 0;
 		};
 	}
 }

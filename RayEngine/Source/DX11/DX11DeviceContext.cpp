@@ -207,15 +207,15 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11DeviceContext::SetViewports(const Viewport& viewport) const
+		void DX11DeviceContext::SetViewports(const Viewport* pViewport) const
 		{
 			D3D11_VIEWPORT port = {};
-			port.Width = viewport.Width;
-			port.Height = viewport.Height;
-			port.TopLeftX = viewport.TopLeftX;
-			port.TopLeftY = viewport.TopLeftY;
-			port.MaxDepth = viewport.MaxDepth;
-			port.MinDepth = viewport.MinDepth;
+			port.Width = pViewport->Width;
+			port.Height = pViewport->Height;
+			port.TopLeftX = pViewport->TopLeftX;
+			port.TopLeftY = pViewport->TopLeftY;
+			port.MaxDepth = pViewport->MaxDepth;
+			port.MinDepth = pViewport->MinDepth;
 
 			m_Context->RSSetViewports(1, &port);
 		}
@@ -229,13 +229,13 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11DeviceContext::SetScissorRects(const Math::Rectangle& rect) const
+		void DX11DeviceContext::SetScissorRects(const Rect* pRect) const
 		{
 			D3D11_RECT dxRect = {};
-			dxRect.top = static_cast<LONG>(rect.TopLeft.y);
-			dxRect.left = static_cast<LONG>(rect.TopLeft.x);
-			dxRect.bottom = static_cast<LONG>(rect.BottomRight.y);
-			dxRect.right = static_cast<LONG>(rect.BottomRight.x);
+			dxRect.top = pRect->Top;
+			dxRect.left = pRect->Left;
+			dxRect.bottom = pRect->Bottom;
+			dxRect.right = pRect->Right;
 
 			m_Context->RSSetScissorRects(1, &dxRect);
 		}

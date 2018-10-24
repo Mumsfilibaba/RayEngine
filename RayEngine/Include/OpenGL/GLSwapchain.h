@@ -55,6 +55,8 @@ namespace RayEngine
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
 
+			void GetDesc(SwapchainDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -70,6 +72,8 @@ namespace RayEngine
 			
 			System::NativeWindowHandle m_WndHandle;
 			GLNativeDevice m_NativeDevice;
+
+			SwapchainDesc m_Desc;
 			
 			IObject::CounterType m_References;
 		};

@@ -30,6 +30,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VulkRenderTargetView::VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc)
 			: VulkImageView(pDevice),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -53,6 +54,13 @@ namespace RayEngine
 		void VulkRenderTargetView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void VulkRenderTargetView::GetDesc(RenderTargetViewDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -115,6 +123,10 @@ namespace RayEngine
 			if (result != VK_SUCCESS)
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ImageView. ");
+			}
+			else
+			{
+				m_Desc = *pDesc;
 			}
 		}
 	}

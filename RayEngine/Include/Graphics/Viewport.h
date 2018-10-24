@@ -27,15 +27,16 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		struct Viewport
 		{
 		public:
-			float Width = 0.0f;
-			float Height = 0.0f;
-			float TopLeftX = 0.0f;
-			float TopLeftY = 0.0f;
-			float MinDepth = 0.0f;
-			float MaxDepth = 1.0f;
+			float Width;
+			float Height;
+			float TopLeftX;
+			float TopLeftY;
+			float MinDepth;
+			float MaxDepth;
 
 		public:
 			inline bool operator==(const Viewport& other)
@@ -45,6 +46,28 @@ namespace RayEngine
 			}
 
 			inline bool operator!=(const Viewport& other)
+			{
+				return !(*this == other);
+			}
+		};
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		struct Rect
+		{
+		public:
+			int32 Left;
+			int32 Top;
+			int32 Right;
+			int32 Bottom;
+
+		public:
+			inline bool operator==(const Rect& other)
+			{
+				return (Left == other.Left) && (Top == other.Top) && (Right == other.Right) && (Bottom == other.Bottom);
+			}
+
+			inline bool operator!=(const Rect& other)
 			{
 				return !(*this == other);
 			}

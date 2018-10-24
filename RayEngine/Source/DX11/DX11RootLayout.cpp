@@ -36,6 +36,7 @@ namespace RayEngine
 			m_ConstantBlocks(),
 			m_StaticSamplers(),
 			m_VariableSlots(),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -71,6 +72,13 @@ namespace RayEngine
 		void DX11RootLayout::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11RootLayout::GetDesc(RootLayoutDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -127,6 +135,9 @@ namespace RayEngine
 
 				m_VariableSlots.push_back(CreateVariable(&pDesc->pVariables[i]));
 			}
+
+
+			m_Desc = *pDesc;
 		}
 
 

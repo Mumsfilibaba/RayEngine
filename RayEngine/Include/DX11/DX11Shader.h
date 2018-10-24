@@ -68,12 +68,12 @@ namespace RayEngine
 				static_assert(IsD3D11Shader<D3D11ShaderType>(), "GetD3D11Shader() - T must be a valid D3D11 shadertype. For example ID3D11VertexShader");
 				return reinterpret_cast<D3D11ShaderType*>(m_Shader);
 			}
-
-			SHADER_TYPE GetType() const override final;
-			
+						
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(ShaderDesc* pDesc) const override final;
 
 			IObject::CounterType GetReferenceCount() const override final;
 			
@@ -87,6 +87,8 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			ID3D11DeviceChild* m_Shader;
+
+			ShaderDesc m_Desc;
 
 			IObject::CounterType m_References;
 		};

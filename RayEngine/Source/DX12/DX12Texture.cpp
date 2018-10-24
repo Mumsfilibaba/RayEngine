@@ -35,6 +35,7 @@ namespace RayEngine
 		DX12Texture::DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 			: DX12Resource(),
 			m_Device(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -47,13 +48,17 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Texture::DX12Texture(IDevice* pDevice, ID3D12Resource* pResource)
 			: DX12Resource(), 
-			m_Device(nullptr)
+			m_Device(nullptr),
+			m_Desc(),
+			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
 			m_Resource = pResource;
 			pResource->AddRef();
+
+			//TODO: Get desc from D3D12 resource
 		}
 
 
@@ -74,6 +79,13 @@ namespace RayEngine
 		void DX12Texture::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Texture::GetDesc(TextureDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -142,7 +154,6 @@ namespace RayEngine
 			}
 
 
-
 			D3D12_RESOURCE_DESC desc = {};
 			desc.Width = pDesc->Width;
 			desc.Height = pDesc->Height;
@@ -194,7 +205,10 @@ namespace RayEngine
 			else
 			{
 				m_State = startingState;
+
 				D3D12SetName(m_Resource, pDesc->Name);
+
+				m_Desc = *pDesc;
 			}
 
 

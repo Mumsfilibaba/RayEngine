@@ -46,8 +46,9 @@ namespace RayEngine
 			m_Adapter(nullptr),
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
-			mImmediateContext(nullptr),
+			m_ImmediateContext(nullptr),
 			m_FeatureLevel(),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -60,7 +61,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Device::~DX11Device()
 		{
-			ReRelease_S(mImmediateContext);
+			ReRelease_S(m_ImmediateContext);
 			ReRelease_S(m_Factory);
 			
 			D3DRelease_S(m_Adapter);
@@ -80,7 +81,7 @@ namespace RayEngine
 			if (ppContext == nullptr)
 				return false;
 
-			(*ppContext) = mImmediateContext->QueryReference<DX11DeviceContext>();
+			(*ppContext) = m_ImmediateContext->QueryReference<DX11DeviceContext>();
 			return (*ppContext) != nullptr;
 		}
 
@@ -106,6 +107,13 @@ namespace RayEngine
 		void DX11Device::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11Device::GetDesc(DeviceDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -234,8 +242,7 @@ namespace RayEngine
 				deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 
 			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
-			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1,
-				D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
+			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
 			if (FAILED(hr))
 			{
 				mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
@@ -245,7 +252,9 @@ namespace RayEngine
 			{
 				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 
-				mImmediateContext = new DX11DeviceContext(this, false);
+				m_ImmediateContext = new DX11DeviceContext(this, false);
+
+				m_Desc = *pDesc;
 			}
 
 

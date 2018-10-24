@@ -35,7 +35,7 @@ namespace RayEngine
 		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateDesc* pDesc)
 			: m_Device(nullptr),
 			m_PipelineState(nullptr),
-			m_Type(PIPELINE_TYPE_UNKNOWN),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -49,13 +49,17 @@ namespace RayEngine
 		DX12PipelineState::~DX12PipelineState()
 		{
 			D3DRelease_S(m_PipelineState);
-		}
-		
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		PIPELINE_TYPE DX12PipelineState::GetPipelineType() const
-		{
-			return m_Type;
+			if (m_Desc.Type == PIPELINE_TYPE_GRAPHICS)
+			{
+				if (m_Desc.GraphicsPipeline.InputLayout.pElements != nullptr)
+				{
+					delete[] m_Desc.GraphicsPipeline.InputLayout.pElements;
+					m_Desc.GraphicsPipeline.InputLayout.pElements = nullptr;
+
+					m_Desc.GraphicsPipeline.InputLayout.ElementCount = 0;
+				}
+			}
 		}
 		
 
@@ -70,6 +74,13 @@ namespace RayEngine
 		void DX12PipelineState::QueryDevice(IDevice ** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12PipelineState::GetDesc(PipelineStateDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 		
 
@@ -104,32 +115,34 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::Create(const PipelineStateDesc* pDesc)
 		{
-			if (pDesc->Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsState(pDesc);
-			else if (pDesc->Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputeState(pDesc);
+			CopyPipelineStateDesc(&m_Desc, pDesc);
+
+			if (m_Desc.Type == PIPELINE_TYPE_GRAPHICS)
+				CreateGraphicsState();
+			else if (m_Desc.Type == PIPELINE_TYPE_COMPUTE)
+				CreateComputeState();
 
 
 			if (m_PipelineState != nullptr)
-				D3D12SetName(m_PipelineState, pDesc->Name);
+				D3D12SetName(m_PipelineState, m_Desc.Name);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateGraphicsState(const PipelineStateDesc* pDesc)
+		void DX12PipelineState::CreateGraphicsState()
 		{
 			using namespace System;
 
 			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
-			inputLayout.resize(pDesc->GraphicsPipeline.InputLayout.ElementCount);
+			inputLayout.resize(m_Desc.GraphicsPipeline.InputLayout.ElementCount);
 
 			for (int32 i = 0; i < static_cast<int32>(inputLayout.size()); i++)
 			{
-				SetInputElementDesc(&inputLayout[i], &pDesc->GraphicsPipeline.InputLayout.pElements[i]);
+				SetInputElementDesc(&inputLayout[i], &m_Desc.GraphicsPipeline.InputLayout.pElements[i]);
 			}
 
 
-			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(pDesc->pRootLayout)->GetD3D12RootSignature();
+			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(m_Desc.pRootLayout)->GetD3D12RootSignature();
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
 			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 			desc.pRootSignature = pD3D12RootSignature;
@@ -143,16 +156,16 @@ namespace RayEngine
 			//desc.StreamOutput.RasterizedStream;
 
 			//TODO: Fix rendertarget count etc
-			desc.NumRenderTargets = pDesc->GraphicsPipeline.RenderTargetCount;
+			desc.NumRenderTargets = m_Desc.GraphicsPipeline.RenderTargetCount;
 			for (uint32 i = 0; i < desc.NumRenderTargets; i++)
-				desc.RTVFormats[i] = ReToDXFormat(pDesc->GraphicsPipeline.RenderTargetFormats[i]);
+				desc.RTVFormats[i] = ReToDXFormat(m_Desc.GraphicsPipeline.RenderTargetFormats[i]);
 			
 
-			desc.DSVFormat = ReToDXFormat(pDesc->GraphicsPipeline.DepthStencilFormat);
-			desc.SampleDesc.Count = pDesc->GraphicsPipeline.SampleCount;
+			desc.DSVFormat = ReToDXFormat(m_Desc.GraphicsPipeline.DepthStencilFormat);
+			desc.SampleDesc.Count = m_Desc.GraphicsPipeline.SampleCount;
 
 
-			D3D_PRIMITIVE_TOPOLOGY topology = ReToDXTopology(pDesc->GraphicsPipeline.Topology);
+			D3D_PRIMITIVE_TOPOLOGY topology = ReToDXTopology(m_Desc.GraphicsPipeline.Topology);
 			if (topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST || topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP)
 				desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 			else if (topology == D3D_PRIMITIVE_TOPOLOGY_LINELIST || topology == D3D_PRIMITIVE_TOPOLOGY_LINESTRIP)
@@ -171,19 +184,19 @@ namespace RayEngine
 
 
 			//TODO: Make sure shader is of correct type
-			SetShaderByteCode(&desc.VS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pVertexShader));
-			SetShaderByteCode(&desc.HS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pHullShader));
-			SetShaderByteCode(&desc.DS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pDomainShader));
-			SetShaderByteCode(&desc.GS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pGeometryShader));
-			SetShaderByteCode(&desc.PS, reinterpret_cast<DX12Shader*>(pDesc->GraphicsPipeline.pPixelShader));
+			SetShaderByteCode(&desc.VS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pVertexShader));
+			SetShaderByteCode(&desc.HS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pHullShader));
+			SetShaderByteCode(&desc.DS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pDomainShader));
+			SetShaderByteCode(&desc.GS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pGeometryShader));
+			SetShaderByteCode(&desc.PS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pPixelShader));
 		
 
-			SetRasterizerDesc(&desc.RasterizerState, &pDesc->GraphicsPipeline.RasterizerState);
+			SetRasterizerDesc(&desc.RasterizerState, &m_Desc.GraphicsPipeline.RasterizerState);
 
-			SetDepthStencilDesc(&desc.DepthStencilState, &pDesc->GraphicsPipeline.DepthStencilState);
+			SetDepthStencilDesc(&desc.DepthStencilState, &m_Desc.GraphicsPipeline.DepthStencilState);
 
-			SetBlendDesc(&desc.BlendState, &pDesc->GraphicsPipeline.BlendState);
-			desc.SampleMask = pDesc->GraphicsPipeline.SampleMask;
+			SetBlendDesc(&desc.BlendState, &m_Desc.GraphicsPipeline.BlendState);
+			desc.SampleMask = m_Desc.GraphicsPipeline.SampleMask;
 	
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
@@ -196,17 +209,17 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateComputeState(const PipelineStateDesc* pDesc)
+		void DX12PipelineState::CreateComputeState()
 		{
 			using namespace System;
 
-			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(pDesc->pRootLayout)->GetD3D12RootSignature();
+			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(m_Desc.pRootLayout)->GetD3D12RootSignature();
 			D3D12_COMPUTE_PIPELINE_STATE_DESC desc = { };
 			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 			desc.pRootSignature = pD3D12RootSignature;
 			desc.NodeMask = 0;
 
-			SetShaderByteCode(&desc.CS, reinterpret_cast<DX12Shader*>(pDesc->ComputePipeline.pComputeShader));
+			SetShaderByteCode(&desc.CS, reinterpret_cast<DX12Shader*>(m_Desc.ComputePipeline.pComputeShader));
 
 			desc.CachedPSO.CachedBlobSizeInBytes = 0;
 			desc.CachedPSO.pCachedBlob = nullptr;

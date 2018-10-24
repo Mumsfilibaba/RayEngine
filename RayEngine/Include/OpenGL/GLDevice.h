@@ -93,6 +93,8 @@ namespace RayEngine
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
 
+			void GetDesc(DeviceDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -112,13 +114,15 @@ namespace RayEngine
 
 		private:
 			GLFactory* m_Factory;
-			GLDeviceContext* mImmediateContext;
+			GLDeviceContext* m_ImmediateContext;
 			
 			GLNativeDevice m_Device;
 			GLNativeContext m_NativeContext;
 			System::NativeWindowHandle m_WndHandle;
 
-			bool mCreatedWindow;
+			bool m_CreatedWindow;
+
+			DeviceDesc m_Desc;
 
 			mutable System::Log mLog;
 			

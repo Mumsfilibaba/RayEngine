@@ -30,7 +30,7 @@ namespace RayEngine
 		VulkShader::VulkShader(IDevice* pDevice, const ShaderDesc* pDesc)
 			: m_Device(nullptr),
 			m_Module(VK_NULL_HANDLE),
-			m_Type(SHADER_TYPE_UNKNOWN),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -55,30 +55,10 @@ namespace RayEngine
 		}
 
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		const std::string& VulkShader::GetEntryPoint() const
-		{
-			return m_EntryPoint;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VkShaderModule VulkShader::GetVkShaderModule() const
-		{
-			return m_Module;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		SHADER_TYPE VulkShader::GetType() const
-		{
-			return m_Type;
-		}
-
-
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkShader::SetName(const std::string& name)
 		{
+			//Not relevant for now
 		}
 
 
@@ -86,6 +66,13 @@ namespace RayEngine
 		void VulkShader::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void VulkShader::GetDesc(ShaderDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -137,8 +124,7 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Type = pDesc->Type;
-				m_EntryPoint = pDesc->EntryPoint;
+				m_Desc = *pDesc;
 			}
 		}
 	}

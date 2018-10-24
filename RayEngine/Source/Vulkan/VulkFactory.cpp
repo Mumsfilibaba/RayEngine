@@ -161,7 +161,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkFactory::EnumerateAdapters(AdapterList& list) const
+		void VulkFactory::EnumerateAdapters(AdapterList* pList) const
 		{
 			uint32 deviceCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
@@ -169,11 +169,11 @@ namespace RayEngine
 				return;
 
 
-			list = AdapterList(deviceCount);
+			(*pList) = AdapterList(deviceCount);
 
 
 			std::vector<VkPhysicalDevice> devices;
-			devices.resize(list.Count);
+			devices.resize(pList->Count);
 			result = vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 			if (result != VK_SUCCESS)
 				return;
@@ -190,7 +190,7 @@ namespace RayEngine
 			};
 
 
-			for (int32 i = 0; i < list.Count; i++)
+			for (int32 i = 0; i < pList->Count; i++)
 			{
 				vkGetPhysicalDeviceFeatures(devices[i], &features);
 				vkGetPhysicalDeviceProperties(devices[i], &properties);
@@ -221,7 +221,7 @@ namespace RayEngine
 				supportFlags |= highestQueueSupport;
 
 
-				FillAdapterDesc(&list[i], &features, &properties, i, supportFlags);
+				FillAdapterDesc(&(*pList)[i], &features, &properties, i, supportFlags);
 			}
 		}
 

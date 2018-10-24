@@ -50,19 +50,11 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLFactory::EnumerateAdapters(AdapterList& list) const
+		void GLFactory::EnumerateAdapters(AdapterList* pList) const
 		{
-#if defined(RE_PLATFORM_WINDOWS)
-			DISPLAY_DEVICE dd = {};
-			dd.cb = sizeof(DISPLAY_DEVICE);
-
-			std::string id;
-
-#endif
-
-			list = AdapterList(m_AdapterList.Count);
+			*pList = AdapterList(m_AdapterList.Count);
 			for (int32 i = 0; i < m_AdapterList.Count; i++)
-				list[i] = m_AdapterList.pAdapters[i];
+				(*pList)[i] = m_AdapterList.pAdapters[i];
 		}
 
 

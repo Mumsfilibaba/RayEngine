@@ -73,6 +73,8 @@ namespace RayEngine
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
 
+			void GetDesc(DeviceDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -89,6 +91,8 @@ namespace RayEngine
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
 			
+			DeviceDesc m_Desc;
+
 			IObject::CounterType m_References;
 			
 			System::Log mLog;

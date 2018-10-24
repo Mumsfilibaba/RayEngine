@@ -39,6 +39,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(RenderTargetViewDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -49,6 +51,8 @@ namespace RayEngine
 			void Create(const RenderTargetViewDesc* pDesc);
 
 		private:
+			RenderTargetViewDesc m_Desc;
+
 			IObject::CounterType m_References;
 		};
 	}

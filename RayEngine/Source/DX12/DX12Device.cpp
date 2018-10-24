@@ -48,11 +48,12 @@ namespace RayEngine
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			m_UploadHeap(nullptr),
-			mImmediateContext(nullptr),
+			m_ImmediateContext(nullptr),
 			m_ResourceHeap(nullptr),
 			m_DsvHeap(nullptr),
 			m_RtvHeap(nullptr),
 			m_SamplerHeap(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -72,7 +73,7 @@ namespace RayEngine
 			ReRelease_S(m_DsvHeap);
 			ReRelease_S(m_RtvHeap);
 			ReRelease_S(m_ResourceHeap);
-			ReRelease_S(mImmediateContext);
+			ReRelease_S(m_ImmediateContext);
 			ReRelease_S(m_UploadHeap);
 			ReRelease_S(m_SamplerHeap);
 
@@ -172,6 +173,13 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Device::GetDesc(DeviceDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::GetReferenceCount() const
 		{
 			return m_References;
@@ -209,7 +217,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX12Device::GetImmediateContext(IDeviceContext** ppContext)
 		{
-			return ((*ppContext) = mImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
+			return ((*ppContext) = m_ImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
 		}
 
 
@@ -255,9 +263,11 @@ namespace RayEngine
 					m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, pDesc->SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 					m_SamplerHeap->SetName(pDesc->Name + ": Sampler-Heap");
 
-					mImmediateContext = new DX12DeviceContext(this, false);
+					m_ImmediateContext = new DX12DeviceContext(this, false);
 
 					D3D12SetName(m_Device, pDesc->Name);
+
+					m_Desc = *pDesc;
 				}
 				else
 				{

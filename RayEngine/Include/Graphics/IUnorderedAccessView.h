@@ -104,6 +104,16 @@ namespace RayEngine
 		public:
 			IUnorderedAccessView() {}
 			~IUnorderedAccessView() {}
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetDesc(UnorderedAccessViewDesc* pDesc) const = 0;
 		};
 	}
 }

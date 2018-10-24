@@ -48,11 +48,11 @@ namespace RayEngine
 				return m_PipelineState;
 			}
 
-			PIPELINE_TYPE GetPipelineType() const override final;
-
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(PipelineStateDesc* pDesc) const;
 
 			IObject::CounterType GetReferenceCount() const override final;
 
@@ -63,9 +63,9 @@ namespace RayEngine
 		private:
 			void Create(const PipelineStateDesc* pDesc);
 
-			void CreateGraphicsState(const PipelineStateDesc* pDesc);
+			void CreateGraphicsState();
 
-			void CreateComputeState(const PipelineStateDesc* pDesc);
+			void CreateComputeState();
 			
 		private:
 			static void SetShaderByteCode(D3D12_SHADER_BYTECODE* pByteCode, const DX12Shader* pShader);
@@ -82,7 +82,7 @@ namespace RayEngine
 			DX12Device* m_Device;
 			ID3D12PipelineState* m_PipelineState;
 			
-			PIPELINE_TYPE m_Type;
+			PipelineStateDesc m_Desc;
 
 			IObject::CounterType m_References;
 		};

@@ -343,16 +343,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DeviceContext::SetViewports(const Viewport& viewport) const
+		void DX12DeviceContext::SetViewports(const Viewport* pViewport) const
 		{
 			D3D12_VIEWPORT view =
 			{
-				viewport.TopLeftX,
-				viewport.TopLeftY,
-				viewport.Width,
-				viewport.Height,
-				viewport.MinDepth,
-				viewport.MaxDepth
+				pViewport->TopLeftX,
+				pViewport->TopLeftY,
+				pViewport->Width,
+				pViewport->Height,
+				pViewport->MinDepth,
+				pViewport->MaxDepth
 			};
 
 			m_List->GetD3D12GraphicsCommandList()->RSSetViewports(1, &view);
@@ -371,14 +371,14 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DeviceContext::SetScissorRects(const Math::Rectangle& rect) const
+		void DX12DeviceContext::SetScissorRects(const Rect* pRect) const
 		{
 			D3D12_RECT dxRect =
 			{
-				static_cast<LONG>(rect.TopLeft.x),
-				static_cast<LONG>(rect.TopLeft.y),
-				static_cast<LONG>(rect.BottomRight.x),
-				static_cast<LONG>(rect.BottomRight.y)
+				pRect->Left,
+				pRect->Top,
+				pRect->Right,
+				pRect->Bottom
 			};
 
 			m_List->GetD3D12GraphicsCommandList()->RSSetScissorRects(1, &dxRect);

@@ -63,6 +63,8 @@ namespace RayEngine
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
 
+			void GetDesc(SwapchainDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -88,6 +90,8 @@ namespace RayEngine
 			VkSurfaceKHR m_Surface;
 			VkSwapchainKHR m_Swapchain;
 			
+			SwapchainDesc m_Desc;
+
 			std::vector<VulkTexture*> m_Textures;
 			
 			IObject::CounterType m_References;

@@ -34,6 +34,7 @@ namespace RayEngine
 		DX11UnorderedAccessView::DX11UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc* pDesc)
 			: m_Device(nullptr),
 			m_View(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -61,6 +62,13 @@ namespace RayEngine
 		void DX11UnorderedAccessView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11UnorderedAccessView::GetDesc(UnorderedAccessViewDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -167,6 +175,8 @@ namespace RayEngine
 			}
 			else
 			{
+				m_Desc = *pDesc;
+
 				m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}

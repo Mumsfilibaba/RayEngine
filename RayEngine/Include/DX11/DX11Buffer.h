@@ -46,7 +46,7 @@ namespace RayEngine
 
 			inline int32 GetByteStride() const
 			{
-				return m_ByteStride;
+				return m_Desc.ByteStride;
 			}
 			
 			inline ID3D11Buffer* GetD3D11Buffer() const
@@ -62,6 +62,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(BufferDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -76,7 +78,7 @@ namespace RayEngine
 			DX11DeviceContext* m_Context;
 			ID3D11Buffer* m_Resource;
 			
-			int32 m_ByteStride;
+			BufferDesc m_Desc;
 
 			IObject::CounterType m_References;
 		};

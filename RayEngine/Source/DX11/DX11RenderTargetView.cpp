@@ -65,6 +65,13 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11RenderTargetView::GetDesc(RenderTargetViewDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11RenderTargetView::GetReferenceCount() const
 		{
 			return m_References;
@@ -175,6 +182,8 @@ namespace RayEngine
 			}
 			else
 			{
+				m_Desc = *pDesc;
+
 				m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}

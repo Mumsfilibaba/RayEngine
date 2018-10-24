@@ -32,6 +32,7 @@ namespace RayEngine
 		DX12Shader::DX12Shader(IDevice* pDevice, const ShaderDesc* pDesc)
 			: DXShaderBase(),
 			m_Device(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -48,13 +49,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		SHADER_TYPE DX12Shader::GetType() const
-		{
-			return m_Type;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Shader::SetName(const std::string& name)
 		{
 			//Not relevant
@@ -65,6 +59,13 @@ namespace RayEngine
 		void DX12Shader::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Shader::GetDesc(ShaderDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -96,7 +97,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Shader::Create(const ShaderDesc* pDesc)
 		{
@@ -110,10 +110,12 @@ namespace RayEngine
 			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
 			{
 				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not compile shader" + errorString);
-				return;
+			}
+			else
+			{
+				m_Desc = *pDesc;
 			}
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

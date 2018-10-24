@@ -31,7 +31,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Texture::DX11Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc)
 			: m_Device(nullptr),
-			m_Type(TEXTURE_TYPE_UNKNOWN),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -44,29 +44,38 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Texture::DX11Texture(IDevice* pDevice, ID3D11Texture2D* pResource)
 			: m_Device(nullptr),
-			m_Type(TEXTURE_TYPE_2D),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			pResource->AddRef();
 			m_Texture2D = pResource;
+			pResource->AddRef();
+
+			D3D11_TEXTURE2D_DESC desc = {};
+			pResource->GetDesc(&desc);
+
+			m_Desc.Height = desc.Height;
+			m_Desc.Width = desc.Width;
+			m_Desc.MipLevels = desc.MipLevels;
+			m_Desc.DepthOrArraySize = desc.ArraySize;
+			m_Desc.Type = TEXTURE_TYPE_2D;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Texture::~DX11Texture()
 		{
-			if (m_Type == TEXTURE_TYPE_1D) 
+			if (m_Desc.Type == TEXTURE_TYPE_1D) 
 			{
 				D3DRelease_S(m_Texture1D);
 			}
-			else if (m_Type == TEXTURE_TYPE_2D)
+			else if (m_Desc.Type == TEXTURE_TYPE_2D)
 			{
 				D3DRelease_S(m_Texture2D);
 			}
-			else if (m_Type == TEXTURE_TYPE_3D)
+			else if (m_Desc.Type == TEXTURE_TYPE_3D)
 			{
 				D3DRelease_S(m_Texture3D);
 			}
@@ -85,6 +94,13 @@ namespace RayEngine
 		void DX11Texture::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11Texture::GetDesc(TextureDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 		
 
@@ -228,6 +244,8 @@ namespace RayEngine
 			}
 			else
 			{
+				m_Desc = *pDesc;
+
 				pD3D11DeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}

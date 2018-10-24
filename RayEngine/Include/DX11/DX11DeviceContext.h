@@ -80,11 +80,11 @@ namespace RayEngine
 			
 			void SetVertexBuffers(IBuffer* pBuffer, int32 startSlot) const override final;
 			
-			void SetViewports(const Viewport& viewport) const override final;
+			void SetViewports(const Viewport* pViewport) const override final;
 			
 			void SetPrimitiveTopology(PRIMITIVE_TOPOLOGY topology) const override final;
 			
-			void SetScissorRects(const Math::Rectangle& rect) const override final;
+			void SetScissorRects(const Rect* pRect) const override final;
 			
 			void Draw(int32 startVertex, int32 vertexCount) const override final;
 			

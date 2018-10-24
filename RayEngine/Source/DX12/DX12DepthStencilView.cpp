@@ -34,6 +34,7 @@ namespace RayEngine
 		DX12DepthStencilView::DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc* pDesc)
 			: DX12View(),
 			m_Device(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -60,6 +61,13 @@ namespace RayEngine
 		void DX12DepthStencilView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12DepthStencilView::GetDesc(DepthStencilViewDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 		
 
@@ -145,6 +153,8 @@ namespace RayEngine
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			pD3D12Device->CreateDepthStencilView(pD3D12Resource, nullptr, m_View.CpuDescriptor);
+
+			m_Desc = *pDesc;
 		}
 	}
 }

@@ -42,12 +42,8 @@ namespace RayEngine
 			m_DepthStencil(nullptr),
 			m_Rtv(nullptr),
 			m_Dsv(nullptr),
-			m_Name(),
-			m_Width(0),
-			m_Height(0),
+			m_Desc(),
 			m_Flags(0),
-			m_DepthStencilFormat(FORMAT_UNKNOWN),
-			m_BackBufferFormat(FORMAT_UNKNOWN),
 			m_References(0)
 		{
 			AddRef();
@@ -100,6 +96,13 @@ namespace RayEngine
 		void DX11Swapchain::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11Swapchain::GetDesc(SwapchainDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -176,13 +179,11 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Name = pDesc->Name;
-				m_Width = pDesc->Width;
-				m_Height = pDesc->Height;
-				m_BackBufferFormat = pDesc->BackBuffer.Format;
-				m_DepthStencilFormat = pDesc->DepthStencil.Format;
+				m_Desc = *pDesc;
 
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
+
+				pDXGIFactory->MakeWindowAssociation(pDesc->WindowHandle, DXGI_MWA_NO_ALT_ENTER);
 			}				
 
 			CreateTextures();
@@ -204,24 +205,24 @@ namespace RayEngine
 			}
 			else
 			{
-				std::string name = m_Name + ": BackBuffer";
+				std::string name = m_Desc.Name + ": BackBuffer";
 				pTexture->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 
 				m_BackBuffer = new DX11Texture(m_Device, pTexture.Get());
 
 
-				if (m_DepthStencilFormat != FORMAT_UNKNOWN)
+				if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
 				{
 					TextureDesc depthStencilInfo = {};
-					depthStencilInfo.Name = m_Name + ": DepthStencil";
+					depthStencilInfo.Name = m_Desc.Name + ": DepthStencil";
 					depthStencilInfo.Flags = TEXTURE_FLAGS_DEPTH_STENCIL;
 					depthStencilInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
-					depthStencilInfo.Width = m_Width;
-					depthStencilInfo.Height = m_Height;
+					depthStencilInfo.Width = m_Desc.Width;
+					depthStencilInfo.Height = m_Desc.Height;
 					depthStencilInfo.DepthOrArraySize = 1;
 					depthStencilInfo.DepthStencil.OptimizedDepth = 1.0f;
 					depthStencilInfo.DepthStencil.OptimizedStencil = 0;
-					depthStencilInfo.Format = m_DepthStencilFormat;
+					depthStencilInfo.Format = m_Desc.DepthStencil.Format;
 					depthStencilInfo.MipLevels = 1;
 					depthStencilInfo.Type = TEXTURE_TYPE_2D;
 					depthStencilInfo.Usage = RESOURCE_USAGE_DEFAULT;
@@ -236,8 +237,8 @@ namespace RayEngine
 		void DX11Swapchain::CreateViews()
 		{
 			RenderTargetViewDesc rtvInfo = {};
-			rtvInfo.Name = m_Name + ": BackBuffer RTV";
-			rtvInfo.Format = m_BackBufferFormat;
+			rtvInfo.Name = m_Desc.Name + ": BackBuffer RTV";
+			rtvInfo.Format = m_Desc.BackBuffer.Format;
 			rtvInfo.pResource = m_BackBuffer;
 			rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 			rtvInfo.Texture2D.MipSlice = 0;
@@ -246,14 +247,13 @@ namespace RayEngine
 			m_Rtv = new DX11RenderTargetView(m_Device, &rtvInfo);
 
 
-			if (m_DepthStencilFormat != FORMAT_UNKNOWN)
+			if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
 			{
 				DepthStencilViewDesc dsvInfo = {};
-				dsvInfo.Name = m_Name + ": DepthStencil DSV";
-				dsvInfo.Format = m_DepthStencilFormat;
+				dsvInfo.Name = m_Desc.Name + ": DepthStencil DSV";
 				dsvInfo.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
 				dsvInfo.pResource = m_DepthStencil;
-				dsvInfo.Texture2D.MipSlice = 0;
+				dsvInfo.Format = m_Desc.DepthStencil.Format;
 				dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 				dsvInfo.Texture2D.MipSlice = 0;
 

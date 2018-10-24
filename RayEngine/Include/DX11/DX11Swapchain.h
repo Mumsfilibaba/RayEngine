@@ -70,6 +70,8 @@ namespace RayEngine
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
 
+			void GetDesc(SwapchainDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -88,18 +90,15 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			DX11Factory* m_Factory;
-			IDXGISwapChain* m_Swapchain;			
+			IDXGISwapChain* m_Swapchain;
 			DX11Texture* m_BackBuffer;
 			DX11Texture* m_DepthStencil;
 			DX11RenderTargetView* m_Rtv;
 			DX11DepthStencilView* m_Dsv;
 
-			std::string m_Name;
-			int32 m_Width;
-			int32 m_Height;
+			SwapchainDesc m_Desc;
 			uint32 m_Flags;
-			FORMAT m_DepthStencilFormat;
-			FORMAT m_BackBufferFormat;
+
 			IObject::CounterType m_References;
 		};
 	}

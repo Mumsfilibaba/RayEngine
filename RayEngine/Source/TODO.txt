@@ -2,12 +2,11 @@ TODO:
 -D3D12 Triangle
 -Vulkan triangle
 -Documentation
--Use pointer for desc - Rename info to desc
 -Static log for system
 -GLImpl - do not return false (Print what function was not loaded)
 -RootLayout should control binding of resources
 
--Implement GetInfo() in all interfaces
+-MSAA-Swapchain
 -Swapchain flags for usage, tearing etc
 -Swapchain Resize
 -Swapchain Fullscreen
@@ -23,7 +22,6 @@ TODO:
 -DX11 - Static Samplers must be bound from 0 to n (in a single range), should be possible to not do this (DX11StaticSamplerRange?)
 
 -Vulk - Create dummy surface and search for correct formats etc
--Add p for pointers
 -Controller support
 
 -Aquire pointers for native window etc

@@ -149,11 +149,11 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLDeviceContext::SetViewports(const Viewport& viewport) const
+		void GLDeviceContext::SetViewports(const Viewport* pViewport) const
 		{
-			glViewport(static_cast<GLint>(viewport.TopLeftX), static_cast<GLint>(viewport.TopLeftY),
-				static_cast<GLsizei>(viewport.Width), static_cast<GLsizei>(viewport.Height));
-			glDepthRangef(viewport.MinDepth, viewport.MaxDepth);
+			glViewport(static_cast<GLint>(pViewport->TopLeftX), static_cast<GLint>(pViewport->TopLeftY),
+				static_cast<GLsizei>(pViewport->Width), static_cast<GLsizei>(pViewport->Height));
+			glDepthRangef(pViewport->MinDepth, pViewport->MaxDepth);
 		}
 
 
@@ -165,10 +165,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLDeviceContext::SetScissorRects(const Math::Rectangle& rect) const
+		void GLDeviceContext::SetScissorRects(const Rect* pRect) const
 		{
-			glScissor(static_cast<GLint>(rect.TopLeft.x), static_cast<GLint>(rect.TopLeft.y),
-				static_cast<GLsizei>(rect.BottomRight.x), static_cast<GLsizei>(rect.BottomRight.y));
+			glScissor(pRect->Left, pRect->Top, pRect->Right, pRect->Bottom);
 		}
 
 

@@ -52,6 +52,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(TextureDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -66,6 +68,8 @@ namespace RayEngine
 			
 			VkImage m_Image;
 			
+			TextureDesc m_Desc;
+
 			IObject::CounterType m_References;
 		};
 	}

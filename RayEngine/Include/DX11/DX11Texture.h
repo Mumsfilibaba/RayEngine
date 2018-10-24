@@ -63,6 +63,8 @@ namespace RayEngine
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 
+			void GetDesc(TextureDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -81,7 +83,7 @@ namespace RayEngine
 				ID3D11Texture3D* m_Texture3D;
 			};
 
-			TEXTURE_TYPE m_Type;
+			TextureDesc m_Desc;
 			
 			IObject::CounterType m_References;
 		};

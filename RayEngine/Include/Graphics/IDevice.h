@@ -103,7 +103,6 @@ namespace RayEngine
 		};
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class IDevice : public IObject
 		{
@@ -127,7 +126,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool GetImmediateContext(IDeviceContext** ppContext) = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new context that is deffered. No commands are
@@ -145,7 +143,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateDefferedContext(IDeviceContext** ppContext) = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Creates and compiles a new ShaderObject. Release needs
@@ -160,7 +157,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateShader(IShader** ppShader, const ShaderDesc* pDesc) = 0;
-			
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -177,7 +173,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateRenderTargetView(IRenderTargetView** ppView, const RenderTargetViewDesc* pDesc) = 0;
-			
 
 			/*////////////////////////////////////////////////////////////
 
@@ -195,7 +190,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateDepthStencilView(IDepthStencilView** ppView, const DepthStencilViewDesc* pDesc) = 0;
 			
-
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new ShaderResourceView. Release needs to be 
@@ -212,7 +206,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateShaderResourceView(IShaderResourceView** ppView, const ShaderResourceViewDesc* pDesc) = 0;
 			
-
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new UnorderedAccessView. Release needs to be 
@@ -229,7 +222,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateUnorderedAccessView(IUnorderedAccessView** ppView, const UnorderedAccessViewDesc* pDesc) = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new Sampler. Release needs to be called on 
@@ -243,7 +235,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateSampler(ISampler** ppSampler, const SamplerDesc* pDesc) = 0;
-			
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -264,7 +255,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateTexture(ITexture** ppTexture, const ResourceData* const pInitialData, const TextureDesc* pDesc) = 0;
 			
-
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new Buffer resource on the GPU. Release needs
@@ -284,7 +274,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateBuffer(IBuffer** ppBuffer, const ResourceData* const pInitialData, const BufferDesc* pDesc) = 0;
 			
-			
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new RootLayout. Release needs to be called
@@ -302,7 +291,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateRootLayout(IRootLayout** ppRootSignature, const RootLayoutDesc* pDesc) = 0;
 			
-
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new PipelineState. Release needs to be called
@@ -320,7 +308,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 				Returns the log of the device. A dummy log is valid to
 				returned. E.g a device that has not been set to have
@@ -330,7 +317,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual System::Log* GetDeviceLog() = 0;
 			
-
 			/*////////////////////////////////////////////////////////////
 
 				Sets the name of the object.
@@ -340,7 +326,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual void SetName(const std::string& name) = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 				Query the factory that was used to create this device.
 				The referencecount of the factory will be increased
@@ -348,6 +333,16 @@ namespace RayEngine
 				when finished with ppFactory.
 			////////////////////////////////////////////////////////////*/
 			virtual void QueryFactory(IFactory** ppFactory) const = 0;
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetDesc(DeviceDesc* pDesc) const = 0;
 		};
 	}
 }

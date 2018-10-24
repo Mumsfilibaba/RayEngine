@@ -30,6 +30,7 @@ namespace RayEngine
 		VulkRootLayout::VulkRootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc)
 			: m_Device(nullptr),
 			m_Layout(VK_NULL_HANDLE),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -65,6 +66,13 @@ namespace RayEngine
 		void VulkRootLayout::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void VulkRootLayout::GetDesc(RootLayoutDesc * pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -114,7 +122,10 @@ namespace RayEngine
 			if (result != VK_SUCCESS)
 			{
 				pDevice->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipelinelayout");
-				return;
+			}
+			else
+			{
+				m_Desc = *pDesc;
 			}
 		}
 	}

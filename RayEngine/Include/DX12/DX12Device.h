@@ -104,6 +104,8 @@ namespace RayEngine
 			void SetName(const std::string& name) override final;
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
+
+			void GetDesc(DeviceDesc* pDesc) const override final;
 			
 			IObject::CounterType GetReferenceCount() const override final;
 			
@@ -121,12 +123,14 @@ namespace RayEngine
 			IDXGIAdapter1* m_Adapter;
 			ID3D12Device* m_Device;
 			ID3D12DebugDevice* m_DebugDevice;
-			DX12DeviceContext* mImmediateContext;
+			DX12DeviceContext* m_ImmediateContext;
 			DX12DynamicUploadHeap* m_UploadHeap;
 			DX12DescriptorHeap* m_ResourceHeap;
 			DX12DescriptorHeap* m_DsvHeap;
 			DX12DescriptorHeap* m_RtvHeap;
 			DX12DescriptorHeap* m_SamplerHeap;
+
+			DeviceDesc m_Desc;
 
 			mutable System::Log mLog;
 

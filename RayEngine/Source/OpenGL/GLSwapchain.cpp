@@ -33,11 +33,14 @@ namespace RayEngine
 			m_Factory(nullptr),
 			m_WndHandle(RE_NULL_WINDOW),
 			m_NativeDevice(RE_GL_NULL_NATIVE_DEVICE),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<GLDevice*>(pDevice);
 			m_Factory = reinterpret_cast<GLFactory*>(pFactory);
+
+			m_Desc = *pDesc;
 
 			Create();
 		}
@@ -81,6 +84,13 @@ namespace RayEngine
 		void GLSwapchain::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = m_Factory->QueryReference<GLFactory>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLSwapchain::GetDesc(SwapchainDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 

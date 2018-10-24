@@ -251,11 +251,16 @@ namespace RayEngine
 				return m_Program;
 			}
 
-			PIPELINE_TYPE GetPipelineType() const override final;
+			inline PIPELINE_TYPE GetPipelineType() const
+			{
+				return m_Desc.Type;
+			}
 
 			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
+
+			void GetDesc(PipelineStateDesc* pDesc) const;
 
 			IObject::CounterType GetReferenceCount() const override final;
 
@@ -266,19 +271,19 @@ namespace RayEngine
 		private:
 			void Create(const PipelineStateDesc* pDesc);
 
-			void CreateGraphicsPipeline(const PipelineStateDesc* pDesc);
+			void CreateGraphicsPipeline();
 
-			void CreateComputePipeline(const PipelineStateDesc* pDesc);
+			void CreateComputePipeline();
 
 			void LinkShaders();
 
-			void CreateInputLayout(const PipelineStateDesc* pDesc);
+			void CreateInputLayout();
 
-			void CreateDepthState(const PipelineStateDesc* pDesc);
+			void CreateDepthState();
 
-			void CreateRasterizerState(const PipelineStateDesc* pDesc);
+			void CreateRasterizerState();
 
-			void CreateBlendState(const PipelineStateDesc* pDesc);
+			void CreateBlendState();
 
 		private:
 			GLDevice* m_Device;
@@ -294,7 +299,7 @@ namespace RayEngine
 			GLRasterizerState m_RasterizerState;
 			GLBlendState m_BlendState;
 
-			PIPELINE_TYPE m_Type;
+			PipelineStateDesc m_Desc;
 
 			uint32 m_Program;
 

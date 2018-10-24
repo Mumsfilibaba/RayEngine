@@ -33,6 +33,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12UnorderedAccessView::DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc* pDesc)
 			: m_Device(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -56,9 +57,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12UnorderedAccessView::QueryDevice(IDevice ** ppDevice) const
+		void DX12UnorderedAccessView::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12UnorderedAccessView::GetDesc(UnorderedAccessViewDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -157,6 +165,8 @@ namespace RayEngine
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			pD3D12Device->CreateUnorderedAccessView(pD3D12Resource, pD3D12CounterResource, &desc, m_View.CpuDescriptor);
+
+			m_Desc = *pDesc;
 		}
 	}
 }

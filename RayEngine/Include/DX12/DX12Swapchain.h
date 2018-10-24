@@ -53,6 +53,8 @@ namespace RayEngine
 			
 			void QueryFactory(IFactory** ppFactory) const override final;
 
+			void GetDesc(SwapchainDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -72,6 +74,8 @@ namespace RayEngine
 			
 			std::vector<DX12Texture*> m_Textures;
 			
+			SwapchainDesc m_Desc;
+
 			mutable int32 m_CurrentBuffer;
 
 			IObject::CounterType m_References;

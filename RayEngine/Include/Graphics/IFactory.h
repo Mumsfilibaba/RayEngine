@@ -44,7 +44,6 @@ namespace RayEngine
 			IFactory() {}
 			~IFactory() {}
 
-
 			/*////////////////////////////////////////////////////////////
 
 				Retrives a list of all the adapters (physical devices)
@@ -54,8 +53,7 @@ namespace RayEngine
 				about the adpaters in the system.
 
 			////////////////////////////////////////////////////////////*/
-			virtual void EnumerateAdapters(AdapterList& list) const = 0;
-			
+			virtual void EnumerateAdapters(AdapterList* pList) const = 0;
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -68,7 +66,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc) = 0;
-			
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -84,7 +81,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc) = 0;
-
 
 			/*////////////////////////////////////////////////////////////
 
@@ -107,12 +103,10 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc) = 0;
 
-
 			/*////////////////////////////////////////////////////////////
 				Returns what the underlying api is.
 			////////////////////////////////////////////////////////////*/
 			virtual GRAPHICS_API GetGraphicsApi() const = 0;
-
 
 			/*////////////////////////////////////////////////////////////
 
@@ -124,7 +118,6 @@ namespace RayEngine
 			virtual void SetName(const std::string& name) = 0;
 
 		public:
-
 			/*////////////////////////////////////////////////////////////
 
 				Creates a new factory.

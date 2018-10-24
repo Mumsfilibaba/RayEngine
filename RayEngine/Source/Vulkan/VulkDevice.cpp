@@ -37,6 +37,7 @@ namespace RayEngine
 			: m_Factory(nullptr),
 			m_Device(nullptr),
 			m_Adapter(nullptr),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -140,6 +141,13 @@ namespace RayEngine
 		void VulkDevice::QueryFactory(IFactory** ppFactory) const
 		{
 			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void VulkDevice::GetDesc(DeviceDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
 		}
 
 
@@ -277,7 +285,10 @@ namespace RayEngine
 			if (result != VK_SUCCESS)
 			{
 				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create device.");
-				return;
+			}
+			else
+			{
+				m_Desc = *pDesc;
 			}
 		}
 	}

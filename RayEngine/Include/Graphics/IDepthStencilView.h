@@ -125,6 +125,16 @@ namespace RayEngine
 		public:
 			IDepthStencilView() {}
 			~IDepthStencilView() {}
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetDesc(DepthStencilViewDesc* pDesc) const = 0;
 		};
 	}
 }

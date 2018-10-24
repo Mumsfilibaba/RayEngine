@@ -34,7 +34,7 @@ namespace RayEngine
 			: m_Device(nullptr),
 			m_Resource(nullptr),
 			m_Context(nullptr),
-			m_ByteStride(0),
+			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -95,6 +95,13 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11Buffer::GetDesc(BufferDesc* pDesc) const
+		{
+			*pDesc = m_Desc;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX11Buffer::GetReferenceCount() const
 		{
 			return m_References;
@@ -145,7 +152,7 @@ namespace RayEngine
 				desc.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
 
 			desc.MiscFlags = 0;
-			desc.StructureByteStride = m_ByteStride = pDesc->ByteStride;
+			desc.StructureByteStride = pDesc->ByteStride;
 			
 			if (pDesc->Usage == RESOURCE_USAGE_DEFAULT)
 				desc.Usage = D3D11_USAGE_DEFAULT;
@@ -172,6 +179,7 @@ namespace RayEngine
 			}
 			else
 			{
+				m_Desc = *pDesc;
 				m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}

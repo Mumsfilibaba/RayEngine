@@ -83,6 +83,16 @@ namespace RayEngine
 		public:
 			ITexture() {}
 			~ITexture() {}
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that was used to create the
+				object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetDesc(TextureDesc* pDesc) const = 0;
 		};
 	}
 }
