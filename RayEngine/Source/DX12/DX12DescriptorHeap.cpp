@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12DescriptorHeap.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -117,8 +118,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
 		{
-			using namespace System;
-
 			D3D12_DESCRIPTOR_HEAP_DESC desc = {};
 			desc.Flags = flags;
 			desc.NodeMask = 0;
@@ -130,7 +129,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_Heap));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DescriptorHeap. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DescriptorHeap. " + DXErrorString(hr));
 			}
 			else
 			{

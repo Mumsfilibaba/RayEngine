@@ -86,8 +86,6 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
-			System::Log* GetDeviceLog() override final;
-
 		private:
 			void Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
 
@@ -101,8 +99,6 @@ namespace RayEngine
 			D3D_FEATURE_LEVEL m_FeatureLevel;
 			
 			DeviceDesc m_Desc;
-
-			System::Log mLog;
 
 			IObject::CounterType m_References;
 			IObject::CounterType m_InternalReferences;

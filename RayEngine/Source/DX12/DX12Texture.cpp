@@ -20,6 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <utility>
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12Texture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -120,8 +121,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Texture::Create(const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
-			using namespace System;
-
 			DXGI_FORMAT format = ReToDXFormat(pDesc->Format);
 
 			D3D12_CLEAR_VALUE* pClearValue = nullptr;
@@ -199,7 +198,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc, startingState, pClearValue, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Texture. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Texture. " + DXErrorString(hr));
 				return;
 			}
 			else

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "..\..\Include\System\Clock.h"
-#include "..\..\Include\Win32\Win32LogImpl.h"
+#include "..\..\Include\System\Log\ILog.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -45,73 +45,43 @@ failure and or malfunction of any kind.
 
 namespace RayEngine
 {
-	namespace System
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void ILog::PlatformPrint(LOG_SEVERITY severity, const std::string& text)
 	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		int32 g_ConsoleRef = 0;
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		Win32LogImpl::Win32LogImpl()
+		if (GetConsoleWindow() == 0)
 		{
-			//Increse ref
-			g_ConsoleRef++;
+			AllocConsole();
+
+			freopen("CONOUT$", "w", stdout);
+
+			SetConsoleTitle(RE_T("RayEngine Log"));
 		}
 
+		WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+		const Tchar* sText = nullptr;
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		Win32LogImpl::~Win32LogImpl()
+		if (severity == LOG_SEVERITY_INFO)
 		{
-			//Decrease ref
-			g_ConsoleRef--;
-			if (g_ConsoleRef < 1)
-				FreeConsole();
-
+			color = FOREGROUND_GREEN | FOREGROUND_INTENSITY;
+			sText = RE_T("INFO: ");
+		}
+		else if (severity == LOG_SEVERITY_WARNING)
+		{
+			color = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
+			sText = RE_T("WARNING: ");
+		}
+		else if (severity == LOG_SEVERITY_ERROR)
+		{
+			color = FOREGROUND_RED;
+			sText = RE_T("ERROR: ");
 		}
 
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void Win32LogImpl::Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const
-		{
-			if (GetConsoleWindow() == 0)
-			{
-				AllocConsole();
-
-				freopen("CONOUT$", "w", stdout);
-
-				SetConsoleTitle(RE_T("RayEngine Log"));
-			}
-
-			WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-			const Tchar* sText = nullptr;
-			
-			if (severity == LOG_SEVERITY_INFO)
-			{
-				color = FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-				sText = RE_T("INFO: ");
-			}
-			else if (severity == LOG_SEVERITY_WARNING)
-			{
-				color = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
-				sText = RE_T("WARNING: ");
-			}
-			else if (severity == LOG_SEVERITY_ERROR)
-			{
-				color = FOREGROUND_RED;
-				sText = RE_T("ERROR: ");
-			}
-
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-
-			std::string date = (Clock::DateString() + ": ");
-			print(date.c_str());
-			print(sText);
-			vprint(text, args);
-			print(RE_T("\n"));
-		}
+		std::string date = (Clock::DateString() + ": ");
+		std::string totalString = date + sText + text + RE_T('\n');
+		print(totalString.c_str());
+		OutputDebugString(totalString.c_str());
 	}
 }
 

@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -217,22 +218,13 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		System::Log* DX11Device::GetDeviceLog()
-		{
-			return &mLog;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
 		{
-			using namespace System;
-
 			IDXGIFactory* pDXGIFactory = reinterpret_cast<DX11Factory*>(pFactory)->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->EnumAdapters(pDesc->pAdapter->ApiID, &m_Adapter);
 			if (FAILED(hr))
 			{
-				mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not retrive adapter. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not retrive adapter. " + DXErrorString(hr));
 				return;
 			}
 
@@ -245,7 +237,7 @@ namespace RayEngine
 			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
 			if (FAILED(hr))
 			{
-				mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -263,7 +255,7 @@ namespace RayEngine
 				hr = m_Device->QueryInterface<ID3D11Debug>(&m_DebugDevice);
 				if (FAILED(hr))
 				{
-					mLog.Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DebugDevice. " + DXErrorString(hr));
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DebugDevice. " + DXErrorString(hr));
 				}
 			}
 		}

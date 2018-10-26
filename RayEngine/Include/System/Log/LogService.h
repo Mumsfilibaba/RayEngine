@@ -20,28 +20,26 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\System\Log.h"
-
-#if defined(RE_PLATFORM_WINDOWS)
+#include "..\Log\ILog.h"
 
 namespace RayEngine
 {
-	namespace System
+	class LogService final
 	{
-		class RE_API Win32LogImpl : public ILogImpl
-		{
-		public:
-			Win32LogImpl(Win32LogImpl&& other) = delete;
-			Win32LogImpl(const Win32LogImpl& other) = delete;
-			Win32LogImpl& operator=(Win32LogImpl&& other) = delete;
-			Win32LogImpl& operator=(const Win32LogImpl& other) = delete;
+		RE_STATIC_CLASS(LogService);
 
-			Win32LogImpl();
-			~Win32LogImpl();
+	public:
+		static void DebugLog(ILog* pLog);
+		
+		static ILog* DebugLog();
+		
+		static void GraphicsLog(ILog* pLog);
+		
+		static ILog* GraphicsLog();
 
-			void Write(LOG_SEVERITY severity, const Tchar* text, va_list args) const;
-		};
-	}
+	private:
+		static ILog* s_pGraphicsLog;
+		
+		static ILog* s_pDebugLog;
+	};
 }
-
-#endif

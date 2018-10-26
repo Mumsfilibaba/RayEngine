@@ -20,6 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Vulkan\VulkDevice.h"
 #include "..\..\Include\Vulkan\VulkFactory.h"
 #include "..\..\Include\Vulkan\VulkTexture.h"
@@ -178,13 +179,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		System::Log* VulkDevice::GetDeviceLog()
-		{
-			return &mLog;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool VulkDevice::GetImmediateContext(IDeviceContext** ppContext)
 		{
 			return false;
@@ -201,15 +195,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkDevice::Create(const DeviceDesc* pDesc)
 		{
-			using namespace System;
-
 			VkInstance instance = m_Factory->GetVkInstance();
 
 			uint32 adapterCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(instance, &adapterCount, nullptr);
 			if (result != VK_SUCCESS)
 			{
-				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
 				return;
 			}
 
@@ -218,7 +210,7 @@ namespace RayEngine
 			result = vkEnumeratePhysicalDevices(instance, &adapterCount, adapters.data());
 			if (result != VK_SUCCESS)
 			{
-				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
 				return;
 			}
 			else
@@ -249,7 +241,7 @@ namespace RayEngine
 
 			if (index < 0)
 			{
-				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: No supported queuefamilies.");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: No supported queuefamilies.");
 				return;
 			}
 
@@ -284,7 +276,7 @@ namespace RayEngine
 			result = vkCreateDevice(m_Adapter, &dInfo, nullptr, &m_Device);
 			if (result != VK_SUCCESS)
 			{
-				mLog.Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create device.");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create device.");
 			}
 			else
 			{

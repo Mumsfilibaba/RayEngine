@@ -19,6 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
+#include "..\..\Include\System\Log\OutputLog.h"
+#include "..\..\Include\System\Log\NullLog.h"
 #include <vector>
 #include "..\..\Include\DX11\DX11Factory.h"
 
@@ -45,6 +48,8 @@ namespace RayEngine
 		DX11Factory::~DX11Factory()
 		{
 			D3DRelease_S(m_Factory);
+
+			LogService::GraphicsLog(nullptr);
 		}
 
 
@@ -156,9 +161,15 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Factory::Create()
 		{
+			if (m_DebugLayer)
+				LogService::GraphicsLog(new OutputLog());
+			else
+				LogService::GraphicsLog(new NullLog());
+
+
 			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory))))
 			{
-				return;
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "DX11: Could not create factoiry");
 			}
 		}
 

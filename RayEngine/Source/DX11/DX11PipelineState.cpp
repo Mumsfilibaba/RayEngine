@@ -20,6 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11PipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -200,15 +201,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateInputLayout()
 		{
-			using namespace System;
-
 			if (m_Desc.GraphicsPipeline.InputLayout.ElementCount < 1)
 				return;
 
 
 			if (m_VS == nullptr)
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Cannot create a inputlayout without a VertexShader.");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Cannot create a inputlayout without a VertexShader.");
 				return;
 			}
 
@@ -225,7 +224,7 @@ namespace RayEngine
 				pD3DBlob->GetBufferPointer(), static_cast<size_t>(pD3DBlob->GetBufferSize()), &m_InputLayout);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create InputLayout. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create InputLayout. " + DXErrorString(hr));
 			}
 			else
 			{
@@ -238,8 +237,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateRasterizerState()
 		{
-			using namespace System;
-
 			D3D11_RASTERIZER_DESC desc = {};
 			desc.FillMode = (m_Desc.GraphicsPipeline.RasterizerState.FillMode == FILL_MODE_SOLID) 
 				? D3D11_FILL_SOLID : D3D11_FILL_WIREFRAME;
@@ -266,7 +263,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateRasterizerState(&desc, &m_RasterizerState);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create RasterizerState." + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create RasterizerState." + DXErrorString(hr));
 			}
 			else
 			{
@@ -279,8 +276,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateDepthStencilState()
 		{
-			using namespace System;
-
 			D3D11_DEPTH_STENCIL_DESC desc = {};
 			desc.DepthEnable = m_Desc.GraphicsPipeline.DepthStencilState.DepthEnable;
 			desc.DepthFunc = ReToDX11ComparisonFunc(m_Desc.GraphicsPipeline.DepthStencilState.DepthFunc);
@@ -299,7 +294,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateDepthStencilState(&desc, &m_DepthStencilState);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilState" + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilState" + DXErrorString(hr));
 			}
 			else
 			{
@@ -312,8 +307,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateBlendState()
 		{
-			using namespace System;
-
 			D3D11_BLEND_DESC desc = {};
 			desc.AlphaToCoverageEnable = m_Desc.GraphicsPipeline.BlendState.AlphaToCoverageEnable;
 			desc.IndependentBlendEnable = m_Desc.GraphicsPipeline.BlendState.IndependentBlendEnable;
@@ -361,7 +354,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateBlendState(&desc, &m_BlendState);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create BlendState" + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create BlendState" + DXErrorString(hr));
 			}
 			else
 			{

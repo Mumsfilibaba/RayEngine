@@ -22,7 +22,6 @@ failure and or malfunction of any kind.
 #pragma once
 #include "AdapterDesc.h"
 #include "..\Interfaces\IObject.h"
-#include "..\System\Log.h"
 
 namespace RayEngine
 {
@@ -308,14 +307,6 @@ namespace RayEngine
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) = 0;
 
-			/*////////////////////////////////////////////////////////////
-				Returns the log of the device. A dummy log is valid to
-				returned. E.g a device that has not been set to have
-				debuglayers turned on does not need to have a valid log.
-				However the return value should never be nullptr in a
-				valid implementaion.
-			////////////////////////////////////////////////////////////*/
-			virtual System::Log* GetDeviceLog() = 0;
 			
 			/*////////////////////////////////////////////////////////////
 

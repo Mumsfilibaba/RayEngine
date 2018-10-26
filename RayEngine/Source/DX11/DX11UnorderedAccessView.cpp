@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11UnorderedAccessView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -103,8 +104,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11UnorderedAccessView::Create(const UnorderedAccessViewDesc* pDesc)
 		{
-			using namespace System;
-
 			D3D11_UNORDERED_ACCESS_VIEW_DESC desc = {};
 			desc.Format = ReToDXFormat(pDesc->Format);
 
@@ -171,7 +170,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateUnorderedAccessView(pD3D11Resource, &desc, &m_View);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create UnorderedAccessView. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create UnorderedAccessView. " + DXErrorString(hr));
 			}
 			else
 			{

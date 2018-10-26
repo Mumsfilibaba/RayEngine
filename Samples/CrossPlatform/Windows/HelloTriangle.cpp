@@ -1,6 +1,6 @@
 #include <System/Window.h>
 #include <System/Clock.h>
-#include <System/Log.h>
+#include <System/Debug/Debug.h>
 #include <System/System.h>
 #include <System/Bitmap.h>
 #include <System/Mouse.h>
@@ -33,7 +33,7 @@ int main(int args, char* argsv[])
 	using namespace Math;
 	using namespace Graphics;
 
-	Log log;
+	Debug::EnableDebugLog();
 
 	SystemDesc systemDesc = {};
 	QuerySystemDesc(&systemDesc);
@@ -86,8 +86,8 @@ int main(int args, char* argsv[])
 
 
 	//Print the chosen adapter
-	log.Write(LOG_SEVERITY_INFO, adapterList[adapterIndex].VendorName);
-	log.Write(LOG_SEVERITY_INFO, adapterList[adapterIndex].ModelName);
+	Debug::Log(LOG_SEVERITY_INFO, adapterList[adapterIndex].VendorName);
+	Debug::Log(LOG_SEVERITY_INFO, adapterList[adapterIndex].ModelName);
 
 
 	//Create a device and swapchain
@@ -276,12 +276,12 @@ int main(int args, char* argsv[])
 	//Check for sensor support
 	if (Sensors::SensorSupported(SENSOR_TYPE_ACCELEROMETER))
 	{
-		log.Write(LOG_SEVERITY_INFO, "Accelerometer supported");
+		Debug::Log(LOG_SEVERITY_INFO, "Accelerometer supported");
 
 		Sensors::EnableSensor(SENSOR_TYPE_ACCELEROMETER);
 		
 		if (!Sensors::SetRefreshRate(SENSOR_TYPE_ACCELEROMETER, TimeStamp::Seconds(0.5)))
-			log.Write(LOG_SEVERITY_WARNING, "Could not set Sensor refreshrate");
+			Debug::Log(LOG_SEVERITY_WARNING, "Could not set Sensor refreshrate");
 	}
 
 
@@ -350,6 +350,8 @@ int main(int args, char* argsv[])
 	ReRelease_S(pSwapchain);
 	ReRelease_S(pDevice);
 	ReRelease_S(pFactory);
+
+	Debug::DisableDebugLog();
 
 	return 0;
 }

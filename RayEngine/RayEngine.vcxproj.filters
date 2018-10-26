@@ -87,13 +87,7 @@
     <ClInclude Include="Include\System\TimeStamp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\System\Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Android\AndroidLogImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Win32\Win32LogImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Android\AndroidAppState.h">
@@ -420,6 +414,21 @@
     <ClInclude Include="Include\Graphics\AdapterDesc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\System\Log\ILog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\System\Log\OutputLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\System\Debug\Debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\System\Log\NullLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\System\Log\LogService.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -477,9 +486,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\System\Clock.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\System\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Android\AndroidLogImpl.cpp">
@@ -759,6 +765,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\AdapterDesc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Log\OutputLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Debug\Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Log\LogService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Log\NullLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

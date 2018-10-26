@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Vulkan\VulkShader.h"
 #include "..\..\Include\Vulkan\VulkDevice.h"
 
@@ -105,8 +106,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkShader::Create(const ShaderDesc* pDesc)
 		{
-			using namespace System;
-
 			//TODO: Compile Shader here
 
 			VkShaderModuleCreateInfo desc = {};
@@ -120,7 +119,7 @@ namespace RayEngine
 			VkResult result = vkCreateShaderModule(vkDevice, &desc, nullptr, &m_Module);
 			if (result != VK_SUCCESS)
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ShaderModule.");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ShaderModule.");
 			}
 			else
 			{

@@ -1,4 +1,26 @@
+/*////////////////////////////////////////////////////////////
+
+Copyright 2018 Alexander Dahlin
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in
+compliance with the License. You may obtain a copy of
+the License at
+
+http ://www.apache.org/licenses/LICENSE-2.0
+
+THIS SOFTWARE IS PROVIDED "AS IS". MEANING NO WARRANTY
+OR SUPPORT IS PROVIDED OF ANY KIND.
+
+In event of any damages, direct or indirect that can
+be traced back to the use of this software, shall no
+contributor be held liable. This includes computer
+failure and or malfunction of any kind.
+
+////////////////////////////////////////////////////////////*/
+
 #include <string>
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Utilities\EngineUtilities.h"
 #include "..\..\Include\OpenGL\GLShader.h"
 #include "..\..\Include\OpenGL\GLDevice.h"
@@ -108,13 +130,17 @@ namespace RayEngine
 				int32 len = 0;
 				glGetShaderiv(m_Shader, GL_INFO_LOG_LENGTH, &len);
 
-				std::vector<char> log;
-				log.resize(result);
-				glGetShaderInfoLog(m_Shader, len, &len, log.data());
-
 				std::string message = "OpenGL: Could not compile shader.\n";
-				message += log.data();
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, message);
+				if (len > 0)
+				{
+					std::vector<char> log;
+					log.resize(result);
+					glGetShaderInfoLog(m_Shader, len, &len, log.data());
+
+					message += log.data();
+				}
+
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, message);
 			}
 		}
 	}

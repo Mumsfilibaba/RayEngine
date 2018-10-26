@@ -20,6 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
+#include <vector>
 #include "..\Graphics\ISwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)

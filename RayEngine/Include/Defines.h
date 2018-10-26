@@ -72,5 +72,17 @@ public:																\
 #define RE_IMPLEMENT_INTERFACE(interface) RE_UNIQUE_OBJECT(interface)
 #endif
 
+#if !defined(RE_STATIC_CLASS)
+#define RE_STATIC_CLASS(static_class)									\
+private:																\
+		static_class(const static_class& other) = delete;				\
+		static_class& operator=(const static_class& other) = delete;	\
+		static_class(static_class&& other) = delete;					\
+		static_class& operator=(static_class&& other) = delete;			\
+		static_class();													\
+		~static_class()													\
+
+#endif
+
 #define RE_MAX_RENDERTARGETS 8
 #define RE_MAX_VERTEXBUFFERS 32

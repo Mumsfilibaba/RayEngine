@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12Shader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -100,8 +101,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Shader::Create(const ShaderDesc* pDesc)
 		{
-			using namespace System;
-
 			int32 flags = 0;
 			if (pDesc->Flags & SHADER_FLAGS_DEBUG)
 				flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
@@ -109,7 +108,7 @@ namespace RayEngine
 			std::string errorString;
 			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not compile shader" + errorString);
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not compile shader" + errorString);
 			}
 			else
 			{

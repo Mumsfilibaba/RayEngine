@@ -278,7 +278,10 @@
     <ClInclude Include="Include\System\Event.h" />
     <ClInclude Include="Include\System\Keyboard.h" />
     <ClInclude Include="Include\System\KeyCodes.h" />
-    <ClInclude Include="Include\System\Log.h" />
+    <ClInclude Include="Include\System\Log\NullLog.h" />
+    <ClInclude Include="Include\System\Log\ILog.h" />
+    <ClInclude Include="Include\System\Debug\Debug.h" />
+    <ClInclude Include="Include\System\Log\OutputLog.h" />
     <ClInclude Include="Include\System\Mouse.h" />
     <ClInclude Include="Include\System\Sensors.h" />
     <ClInclude Include="Include\System\System.h" />
@@ -301,7 +304,6 @@
     <ClInclude Include="Include\Vulkan\VulkShader.h" />
     <ClInclude Include="Include\Vulkan\VulkSwapchain.h" />
     <ClInclude Include="Include\Vulkan\VulkTexture.h" />
-    <ClInclude Include="Include\Win32\Win32LogImpl.h" />
     <ClInclude Include="Include\Win32\Win32WindowImpl.h" />
     <ClInclude Include="Source\Android\AndroidAppState.h" />
     <ClInclude Include="Include\Win32\Win32BitmapImpl.h" />
@@ -313,6 +315,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DX12\DX12Device.h" />
+    <ClInclude Include="Include\System\Log\LogService.h" />
     <ClCompile Include="Source\DX11\DX11Buffer.cpp" />
     <ClCompile Include="Source\DX11\DX11DeviceContext.cpp" />
     <ClCompile Include="Source\DX11\DX11PipelineState.cpp" />
@@ -395,7 +398,10 @@
     <ClCompile Include="Source\System\Bitmap.cpp" />
     <ClCompile Include="Source\System\Clock.cpp" />
     <ClCompile Include="Source\System\Event.cpp" />
-    <ClCompile Include="Source\System\Log.cpp" />
+    <ClCompile Include="Source\System\Log\NullLog.cpp" />
+    <ClCompile Include="Source\System\Debug\Debug.cpp" />
+    <ClCompile Include="Source\System\Log\LogService.cpp" />
+    <ClCompile Include="Source\System\Log\OutputLog.cpp" />
     <ClCompile Include="Source\System\Sensors.cpp" />
     <ClCompile Include="Source\System\TimeStamp.cpp" />
     <ClCompile Include="Source\System\Window.cpp" />

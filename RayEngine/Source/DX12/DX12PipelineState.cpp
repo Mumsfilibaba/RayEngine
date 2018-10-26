@@ -20,6 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12PipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -131,8 +132,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::CreateGraphicsState()
 		{
-			using namespace System;
-
 			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
 			inputLayout.resize(m_Desc.GraphicsPipeline.InputLayout.ElementCount);
 
@@ -203,7 +202,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create PipelineState. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create PipelineState. " + DXErrorString(hr));
 			}
 		}
 
@@ -211,8 +210,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::CreateComputeState()
 		{
-			using namespace System;
-
 			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(m_Desc.pRootLayout)->GetD3D12RootSignature();
 			D3D12_COMPUTE_PIPELINE_STATE_DESC desc = { };
 			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
@@ -228,7 +225,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateComputePipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create PipelineState. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create PipelineState. " + DXErrorString(hr));
 			}
 		}
 
@@ -292,7 +289,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC* pD3D12Desc, const DepthStencilStateDesc* pDesc)
 		{
@@ -311,7 +307,6 @@ namespace RayEngine
 			pD3D12Desc->BackFace = ReToDX12StencilOpDesc(pDesc->BackFace);
 			pD3D12Desc->FrontFace = ReToDX12StencilOpDesc(pDesc->BackFace);
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

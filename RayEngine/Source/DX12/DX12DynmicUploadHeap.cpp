@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -111,8 +112,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DynamicUploadHeap::Create(uint32 alignment, uint32 sizeInBytes)
 		{
-			using namespace System;
-
 			D3D12_HEAP_DESC hDesc = {};
 			hDesc.Flags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS;
 			hDesc.Alignment = alignment;
@@ -127,7 +126,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateHeap(&hDesc, IID_PPV_ARGS(&m_Heap));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Heap." + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Heap." + DXErrorString(hr));
 				return;
 			}
 
@@ -148,7 +147,7 @@ namespace RayEngine
 			hr = pD3D12Device->CreatePlacedResource(m_Heap, 0, &rDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Resource." + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Resource." + DXErrorString(hr));
 			}
 			else
 			{

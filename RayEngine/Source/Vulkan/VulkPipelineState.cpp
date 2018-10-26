@@ -21,6 +21,7 @@ failure and or malfunction of any kind.
 
 #include <vector>
 #include <utility>
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Vulkan\VulkPipelineState.h"
 #include "..\..\Include\Vulkan\VulkDevice.h"
 
@@ -369,7 +370,7 @@ namespace RayEngine
 			VkResult result = vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &desc, nullptr, &m_Pipeline);
 			if (result != VK_SUCCESS)
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipeline");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipeline");
 			}
 		}
 
@@ -459,7 +460,7 @@ namespace RayEngine
 			VkResult result = vkCreateRenderPass(vkDevice, &desc, nullptr, &m_RenderPass);
 			if (result != VK_SUCCESS) 
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create renderpass");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create renderpass");
 				return false;
 			}
 

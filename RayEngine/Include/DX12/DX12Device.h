@@ -113,8 +113,6 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
-			System::Log* GetDeviceLog() override final;
-
 		private:
 			void Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
 
@@ -131,8 +129,6 @@ namespace RayEngine
 			DX12DescriptorHeap* m_SamplerHeap;
 
 			DeviceDesc m_Desc;
-
-			mutable System::Log mLog;
 
 			IObject::CounterType m_References;
 		};

@@ -19,12 +19,16 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+
+#include "..\..\Include\System\Log\LogService.h"
+#include "..\..\Include\System\Log\OutputLog.h"
+#include "..\..\Include\System\Log\NullLog.h"
 #include "..\..\Include\OpenGL\GLFactory.h"
-#include "..\..\Include\OpenGL\GLDevice.h"
-#include "..\..\Include\OpenGL\GLSwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
+#include "..\..\Include\OpenGL\GLDevice.h"
+#include "..\..\Include\OpenGL\GLSwapchain.h"
 #endif
 
 namespace RayEngine
@@ -46,6 +50,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLFactory::~GLFactory()
 		{
+			LogService::GraphicsLog(nullptr);
 		}
 
 
@@ -136,6 +141,12 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLFactory::Create(bool debugLayer)
 		{
+			if (debugLayer)
+				LogService::GraphicsLog(new OutputLog());
+			else
+				LogService::GraphicsLog(new NullLog());
+
+
 			int32 deviceID = 0;
 			int32 vendorID = 0;
 
@@ -182,7 +193,10 @@ namespace RayEngine
 			//Get all extensions for the adapter
 			auto wglGetExtensionsString = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(LoadFunction("wglGetExtensionsStringARB"));
 			if (wglGetExtensionsString == nullptr)
+			{
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: wglGetExtensionsStringARB is not supported.");
 				return;
+			}
 
 			std::string wglExtensions = wglGetExtensionsString(hDC);
 			QueryExtensionsFromString(m_Extensions, wglExtensions);
@@ -195,6 +209,7 @@ namespace RayEngine
 			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
 			if (!ExtensionSupported("WGL_ARB_create_context"))
 			{
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: WGL_ARB_create_context is not supported.");
 				return;
 			}
 			else

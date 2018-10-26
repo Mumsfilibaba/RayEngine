@@ -20,6 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "..\..\Include\DX11\DX11Buffer.h"
+#include "..\..\Include\System\Log\LogService.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\..\Include\DX11\DX11Device.h"
@@ -132,8 +133,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Buffer::Create(const ResourceData* pInitalData, const BufferDesc* pDesc)
 		{
-			using namespace System;
-
 			D3D11_BUFFER_DESC desc = {};
 			desc.ByteWidth = pDesc->ByteStride * pDesc->Count;
 
@@ -175,11 +174,12 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateBuffer(&desc, pInitData, &m_Resource);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create buffer. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create buffer. " + DXErrorString(hr));
 			}
 			else
 			{
 				m_Desc = *pDesc;
+
 				m_Resource->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}

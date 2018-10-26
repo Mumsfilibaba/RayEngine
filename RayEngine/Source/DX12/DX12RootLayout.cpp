@@ -21,6 +21,7 @@ failure and or malfunction of any kind.
 
 #include <string>
 #include <vector>
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12RootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -104,7 +105,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12RootLayout::Create(const RootLayoutDesc* pDesc)
 		{
-			using namespace System;
 			using namespace Microsoft::WRL;
 
 			D3D12_FEATURE_DATA_ROOT_SIGNATURE feature = {};
@@ -115,7 +115,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &feature, sizeof(D3D12_FEATURE_DATA_ROOT_SIGNATURE));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Root Signature not supported by graphics driver. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Root Signature not supported by graphics driver. " + DXErrorString(hr));
 				return;
 			}
 
@@ -183,7 +183,7 @@ namespace RayEngine
 			if (FAILED(hr))
 			{
 				std::string err = reinterpret_cast<char*>(error->GetBufferPointer());
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not serialize RootSignature. " + err);
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not serialize RootSignature. " + err);
 				return;
 			}
 
@@ -191,7 +191,7 @@ namespace RayEngine
 			hr = pD3D12Device->CreateRootSignature(0, rSign->GetBufferPointer(), rSign->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create RootSignature" + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create RootSignature" + DXErrorString(hr));
 				return;
 			}
 			else

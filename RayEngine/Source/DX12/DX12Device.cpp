@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -208,13 +209,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		System::Log* DX12Device::GetDeviceLog()
-		{
-			return &mLog;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX12Device::GetImmediateContext(IDeviceContext** ppContext)
 		{
 			return ((*ppContext) = m_ImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
@@ -231,8 +225,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
 		{
-			using namespace System;
-
 			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->EnumAdapters1(pDesc->pAdapter->ApiID, &m_Adapter);
 			if (SUCCEEDED(hr))
@@ -245,7 +237,7 @@ namespace RayEngine
 						hr = m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice);
 						if (FAILED(hr))
 						{
-							mLog.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DebugDevice. " + DXErrorString(hr));
+							LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DebugDevice. " + DXErrorString(hr));
 							return;
 						}
 					}
@@ -271,12 +263,12 @@ namespace RayEngine
 				}
 				else
 				{
-					mLog.Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Device. " + DXErrorString(hr));
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Device. " + DXErrorString(hr));
 				}
 			}
 			else
 			{
-				mLog.Write(LOG_SEVERITY_ERROR, "D3D12: Could not enumerate adapters. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not enumerate adapters. " + DXErrorString(hr));
 			}
 		}
 	}

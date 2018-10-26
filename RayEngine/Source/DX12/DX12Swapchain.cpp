@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12Swapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -142,8 +143,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Swapchain::Create(const SwapchainDesc* pDesc)
 		{
-			using namespace System;
-
 			DXGI_SWAP_CHAIN_DESC1 desc = {};
 			desc.BufferCount = pDesc->BackBuffer.Count;
 			desc.Format = ReToDXFormat(pDesc->BackBuffer.Format);
@@ -165,7 +164,7 @@ namespace RayEngine
 			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, pDesc->WindowHandle, &desc, nullptr, nullptr, &m_Swapchain);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12 : Could not create swapchain. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12 : Could not create swapchain. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -196,7 +195,7 @@ namespace RayEngine
 				HRESULT hr = m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer));
 				if (FAILED(hr))
 				{
-					m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not get baqckbuffer. " + DXErrorString(hr));
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not get baqckbuffer. " + DXErrorString(hr));
 					return;
 				}
 				else

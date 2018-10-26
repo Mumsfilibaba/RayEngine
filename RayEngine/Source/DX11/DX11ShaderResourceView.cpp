@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11ShaderResourceView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -103,8 +104,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11ShaderResourceView::Create(const ShaderResourceViewDesc* pDesc)
 		{
-			using namespace System;
-
 			D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
 			desc.Format = ReToDXFormat(pDesc->Format);
 			
@@ -209,7 +208,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateShaderResourceView(pD3D11Resource, &desc, &m_View);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create ShaderResourceView. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create ShaderResourceView. " + DXErrorString(hr));
 			}
 			else
 			{

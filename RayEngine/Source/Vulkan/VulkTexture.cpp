@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Vulkan\VulkTexture.h"
 #include "..\..\Include\Vulkan\VulkDevice.h"
 
@@ -123,8 +124,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkTexture::Create(const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
-			using namespace System;
-			
 			VkImageCreateInfo desc = {};
 			desc.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 			desc.pNext = nullptr;
@@ -161,7 +160,7 @@ namespace RayEngine
 			VkResult result = vkCreateImage(vkDevice, &desc, nullptr, &m_Image);
 			if (result != VK_SUCCESS)
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create image.");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create image.");
 			}
 			else
 			{

@@ -19,11 +19,14 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
+#include "..\..\Include\System\Log\OutputLog.h"
+#include "..\..\Include\System\Log\NullLog.h"
+#include <vector>
+#include <cstdlib>
 #include "..\..\Include\DX12\DX12Factory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include <vector>
-#include <cstdlib>
 #include "..\..\Include\DX12\DX12Device.h"
 #include "..\..\Include\DX12\DX12Swapchain.h"
 
@@ -47,6 +50,8 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Factory);
 			D3DRelease_S(m_DebugController);
+
+			LogService::GraphicsLog(nullptr);
 		}
 
 
@@ -156,9 +161,12 @@ namespace RayEngine
 			uint32 factoryFlags = 0;
 			if (debugLayer)
 			{
+				LogService::GraphicsLog(new OutputLog());
+
 				factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 				if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&m_DebugController))))
 				{
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not retrive the Debug interface");
 					return;
 				}
 				else
@@ -166,11 +174,15 @@ namespace RayEngine
 					m_DebugController->EnableDebugLayer();
 				}
 			}
+			else
+			{
+				LogService::GraphicsLog(new NullLog());
+			}
 
 
 			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
 			{
-				return;
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create factory");
 			}
 		}
 

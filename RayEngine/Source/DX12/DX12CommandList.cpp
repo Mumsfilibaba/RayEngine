@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX12\DX12CommandList.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -141,14 +142,12 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12CommandList::Create(ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask)
 		{
-			using namespace System;
-
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			HRESULT hr = pD3D12Device->CreateCommandAllocator(type, IID_PPV_ARGS(&m_Allocator));
 
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create CommandAllocator. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create CommandAllocator. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -161,7 +160,7 @@ namespace RayEngine
 			hr = pD3D12Device->CreateCommandList(nodeMask, type, m_Allocator, pInitalState, IID_PPV_ARGS(&m_List));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create CommandList. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create CommandList. " + DXErrorString(hr));
 			}
 			else
 			{

@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Graphics\Viewport.h"
 #include "..\..\Include\DX12\DX12DeviceContext.h"
 
@@ -460,8 +461,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::Flush() const
 		{
-			using namespace System;
-
 			if (m_IsDeffered)
 				return;
 
@@ -469,7 +468,7 @@ namespace RayEngine
 			HRESULT hr = m_Queue->Signal(m_Fence, m_CurrentFence);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Signal fence failed. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Signal fence failed. " + DXErrorString(hr));
 				return;
 			}
 
@@ -481,7 +480,7 @@ namespace RayEngine
 				hr = m_Fence->SetEventOnCompletion(m_CurrentFence, ev);
 				if (FAILED(m_Fence->SetEventOnCompletion(m_CurrentFence, ev)))
 				{
-					m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Failed to set event. " + DXErrorString(hr));
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Failed to set event. " + DXErrorString(hr));
 					return;
 				}
 
@@ -569,8 +568,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::Create(bool isDeffered)
 		{
-			using namespace System;
-
 			//TODO: different types of commandqueues
 
 			D3D12_COMMAND_QUEUE_DESC qDesc = {};
@@ -588,7 +585,7 @@ namespace RayEngine
 				pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
 				if (FAILED(hr))
 				{
-					m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandQueue. " + DXErrorString(hr));
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandQueue. " + DXErrorString(hr));
 					return;
 				}
 				else
@@ -601,7 +598,7 @@ namespace RayEngine
 				hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
 				if (FAILED(hr))
 				{
-					m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
 					return;
 				}
 				else

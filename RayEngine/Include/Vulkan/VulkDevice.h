@@ -81,8 +81,6 @@ namespace RayEngine
 
 			IObject::CounterType AddRef() override final;
 
-			System::Log* GetDeviceLog() override final;
-
 		private:
 			void Create(const DeviceDesc* pDesc);
 
@@ -94,8 +92,6 @@ namespace RayEngine
 			DeviceDesc m_Desc;
 
 			IObject::CounterType m_References;
-			
-			System::Log mLog;
 		};
 	}
 }

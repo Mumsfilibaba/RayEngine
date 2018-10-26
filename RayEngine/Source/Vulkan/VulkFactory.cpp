@@ -20,7 +20,9 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
-#include "..\..\Include\System\Log.h"
+#include "..\..\Include\System\Log\LogService.h"
+#include "..\..\Include\System\Log\OutputLog.h"
+#include "..\..\Include\System\Log\NullLog.h"
 #include "..\..\Include\Vulkan\VulkFactory.h"
 #include "..\..\Include\Vulkan\VulKDevice.h"
 
@@ -61,12 +63,20 @@ namespace RayEngine
 				vkDestroyInstance(m_Instance, nullptr);
 				m_Instance = nullptr;
 			}
+
+			LogService::GraphicsLog(nullptr);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkFactory::Create(bool debugLayers)
 		{
+			if (debugLayers)
+				LogService::GraphicsLog(new OutputLog());
+			else
+				LogService::GraphicsLog(new NullLog());
+
+
 			VkApplicationInfo aInfo = {};
 			aInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 			aInfo.apiVersion = VK_API_VERSION_1_0;
@@ -91,7 +101,10 @@ namespace RayEngine
 			};
 
 			if (!InstanceExtensionsSupported(neededExtensions, VULKAN_EXTENSION_COUNT))
+			{
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Needed extensions not supported.");
 				return;
+			}
 
 
 			VkInstanceCreateInfo iInfo = {};
@@ -135,7 +148,10 @@ namespace RayEngine
 
 			VkResult result = vkCreateInstance(&iInfo, nullptr, &m_Instance);
 			if (result != VK_SUCCESS)
+			{
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to create instance.");
 				return;
+			}
 			
 
 			if (debugLayers)
@@ -155,8 +171,6 @@ namespace RayEngine
 
 				result = vkCreateDebugReportCallbackEXT(m_Instance, &dbgCallbackInfo, nullptr, &m_DbgCallback);
 			}
-
-			return;
 		}
 
 
@@ -473,17 +487,16 @@ namespace RayEngine
 			VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code,
 			const char* layerPrefix, const char* msg, void* userData)
 		{
-			static System::Log log;
-			System::LOG_SEVERITY severity = System::LOG_SEVERITY_UNKNOWN;
+			LOG_SEVERITY severity = LOG_SEVERITY_UNKNOWN;
 
 			if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-				severity = System::LOG_SEVERITY_ERROR;
+				severity = LOG_SEVERITY_ERROR;
 			else if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT || flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
-				severity = System::LOG_SEVERITY_INFO;
+				severity = LOG_SEVERITY_INFO;
 			else
-				severity = System::LOG_SEVERITY_UNKNOWN;
+				severity = LOG_SEVERITY_UNKNOWN;
 
-			log.Write(severity, msg);
+			LogService::GraphicsLog()->Write(severity, msg);
 			return VK_FALSE;
 		}
 	}

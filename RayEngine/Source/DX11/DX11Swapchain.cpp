@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11Swapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -144,8 +145,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Swapchain::Create(const SwapchainDesc* pDesc)
 		{
-			using namespace System;
-
 			DXGI_SWAP_CHAIN_DESC desc = {};
 			desc.BufferCount = pDesc->BackBuffer.Count;
 			desc.BufferDesc.Format = ReToDXFormat(pDesc->BackBuffer.Format);
@@ -174,7 +173,7 @@ namespace RayEngine
 			HRESULT hr = pDXGIFactory->CreateSwapChain(pD3D11Device, &desc, &m_Swapchain);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create SwapChain. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create SwapChain. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -201,7 +200,7 @@ namespace RayEngine
 			HRESULT hr = m_Swapchain->GetBuffer(0, IID_PPV_ARGS(&pTexture));
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not get backbuffer. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not get backbuffer. " + DXErrorString(hr));
 			}
 			else
 			{

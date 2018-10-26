@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Graphics\Viewport.h"
 #include "..\..\Include\OpenGL\GLDeviceContext.h"
 #include "..\..\Include\OpenGL\GLDevice.h"
@@ -312,7 +313,7 @@ namespace RayEngine
 				}
 				else
 				{
-					m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_WARNING, "OpenGL: GL_NV_conservative_raster not supported.");
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: GL_NV_conservative_raster not supported.");
 				}
 
 				glPolygonMode(GL_FRONT_AND_BACK, pRasterizerState->PolygonMode);
@@ -331,7 +332,7 @@ namespace RayEngine
 				else
 				{
 					glPolygonOffset(pRasterizerState->SlopeScaleDepthBias, pRasterizerState->DepthBias);
-					m_Device->GetDeviceLog()->Write(System::LOG_SEVERITY_WARNING, "OpenGL: glPolygonOffsetClamp not supported.");
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: glPolygonOffsetClamp not supported.");
 				}
 
 				if (pRasterizerState->AntialiasedLineEnable)

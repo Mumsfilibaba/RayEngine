@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11Texture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -135,7 +136,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Texture::Create(const ResourceData* const pInitialData, const TextureDesc* pDesc)
 		{
-			using namespace System;
 			DXGI_FORMAT format = ReToDXFormat(pDesc->Format);
 
 			uint32 bindFlags = 0;
@@ -240,7 +240,7 @@ namespace RayEngine
 
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create texture. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create texture. " + DXErrorString(hr));
 			}
 			else
 			{

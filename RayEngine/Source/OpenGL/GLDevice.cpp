@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\OpenGL\GLFactory.h"
 #include "..\..\Include\OpenGL\GLDevice.h"
 #include "..\..\Include\OpenGL\GLDeviceContext.h"
@@ -215,13 +215,6 @@ namespace RayEngine
 		{
 			m_References++;
 			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		System::Log* GLDevice::GetDeviceLog()
-		{
-			return &mLog;
 		}
 
 

@@ -101,8 +101,6 @@ namespace RayEngine
 			
 			IObject::CounterType AddRef() override final;
 
-			System::Log* GetDeviceLog() override final;
-
 		private:
 			void Create(bool debugLayer);
 
@@ -123,8 +121,6 @@ namespace RayEngine
 			bool m_CreatedWindow;
 
 			DeviceDesc m_Desc;
-
-			mutable System::Log mLog;
 			
 			IObject::CounterType m_References;
 

@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Vulkan\VulkRenderTargetView.h"
 #include "..\..\Include\Vulkan\VulkRenderTargetView.h"
 #include "..\..\Include\Vulkan\VulkDevice.h"
@@ -122,7 +123,7 @@ namespace RayEngine
 			VkResult result = vkCreateImageView(vkDevice, &desc, nullptr, &m_View);
 			if (result != VK_SUCCESS)
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ImageView. ");
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ImageView. ");
 			}
 			else
 			{

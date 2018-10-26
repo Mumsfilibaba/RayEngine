@@ -20,30 +20,17 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-//#include "..\System\Log.h"
-
-#if defined(RE_PLATFORM_ANDROID)
+#include "..\Log\LogService.h"
 
 namespace RayEngine
 {
-	namespace System
+	class Debug final
 	{
-		class AndroidLogImpl : public ILogImpl
-		{
-		public:
-			AndroidLogImpl(ILogImpl&& other) = delete;
-			AndroidLogImpl(const ILogImpl& other) = delete;
-			AndroidLogImpl& operator=(ILogImpl&& other) = delete;
-			AndroidLogImpl& operator=(const ILogImpl& other) = delete;
+		RE_STATIC_CLASS(Debug);
 
-		public:
-			AndroidLogImpl();
-			~AndroidLogImpl();
-
-			//Log something to the platforms log (Console - Win32, LogCat - Android) - Also saves the log in a buffer
-			void Write(LOG_SEVERITY severity, const Tchar* pText, va_list args) const override final;
-		};
-	}
+	public:
+		static void EnableDebugLog();
+		static void DisableDebugLog();
+		static void Log(LOG_SEVERITY severity, const std::string& message);
+	};
 }
-
-#endif

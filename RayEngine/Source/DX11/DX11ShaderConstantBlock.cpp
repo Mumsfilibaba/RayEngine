@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11ShaderConstantBlock.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -117,8 +118,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11ShaderConstantBlock::Create(int32 numConstants)
 		{
-			using namespace System;
-
 			D3D11_BUFFER_DESC desc = {};
 			desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			desc.ByteWidth = sizeof(uint32) * numConstants;
@@ -131,7 +130,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateBuffer(&desc, nullptr, &m_ConstantBuffer);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Buffer. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Buffer. " + DXErrorString(hr));
 			}
 			else
 			{

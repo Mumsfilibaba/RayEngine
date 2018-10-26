@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11RenderTargetView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -102,8 +103,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11RenderTargetView::Create(const RenderTargetViewDesc* pDesc)
 		{
-			using namespace System;
-
 			D3D11_RENDER_TARGET_VIEW_DESC desc = {};
 			desc.Format = ReToDXFormat(pDesc->Format);
 			
@@ -178,7 +177,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateRenderTargetView(pD3D11Resource, &desc, &m_View);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create RenderTargetView. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create RenderTargetView. " + DXErrorString(hr));
 			}
 			else
 			{

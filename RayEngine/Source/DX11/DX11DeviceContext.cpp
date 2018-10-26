@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\Graphics\Viewport.h"
 #include "..\..\Include\DX11\DX11DeviceContext.h"
 
@@ -370,15 +371,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Create(bool isDeffered)
 		{
-			using namespace System;
-
 			if (isDeffered)
 			{
 				ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 				HRESULT hr = pD3D11Device->CreateDeferredContext(0, &m_Context);
 				if (FAILED(hr))
 				{
-					m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Deffered Context. " + DXErrorString(hr));
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Deffered Context. " + DXErrorString(hr));
 				}
 			}
 			else

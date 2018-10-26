@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11DepthStencilView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -102,8 +103,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DepthStencilView::Create(const DepthStencilViewDesc* pDesc)
 		{
-			using namespace System;
-
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			ID3D11Resource* pD3D11Resource = nullptr; 
 
@@ -167,7 +166,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateDepthStencilView(pD3D11Resource, &desc, &m_View);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilView" + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilView" + DXErrorString(hr));
 			}
 			else
 			{

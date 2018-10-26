@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\DX11\DX11Sampler.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -102,8 +103,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Sampler::Create(const SamplerDesc* pDesc)
 		{
-			using namespace System;
-
 			D3D11_SAMPLER_DESC desc = {};
 			desc.AddressU = ReToDX11TextureAdressMode(pDesc->AdressU);
 			desc.AddressV = ReToDX11TextureAdressMode(pDesc->AdressV);
@@ -124,7 +123,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateSamplerState(&desc, &m_SamplerState);
 			if (FAILED(hr))
 			{
-				m_Device->GetDeviceLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create SamplerState. " + DXErrorString(hr));
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create SamplerState. " + DXErrorString(hr));
 			}
 			else
 			{
