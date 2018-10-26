@@ -2,7 +2,6 @@ TODO:
 -D3D12 Triangle
 -Vulkan triangle
 -Documentation
--GLImpl - do not return false (Print what function was not loaded)
 -RootLayout should control binding of resources
 
 -MSAA-Swapchain

@@ -19,12 +19,15 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "..\..\Include\System\Log\LogService.h"
 #include "..\..\Include\OpenGL\GlImpl.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include <typeinfo>
 
-#define LOAD_GL_FUNC(func) (func = reinterpret_cast<decltype(func)>(LoadFunction(#func)))
+#define LOAD_GL_FUNC(func)																																\
+if ((func = reinterpret_cast<decltype(func)>(LoadFunction(#func))) == nullptr)																			\
+	LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, std::string("OpenGL: Function \'") + std::string(#func) + std::string("\' not supported."))	\
 
 
 /////////////////////////////
@@ -164,115 +167,115 @@ namespace RayEngine
 		if (!initialized)
 		{
 			//WGL
-			if (LOAD_GL_FUNC(wglChoosePixelFormatARB) == nullptr) return false;
-			if (LOAD_GL_FUNC(wglCreateContextAttribsARB) == nullptr) return false;
-			if (LOAD_GL_FUNC(wglSwapIntervalEXT) == nullptr) return false;
-			if (LOAD_GL_FUNC(wglGetExtensionsStringARB) == nullptr) return false;
-
+			LOAD_GL_FUNC(wglChoosePixelFormatARB);
+			LOAD_GL_FUNC(wglCreateContextAttribsARB);
+			LOAD_GL_FUNC(wglSwapIntervalEXT);
+			LOAD_GL_FUNC(wglGetExtensionsStringARB);
 
 			//Buffers
-			if (LOAD_GL_FUNC(glGenBuffers) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBindBuffer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glIsBuffer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBufferData) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBindVertexBuffer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDeleteBuffers) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBufferSubData) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBindBufferBase) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGetBufferParameteriv) == nullptr) return false;
-			if (LOAD_GL_FUNC(glMapBufferRange) == nullptr) return false;
-			if (LOAD_GL_FUNC(glUnmapBuffer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glUseProgram) == nullptr) return false;
+			LOAD_GL_FUNC(glGenBuffers);
+			LOAD_GL_FUNC(glBindBuffer);
+			LOAD_GL_FUNC(glIsBuffer);
+			LOAD_GL_FUNC(glBufferData);
+			LOAD_GL_FUNC(glBindVertexBuffer);
+			LOAD_GL_FUNC(glDeleteBuffers);
+			LOAD_GL_FUNC(glBufferSubData);
+			LOAD_GL_FUNC(glBindBufferBase);
+			LOAD_GL_FUNC(glGetBufferParameteriv);
+			LOAD_GL_FUNC(glMapBufferRange);
+			LOAD_GL_FUNC(glUnmapBuffer);
+			LOAD_GL_FUNC(glUseProgram);
 
 			//Textures
-			if (LOAD_GL_FUNC(glActiveTexture) == nullptr) return false;
+			LOAD_GL_FUNC(glActiveTexture);
 
 			//Shaders
-			if (LOAD_GL_FUNC(glCreateProgram) == nullptr) return false;
-			if (LOAD_GL_FUNC(glCreateShader) == nullptr) return false;
-			if (LOAD_GL_FUNC(glShaderSource) == nullptr) return false;
-			if (LOAD_GL_FUNC(glCompileShader) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGetShaderiv) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGetShaderInfoLog) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDeleteProgram) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDeleteShader) == nullptr) return false;
-			if (LOAD_GL_FUNC(glProgramParameteri) == nullptr) return false;
-			if (LOAD_GL_FUNC(glAttachShader) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDetachShader) == nullptr) return false;
-			if (LOAD_GL_FUNC(glLinkProgram) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGetProgramiv) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGetProgramInfoLog) == nullptr) return false;
-			if (LOAD_GL_FUNC(glIsProgram) == nullptr) return false;
-			if (LOAD_GL_FUNC(glIsShader) == nullptr) return false;
+			LOAD_GL_FUNC(glCreateProgram);
+			LOAD_GL_FUNC(glCreateShader);
+			LOAD_GL_FUNC(glShaderSource);
+			LOAD_GL_FUNC(glCompileShader);
+			LOAD_GL_FUNC(glGetShaderiv);
+			LOAD_GL_FUNC(glGetShaderInfoLog);
+			LOAD_GL_FUNC(glDeleteProgram);
+			LOAD_GL_FUNC(glDeleteShader);
+			LOAD_GL_FUNC(glProgramParameteri);
+			LOAD_GL_FUNC(glAttachShader);
+			LOAD_GL_FUNC(glDetachShader);
+			LOAD_GL_FUNC(glLinkProgram);
+			LOAD_GL_FUNC(glGetProgramiv);
+			LOAD_GL_FUNC(glGetProgramInfoLog);
+			LOAD_GL_FUNC(glIsProgram);
+			LOAD_GL_FUNC(glIsShader);
 			
 			//Patches
-			if (LOAD_GL_FUNC(glPatchParameteri) == nullptr) return false;
+			LOAD_GL_FUNC(glPatchParameteri);
 			
 			//Pipeline
-			if (LOAD_GL_FUNC(glUseProgramStages) == nullptr) return false;
-			if (LOAD_GL_FUNC(glIsProgramPipeline) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGenProgramPipelines) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBindProgramPipeline) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGetProgramPipelineiv) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDeleteProgramPipelines) == nullptr) return false;
-			if (LOAD_GL_FUNC(glValidateProgramPipeline) == nullptr) return false;
+			LOAD_GL_FUNC(glUseProgramStages);
+			LOAD_GL_FUNC(glIsProgramPipeline);
+			LOAD_GL_FUNC(glGenProgramPipelines);
+			LOAD_GL_FUNC(glBindProgramPipeline);
+			LOAD_GL_FUNC(glGetProgramPipelineiv);
+			LOAD_GL_FUNC(glDeleteProgramPipelines);
+			LOAD_GL_FUNC(glValidateProgramPipeline);
 			
 			//VertexArrays
-			if (LOAD_GL_FUNC(glIsVertexArray) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBindVertexArray) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGenVertexArrays) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDeleteVertexArrays) == nullptr) return false;
-			if (LOAD_GL_FUNC(glVertexAttribFormat) == nullptr) return false;
-			if (LOAD_GL_FUNC(glVertexAttribPointer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glVertexAttribBinding) == nullptr) return false;
-			if (LOAD_GL_FUNC(glEnableVertexAttribArray) == nullptr) return false;
+			LOAD_GL_FUNC(glIsVertexArray);
+			LOAD_GL_FUNC(glBindVertexArray);
+			LOAD_GL_FUNC(glGenVertexArrays);
+			LOAD_GL_FUNC(glDeleteVertexArrays);
+			LOAD_GL_FUNC(glVertexAttribFormat);
+			LOAD_GL_FUNC(glVertexAttribPointer);
+			LOAD_GL_FUNC(glVertexAttribBinding);
+			LOAD_GL_FUNC(glEnableVertexAttribArray);
 			
 			//Framebuffers
-			if (LOAD_GL_FUNC(glBindFramebuffer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glIsFramebuffer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDeleteFramebuffers) == nullptr) return false;
+			LOAD_GL_FUNC(glBindFramebuffer);
+			LOAD_GL_FUNC(glIsFramebuffer);
+			LOAD_GL_FUNC(glDeleteFramebuffers);
 			
 			//Draw
-			if (LOAD_GL_FUNC(glDrawElementsBaseVertex) == nullptr) return false;
+			LOAD_GL_FUNC(glDrawElementsBaseVertex);
 			
 			//Renderbuffers
-			if (LOAD_GL_FUNC(glBindRenderbuffer) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDeleteRenderbuffers) == nullptr) return false;
-			if (LOAD_GL_FUNC(glGenRenderbuffers) == nullptr) return false;
-			if (LOAD_GL_FUNC(glRenderbufferStorage) == nullptr) return false;
-			if (LOAD_GL_FUNC(glIsRenderbuffer) == nullptr) return false;
+			LOAD_GL_FUNC(glBindRenderbuffer);
+			LOAD_GL_FUNC(glDeleteRenderbuffers);
+			LOAD_GL_FUNC(glGenRenderbuffers);
+			LOAD_GL_FUNC(glRenderbufferStorage);
+			LOAD_GL_FUNC(glIsRenderbuffer);
 			
 			//Clear
-			if ((glClearColorf = reinterpret_cast<decltype(glClearColorf)>(LoadFunction("glClearColor"))) == nullptr) return false;
-			if (LOAD_GL_FUNC(glClearDepthf) == nullptr) return false;
-			
+			LOAD_GL_FUNC(glClearDepthf);
+			if ((glClearColorf = reinterpret_cast<decltype(glClearColorf)>(LoadFunction("glClearColor"))) == nullptr)
+				LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: Function 'glClearColor' is not supported");
+
 			//Stencil
-			if (LOAD_GL_FUNC(glStencilOpSeparate) == nullptr) return false;
-			if (LOAD_GL_FUNC(glStencilFuncSeparate) == nullptr) return false;
+			LOAD_GL_FUNC(glStencilOpSeparate);
+			LOAD_GL_FUNC(glStencilFuncSeparate);
 
 			//Depth
-			if (LOAD_GL_FUNC(glDepthRangef) == nullptr) return false;
-			if (LOAD_GL_FUNC(glPolygonOffsetClamp) == nullptr)
+			LOAD_GL_FUNC(glDepthRangef);
+			if ((glPolygonOffsetClamp = reinterpret_cast<decltype(glPolygonOffsetClamp)>(LoadFunction("glPolygonOffsetClamp"))) == nullptr)
 			{
 				glPolygonOffsetClamp = reinterpret_cast<decltype(glPolygonOffsetClamp)>(LoadFunction("PolygonOffsetClampEXT"));
 				if (glPolygonOffsetClamp == nullptr)
-					return false;
+					LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: Function 'glPolygonOffsetClamp' is not supported");
 			}
 
 			//GetString
-			if (LOAD_GL_FUNC(glGetStringi) == nullptr) return false;
+			LOAD_GL_FUNC(glGetStringi);
 
 			//Blend
-			if (LOAD_GL_FUNC(glBlendColor) == nullptr) return false;
-			if (LOAD_GL_FUNC(glColorMaski) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBlendFuncSeparate) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBlendFuncSeparatei) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBlendEquationSeparate) == nullptr) return false;
-			if (LOAD_GL_FUNC(glBlendEquationSeparatei) == nullptr) return false;
+			LOAD_GL_FUNC(glBlendColor);
+			LOAD_GL_FUNC(glColorMaski);
+			LOAD_GL_FUNC(glBlendFuncSeparate);
+			LOAD_GL_FUNC(glBlendFuncSeparatei);
+			LOAD_GL_FUNC(glBlendEquationSeparate);
+			LOAD_GL_FUNC(glBlendEquationSeparatei);
 
 			//Enable
-			if (LOAD_GL_FUNC(glEnablei) == nullptr) return false;
-			if (LOAD_GL_FUNC(glDisablei) == nullptr) return false;
+			LOAD_GL_FUNC(glEnablei);
+			LOAD_GL_FUNC(glDisablei);
 		}
 
 		return true;
