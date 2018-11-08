@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../Defines.h"
+#include "../Types.h"
 
 namespace RayEngine
 {
@@ -39,8 +39,6 @@ namespace RayEngine
 
 	////////////////////////////////////////////////////////////*/
 	void ReverseImageRedBlue(void* pPixels, int32 width, int32 height, FORMAT format);
-		
-
 
 	/*////////////////////////////////////////////////////////////
 
@@ -71,9 +69,7 @@ namespace RayEngine
 		Returns true on successfull load.
 
 	////////////////////////////////////////////////////////////*/
-	bool LoadImageFromFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void** ppPixels, int32& width, int32& height, FORMAT format);
-		
-		
+	bool LoadImageFromFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void** ppPixels, int32& width, int32& height, FORMAT format);	
 		
 	/*////////////////////////////////////////////////////////////
 
@@ -96,8 +92,6 @@ namespace RayEngine
 
 	////////////////////////////////////////////////////////////*/
 	bool ResizeImage(void** ppPixels, int32 width, int32 height, int32 newWidth, int32 newHeight, FORMAT format);
-
-
 
 	/*////////////////////////////////////////////////////////////
 

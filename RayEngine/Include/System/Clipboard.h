@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../Defines.h"
+#include "../Types.h"
 #include <string>
 
 namespace RayEngine

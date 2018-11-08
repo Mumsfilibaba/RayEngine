@@ -20,31 +20,44 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../Defines.h"
+#include "../Types.h"
 
 namespace RayEngine
 {
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	class IWindow;
+	
+	struct WindowDesc;
+
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	enum PLATFORM
 	{
 		PLATFORM_UNKNOWN = 0,
 		PLATFORM_ANDROID = 1,
-		PLATFORM_WIN32 = 2
+		PLATFORM_WIN32 = 2,
+		PLATFORM_LINUX = 3
 	};
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	struct SystemDesc
 	{
-		PLATFORM Platform = PLATFORM_UNKNOWN;
-		
-		//Resolution of the screen (Android) or the main-monitor (Windows)
-		int32 ScreenWidth = 0;
-		int32 ScreenHeight = 0;
+		PLATFORM Platform;
+		int32 ScreenWidth;
+		int32 ScreenHeight;
 	};
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	int32 InitializeSystem(int32 systemFlags);
+	
+	void ReleaseSystem();
+	
 	void QuerySystemDesc(SystemDesc* pDesc);
+
+	void SendQuitMessage(int32 exitCode);
+
+	IWindow* CreateWindow(WindowDesc* pDesc);
 }

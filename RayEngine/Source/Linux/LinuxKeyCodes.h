@@ -20,26 +20,17 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "ILog.h"
+#include "../../Include/System/KeyCodes.h"
+
+#if defined(RE_PLATFORM_LINUX)
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
 
 namespace RayEngine
 {
-	class LogService final
-	{
-		RE_STATIC_CLASS(LogService);
-
-	public:
-		static void DebugLog(ILog* pLog);
-		
-		static ILog* DebugLog();
-		
-		static void GraphicsLog(ILog* pLog);
-		
-		static ILog* GraphicsLog();
-
-	private:
-		static ILog* s_pGraphicsLog;
-		
-		static ILog* s_pDebugLog;
-	};
+    KEY XKeyEventToKeycode(XKeyEvent* pXEvent);
+    KEY XToKeycode(KeySym keysym);
+    KeySym KeycodeToX(KEY keycode);
 }
+
+#endif

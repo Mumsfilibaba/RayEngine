@@ -54,27 +54,37 @@ namespace RayEngine
 			void Show() const override final;
 
 			void PeekEvents() override final;
+			
 			void PushEvent(const Event& pEvent) override final;
+			
 			bool PopEvent(Event& pEvent) override final;
+			
 			void GetEvent(Event& pEvent) override final;
+			
 			void SendQuitEvent(int32 exitCode) const override final;
 			
 			void SetIcon(const Bitmap& icon) override final;
+			
 			void SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY) override final;
+			
 			void SetBackground(uint8 r, uint8 g, uint8 b) override final;
+			
 			void SetBackground(const Math::Color& color) override final;
 
 			IWindowImpl* Copy() const override final;
 			
 			const Tchar* GetTitle() const override final;
 
-			virtual int32 GetWidth() const override final;
-			virtual int32 GetHeight() const override final;
+			int32 GetWidth() const override final;
+			
+			int32 GetHeight() const override final;
 
 			NativeWindowHandle GetNativeHandle() const override final;
+			
 			void GetInfo(WindowDesc& desc) const override final;
 
 			HWND GetHWND() const;
+			
 			HINSTANCE GetHINSTANCE() const;
 
 			LRESULT MsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -84,12 +94,19 @@ namespace RayEngine
 
 		private:
 			mutable Tchar m_Title[256];
+			
 			std::queue<Event> m_Events;
+			
 			HWND m_Hwnd;
+			
 			HINSTANCE m_Hinstance;
+			
 			HBRUSH m_BgBrush;
+			
 			HICON m_Icon;
+			
 			HCURSOR m_Cursor;
+			
 			bool m_TrackingMouse;
 
 		private:

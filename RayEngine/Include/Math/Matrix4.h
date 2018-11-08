@@ -25,7 +25,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	VECTORALIGN class Matrix4
+	class VECTORALIGN Matrix4
 	{
 	public:
 		Matrix4();

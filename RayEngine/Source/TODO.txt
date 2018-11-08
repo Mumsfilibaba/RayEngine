@@ -1,6 +1,10 @@
 TODO:
--D3D12 Triangle
+-Linux
+-Check do changes for Linux in windows
+-Change Win32SystemInfo.cpp to Win32SystemImpl.cpp
 -Vulkan triangle
+
+-D3D12 Triangle
 -Documentation
 -RootLayout should control binding of resources
 

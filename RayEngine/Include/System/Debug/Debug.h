@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Log\LogService.h"
+#include "../Log/LogService.h"
 
 namespace RayEngine
 {
@@ -30,7 +30,9 @@ namespace RayEngine
 
 	public:
 		static void EnableDebugLog();
+		
 		static void DisableDebugLog();
+		
 		static void Log(LOG_SEVERITY severity, const std::string& message);
 	};
 }

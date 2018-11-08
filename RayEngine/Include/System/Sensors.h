@@ -20,10 +20,10 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Types.h"
-#include "..\System\TimeStamp.h"
-#include "..\Math\Vector3.h"
+#include "../Defines.h"
+#include "../Types.h"
+#include "../System/TimeStamp.h"
+#include "../Math/Vector3.h"
 
 namespace RayEngine
 {
@@ -37,16 +37,20 @@ namespace RayEngine
 	};
 
 
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	struct SensorData
 	{
 	public:
 		SensorData();
+		SensorData(SensorData&& other);
 		SensorData(const SensorData& other);
+
+		SensorData& operator=(SensorData&& other);
+
 		SensorData& operator=(const SensorData& other);
 		
 		bool operator==(const SensorData& other) const;
+
 		bool operator!=(const SensorData& other) const;
 
 	public:
@@ -59,23 +63,18 @@ namespace RayEngine
 	};
 
 
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	class Sensors
 	{
-	public:
-		Sensors() = delete;
-		~Sensors() = delete;
-		Sensors(Sensors&& other) = delete;
-		Sensors(const Sensors& other) = delete;
-		Sensors& operator=(Sensors&& other) = delete;
-		Sensors& operator=(const Sensors& other) = delete;
+		RE_STATIC_CLASS(Sensors);
 
 	public:
 		static bool SensorSupported(SENSOR_TYPE sensor);
+
 		static bool SensorEnabled(SENSOR_TYPE sensor);
 		
 		static bool EnableSensor(SENSOR_TYPE sensor);
+		
 		static bool DisableSensor(SENSOR_TYPE sensor);
 
 		static bool SetRefreshRate(SENSOR_TYPE sensor, const TimeStamp& time);

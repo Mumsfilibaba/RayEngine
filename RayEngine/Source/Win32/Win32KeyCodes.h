@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-
-#include "..\..\Include\System\KeyCodes.h"
+#include "../../Include/System/KeyCodes.h"
 
 #if defined (RE_PLATFORM_WINDOWS)
 

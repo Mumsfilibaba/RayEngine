@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Math\Vector4.h"
+#include "../Defines.h"
+#include "../Math/Vector4.h"
 
 namespace Math
 {
@@ -76,9 +76,6 @@ namespace Math
 		friend ColorF operator*(ColorF left, float right);
 		friend ColorF operator/(ColorF left, float right);
 		friend ColorF operator*(float left, ColorF right);
-
-	private:
-		void Abs();
 
 	public:
 		union

@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Utilities\TextureUtilities.h"
+#include "../../Include/Utilities/TextureUtilities.h"
 
 #define STBI_NO_PSD
 #define STBI_NO_GIF
@@ -31,11 +31,11 @@ failure and or malfunction of any kind.
 #define STBI_NO_SIMD
 #endif
 #define STB_IMAGE_IMPLEMENTATION
-#include "..\..\Dependencies\stb_image.h"
+#include "../../Dependencies/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "..\..\Dependencies\stb_image_write.h"
+#include "../../Dependencies/stb_image_write.h"
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "..\..\Dependencies\stb_image_resize.h"
+#include "../../Dependencies/stb_image_resize.h"
 
 #include <string>
 #if defined(UNICODE)
@@ -80,7 +80,6 @@ namespace RayEngine
 	}
 
 
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool LoadImageFromFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void** ppPixels, int32& width, int32& height, FORMAT format)
 	{
@@ -114,7 +113,6 @@ namespace RayEngine
 		(*ppPixels) = nullptr;
 		return false;
 	}
-
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +167,6 @@ namespace RayEngine
 
 		return false;
 	}
-
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

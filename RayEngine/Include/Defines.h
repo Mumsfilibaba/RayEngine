@@ -26,6 +26,8 @@ failure and or malfunction of any kind.
 #define RE_PLATFORM_ANDROID
 #elif defined(_WIN32) || defined(_WIN64)
 #define RE_PLATFORM_WINDOWS
+#elif defined(__linux__)
+#define RE_PLATFORM_LINUX
 #else
 #error RayEngine needs to have a platform defined
 #endif

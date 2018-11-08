@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../Defines.h"
+#include "../Types.h"
 #include <string>
 
 namespace RayEngine
@@ -37,16 +37,14 @@ namespace RayEngine
 	////////////////////////////////////////////////////////////*/
 	std::string ReadFullFile(const std::string& filename, const std::string& filepath);
 
-
 	/*////////////////////////////////////////////////////////////
 
 		Converts a float to half (float32 to float16).
 
-		f - float32 vlaue to be converted.
+		f - float32 valaue to be converted.
 
 	////////////////////////////////////////////////////////////*/
 	float16 FloatToHalf(float32 f);
-	
 	
 	/*////////////////////////////////////////////////////////////
 

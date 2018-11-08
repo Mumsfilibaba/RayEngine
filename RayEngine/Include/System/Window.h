@@ -22,7 +22,7 @@ failure and or malfunction of any kind.
 #pragma once
 #include "Event.h"
 #include "Bitmap.h"
-#include "..\Math\Color.h"
+#include "../Math/Color.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(RE_PLATFORM_WINDOWS)
@@ -36,174 +36,139 @@ failure and or malfunction of any kind.
 #endif
 
 
-
 namespace RayEngine
 {
-	namespace System
-	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(RE_PLATFORM_WINDOWS)
-		typedef HWND NativeWindowHandle;
+	typedef HWND NativeWindowHandle;
 #elif defined(RE_PLATFORM_ANDROID)
-		typedef ANativeWindow* NativeWindowHandle;
+	typedef ANativeWindow* NativeWindowHandle;
 #else
-		typedef void* NativeWindowHandle;
+	typedef void* NativeWindowHandle;
 #endif
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	enum WINDOWSTYLE
+	{
+		WINDOWSTYLE_UNKNOWN = (1 << 0),
+		WINDOWSTYLE_BORDERLESS = (1 << 1),
+		WINDOWSTYLE_WINDOW = (1 << 2),
+		WINDOWSTYLE_TITLEBAR = (1 << 3),
+		WINDOWSTYLE_SYSTEMMENU = (1 << 4),
+		WINDOWSTYLE_RESIZEABLE = (1 << 5),
+		WINDOWSTYLE_MINIMIZABLE = (1 << 6),
+		WINDOWSTYLE_MAXIMIZABLE = (1 << 7),
+		WINDOWSTYLE_STANDARD_WINDOW = WINDOWSTYLE_WINDOW | WINDOWSTYLE_TITLEBAR | WINDOWSTYLE_SYSTEMMENU | 
+			WINDOWSTYLE_RESIZEABLE | WINDOWSTYLE_MINIMIZABLE | WINDOWSTYLE_MAXIMIZABLE,
+	};
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		enum WINDOWSTYLE
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	enum WINDOW_FLAG
+	{
+		WINDOW_FLAG_NONE = 0,
+		WINDOW_FLAG_APP_FULLSCREEN = (1 << 0),
+		WINDOW_FLAG_APP_NO_SLEEP = (1 << 1),
+	};
+
+
+	/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		Struct to decribe a window
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+	struct RE_API WindowDesc
+	{
+		const Tchar* Title;
+		int32 Width;
+		int32 Height;	
+		int32 Style;
+		int32 Flags;
+		int32 x;
+		int32 y;
+
+		struct 
 		{
-			WINDOWSTYLE_UNKNOWN = (1 << 0),
-			WINDOWSTYLE_BORDERLESS = (1 << 1),
-			WINDOWSTYLE_WINDOW = (1 << 2),
-			WINDOWSTYLE_TITLEBAR = (1 << 3),
-			WINDOWSTYLE_SYSTEMMENU = (1 << 4),
-			WINDOWSTYLE_RESIZEABLE = (1 << 5),
-			WINDOWSTYLE_MINIMIZABLE = (1 << 6),
-			WINDOWSTYLE_MAXIMIZABLE = (1 << 7),
-			WINDOWSTYLE_STANDARD_WINDOW = WINDOWSTYLE_WINDOW | WINDOWSTYLE_TITLEBAR | WINDOWSTYLE_SYSTEMMENU | 
-				WINDOWSTYLE_RESIZEABLE | WINDOWSTYLE_MINIMIZABLE | WINDOWSTYLE_MAXIMIZABLE,
-		};
+			uint8 r;
+			uint8 g;
+			uint8 b;
+		} BackgroundColor;
+	};
 
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		enum WINDOW_FLAG
-		{
-			WINDOW_FLAG_NONE = 0,
-			WINDOW_FLAG_APP_FULLSCREEN = (1 << 0),
-			WINDOW_FLAG_APP_NO_SLEEP = (1 << 1),
-		};
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	class RE_API IWindow
+	{
+		RE_INTERFACE(IWindow);
 
+	public:
+		IWindow() {}
+		~IWindow() {}
 
 		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			Struct to decribe a window
+			Displays window
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct RE_API WindowDesc
-		{
-			//TODO: Title does not seem to work properly on win32
-
-			const Tchar* Title = RE_T("Window");
-			int32 Width = 800;
-			int32 Height = 600;
+		virtual void Show() const = 0;
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
-			int32 Style = WINDOWSTYLE_STANDARD_WINDOW;
-			int32 Flags = WINDOW_FLAG_NONE;
+			Gets the next event on the eventqueue if there are any and removes it. Does not block.
 
-			//TODO: Create Application class to retrive desktop size so that 
-			//user can use that to retrive sixe and position were he wants
-			
-			//Position - '-1' indicates in the middle
+			pEvent - A valid pointer to a event
 
-			int32 x = -1;
-			int32 y = -1;
-			//Color
-			Math::Color BackgroundColor;
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual bool PeekEvent(Event* pEvent) const = 0;
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			Bitmap Icon;
-			Bitmap Cursor;
+			Gets the next event on the eventqueue if there are any and removes it. Blocks until it recives an event.
 
-			int32 CursorHotspotX = 0;
-			int32 CursorHotspotY = 0;
-		};
+			pEvent - A valid pointer to a event
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual void GetEvent(Event* pEvent) const = 0;
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual void SetCursor(const Bitmap& cursor, RayEngine::int32 hotspotX, RayEngine::int32 hotspotY) = 0;
 
 		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			Class for platform implementation of a window
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		class RE_API IWindowImpl
-		{
-			RE_INTERFACE(IWindowImpl);
+		virtual void SetIcon(const Bitmap& icon) = 0;
 
-		public:
-			IWindowImpl() {}
-			virtual ~IWindowImpl() {}
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+			Sets background color of the window
 
-			//Create platform handles for a window
-			virtual bool Create(const WindowDesc& desc) = 0;
-			//Show window
-			virtual void Show() const = 0;
-			//Peeks all the events of the OS and pushes them onto the eventqueue
-			virtual void PeekEvents() = 0;
-			//Pushes a new event onto the eventqueue
-			virtual void PushEvent(const Event& pEvent) = 0;
-			//Pops the top event off the eventqueue - returns true if an event got poped
-			virtual bool PopEvent(Event& pEvent) = 0;
-			//Blocks until an event occurs
-			virtual void GetEvent(Event& pEvent) = 0;
-			//Sends a quit message to the operatingsystem via the window
-			virtual void SendQuitEvent(int32 exitCode) const = 0;
-			//Set Cursor for the window
-			virtual void SetCursor(const Bitmap& cursor, RayEngine::int32 hotspotX, RayEngine::int32 hotspotY) = 0;
-			//Set Icon for the window
-			virtual void SetIcon(const Bitmap& icon) = 0;
-			//Set color for the background
-			virtual void SetBackground(uint8 r, uint8 g, uint8 b) = 0;
-			virtual void SetBackground(const Math::Color& color) = 0;
-			//Returns a new instance of IWindowImple that is equal to to the current one. If called a new 
-			//window instance will be created on the OS
-			virtual IWindowImpl* Copy() const = 0;
-			//Get titlebar text
-			virtual const Tchar* GetTitle() const = 0;
-			//Get size
-			virtual int32 GetWidth() const = 0;
-			virtual int32 GetHeight() const = 0;
-			//Get struct that describes the window
-			virtual void GetInfo(WindowDesc& desc) const = 0;
-			//Returns the OS-Handle to a window
-			virtual NativeWindowHandle GetNativeHandle() const = 0;
-		};
+			r - Red channel
 
+			g - Green channel
 
+			b - Blue channel
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Class for to represent a main window - Can be seen as a wrapper for IWindowImpl
-		class RE_API Window
-		{
-		public:
-			Window(const WindowDesc& desc);
-			Window(Window&& other);
-			Window(const Window& other);
-			~Window();
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual void SetBackground(uint8 r, uint8 g, uint8 b) = 0;
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Returns the width of a window
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual int32 GetWidth() const = 0;
 
-			//Show window
-			//TODO: Show normal, minimized or maximized
-			void Show() const;
-			
-			//TODO: Functions for minimizing and maximizing a window
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Returns the height of a window
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual int32 GetHeight() const = 0;
 
-			//Checks the eventqueue for events. Does not block the thread - Returns true if there were an event
-			bool PeekEvent(Event& pEvent) const;
-			//Checks the eventqueue for events. Blocks the thread until an event is poped from the eventqueue
-			void GetEvent(Event& pEvent) const;
-			//Send Quit even
-			void SendQuitEvent(int32 exitCode) const;
-			//Set Cursor for the window
-			void SetCursor(const Bitmap& cursor, RayEngine::int32 hotspotX, RayEngine::int32 hotspotY);
-			//Set Icon for the window
-			void SetIcon(const Bitmap& icon);
-			//Set background color
-			void SetBackground(uint8 r, uint8 g, uint8 b);
-			void SetBackground(const Math::Color& color);
-			//Get clientsize
-			int32 GetWidth() const;
-			int32 GetHeight() const;
-			const Tchar* GetTitle() const;
-			//Get implementation
-			const IWindowImpl* GetImplementation() const;
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			NativeWindowHandle GetNativeHandle() const;
+			Sets the values in pDesc to the current WindowDesc being used by the window.
 
-			//Get struct that describes the window
-			void GetInfo(WindowDesc& desc) const;
+			pDesc - A valid pointer to a WindowDesc
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual void GetDesc(WindowDesc* pDesc) const = 0;
 
-			//Operators for assignment
-			Window& operator=(const Window& other);
-			Window& operator=(Window&& other);
-
-		private:
-			//Pointer to implementation
-			IWindowImpl* m_Impl;
-		};
-	}
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Destroys the window and frees all memory being used. 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		virtual void Destroy() = 0;
+	};
 }

@@ -35,11 +35,7 @@ namespace RayEngine
 {
 	class IObject
 	{
-	public:
-		IObject(IObject&& other) = delete;
-		IObject(const IObject& other) = delete;
-		IObject& operator=(IObject&& other) = delete;
-		IObject& operator=(const IObject& other) = delete;
+		RE_INTERFACE(IObject)
 
 	protected:
 		IObject() {}

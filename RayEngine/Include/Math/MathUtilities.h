@@ -32,14 +32,18 @@ failure and or malfunction of any kind.
 namespace Math
 {
 	double ToDegrees(double degrees);
+
 	double ToRadians(double radians);
 
 	float ToDegreesF(float degrees);
+	
 	float ToRadiansF(float radians);
 
 	double Max(double d1, double d2);
+	
 	float MaxF(float f1, float f2);
 	
 	double Min(double d1, double d2);
+	
 	float MinF(float f1, float f2);
 }
