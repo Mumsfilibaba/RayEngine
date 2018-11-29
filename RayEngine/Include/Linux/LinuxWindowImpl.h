@@ -23,16 +23,13 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_LINUX)
 #include "../System/KeyCodes.h"
+#include <queue>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <X11/keysym.h>
 
 namespace RayEngine
 {
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    extern Display* g_pDisplay;
-    extern Atom g_WM_DELETE_WINDOW;
-
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class LinuxWindowImpl final : public IWindow
     {
@@ -40,6 +37,7 @@ namespace RayEngine
 
     public:
         LinuxWindowImpl(const WindowDesc* pDesc);
+        LinuxWindowImpl(const WindowDesc* pDesc, XVisualInfo* pVisualInfo);
         ~LinuxWindowImpl();
 
         inline Window GetXWindow() const 
@@ -48,15 +46,19 @@ namespace RayEngine
         }
 
 		void Show() const override final;
+
+        void Close() const override final;
 		
 		bool PeekEvent(Event* pEvent) const override final;
 		
         void GetEvent(Event* pEvent) const override final;
 		
-        void SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY) override final;
+        void SetCursor(const Image* pCursor, const Math::Point& hotspot) override final;
 		
-        void SetIcon(const Bitmap& icon) override final;
-		
+        void SetIcon(const Image* pIcon) override final;
+
+        void SetTitle(const std::string& title) override final;
+        
         void SetBackground(uint8 r, uint8 g, uint8 b) override final;
 		
         int32 GetWidth() const override final;
@@ -67,19 +69,31 @@ namespace RayEngine
 
         void Destroy() override final;
 
-    private:
-        void Create(const WindowDesc* pDesc);
+        void GetNativeWindowHandle(NativeWindowHandle* pHandle) const override final;
 
-        void Create(XSetWindowAttributes* pAttributes, Visual* pVisual, int32 depth, int32 attributesMask);
-        
+    private:
+        void Create(const WindowDesc* pDesc, XVisualInfo* pVisualInfo);
+
         void ConvertXEvent(XEvent* pXEvent, Event* pEvent) const;
 
+        void CheckEvents() const;
+
+        void SetClassHints();
+
+        void SetStyle();
+
     private:
-        Window m_XWindow;
-        
+        ::Display* m_pDisplay;
+        ::Window m_XWindow;
+        ::Cursor m_XCursor;
+        ::Pixmap m_XIcon;
+        ::Pixmap m_XIconMask;
+
+        mutable std::queue<Event> m_Events;
+
         mutable WindowDesc m_Desc;
         
-        mutable bool m_IsVisible;
+        mutable bool m_IsMapped;
     };
 }
 

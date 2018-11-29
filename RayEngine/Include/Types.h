@@ -35,14 +35,7 @@ namespace RayEngine
 	typedef unsigned long long uint64;
 	typedef int16 float16;
 	typedef float float32;
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(UNICODE)
-	typedef wchar_t Tchar;
-#else
-	typedef char Tchar;
-#endif
+	typedef unsigned long ulong;
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +89,23 @@ namespace RayEngine
 		FORMAT_R8_SINT = 48,
 		FORMAT_B8G8R8A8_UNORM = 49,
 		FORMAT_B8G8R8A8_UNORM_SRGB = 50,
+	};
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	enum FORMAT_TYPE : int32
+	{
+		FORMAT_TYPE_UNKNOWN = 0,
+		FORMAT_TYPE_INT8 = 1,
+		FORMAT_TYPE_INT16 = 2,
+		FORMAT_TYPE_INT32 = 3,
+		FORMAT_TYPE_INT64 = 4,
+		FORMAT_TYPE_UINT8 = 5,
+		FORMAT_TYPE_UINT16 = 6,
+		FORMAT_TYPE_UINT32 = 7,
+		FORMAT_TYPE_UINT64 = 8,
+		FORMAT_TYPE_FLOAT16 = 9,
+		FORMAT_TYPE_FLOAT32 = 10,
 	};
 
 

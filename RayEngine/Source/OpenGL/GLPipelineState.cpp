@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\OpenGL\GLDevice.h"
-#include "..\..\Include\OpenGL\GLShader.h"
-#include "..\..\Include\OpenGL\GLPipelineState.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/OpenGL/GLDevice.h"
+#include "../../Include/OpenGL/GLShader.h"
+#include "../../Include/OpenGL/GLPipelineState.h"
 
 namespace RayEngine
 {
@@ -200,8 +200,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::LinkShaders()
 		{
-			using namespace System;
-
 			glLinkProgram(m_Program);
 
 			int32 result = GL_TRUE;
@@ -221,7 +219,7 @@ namespace RayEngine
 					message += log.data();
 				}
 
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, message);
+				LOG_ERROR(message);
 			}
 		}
 

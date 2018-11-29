@@ -67,16 +67,18 @@ namespace RayEngine
 	{
 	public:
 		Event();
+		Event(Event&& other);
 		Event(const Event& other);
+		~Event();
 		
 		Event& operator=(const Event& other);
 
 		bool operator==(const Event& other) const;
+
 		bool operator!=(const Event& other) const;
 
 	public:
 		EVENT_TYPE Type;
-
 		union
 		{
 			struct

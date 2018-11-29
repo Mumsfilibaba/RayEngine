@@ -21,10 +21,10 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include <vector>
-#include "..\Graphics\IFactory.h"
+#include "../Graphics/IFactory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\System\Window.h"
+#include "../System/Window.h"
 #endif
 
 #include "GLCommon.h"

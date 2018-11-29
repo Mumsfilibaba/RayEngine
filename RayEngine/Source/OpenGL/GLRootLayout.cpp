@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\OpenGL\GLDevice.h"
-#include "..\..\Include\OpenGL\GLRootLayout.h"
+#include "../../Include/OpenGL/GLDevice.h"
+#include "../../Include/OpenGL/GLRootLayout.h"
 
 namespace RayEngine
 {

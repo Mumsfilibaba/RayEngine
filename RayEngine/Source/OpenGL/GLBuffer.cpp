@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\OpenGL\GLDevice.h"
-#include "..\..\Include\OpenGL\GLBuffer.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/OpenGL/GLDevice.h"
+#include "../../Include/OpenGL/GLBuffer.h"
 
 namespace RayEngine
 {
@@ -63,9 +63,9 @@ namespace RayEngine
 
 			glBindBuffer(m_GLBufferType, m_Buffer);
 
-			if (RESOURCE_MAP_FLAG_READ && m_CpuAccess & GL_MAP_READ_BIT)
+			if (flag == RESOURCE_MAP_FLAG_READ && (m_CpuAccess & GL_MAP_READ_BIT))
 				pGPUData = glMapBufferRange(m_GLBufferType, 0, m_SizeBytes, GL_MAP_READ_BIT);
-			else if (RESOURCE_MAP_FLAG_WRITE && m_CpuAccess & GL_MAP_WRITE_BIT)
+			else if (flag == RESOURCE_MAP_FLAG_WRITE && (m_CpuAccess & GL_MAP_WRITE_BIT))
 				pGPUData = glMapBufferRange(m_GLBufferType, 0, m_SizeBytes, GL_MAP_WRITE_BIT);
 
 			glBindBuffer(m_GLBufferType, 0);
@@ -81,7 +81,7 @@ namespace RayEngine
 			
 			if (!glUnmapBuffer(m_GLBufferType))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: Failed to unmap buffer.");
+				LOG_ERROR("OpenGL: Failed to unmap buffer.");
 			}
 
 			glBindBuffer(m_GLBufferType, 0);
@@ -137,8 +137,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLBuffer::Create(const ResourceData* const pInitialData, const BufferDesc* pDesc)
 		{
-			using namespace System;
-
 			uint32 type = BufferUsageToGL(pDesc->Type);
 			uint32 usage = ResourceUsageToGL(pDesc->Usage);
 			uint32 buffer = 0;
@@ -163,7 +161,7 @@ namespace RayEngine
 				glDeleteBuffers(1, &buffer);
 				buffer = 0;
 
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: Failed to allocate enough memory for buffer.");
+				LOG_ERROR("OpenGL: Failed to allocate enough memory for buffer.");
 			}
 			else
 			{

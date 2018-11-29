@@ -19,20 +19,24 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#pragma once
-#include "../Log/LogService.h"
+#include "../../Include/System/TouchScreen.h"
+
+#if defined(RE_PLATFORM_LINUX)
 
 namespace RayEngine
 {
-	class Debug final
-	{
-		RE_STATIC_CLASS(Debug);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    bool TouchScreen::IsDown(int32 finger)
+    {
+        return false;
+    }
 
-	public:
-		static void EnableDebugLog();
-		
-		static void DisableDebugLog();
-		
-		static void Log(LOG_SEVERITY severity, const std::string& message);
-	};
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Math::Vector2 TouchScreen::GetPosition(int32 finger)
+    {
+        return Math::Vector2();
+    }
 }
+
+#endif

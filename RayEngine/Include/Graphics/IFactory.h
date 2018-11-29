@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "AdapterDesc.h"
-#include "..\Interfaces\IObject.h"
+#include "../Interfaces/IObject.h"
 
 namespace RayEngine
 {

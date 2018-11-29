@@ -20,16 +20,13 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\System\Window.h"
-#include "..\Interfaces\IObject.h"
+#include "../Interfaces/IObject.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IFactory;
-		class ITexture;
 		class IDevice;
 		class IRenderTargetView;
 
@@ -39,9 +36,9 @@ namespace RayEngine
 			A structure containg info about a swapchain.
 
 			Name - Name of the swapchain.
-
-			pWindow - Window for the swapchain to display at when
-			calling present.
+			s
+			Samples - Number of multisampling samples the buffers
+					  will use.
 
 			Count - The number of buffers in the swapchain.
 
@@ -55,11 +52,9 @@ namespace RayEngine
 		struct SwapchainDesc
 		{
 			std::string Name;
-			System::NativeWindowHandle WindowHandle;
-
 			int32 Width;
 			int32 Height;
-			MSAA_SAMPLE_COUNT Samples;
+			int32 Samples;
 			struct
 			{
 				FORMAT Format;
@@ -118,16 +113,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void QueryDevice(IDevice** ppDevice) const = 0;
-			
-			/*////////////////////////////////////////////////////////////
-
-				Queries the factory that were used to create the
-				swapchain.
-
-				ppFactory- A valid pointer to an IFactory interface
-
-			////////////////////////////////////////////////////////////*/
-			virtual void QueryFactory(IFactory** ppFactory) const = 0;
 
 			/*////////////////////////////////////////////////////////////
 

@@ -1,6 +1,6 @@
-#include "..\..\Include\OpenGL\GLCommon.h"
+#include "../../Include/OpenGL/GLCommon.h"
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\Win32\WndclassCache.h"
+#include "../Win32/WndclassCache.h"
 #endif
 
 namespace RayEngine
@@ -180,25 +180,15 @@ namespace RayEngine
 		}
 #endif
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str)
 		{
-			int32 last = 0;
-			for (int32 i = 0; (i = static_cast<int32>(str.find(' ', last))) != std::string::npos;)
+			std::size_t last = 0;
+			for (std::size_t i = 0; (i = static_cast<int32>(str.find(' ', last))) != std::string::npos;)
 			{
 				extensions.push_back(str.substr(last, i - last));
 				last = i + 1;
 			}
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLNativeContext GetCurrentContext()
-		{
-#if defined(RE_PLATFORM_WINDOWS)
-			return wglGetCurrentContext();
-#endif
 		}
 	}
 }

@@ -42,6 +42,21 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	std::string MouseButtonToString(MOUSEBUTTON button)
+	{
+		switch (button)
+		{
+		case MOUSEBUTTON_LEFT: return "LEFT";
+		case MOUSEBUTTON_MIDDLE: return "MIDDLE";
+		case MOUSEBUTTON_RIGHT: return "RIGHT";
+		case MOUSEBUTTON_FORWARD: return "FORWARD";
+		case MOUSEBUTTON_BACK: return "BACK";
+		default: return "UNKNOWN";
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	std::string KeyCodeToString(KEY keycode)
 	{
 		switch (keycode)
@@ -178,6 +193,64 @@ namespace RayEngine
 		case KEY_CAPSLOCK:		return "CAPSLOCK";
 		case KEY_SCROLLOCK:		return "SCROLLOCK";
 		default: return "UNKNOWN";
+		}
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	std::string FormatToString(FORMAT format)
+	{
+		switch (format)
+		{
+		case FORMAT_UNKNOWN: return "FORMAT_UNKNOWN";
+		case FORMAT_R32G32B32A32_FLOAT: return "FORMAT_R32G32B32A32_FLOAT";
+		case FORMAT_R32G32B32A32_UINT: return "FORMAT_R32G32B32A32_UINT";
+		case FORMAT_R32G32B32A32_SINT: return "FORMAT_R32G32B32A32_SINT";
+		case FORMAT_R32G32B32_FLOAT: return "FORMAT_R32G32B32_FLOAT";
+		case FORMAT_R32G32B32_UINT: return "FORMAT_R32G32B32_UINT";
+		case FORMAT_R32G32B32_SINT: return "FORMAT_R32G32B32_SINT";
+		case FORMAT_R16G16B16A16_FLOAT: return "FORMAT_R16G16B16A16_FLOAT";
+		case FORMAT_R16G16B16A16_UNORM: return "FORMAT_R16G16B16A16_UNORM";
+		case FORMAT_R16G16B16A16_UINT: return "FORMAT_R16G16B16A16_UINT";
+		case FORMAT_R16G16B16A16_SNORM: return "FORMAT_R16G16B16A16_SNORM";
+		case FORMAT_R16G16B16A16_SINT: return "FORMAT_R16G16B16A16_SINT";
+		case FORMAT_R32G32_FLOAT: return "FORMAT_R32G32_FLOAT";
+		case FORMAT_R32G32_UINT: return "FORMAT_R32G32_UINT";
+		case FORMAT_R32G32_SINT: return "FORMAT_R32G32_SINT";
+		case FORMAT_D32_FLOAT_S8X24_UINT: return "FORMAT_D32_FLOAT_S8X24_UINT";
+		case FORMAT_R8G8B8A8_TYPELESS: return "FORMAT_R8G8B8A8_TYPELESS";
+		case FORMAT_R8G8B8A8_UNORM: return "FORMAT_R8G8B8A8_UNORM";
+		case FORMAT_R8G8B8A8_UNORM_SRGB: return "FORMAT_R8G8B8A8_UNORM_SRGB";
+		case FORMAT_R8G8B8A8_UINT: return "FORMAT_R8G8B8A8_UINT";
+		case FORMAT_R8G8B8A8_SNORM: return "FORMAT_R8G8B8A8_SNORM";
+		case FORMAT_R8G8B8A8_SINT: return "FORMAT_R8G8B8A8_SINT";
+		case FORMAT_R16G16_FLOAT: return "FORMAT_R16G16_FLOAT";
+		case FORMAT_R16G16_UNORM: return "FORMAT_R16G16_UNORM";
+		case FORMAT_R16G16_UINT: return "FORMAT_R16G16_UINT";
+		case FORMAT_R16G16_SNORM: return "FORMAT_R16G16_SNORM";
+		case FORMAT_R16G16_SINT: return "FORMAT_R16G16_SINT";
+		case FORMAT_D32_FLOAT: return "FORMAT_D32_FLOAT";
+		case FORMAT_R32_FLOAT: return "FORMAT_R32_FLOAT";
+		case FORMAT_R32_UINT: return "FORMAT_R32_UINT";
+		case FORMAT_R32_SINT: return "FORMAT_R32_SINT";
+		case FORMAT_D24_UNORM_S8_UINT: return "FORMAT_D24_UNORM_S8_UINT";
+		case FORMAT_R8G8_UNORM: return "FORMAT_R8G8_UNORM";
+		case FORMAT_R8G8_UINT: return "FORMAT_R8G8_UINT";
+		case FORMAT_R8G8_SNORM: return "FORMAT_R8G8_SNORM";
+		case FORMAT_R8G8_SINT: return "FORMAT_R8G8_SINT";
+		case FORMAT_R16_FLOAT: return "FORMAT_R16_FLOAT";
+		case FORMAT_D16_UNORM: return "FORMAT_D16_UNORM";
+		case FORMAT_R16_UNORM: return "FORMAT_R16_UNORM";
+		case FORMAT_R16_UINT: return "FORMAT_R16_UINT";
+		case FORMAT_R16_SNORM: return "FORMAT_R16_SNORM";
+		case FORMAT_R16_SINT: return "FORMAT_R16_SINT";
+		case FORMAT_R8_UNORM: return "FORMAT_R8_UNORM";
+		case FORMAT_R8_UINT: return "FORMAT_R8_UINT";
+		case FORMAT_R8_SNORM: return "FORMAT_R8_SNORM";
+		case FORMAT_R8_SINT: return "FORMAT_R8_SINT";
+		case FORMAT_B8G8R8A8_UNORM: return "FORMAT_B8G8R8A8_UNORM";
+		case FORMAT_B8G8R8A8_UNORM_SRGB: return "FORMAT_B8G8R8A8_UNORM_SRGB";
+		default: return "FORMAT_UNKNOWN";
 		}
 	}
 }

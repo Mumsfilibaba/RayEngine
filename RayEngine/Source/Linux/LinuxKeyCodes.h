@@ -29,7 +29,9 @@ failure and or malfunction of any kind.
 namespace RayEngine
 {
     KEY XKeyEventToKeycode(XKeyEvent* pXEvent);
+
     KEY XToKeycode(KeySym keysym);
+    
     KeySym KeycodeToX(KEY keycode);
 }
 

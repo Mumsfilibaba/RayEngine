@@ -21,8 +21,8 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../Defines.h"
+#include "../Types.h"
 #include <vector>
 #include <string>
 #include "GlImpl.h"
@@ -34,7 +34,6 @@ namespace RayEngine
 	{
 #if defined(RE_PLATFORM_WINDOWS)
 #define RE_GL_CLASS_NAME RE_T("GLWND")
-
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		int32 GetColorSpace(FORMAT format);
@@ -52,7 +51,15 @@ namespace RayEngine
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);
-		
-		GLNativeContext GetCurrentContext();
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		inline GLNativeContext GetCurrentContext()
+		{
+#if defined(RE_PLATFORM_WINDOWS)
+			return wglGetCurrentContext();
+#elif defined(RE_PLATFORM_LINUX)
+			return glXGetCurrentContext();
+#endif
+		}
 	}
 }

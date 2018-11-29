@@ -22,6 +22,7 @@ failure and or malfunction of any kind.
 #pragma once
 #include "../Defines.h"
 #include "../Types.h"
+#include <string>
 
 namespace RayEngine
 {
@@ -69,7 +70,7 @@ namespace RayEngine
 		Returns true on successfull load.
 
 	////////////////////////////////////////////////////////////*/
-	bool LoadImageFromFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void** ppPixels, int32& width, int32& height, FORMAT format);	
+	bool LoadImageFromFile(const std::string& filename, const std::string& filepath, const void** ppPixels, int32& width, int32& height, FORMAT format);	
 		
 	/*////////////////////////////////////////////////////////////
 
@@ -114,5 +115,5 @@ namespace RayEngine
 		Returns true on successfull load.
 
 	////////////////////////////////////////////////////////////*/
-	bool SaveImageToFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void* const pPixels, int32 width, int32 height, FORMAT format, IMAGE_EXTENSION extension);
+	bool SaveImageToFile(const std::string& filename, const std::string& filepath, const void* const pPixels, int32 width, int32 height, FORMAT format, IMAGE_EXTENSION extension);
 }

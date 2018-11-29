@@ -1071,7 +1071,7 @@ static void stbi__vertical_flip(void *image, int w, int h, int bytes_per_pixel)
 }
 
 #if !defined(_ANDROID)
-static void stbi__vertical_flip_slices(void *image, int w, int h, int z, int bytes_per_pixel)
+void stbi__vertical_flip_slices(void *image, int w, int h, int z, int bytes_per_pixel)
 {
    int slice;
    int slice_size = w * h * bytes_per_pixel;

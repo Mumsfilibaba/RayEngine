@@ -21,8 +21,8 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "..\Graphics\IBuffer.h"
-#include "..\OpenGL\GLCommon.h"
+#include "../Graphics/IBuffer.h"
+#include "../OpenGL/GLCommon.h"
 
 namespace RayEngine
 {

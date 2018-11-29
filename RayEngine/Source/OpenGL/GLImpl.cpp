@@ -19,29 +19,33 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\OpenGL\GlImpl.h"
+#include "../../Include/OpenGL/GlImpl.h"
 
-#if defined(RE_PLATFORM_WINDOWS)
-#include <typeinfo>
-
-#define LOAD_GL_FUNC(func)																																\
-if ((func = reinterpret_cast<decltype(func)>(LoadFunction(#func))) == nullptr)																			\
-	LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, std::string("OpenGL: Function \'") + std::string(#func) + std::string("\' not supported."))	\
-
-
+#if defined(RE_PLATFORM_WINDOWS) || defined(RE_PLATFORM_LINUX)
 /////////////////////////////
 ///FUNCTIONPTR DEFINITIONS///
 /////////////////////////////
 
+#if defined(RE_PLATFORM_WINDOWS)
 
-//WGL
+/*////////////////////////////////////////////////////////////
+	WGL
+////////////////////////////////////////////////////////////*/
 PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = nullptr;
+#elif defined(RE_PLATFORM_LINUX)
 
-//Buffers
+/*////////////////////////////////////////////////////////////
+	GLX
+////////////////////////////////////////////////////////////*/
+PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = nullptr;
+#endif
+
+/*////////////////////////////////////////////////////////////
+	Buffers
+////////////////////////////////////////////////////////////*/
 PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
 PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
 PFNGLISBUFFERPROC glIsBuffer = nullptr;
@@ -54,10 +58,16 @@ PFNGLGETBUFFERPARAMETERIVPROC glGetBufferParameteriv = nullptr;
 PFNGLMAPBUFFERRANGEPROC glMapBufferRange = nullptr;
 PFNGLUNMAPBUFFERPROC glUnmapBuffer = nullptr;
 
-//Textures
+/*////////////////////////////////////////////////////////////
+	Textures
+////////////////////////////////////////////////////////////*/
+#if defined(RE_PLATFORM_WINDOWS)
 PFNGLACTIVETEXTUREPROC glActiveTexture = nullptr;
+#endif
 
-//Shaders
+/*////////////////////////////////////////////////////////////
+	Shaders
+////////////////////////////////////////////////////////////*/
 PFNGLCREATEPROGRAMPROC glCreateProgram = nullptr;
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
 PFNGLSHADERSOURCEPROC glShaderSource = nullptr;
@@ -76,10 +86,14 @@ PFNGLISPROGRAMPROC glIsProgram = nullptr;
 PFNGLISSHADERPROC glIsShader = nullptr;
 PFNGLUSEPROGRAMPROC glUseProgram = nullptr;
 
-//Patches
+/*////////////////////////////////////////////////////////////
+	Patches
+////////////////////////////////////////////////////////////*/
 PFNGLPATCHPARAMETERIPROC glPatchParameteri = nullptr;
 
-//Pipeline
+/*////////////////////////////////////////////////////////////
+	Pipeline
+////////////////////////////////////////////////////////////*/
 PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages = nullptr;
 PFNGLISPROGRAMPIPELINEPROC glIsProgramPipeline = nullptr;
 PFNGLGENPROGRAMPIPELINESPROC glGenProgramPipelines = nullptr;
@@ -88,7 +102,9 @@ PFNGLGETPROGRAMPIPELINEIVPROC glGetProgramPipelineiv = nullptr;
 PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines = nullptr;
 PFNGLVALIDATEPROGRAMPIPELINEPROC glValidateProgramPipeline = nullptr;
 
-//VertexArrays
+/*////////////////////////////////////////////////////////////
+	VertexArrays
+////////////////////////////////////////////////////////////*/
 PFNGLISVERTEXARRAYPROC glIsVertexArray = nullptr;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
@@ -98,51 +114,72 @@ PFNGLVERTEXATTRIBBINDINGPROC glVertexAttribBinding = nullptr;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 
-//Framebuffers
+/*////////////////////////////////////////////////////////////
+	Framebuffers
+////////////////////////////////////////////////////////////*/
 PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
 PFNGLISFRAMEBUFFERPROC glIsFramebuffer = nullptr;
 PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
 
-//Draw
+/*////////////////////////////////////////////////////////////
+	Draw
+////////////////////////////////////////////////////////////*/
 PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex = nullptr;
 
-//Renderbuffers
+/*////////////////////////////////////////////////////////////
+	Renderbuffer
+////////////////////////////////////////////////////////////*/
 PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
 PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
 PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
 PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
 PFNGLISRENDERBUFFERPROC glIsRenderbuffer = nullptr;
 
-//Clear
+/*////////////////////////////////////////////////////////////
+	Clear
+////////////////////////////////////////////////////////////*/
 PFNGLCLEARCOLORPROC glClearColorf = nullptr;
 PFNGLCLEARDEPTHFPROC glClearDepthf = nullptr;
 
-//Stencil
+/*////////////////////////////////////////////////////////////
+	String
+////////////////////////////////////////////////////////////*/
 PFNGLSTENCILOPSEPARATEPROC glStencilOpSeparate = nullptr;
 PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate = nullptr;
 
-//Depth
+/*////////////////////////////////////////////////////////////
+	Depth
+////////////////////////////////////////////////////////////*/
 PFNGLDEPTHRANGEFPROC glDepthRangef = nullptr;
 PFNGLPOLYGONOFFSETCLAMPPROC glPolygonOffsetClamp = nullptr;
 
-//GetString
+/*////////////////////////////////////////////////////////////
+	String
+////////////////////////////////////////////////////////////*/
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 
-//Blend
+/*////////////////////////////////////////////////////////////
+	Blend
+////////////////////////////////////////////////////////////*/
+#if defined(RE_PLATFORM_WINDOWS)
 PFNGLBLENDCOLORPROC glBlendColor = nullptr;
+#endif
 PFNGLCOLORMASKIPROC glColorMaski = nullptr;
 PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = nullptr;
 PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei = nullptr;
 PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = nullptr;
 PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei = nullptr;
 
-//Enable
+/*////////////////////////////////////////////////////////////
+	Enable
+////////////////////////////////////////////////////////////*/
 PFNGLENABLEIPROC glEnablei = nullptr;
 PFNGLDISABLEIPROC glDisablei = nullptr;
 
 
 namespace RayEngine
 {
+#if defined(RE_PLATFORM_WINDOWS)
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void* LoadFunction(const char* name)
 	{
@@ -155,7 +192,14 @@ namespace RayEngine
 
 		return adress;
 	}
-
+#elif defined(RE_PLATFORM_LINUX)
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void* LoadFunction(const char* name)
+	{
+		void (*adress)() = glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name)); 
+		return reinterpret_cast<void*>(adress);
+	}
+#endif
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,16 +207,26 @@ namespace RayEngine
 	{
 		static bool initialized = false;
 		
-
 		if (!initialized)
 		{
-			//WGL
+#if defined(RE_PLATFORM_WINDOWS)
+			/*////////////////////////////////////////////////////////////
+				WGL
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(wglChoosePixelFormatARB);
 			LOAD_GL_FUNC(wglCreateContextAttribsARB);
 			LOAD_GL_FUNC(wglSwapIntervalEXT);
 			LOAD_GL_FUNC(wglGetExtensionsStringARB);
+#elif defined (RE_PLATFORM_LINUX)
+			/*////////////////////////////////////////////////////////////
+				GLX
+			////////////////////////////////////////////////////////////*/
+			LOAD_GL_FUNC(glXCreateContextAttribsARB);
+#endif
 
-			//Buffers
+			/*////////////////////////////////////////////////////////////
+				Buffers
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glGenBuffers);
 			LOAD_GL_FUNC(glBindBuffer);
 			LOAD_GL_FUNC(glIsBuffer);
@@ -186,10 +240,16 @@ namespace RayEngine
 			LOAD_GL_FUNC(glUnmapBuffer);
 			LOAD_GL_FUNC(glUseProgram);
 
-			//Textures
+			/*////////////////////////////////////////////////////////////
+				Textures
+			////////////////////////////////////////////////////////////*/
+#if defined(RE_PLATFORM_WINDOWS)
 			LOAD_GL_FUNC(glActiveTexture);
+#endif
 
-			//Shaders
+			/*////////////////////////////////////////////////////////////
+				Shaders
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glCreateProgram);
 			LOAD_GL_FUNC(glCreateShader);
 			LOAD_GL_FUNC(glShaderSource);
@@ -207,10 +267,14 @@ namespace RayEngine
 			LOAD_GL_FUNC(glIsProgram);
 			LOAD_GL_FUNC(glIsShader);
 			
-			//Patches
+			/*////////////////////////////////////////////////////////////
+				Patches
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glPatchParameteri);
 			
-			//Pipeline
+			/*////////////////////////////////////////////////////////////
+				Pipelines
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glUseProgramStages);
 			LOAD_GL_FUNC(glIsProgramPipeline);
 			LOAD_GL_FUNC(glGenProgramPipelines);
@@ -219,7 +283,9 @@ namespace RayEngine
 			LOAD_GL_FUNC(glDeleteProgramPipelines);
 			LOAD_GL_FUNC(glValidateProgramPipeline);
 			
-			//VertexArrays
+			/*////////////////////////////////////////////////////////////
+				VertexArrays
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glIsVertexArray);
 			LOAD_GL_FUNC(glBindVertexArray);
 			LOAD_GL_FUNC(glGenVertexArrays);
@@ -229,58 +295,75 @@ namespace RayEngine
 			LOAD_GL_FUNC(glVertexAttribBinding);
 			LOAD_GL_FUNC(glEnableVertexAttribArray);
 			
-			//Framebuffers
+			/*////////////////////////////////////////////////////////////
+				Framebuffers
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glBindFramebuffer);
 			LOAD_GL_FUNC(glIsFramebuffer);
 			LOAD_GL_FUNC(glDeleteFramebuffers);
 			
-			//Draw
+			/*////////////////////////////////////////////////////////////
+				Draw
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glDrawElementsBaseVertex);
 			
-			//Renderbuffers
+			/*////////////////////////////////////////////////////////////
+				Renderbuffers
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glBindRenderbuffer);
 			LOAD_GL_FUNC(glDeleteRenderbuffers);
 			LOAD_GL_FUNC(glGenRenderbuffers);
 			LOAD_GL_FUNC(glRenderbufferStorage);
 			LOAD_GL_FUNC(glIsRenderbuffer);
 			
-			//Clear
+			/*////////////////////////////////////////////////////////////
+				Clear
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glClearDepthf);
-			if ((glClearColorf = reinterpret_cast<decltype(glClearColorf)>(LoadFunction("glClearColor"))) == nullptr)
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: Function 'glClearColor' is not supported");
+			LOAD_GL_FUNC_NAMED(glClearColorf, "glClearColor");
 
-			//Stencil
+			/*////////////////////////////////////////////////////////////
+				Stencil
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glStencilOpSeparate);
 			LOAD_GL_FUNC(glStencilFuncSeparate);
 
-			//Depth
+			/*////////////////////////////////////////////////////////////
+				Depth
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glDepthRangef);
-			if ((glPolygonOffsetClamp = reinterpret_cast<decltype(glPolygonOffsetClamp)>(LoadFunction("glPolygonOffsetClamp"))) == nullptr)
-			{
-				glPolygonOffsetClamp = reinterpret_cast<decltype(glPolygonOffsetClamp)>(LoadFunction("PolygonOffsetClampEXT"));
-				if (glPolygonOffsetClamp == nullptr)
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: Function 'glPolygonOffsetClamp' is not supported");
+			LOAD_GL_FUNC(glPolygonOffsetClamp);
+			if (glPolygonOffsetClamp == nullptr) 
+			{ 
+				LOAD_GL_FUNC_NAMED(glPolygonOffsetClamp, "PolygonOffsetClampEXT");
 			}
 
-			//GetString
+			/*////////////////////////////////////////////////////////////
+				String
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glGetStringi);
 
-			//Blend
+			/*////////////////////////////////////////////////////////////
+				Blend
+			////////////////////////////////////////////////////////////*/
+#if defined(RE_PLATFORM_WINDOWS)
 			LOAD_GL_FUNC(glBlendColor);
+#endif
 			LOAD_GL_FUNC(glColorMaski);
 			LOAD_GL_FUNC(glBlendFuncSeparate);
 			LOAD_GL_FUNC(glBlendFuncSeparatei);
 			LOAD_GL_FUNC(glBlendEquationSeparate);
 			LOAD_GL_FUNC(glBlendEquationSeparatei);
 
-			//Enable
+			/*////////////////////////////////////////////////////////////
+				Enable
+			////////////////////////////////////////////////////////////*/
 			LOAD_GL_FUNC(glEnablei);
 			LOAD_GL_FUNC(glDisablei);
 		}
 
 		return true;
 	}
-
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

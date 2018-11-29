@@ -25,9 +25,10 @@ failure and or malfunction of any kind.
 #define STBI_NO_GIF
 #define STBI_NO_PIC
 #define STBI_NO_PNM
-#if !defined(RE_PLATFORM_ANDROID)
+#if defined(RE_PLATFORM_WINDOWS)
 #define STBI_MSC_SECURE_CRT
-#else
+#endif
+#if defined(RE_PLATOFORM_ANDROID)
 #define STBI_NO_SIMD
 #endif
 #define STB_IMAGE_IMPLEMENTATION
@@ -36,13 +37,6 @@ failure and or malfunction of any kind.
 #include "../../Dependencies/stb_image_write.h"
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "../../Dependencies/stb_image_resize.h"
-
-#include <string>
-#if defined(UNICODE)
-typedef std::basic_string<wchar_t> Tstring;
-#else
-typedef std::basic_string<char> Tstring;
-#endif
 
 namespace RayEngine 
 {
@@ -81,12 +75,12 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool LoadImageFromFile(const Tchar* const pFilename, const Tchar* const pFilepath, const void** ppPixels, int32& width, int32& height, FORMAT format)
+	bool LoadImageFromFile(const std::string& filename, const std::string& filepath, const void** ppPixels, int32& width, int32& height, FORMAT format)
 	{
 		if (ppPixels == nullptr || format == FORMAT_UNKNOWN)
 			return false;
 
-		Tstring fullpath = pFilepath + Tstring(pFilename);
+		std::string fullpath = filepath + filename;
 		int32 wi = 0;
 		int32 he = 0;
 		int32 reqComponents = 0;
@@ -94,6 +88,8 @@ namespace RayEngine
 
 		if (format == FORMAT_R8G8B8A8_UINT || format == FORMAT_R8G8B8A8_UNORM)
 			data = static_cast<void*>(stbi_load(fullpath.c_str(), &wi, &he, &reqComponents, 4));
+		else if (format == FORMAT_R8_UNORM)
+			data = static_cast<void*>(stbi_load(fullpath.c_str(), &wi, &he, &reqComponents, 1));
 		else if (format == FORMAT_R32G32B32A32_FLOAT)
 			data = stbi_loadf(fullpath.c_str(), &wi, &he, &reqComponents, 4);
 
@@ -102,11 +98,10 @@ namespace RayEngine
 			width = wi;
 			height = he;
 			(*ppPixels) = data;
-
 			return true;
 		}
 
-		const char* reason = stbi_failure_reason();
+		//const char* reason = stbi_failure_reason();
 
 		height = 0;
 		width = 0;
@@ -116,12 +111,12 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool SaveImageToFile(const Tchar* const pFilename, const Tchar * const pFilepath, const void* const pPixels, int32 width, int32 height, FORMAT format, IMAGE_EXTENSION extension)
+	bool SaveImageToFile(const std::string& filename, const std::string& filepath, const void* const pPixels, int32 width, int32 height, FORMAT format, IMAGE_EXTENSION extension)
 	{
 		if (pPixels == nullptr || width == 0 || height == 0 || format == FORMAT_UNKNOWN || extension == IMAGE_EXTENSION_UNKNOWN)
 			return false;
 
-		Tstring fullpath = pFilepath + Tstring(pFilename);
+		std::string fullpath = filepath + filename;
 		if (extension == IMAGE_EXTENSION_HDR)
 		{
 			return false;

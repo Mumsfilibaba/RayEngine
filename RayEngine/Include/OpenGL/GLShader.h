@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IShader.h"
+#include "../Graphics/IShader.h"
 #include "GLCommon.h"
 
 namespace RayEngine

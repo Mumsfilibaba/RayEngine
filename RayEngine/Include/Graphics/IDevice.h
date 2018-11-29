@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "AdapterDesc.h"
-#include "..\Interfaces\IObject.h"
+#include "../Interfaces/IObject.h"
 
 namespace RayEngine
 {
@@ -61,6 +61,14 @@ namespace RayEngine
 		struct TextureDesc;
 
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		enum DEVICE_FLAG : int32
+		{
+			DEVICE_FLAG_NONE = 0,
+			DEVICE_FLAG_DEBUG = (1 << 0),
+		};
+
+
 		/*////////////////////////////////////////////////////////////
 			
 			Contains info about a logical device. Used to create
@@ -94,7 +102,7 @@ namespace RayEngine
 		struct DeviceDesc
 		{
 			std::string Name;
-			AdapterDesc* pAdapter;
+			int32 DeviceFlags;
 			int32 DepthStencilDescriptorCount;
 			int32 RendertargetDescriptorCount;
 			int32 ResourceDescriptorCount;
@@ -316,14 +324,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void SetName(const std::string& name) = 0;
-
-			/*////////////////////////////////////////////////////////////
-				Query the factory that was used to create this device.
-				The referencecount of the factory will be increased
-				on a successfull call so release needs to be called 
-				when finished with ppFactory.
-			////////////////////////////////////////////////////////////*/
-			virtual void QueryFactory(IFactory** ppFactory) const = 0;
 
 			/*////////////////////////////////////////////////////////////
 

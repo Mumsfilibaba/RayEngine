@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../Defines.h"
+#include "../Types.h"
 
 #if !defined(ReRelease)
 #define ReRelease(pObject) pObject->Release(); pObject = nullptr
@@ -35,13 +35,12 @@ namespace RayEngine
 {
 	class IObject
 	{
-		RE_INTERFACE(IObject)
+		RE_INTERFACE(IObject);
 
-	protected:
+	public:
 		IObject() {}
 		~IObject() {}
 
-	public:
 		typedef uint32 CounterType;
 
 		/*////////////////////////////////////////////////////////////

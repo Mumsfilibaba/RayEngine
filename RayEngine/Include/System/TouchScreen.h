@@ -20,24 +20,36 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\Types.h"
-#include "..\Math\Vector2.h"
+#include "../Defines.h"
+#include "../Types.h"
+#include "../Math/Vector2.h"
 
 namespace RayEngine
 {
 	class TouchScreen
 	{
-	public:
-		TouchScreen() = delete;
-		~TouchScreen() = delete;
-		TouchScreen(TouchScreen&& other) = delete;
-		TouchScreen(const TouchScreen& other) = delete;
-		TouchScreen& operator=(TouchScreen&& other) = delete;
-		TouchScreen& operator=(const TouchScreen& other) = delete;
+		RE_STATIC_CLASS(TouchScreen);
 
 	public:
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			Returns true if specified finger is down. The finger-index specified is used if multiple fingers are used at the
+			same time. Most often specifing zero will do.
+
+			finger - The index of the finger to check
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		static bool IsDown(int32 finger);
+
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			Returns the current position of the specified finger. The finger-index specified is used if multiple fingers are 
+			used at the same time. Most often specifing zero will do. A call to TouchScreen::IsDown should be done to make 
+			sure that the returned position is valid.
+
+			finger - The index of the finger to check
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		static Math::Vector2 GetPosition(int32 finger);
 	};
 }

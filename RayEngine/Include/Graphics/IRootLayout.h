@@ -21,6 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "IDeviceObject.h"
+#include <limits>
 
 #if defined(max)
 #undef max
@@ -104,12 +105,12 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct ShaderVariableDesc
 		{
-			SHADER_TYPE ShaderStage = SHADER_TYPE_UNKNOWN;
-			VARIABLE_TYPE Type = VARIABLE_TYPE_UNKNOWN;
-			SHADER_USAGE ShaderUsage = SHADER_USAGE_UNKNOWN;
-			int32 ShaderRegister = 0;
-			int32 ShaderSpace = 0;
-			int32 ConstantCount = 0;
+			SHADER_TYPE ShaderStage;
+			VARIABLE_TYPE Type;
+			SHADER_USAGE ShaderUsage;
+			int32 ShaderRegister;
+			int32 ShaderSpace;
+			int32 ConstantCount;
 		};
 
 

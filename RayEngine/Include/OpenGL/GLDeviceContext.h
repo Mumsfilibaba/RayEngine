@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDeviceContext.h"
+#include "../Graphics/IDeviceContext.h"
 #include "GLCommon.h"
 #include "VAOCache.h"
 
@@ -107,10 +107,7 @@ namespace RayEngine
 			mutable GLRootLayout* m_CurrentRootLayout;
 			mutable GLPipelineState* m_CurrentPipelineState;
 			mutable GLSwapchain* m_pCurrentSwapchain;
-			
 			mutable GLBuffer* m_VertexBuffers[RE_MAX_VERTEXBUFFERS];
-
-			GLNativeContext m_Context;
 			
 			bool m_IsDeffered;
 

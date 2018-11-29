@@ -21,9 +21,17 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../../Include/Debug/Debug.h"
+#include <typeinfo>
+#include <string>
 
+#define LOAD_GL_FUNC(func)																					\
+if ((func = reinterpret_cast<decltype(func)>(LoadFunction(#func))) == nullptr)								\
+	LOG_WARNING(std::string("OpenGL: Function \'") + std::string(#func) + std::string("\' not supported."))	\
+
+#define LOAD_GL_FUNC_NAMED(func, name)																		\
+if ((func = reinterpret_cast<decltype(func)>(LoadFunction(name))) == nullptr)								\
+	LOG_WARNING(std::string("OpenGL: Function \'") + std::string(name) + std::string("\' not supported."))	\
 
 #if defined (RE_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN 1
@@ -31,42 +39,11 @@ failure and or malfunction of any kind.
 #include <gl\GL.h>
 #include <gl\GLU.h>
 
-
-///////////////
-///FUNCTIONS///
-///////////////
-
-namespace RayEngine
-{
-#if defined(RE_PLATFORM_WINDOWS)
-	typedef HDC GLNativeDevice;
-#define RE_GL_NULL_NATIVE_DEVICE 0
-	typedef HGLRC GLNativeContext;
-#define RE_GL_NULL_NATIVE_CONTEXT 0
-#else
-	typedef void* GLNativeDevice;
-#define GL_NULL_NATIVE_DEVICE nullptr
-	typedef void* GLNativeContext;
-#define GL_NULL_NATIVE_CONTEXT nullptr
-#endif
-
-
-	bool LoadOpenGL();
-	void* LoadFunction(const char* name);
-	const char* GetGLErrorString(int32 error);
-}
-
-
-/////////////
-///DEFINES///
-/////////////
-
-
 /*////////////////////////////////////////////////////////////
 	WGL
 ////////////////////////////////////////////////////////////*/
 
-//PixelformatAttributes
+//Pixelformat Attributes
 #define WGL_DRAW_TO_WINDOW_ARB 0x2001
 #define WGL_ACCELERATION_ARB 0x2003
 #define WGL_SWAP_METHOD_ARB 0x2007
@@ -96,12 +73,24 @@ namespace RayEngine
 #define WGL_CONTEXT_PROFILE_MASK_ARB 0x9126
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
 
+#elif defined(RE_PLATFORM_LINUX)
+#include <GL/gl.h>
+#include <GL/glx.h>
+
+/*////////////////////////////////////////////////////////////
+	GLX
+////////////////////////////////////////////////////////////*/
+#define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
+#endif
 
 /*////////////////////////////////////////////////////////////
 	CORE OPENGL
 ////////////////////////////////////////////////////////////*/
 
-//glGet
+/*////////////////////////////////////////////////////////////
+	Get
+////////////////////////////////////////////////////////////*/
 #define GL_MAX_3D_TEXTURE_SIZE 0x8073
 #define GL_MAX_CUBE_MAP_TEXTURE_SIZE 0x851C
 #define GL_MAX_DRAW_BUFFERS 0x8824
@@ -109,10 +98,14 @@ namespace RayEngine
 #define GL_MINOR_VERSION 0x821C
 #define GL_NUM_EXTENSIONS 0x821D
 
-//Errortypes
+/*////////////////////////////////////////////////////////////
+	Error
+////////////////////////////////////////////////////////////*/
 #define GL_INVALID_FRAMEBUFFER_OPERATION 0x0506
 
-//Buffers
+/*////////////////////////////////////////////////////////////
+	Buffers
+////////////////////////////////////////////////////////////*/
 #define GL_FRAMEBUFFER 0x8D40
 #define GL_RENDERBUFFER 0x8D41
 #define GL_ARRAY_BUFFER 0x8892
@@ -121,7 +114,9 @@ namespace RayEngine
 #define GL_BUFFER_SIZE 0x8764
 #define GL_BUFFER_USAGE 0x8765
 
-//Map
+/*////////////////////////////////////////////////////////////
+	Map
+////////////////////////////////////////////////////////////*/
 #define GL_MAP_READ_BIT 0x0001
 #define GL_MAP_WRITE_BIT 0x0002
 #define GL_MAP_INVALIDATE_RANGE_BIT 0x0004
@@ -129,21 +124,27 @@ namespace RayEngine
 #define GL_MAP_FLUSH_EXPLICIT_BIT 0x0010
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 
-//Internal format
+/*////////////////////////////////////////////////////////////
+	Internal format
+////////////////////////////////////////////////////////////*/
 #define GL_R8 0x8229
 #define GL_R32F 0x822E
 #define GL_RGBA16F 0x881A
 #define GL_DEPTH_COMPONENT16 0x81A5
 #define GL_DEPTH_COMPONENT32 0x81A7
 
-//Sampler parameter
+/*////////////////////////////////////////////////////////////
+	Sampler parameters
+////////////////////////////////////////////////////////////*/
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_CLAMP_TO_BORDER 0x812D
 #define GL_TEXTURE_WRAP_R 0x8072
 #define GL_TEXTURE_BASE_LEVEL 0x813C
 #define GL_TEXTURE_MAX_LEVEL 0x813D
 
-//Texture units
+/*////////////////////////////////////////////////////////////
+	Texture Units
+////////////////////////////////////////////////////////////*/
 #define GL_TEXTURE0 0x84C0
 #define GL_TEXTURE1 0x84C1
 #define GL_TEXTURE2 0x84C2
@@ -177,13 +178,17 @@ namespace RayEngine
 #define GL_TEXTURE30 0x84DE
 #define GL_TEXTURE31 0x84DF
 
-//GL-Enable
+/*////////////////////////////////////////////////////////////
+	Enable
+////////////////////////////////////////////////////////////*/
 #define GL_TEXTURE_CUBE_MAP_SEAMLESS 0x884F
 #define GL_DEPTH_CLAMP 0x864F
 #define GL_MULTISAMPLE 0x809D
 #define GL_SAMPLE_ALPHA_TO_COVERAGE 0x809E
 
-//Cube-Map
+/*////////////////////////////////////////////////////////////
+	Texture Cube
+////////////////////////////////////////////////////////////*/
 #define GL_TEXTURE_CUBE_MAP 0x8513
 #define GL_TEXTURE_CUBE_MAP_POSITIVE_X 0x8515
 #define GL_TEXTURE_CUBE_MAP_NEGATIVE_X 0x8516
@@ -192,7 +197,9 @@ namespace RayEngine
 #define GL_TEXTURE_CUBE_MAP_POSITIVE_Z 0x8519
 #define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z 0x851A
 
-//Shaders
+/*////////////////////////////////////////////////////////////
+	Shaders
+////////////////////////////////////////////////////////////*/
 #define GL_COMPILE_STATUS 0x8B81
 #define GL_LINK_STATUS 0x8B82
 #define GL_VERTEX_SHADER 0x8B31
@@ -211,11 +218,15 @@ namespace RayEngine
 #define GL_COMPUTE_SHADER_BIT 0x00000020
 #define GL_INFO_LOG_LENGTH 0x8B84
 
-//Primitive types
+/*////////////////////////////////////////////////////////////
+	Primitive Types
+////////////////////////////////////////////////////////////*/
 #define GL_PATCHES 0x000E
 #define GL_PATCH_VERTICES 0x8E72
 
-//Framebuffer attachment
+/*////////////////////////////////////////////////////////////
+	Framebuffer attachments
+////////////////////////////////////////////////////////////*/
 #define GL_COLOR_ATTACHMENT0 0x8CE0
 #define GL_COLOR_ATTACHMENT1 0x8CE1
 #define GL_COLOR_ATTACHMENT2 0x8CE2
@@ -251,14 +262,20 @@ namespace RayEngine
 #define GL_DEPTH_ATTACHMENT 0x8D00
 #define GL_STENCIL_ATTACHMENT 0x8D20
 
-//Pipelines
+/*////////////////////////////////////////////////////////////
+	Pipelines
+////////////////////////////////////////////////////////////*/
 #define GL_VALIDATE_STATUS 0x8B83
 
-//Stencil
+/*////////////////////////////////////////////////////////////
+	Stencil
+////////////////////////////////////////////////////////////*/
 #define GL_INCR_WRAP 0x8507
 #define GL_DECR_WRAP 0x8508
 
-//Usage
+/*////////////////////////////////////////////////////////////
+	Usage
+////////////////////////////////////////////////////////////*/
 #define GL_STREAM_DRAW 0x88E0
 #define GL_STREAM_READ 0x88E1
 #define GL_STREAM_COPY 0x88E2
@@ -269,46 +286,72 @@ namespace RayEngine
 #define GL_DYNAMIC_READ 0x88E9
 #define GL_DYNAMIC_COPY 0x88EA
 
-//Types
+/*////////////////////////////////////////////////////////////
+	Types
+////////////////////////////////////////////////////////////*/
 #define GL_HALF_FLOAT 0x140B
 
-//BlendFunc
+/*////////////////////////////////////////////////////////////
+	Blend Func
+////////////////////////////////////////////////////////////*/
 #define GL_CONSTANT_COLOR 0x8001
 #define GL_ONE_MINUS_CONSTANT_COLOR 0x8002
 
-//BlendEquation
+/*////////////////////////////////////////////////////////////
+	Blend Equations
+////////////////////////////////////////////////////////////*/
 #define GL_FUNC_ADD 0x8006
 #define GL_FUNC_REVERSE_SUBTRACT 0x800B
 #define GL_FUNC_SUBTRACT 0x800A
 #define GL_MIN 0x8007
 #define GL_MAX 0x8008
 
-//Buffer Textures
+/*////////////////////////////////////////////////////////////
+	Texture Buffer
+////////////////////////////////////////////////////////////*/
 #define GL_TEXTURE_BUFFER 0x8C2A
 
-//Storage buffers
+/*////////////////////////////////////////////////////////////
+	Storage buffer
+////////////////////////////////////////////////////////////*/
 #define GL_SHADER_STORAGE_BUFFER 0x90D2
 
-//Conservative rasterizatoin
+/*////////////////////////////////////////////////////////////
+	Conservative Rasterization
+////////////////////////////////////////////////////////////*/
 #define GL_CONSERVATIVE_RASTERIZATION_NV 0x9346
 
 //////////////
 ///TYPEDEFS///
 //////////////
 
-
-//Types
+/*////////////////////////////////////////////////////////////
+	Types
+////////////////////////////////////////////////////////////*/
 typedef ptrdiff_t GLsizeiptr;
 typedef ptrdiff_t GLintptr;
 typedef char GLchar;
 
-//WGL
+#if defined(RE_PLATFORM_WINDOWS)
+
+/*////////////////////////////////////////////////////////////
+	WGL
+////////////////////////////////////////////////////////////*/
 typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
 typedef HGLRC(WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int* attribList);
 typedef BOOL(WINAPI* PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc, const int* piAttribIList, const FLOAT* pfAttribFList, UINT nMaxFormats, int *piFormats, UINT* nNumFormats);
 typedef const char *(WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
+#elif defined (RE_PLATFORM_LINUX)
 
-//Buffers
+/*////////////////////////////////////////////////////////////
+	GLX
+////////////////////////////////////////////////////////////*/
+typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+#endif
+
+/*////////////////////////////////////////////////////////////
+	Buffers
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLGENBUFFERSPROC) (GLsizei n, GLuint* buffers);
 typedef void (APIENTRY* PFNGLBINDBUFFERPROC) (GLenum target, GLuint buffer);
 typedef void (APIENTRY* PFNGLBUFFERDATAPROC) (GLenum target, GLsizeiptr size, const void* data, GLenum usage);
@@ -321,10 +364,14 @@ typedef GLboolean(APIENTRY* PFNGLISBUFFERPROC) (GLuint buffer);
 typedef GLboolean(APIENTRY* PFNGLUNMAPBUFFERPROC) (GLenum target);
 typedef void* (APIENTRY* PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 
-//Textures
+/*////////////////////////////////////////////////////////////
+	Textures
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLACTIVETEXTUREPROC) (GLenum texture);
 
-//Shaders
+/*////////////////////////////////////////////////////////////
+	Shaders
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLCOMPILESHADERPROC) (GLuint shader);
 typedef void (APIENTRY* PFNGLDELETESHADERPROC) (GLuint shader);
 typedef void (APIENTRY* PFNGLDELETEPROGRAMPROC) (GLuint program);
@@ -343,10 +390,14 @@ typedef GLuint(APIENTRY* PFNGLCREATEPROGRAMPROC) (void);
 typedef GLuint(APIENTRY* PFNGLCREATESHADERPROC) (GLenum type);
 typedef void (APIENTRY* PFNGLUSEPROGRAMPROC) (GLuint program);
 
-//Patches
+/*////////////////////////////////////////////////////////////
+	Patch
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLPATCHPARAMETERIPROC) (GLenum pname, GLint value);
 
-//Pipeline
+/*////////////////////////////////////////////////////////////
+	Pipeline
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLGENPROGRAMPIPELINESPROC) (GLsizei n, GLuint *pipelines);
 typedef void (APIENTRY* PFNGLDELETEPROGRAMPIPELINESPROC) (GLsizei n, const GLuint *pipelines);
 typedef void (APIENTRY* PFNGLUSEPROGRAMSTAGESPROC) (GLuint pipeline, GLbitfield stages, GLuint program);
@@ -355,7 +406,9 @@ typedef void (APIENTRY* PFNGLVALIDATEPROGRAMPIPELINEPROC) (GLuint pipeline);
 typedef void (APIENTRY* PFNGLBINDPROGRAMPIPELINEPROC) (GLuint pipeline);
 typedef GLboolean(APIENTRY* PFNGLISPROGRAMPIPELINEPROC) (GLuint pipeline);
 
-//VertexArray
+/*////////////////////////////////////////////////////////////
+	VertexArray
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLBINDVERTEXARRAYPROC) (GLuint array);
 typedef void (APIENTRY* PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
 typedef void (APIENTRY* PFNGLDELETEVERTEXARRAYSPROC) (GLsizei n, const GLuint* arrays);
@@ -365,45 +418,66 @@ typedef void (APIENTRY* PFNGLVERTEXATTRIBFORMATPROC) (GLuint attribindex, GLint 
 typedef void (APIENTRY* PFNGLVERTEXATTRIBPOINTERPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
 typedef GLboolean(APIENTRY* PFNGLISVERTEXARRAYPROC) (GLuint array);
 
-//Framebuffers
+/*////////////////////////////////////////////////////////////
+	Framebuffer
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLBINDFRAMEBUFFERPROC) (GLenum target, GLuint framebuffer);
 typedef void (APIENTRY* PFNGLDELETEFRAMEBUFFERSPROC) (GLsizei n, const GLuint* framebuffers);
 typedef GLboolean(APIENTRY* PFNGLISFRAMEBUFFERPROC) (GLuint framebuffer);
 
-//Draw
+/*////////////////////////////////////////////////////////////
+	Draw
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLDRAWELEMENTSBASEVERTEXPROC) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
 
-//Renderbuffers
+/*////////////////////////////////////////////////////////////
+	Renderbuffers
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLBINDRENDERBUFFERPROC) (GLenum target, GLuint renderbuffer);
 typedef void (APIENTRY* PFNGLDELETERENDERBUFFERSPROC) (GLsizei n, const GLuint* renderbuffers);
 typedef void (APIENTRY* PFNGLGENRENDERBUFFERSPROC) (GLsizei n, GLuint *renderbuffers);
 typedef void (APIENTRY* PFNGLRENDERBUFFERSTORAGEPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
 typedef GLboolean(APIENTRY* PFNGLISRENDERBUFFERPROC) (GLuint renderbuffer);
 
-//Clear
+/*////////////////////////////////////////////////////////////
+	Clear
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLCLEARCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 typedef void (APIENTRY* PFNGLCLEARDEPTHFPROC) (GLfloat d);
 
-//Stencil
+/*////////////////////////////////////////////////////////////
+	Stencil
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLSTENCILOPSEPARATEPROC) (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
 typedef void (APIENTRY* PFNGLSTENCILFUNCSEPARATEPROC) (GLenum face, GLenum func, GLint ref, GLuint mask);
 
-//Depth
+/*////////////////////////////////////////////////////////////
+	Depth
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLDEPTHRANGEFPROC) (GLfloat n, GLfloat f);
 typedef void (APIENTRY* PFNGLPOLYGONOFFSETCLAMPPROC) (GLfloat factor, GLfloat units, GLfloat clamp);
 
-//GetString
+/*////////////////////////////////////////////////////////////
+	String
+////////////////////////////////////////////////////////////*/
 typedef const GLubyte* (APIENTRY* PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);
 
-//Blend
+/*////////////////////////////////////////////////////////////
+	Blend
+////////////////////////////////////////////////////////////*/
+#if defined(RE_PLATFORM_WINDOWS)
 typedef void (APIENTRY* PFNGLBLENDCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+#elif defined(RE_PLATFORM_LINUX)
+#endif
 typedef void (APIENTRY* PFNGLCOLORMASKIPROC) (GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
 typedef void (APIENTRY* PFNGLBLENDFUNCSEPARATEPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
 typedef void (APIENTRY* PFNGLBLENDFUNCSEPARATEIPROC) (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
 typedef void (APIENTRY* PFNGLBLENDEQUATIONSEPARATEPROC) (GLenum modeRGB, GLenum modeAlpha);
 typedef void (APIENTRY* PFNGLBLENDEQUATIONSEPARATEIPROC) (GLuint buf, GLenum modeRGB, GLenum modeAlpha);
 
-//Enable
+/*////////////////////////////////////////////////////////////
+	Enable
+////////////////////////////////////////////////////////////*/
 typedef void (APIENTRY* PFNGLENABLEIPROC) (GLenum target, GLuint index);
 typedef void (APIENTRY* PFNGLDISABLEIPROC) (GLenum target, GLuint index);
 
@@ -411,13 +485,27 @@ typedef void (APIENTRY* PFNGLDISABLEIPROC) (GLenum target, GLuint index);
 ///FUNCTIONPTRS///
 //////////////////
 
-//WGL
+#if defined(RE_PLATFORM_WINDOWS)
+
+/*////////////////////////////////////////////////////////////
+	WGL
+////////////////////////////////////////////////////////////*/
+
 extern PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 extern PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
 extern PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
+#elif defined(RE_PLATFORM_LINUX)
 
-//Buffers
+/*////////////////////////////////////////////////////////////
+	GLX
+////////////////////////////////////////////////////////////*/
+extern PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
+#endif
+
+/*////////////////////////////////////////////////////////////
+	Buffers
+////////////////////////////////////////////////////////////*/
 extern PFNGLGENBUFFERSPROC glGenBuffers;
 extern PFNGLBINDBUFFERPROC glBindBuffer;
 extern PFNGLISBUFFERPROC glIsBuffer;
@@ -430,10 +518,20 @@ extern PFNGLBINDBUFFERBASEPROC glBindBufferBase;
 extern PFNGLMAPBUFFERRANGEPROC glMapBufferRange;
 extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 
-//Textures
+/*////////////////////////////////////////////////////////////
+	Textures
+////////////////////////////////////////////////////////////*/
+#if defined(RE_PLATFORM_WINDOWS)
+/*////////////////////////////////////////////////////////////
+	Not defined in windows gl.h
+////////////////////////////////////////////////////////////*/
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+#elif defined(RE_PLATFORM_LINUX)
+#endif
 
-//Shaders
+/*////////////////////////////////////////////////////////////
+	Shaders
+////////////////////////////////////////////////////////////*/
 extern PFNGLCREATEPROGRAMPROC glCreateProgram;
 extern PFNGLCREATESHADERPROC glCreateShader;
 extern PFNGLSHADERSOURCEPROC glShaderSource;
@@ -452,10 +550,14 @@ extern PFNGLISPROGRAMPROC glIsProgram;
 extern PFNGLISSHADERPROC glIsShader;
 extern PFNGLUSEPROGRAMPROC glUseProgram;
 
-//Patches
+/*////////////////////////////////////////////////////////////
+	Patches
+////////////////////////////////////////////////////////////*/
 extern PFNGLPATCHPARAMETERIPROC glPatchParameteri;
 
-//Pipeline
+/*////////////////////////////////////////////////////////////
+	Pipeline
+////////////////////////////////////////////////////////////*/
 extern PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;
 extern PFNGLISPROGRAMPIPELINEPROC glIsProgramPipeline;
 extern PFNGLGENPROGRAMPIPELINESPROC glGenProgramPipelines;
@@ -464,7 +566,9 @@ extern PFNGLGETPROGRAMPIPELINEIVPROC glGetProgramPipelineiv;
 extern PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines;
 extern PFNGLVALIDATEPROGRAMPIPELINEPROC glValidateProgramPipeline;
 
-//VertexArrays
+/*////////////////////////////////////////////////////////////
+	VertexArrays
+////////////////////////////////////////////////////////////*/
 extern PFNGLISVERTEXARRAYPROC glIsVertexArray;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
@@ -474,45 +578,96 @@ extern PFNGLVERTEXATTRIBBINDINGPROC glVertexAttribBinding;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 
-//Framebuffers
+/*////////////////////////////////////////////////////////////
+	Framebuffers
+////////////////////////////////////////////////////////////*/
 extern PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
 extern PFNGLISFRAMEBUFFERPROC glIsFramebuffer;
 extern PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
 
-//Draw
+/*////////////////////////////////////////////////////////////
+	Draw
+////////////////////////////////////////////////////////////*/
 extern PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex;
 
-//Renderbuffers
+/*////////////////////////////////////////////////////////////
+	Renderbuffer
+////////////////////////////////////////////////////////////*/
 extern PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer;
 extern PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers;
 extern PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers;
 extern PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage;
 extern PFNGLISRENDERBUFFERPROC glIsRenderbuffer;
 
-//Clear
+/*////////////////////////////////////////////////////////////
+	Clear
+////////////////////////////////////////////////////////////*/
 extern PFNGLCLEARCOLORPROC glClearColorf;
 extern PFNGLCLEARDEPTHFPROC glClearDepthf;
 
-//Stencil
+/*////////////////////////////////////////////////////////////
+	Stencil
+////////////////////////////////////////////////////////////*/
 extern PFNGLSTENCILOPSEPARATEPROC glStencilOpSeparate;
 extern PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate;
 
-//Depth
+/*////////////////////////////////////////////////////////////
+	Depth
+////////////////////////////////////////////////////////////*/
 extern PFNGLDEPTHRANGEFPROC glDepthRangef;
 extern PFNGLPOLYGONOFFSETCLAMPPROC glPolygonOffsetClamp;
 
-//GetString
+/*////////////////////////////////////////////////////////////
+	GetString
+////////////////////////////////////////////////////////////*/
 extern PFNGLGETSTRINGIPROC glGetStringi;
 
-//Blend
+/*////////////////////////////////////////////////////////////
+	Blend
+////////////////////////////////////////////////////////////*/
+#if defined(RE_PLATFORM_WINDOWS)
+//Not defined in windows gl.h
 extern PFNGLBLENDCOLORPROC glBlendColor;
+#endif
 extern PFNGLCOLORMASKIPROC glColorMaski;
 extern PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate;
 extern PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei;
 extern PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate;
 extern PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei;
 
-//Enable
+/*////////////////////////////////////////////////////////////
+	Enable
+////////////////////////////////////////////////////////////*/
 extern PFNGLENABLEIPROC glEnablei;
 extern PFNGLDISABLEIPROC glDisablei;
+
+///////////////
+///FUNCTIONS///
+///////////////
+
+namespace RayEngine
+{
+#if defined(RE_PLATFORM_WINDOWS)
+	typedef ::HDC GLNativeDevice;
+#define RE_GL_NULL_NATIVE_DEVICE 0
+	typedef ::HGLRC GLNativeContext;
+#define RE_GL_NULL_NATIVE_CONTEXT 0
+#elif defined(RE_PLATFORM_LINUX)
+	typedef void* GLNativeDevice;
+#define RE_GL_NULL_NATIVE_DEVICE nullptr
+	typedef ::GLXContext GLNativeContext;
+#define RE_GL_NULL_NATIVE_CONTEXT 0
+#else
+	typedef void* GLNativeDevice;
+#define RE_GL_NULL_NATIVE_DEVICE nullptr
+	typedef void* GLNativeContext;
+#define RE_GL_NULL_NATIVE_CONTEXT nullptr
 #endif
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	bool LoadOpenGL();
+
+	void* LoadFunction(const char* name);
+
+	const char* GetGLErrorString(int32 error);
+}

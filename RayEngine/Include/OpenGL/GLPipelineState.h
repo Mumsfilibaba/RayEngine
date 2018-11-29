@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IPipelineState.h"
+#include "../Graphics/IPipelineState.h"
 #include "GLCommon.h"
 
 namespace RayEngine

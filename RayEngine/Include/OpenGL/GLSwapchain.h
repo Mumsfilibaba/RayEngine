@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include <vector>
-#include "..\..\Include\Graphics\ISwapchain.h"
+#include "../../Include/Graphics/ISwapchain.h"
 #include "GLCommon.h"
 #include "GLDeviceContext.h"
 
@@ -30,32 +30,29 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class GLFactory;
 		class GLDevice;
 		class GLDeviceContext;
 		class GLTexture;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class GLSwapchain final : public ISwapchain
+		class GLSwapchain : public ISwapchain
 		{
 			RE_IMPLEMENT_INTERFACE(GLSwapchain);
 
 		public:
-			GLSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
-			~GLSwapchain();
+			GLSwapchain(IDevice* pDevice, const SwapchainDesc* pDesc);
+			virtual ~GLSwapchain();
 
 			void Resize(int32 width, int32 height) override final;
-
-			void Present() const override final;
 
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
-			
-			void QueryFactory(IFactory** ppFactory) const override final;
 
 			void GetDesc(SwapchainDesc* pDesc) const override final;
+
+			virtual void MakeCurrent() const = 0;
 
 			IObject::CounterType GetReferenceCount() const override final;
 			
@@ -64,14 +61,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create();
-
-		private:
-			GLDevice * m_Device;
-			GLFactory* m_Factory;
-			
-			System::NativeWindowHandle m_WndHandle;
-			GLNativeDevice m_NativeDevice;
+			GLDevice* m_Device;
 
 			SwapchainDesc m_Desc;
 			

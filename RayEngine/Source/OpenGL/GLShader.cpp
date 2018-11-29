@@ -20,10 +20,10 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <string>
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Utilities\EngineUtilities.h"
-#include "..\..\Include\OpenGL\GLShader.h"
-#include "..\..\Include\OpenGL\GLDevice.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Utilities/EngineUtilities.h"
+#include "../../Include/OpenGL/GLShader.h"
+#include "../../Include/OpenGL/GLDevice.h"
 
 namespace RayEngine
 {
@@ -113,8 +113,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLShader::CompileGLSL(const std::string& src)
 		{
-			using namespace System;
-
 			m_Shader = glCreateShader(ShaderTypeToGL(m_Desc.Type));
 
 			const char* pSrc = src.c_str();
@@ -140,7 +138,7 @@ namespace RayEngine
 					message += log.data();
 				}
 
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, message);
+				LOG_ERROR(message);
 			}
 		}
 	}

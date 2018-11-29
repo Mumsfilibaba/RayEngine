@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\OpenGL\VAOCache.h"
+#include "../../Include/OpenGL/VAOCache.h"
 #define GL_ATTRIB_POINTER(offset) (void*)((char*)(nullptr) + offset)
 
 namespace RayEngine

@@ -4,7 +4,7 @@ LDFLAGS= "-Wl,-rpath,../../RayEngine/bin/"
 LIBS = -lRayEngine
 COMPILE_OPTIONS = -Wall -std=c++11
 
-main: main.cpp | lib
+main: main.cpp lib
 	g++ $(INCLUDE_DIR) $(LIBRARY_DIR) $(LDFLAGS) $(COMPILE_OPTIONS) main.cpp -o main $(LIBS)
 
 lib:

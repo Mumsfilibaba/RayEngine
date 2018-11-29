@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\..\Include\Graphics\IRootLayout.h"
+#include "../../Include/Graphics/IRootLayout.h"
 #include "GLCommon.h"
 
 namespace RayEngine

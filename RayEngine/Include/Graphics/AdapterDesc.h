@@ -22,8 +22,8 @@ failure and or malfunction of any kind.
 #pragma once
 #include <string>
 #include <cassert>
-#include "..\Defines.h"
-#include "..\Types.h"
+#include "../Defines.h"
+#include "../Types.h"
 
 namespace RayEngine
 {
@@ -137,8 +137,8 @@ namespace RayEngine
 			AdapterList& operator=(const AdapterList& other);
 
 		public:
-			AdapterDesc* pAdapters = nullptr;
-			int32 Count = 0;
+			AdapterDesc* pAdapters;
+			int32 Count;
 		};
 	}
 }

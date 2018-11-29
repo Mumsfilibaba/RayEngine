@@ -19,52 +19,51 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/System/Keyboard.h"
+#include "../../Include/System/Sensors.h"
 
 #if defined(RE_PLATFORM_LINUX)
-#include "LinuxKeyCodes.h"
-#include "../../Include/Utilities/StringUtilities.h"
-#include "Linux.h"
-
-#include <iostream>
 
 namespace RayEngine
 {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    bool Keyboard::IsKeyDown(KEY keyCode)
+    bool Sensors::SensorSupported(SENSOR_TYPE sensor)
     {
-        ::Display* pDisplay = GetDisplay();
-
-        if (pDisplay == nullptr)
-        {
-            return false;
-        }
-
-        KeySym xKeysym = KeycodeToX(keyCode);
-        KeyCode xKeycode = XKeysymToKeycode(pDisplay, xKeysym);
-        if (xKeycode != 0)
-        {
-            char keyState[32];
-            XQueryKeymap(pDisplay, keyState);
-
-            return (keyState[xKeycode / 8] & (1 << (xKeycode % 8))) != 0;
-        }
-
         return false;
     }
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool Keyboard::ShowVirtualKeyboardVisible()
+    bool Sensors::SensorEnabled(SENSOR_TYPE sensor)
     {
         return false;
     }
-	
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool Keyboard::HideVirtualKeyboardVisible()
+    bool Sensors::EnableSensor(SENSOR_TYPE sensor)
     {
         return false;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    bool Sensors::DisableSensor(SENSOR_TYPE sensor)
+    {
+        return false;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    bool Sensors::SetRefreshRate(SENSOR_TYPE sensor, const TimeStamp& time)
+    {
+        return false;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    SensorData Sensors::GetSensorValue(SENSOR_TYPE sensor)
+    {
+        return SensorData();
     }
 }
 

@@ -19,12 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Graphics\Viewport.h"
-#include "..\..\Include\OpenGL\GLDeviceContext.h"
-#include "..\..\Include\OpenGL\GLDevice.h"
-#include "..\..\Include\OpenGL\GLPipelineState.h"
-#include "..\..\Include\OpenGL\GLRootLayout.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Graphics/Viewport.h"
+#include "../../Include/OpenGL/GLDeviceContext.h"
+#include "../../Include/OpenGL/GLDevice.h"
+#include "../../Include/OpenGL/GLPipelineState.h"
+#include "../../Include/OpenGL/GLRootLayout.h"
+#include "../../Include/OpenGL/GLSwapchain.h"
 
 namespace RayEngine
 {
@@ -33,10 +34,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDeviceContext::GLDeviceContext(IDevice* pDevice, bool isDeffered)
 			: m_Device(nullptr),
-			m_CurrentPipelineState(nullptr),
 			m_CurrentRootLayout(nullptr),
+			m_CurrentPipelineState(nullptr),
+			m_pCurrentSwapchain(nullptr),
+			m_VertexBuffers(),
 			m_IsDeffered(false),
-			m_PrimitiveTopology(0),
+			m_VAOCache(),
+			m_PrimitiveTopology(PRIMITIVE_TOPOLOGY_UNKNOWN),
 			m_References(0)
 		{
 			AddRef();
@@ -83,6 +87,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetSwapChain(ISwapchain* pSwapChain) const
 		{
+			reinterpret_cast<GLSwapchain*>(pSwapChain)->MakeCurrent();
 		}
 
 
@@ -266,13 +271,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void SetGLRenderTargetBlendInfo(const GLBlendState::GLRenderTargetBlendInfo* pRenderTargetBlendInfo)
-		{
-
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDeviceContext::SetPipelineState() const
 		{
 			glUseProgram(m_CurrentPipelineState->GetGLProgram());
@@ -313,7 +311,7 @@ namespace RayEngine
 				}
 				else
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: GL_NV_conservative_raster not supported.");
+					LOG_WARNING("OpenGL: GL_NV_conservative_raster not supported.");
 				}
 
 				glPolygonMode(GL_FRONT_AND_BACK, pRasterizerState->PolygonMode);
@@ -332,7 +330,7 @@ namespace RayEngine
 				else
 				{
 					glPolygonOffset(pRasterizerState->SlopeScaleDepthBias, pRasterizerState->DepthBias);
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_WARNING, "OpenGL: glPolygonOffsetClamp not supported.");
+					LOG_WARNING("OpenGL: glPolygonOffsetClamp not supported.");
 				}
 
 				if (pRasterizerState->AntialiasedLineEnable)

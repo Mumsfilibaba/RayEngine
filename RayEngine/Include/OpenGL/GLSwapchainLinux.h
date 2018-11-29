@@ -19,27 +19,34 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#pragma once
-#include "ILog.h"
+#include "GLSwapchain.h"
+
+#if defined(RE_PLATFORM_LINUX)
+#include "GLDeviceLinux.h"
 
 namespace RayEngine
 {
-	class LogService final
-	{
-		RE_STATIC_CLASS(LogService);
+    namespace Graphics
+    {
+        class GLSwapchainLinux final : public GLSwapchain
+        {
+            RE_IMPLEMENT_INTERFACE(GLSwapchainLinux);
 
-	public:
-		static void DebugLog(ILog* pLog);
-		
-		static ILog* DebugLog();
-		
-		static void GraphicsLog(ILog* pLog);
-		
-		static ILog* GraphicsLog();
+        public:
+            GLSwapchainLinux(const SwapchainDesc* pDesc, GLDeviceLinux* pDevice);
+            ~GLSwapchainLinux();
 
-	private:
-		static ILog* s_pGraphicsLog;
-		
-		static ILog* s_pDebugLog;
-	};
+            void MakeCurrent() const override final;
+
+            void Present() const override final;
+
+        private:
+            const GLDeviceLinux* m_pDevice;
+            ::Display* m_pDisplay;
+            
+            ::Window m_XWindow;
+        };
+    }   
 }
+
+#endif

@@ -20,26 +20,24 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "ILog.h"
+#include "../../Include/Defines.h"
+#include "../../Include/Types.h"
+
+#if defined(RE_PLATFORM_LINUX)
+#include <X11/Xlib.h>
+#include <string>
 
 namespace RayEngine
 {
-	class NullLog final : public ILog
-	{
-		RE_UNIQUE_OBJECT(NullLog);
+    ::Display* GetDisplay();
 
-	public:
-		NullLog();
-		~NullLog();
+    void ReleaseDisplay(::Display* pDisplay);
 
-		void Write(LOG_SEVERITY severity, const std::string& text) const override final;
+    ::Atom GetXlibAtom(const std::string& atom);
 
-		bool HasMessageBuffer() const override final;
+    void RegisterWindow(::Window window);
 
-		void Flush() override final;
-
-		int32 GetMessageCount() const override final;
-
-		const LogMessage& GetMessage(int32 index) const override final;
-	};
+    void RemoveWindow(::Window window);
 }
+
+#endif

@@ -19,27 +19,23 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#pragma once
-#include "ILog.h"
+#include "../../Include/System/Clipboard.h"
+
+#if defined(RE_PLATFORM_LINUX)
 
 namespace RayEngine
 {
-	class OutputLog final : public ILog
-	{
-		RE_UNIQUE_OBJECT(OutputLog);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::string Clipboard::GetString()
+    {
+        return std::string();
+    }
 
-	public:
-		OutputLog();
-		~OutputLog();
 
-		void Write(LOG_SEVERITY severity, const std::string& text) const override final;
-		
-		bool HasMessageBuffer() const override final;
-		
-		void Flush() override final;
-		
-		int32 GetMessageCount() const override final;
-
-		const LogMessage& GetMessage(int32 index) const override final;
-	};
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	void Clipboard::SetString(const std::string& string)
+    {
+    }
 }
+
+#endif
