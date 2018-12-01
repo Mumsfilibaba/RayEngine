@@ -19,22 +19,22 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Graphics\Viewport.h"
-#include "..\..\Include\DX11\DX11DeviceContext.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Graphics/Viewport.h"
+#include "../../Include/DX11/DX11DeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX11\DX11Device.h"
-#include "..\..\Include\DX11\DX11RenderTargetView.h"
-#include "..\..\Include\DX11\DX11DepthStencilView.h"
-#include "..\..\Include\DX11\DX11ShaderResourceView.h"
-#include "..\..\Include\DX11\DX11UnorderedAccessView.h"
-#include "..\..\Include\DX11\DX11PipelineState.h"
-#include "..\..\Include\DX11\DX11Buffer.h"
-#include "..\..\Include\DX11\DX11Sampler.h"
-#include "..\..\Include\DX11\DX11RootLayout.h"
-#include "..\..\Include\DX11\DX11RootVariableSlot.h"
-#include "..\..\Include\DX11\DX11Swapchain.h"
+#include "../../Include/DX11/DX11Device.h"
+#include "../../Include/DX11/DX11RenderTargetView.h"
+#include "../../Include/DX11/DX11DepthStencilView.h"
+#include "../../Include/DX11/DX11ShaderResourceView.h"
+#include "../../Include/DX11/DX11UnorderedAccessView.h"
+#include "../../Include/DX11/DX11PipelineState.h"
+#include "../../Include/DX11/DX11Buffer.h"
+#include "../../Include/DX11/DX11Sampler.h"
+#include "../../Include/DX11/DX11RootLayout.h"
+#include "../../Include/DX11/DX11RootVariableSlot.h"
+#include "../../Include/DX11/DX11Swapchain.h"
 
 namespace RayEngine
 {
@@ -377,7 +377,7 @@ namespace RayEngine
 				HRESULT hr = pD3D11Device->CreateDeferredContext(0, &m_Context);
 				if (FAILED(hr))
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Deffered Context. " + DXErrorString(hr));
+					LOG_ERROR("D3D11: Could not create Deffered Context. " + DXErrorString(hr));
 				}
 			}
 			else

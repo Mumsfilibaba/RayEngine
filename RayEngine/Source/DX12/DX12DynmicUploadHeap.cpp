@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12DynamicUploadHeap.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
+#include "../../Include/DX12/DX12Device.h"
 
 namespace RayEngine
 {
@@ -126,7 +126,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateHeap(&hDesc, IID_PPV_ARGS(&m_Heap));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Heap." + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create Heap." + DXErrorString(hr));
 				return;
 			}
 
@@ -147,7 +147,7 @@ namespace RayEngine
 			hr = pD3D12Device->CreatePlacedResource(m_Heap, 0, &rDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Resource." + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create Resource." + DXErrorString(hr));
 			}
 			else
 			{

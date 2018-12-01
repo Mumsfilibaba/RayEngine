@@ -20,11 +20,9 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\System\Log\OutputLog.h"
-#include "..\..\Include\System\Log\NullLog.h"
-#include "..\..\Include\Vulkan\VulkFactory.h"
-#include "..\..\Include\Vulkan\VulKDevice.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Vulkan/VulkFactory.h"
+#include "../../Include/Vulkan/VulKDevice.h"
 
 #define VULKAN_EXTENSION_COUNT 3
 #if defined(RE_PLATFORM_ANDROID)
@@ -64,17 +62,17 @@ namespace RayEngine
 				m_Instance = nullptr;
 			}
 
-			LogService::GraphicsLog(nullptr);
+			//LogService::GraphicsLog(nullptr);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkFactory::Create(bool debugLayers)
 		{
-			if (debugLayers)
+			/*if (debugLayers)
 				LogService::GraphicsLog(new OutputLog());
 			else
-				LogService::GraphicsLog(new NullLog());
+				LogService::GraphicsLog(new NullLog());*/
 
 
 			VkApplicationInfo aInfo = {};
@@ -102,7 +100,7 @@ namespace RayEngine
 
 			if (!InstanceExtensionsSupported(neededExtensions, VULKAN_EXTENSION_COUNT))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Needed extensions not supported.");
+				//LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Needed extensions not supported.");
 				return;
 			}
 
@@ -149,7 +147,7 @@ namespace RayEngine
 			VkResult result = vkCreateInstance(&iInfo, nullptr, &m_Instance);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to create instance.");
+				//LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to create instance.");
 				return;
 			}
 			
@@ -243,7 +241,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool VulkFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc)
 		{
-			return ((*ppDevice) = new VulkDevice(this, pDesc)) != nullptr;
+			return ((*ppDevice) = new VulkDevice(pDesc)) != nullptr;
 		}
 
 
@@ -260,10 +258,10 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool VulkFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{	
-			VulkDevice* pVulkDevice = new VulkDevice(this, pDeviceDesc);
+			VulkDevice* pVulkDevice = new VulkDevice(pDeviceDesc);
 			(*ppDevice) = pVulkDevice;
 			
-			VulkSwapchain* pVulkSwapchain = new VulkSwapchain(this, pVulkDevice, pSwapchainDesc);
+			VulkSwapchain* pVulkSwapchain = new VulkSwapchain(pVulkDevice, pSwapchainDesc);
 			(*ppSwapchain) = pVulkSwapchain;
 
 			return pVulkSwapchain != nullptr;
@@ -493,10 +491,12 @@ namespace RayEngine
 				severity = LOG_SEVERITY_ERROR;
 			else if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT || flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
 				severity = LOG_SEVERITY_INFO;
+			else if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+				severity = LOG_SEVERITY_WARNING;
 			else
 				severity = LOG_SEVERITY_UNKNOWN;
 
-			LogService::GraphicsLog()->Write(severity, msg);
+			Debug::Log(severity, msg);
 			return VK_FALSE;
 		}
 	}

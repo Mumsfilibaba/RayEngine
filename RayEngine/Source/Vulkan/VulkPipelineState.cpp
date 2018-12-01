@@ -21,9 +21,9 @@ failure and or malfunction of any kind.
 
 #include <vector>
 #include <utility>
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Vulkan\VulkPipelineState.h"
-#include "..\..\Include\Vulkan\VulkDevice.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Vulkan/VulkPipelineState.h"
+#include "../../Include/Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -204,8 +204,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkPipelineState::CreateGraphicsPipeline()
 		{
-			using namespace System;
-
 			std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 			if (m_Desc.GraphicsPipeline.pVertexShader != nullptr)
 				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.GraphicsPipeline.pVertexShader));
@@ -370,7 +368,7 @@ namespace RayEngine
 			VkResult result = vkCreateGraphicsPipelines(vkDevice, VK_NULL_HANDLE, 1, &desc, nullptr, &m_Pipeline);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipeline");
+				LOG_ERROR("Vulkan: Could not create pipeline");
 			}
 		}
 
@@ -378,8 +376,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool VulkPipelineState::CreateRenderPass()
 		{
-			using namespace System;
-
 			std::vector<VkAttachmentDescription> attachments;
 			attachments.resize(m_Desc.GraphicsPipeline.RenderTargetCount);
 
@@ -460,7 +456,7 @@ namespace RayEngine
 			VkResult result = vkCreateRenderPass(vkDevice, &desc, nullptr, &m_RenderPass);
 			if (result != VK_SUCCESS) 
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create renderpass");
+				LOG_ERROR("Vulkan: Could not create renderpass");
 				return false;
 			}
 

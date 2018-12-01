@@ -19,22 +19,22 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
+#include "../../Include/Debug/Debug.h"
 #include "..\..\Include\DX11\DX11Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX11\DX11Factory.h"
-#include "..\..\Include\DX11\DX11DeviceContext.h"
-#include "..\..\Include\DX11\DX11RenderTargetView.h"
-#include "..\..\Include\DX11\DX11DepthStencilView.h"
-#include "..\..\Include\DX11\DX11Texture.h"
-#include "..\..\Include\DX11\DX11Shader.h"
-#include "..\..\Include\DX11\DX11Sampler.h"
-#include "..\..\Include\DX11\DX11ShaderResourceView.h"
-#include "..\..\Include\DX11\DX11UnorderedAccessView.h"
-#include "..\..\Include\DX11\DX11RootLayout.h"
-#include "..\..\Include\DX11\DX11PipelineState.h"
-#include "..\..\Include\DX11\DX11Buffer.h"
+#include "../../Include/DX11/DX11Factory.h"
+#include "../../Include/DX11/DX11DeviceContext.h"
+#include "../../Include/DX11/DX11RenderTargetView.h"
+#include "../../Include/DX11/DX11DepthStencilView.h"
+#include "../../Include/DX11/DX11Texture.h"
+#include "../../Include/DX11/DX11Shader.h"
+#include "../../Include/DX11/DX11Sampler.h"
+#include "../../Include/DX11/DX11ShaderResourceView.h"
+#include "../../Include/DX11/DX11UnorderedAccessView.h"
+#include "../../Include/DX11/DX11RootLayout.h"
+#include "../../Include/DX11/DX11PipelineState.h"
+#include "../../Include/DX11/DX11Buffer.h"
 #include <d3dcommon.h>
 
 namespace RayEngine
@@ -101,13 +101,6 @@ namespace RayEngine
 			
 			std::string adapterName = name + " : Adapter";
 			m_Adapter->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(adapterName.size()), adapterName.c_str());
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Device::QueryFactory(IFactory** ppFactory) const
-		{
-			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
 		}
 
 
@@ -221,13 +214,12 @@ namespace RayEngine
 		void DX11Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
 		{
 			IDXGIFactory* pDXGIFactory = reinterpret_cast<DX11Factory*>(pFactory)->GetDXGIFactory();
-			HRESULT hr = pDXGIFactory->EnumAdapters(pDesc->pAdapter->ApiID, &m_Adapter);
+			HRESULT hr = pDXGIFactory->EnumAdapters(0, &m_Adapter);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not retrive adapter. " + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not retrive adapter. " + DXErrorString(hr));
 				return;
 			}
-
 
 			uint32 deviceFlags = 0;
 			if (debugLayer)
@@ -237,7 +229,7 @@ namespace RayEngine
 			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -255,7 +247,7 @@ namespace RayEngine
 				hr = m_Device->QueryInterface<ID3D11Debug>(&m_DebugDevice);
 				if (FAILED(hr))
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DebugDevice. " + DXErrorString(hr));
+					LOG_ERROR("D3D11: Could not create DebugDevice. " + DXErrorString(hr));
 				}
 			}
 		}

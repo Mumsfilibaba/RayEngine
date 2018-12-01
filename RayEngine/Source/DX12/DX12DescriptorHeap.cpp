@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12DescriptorHeap.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12DescriptorHeap.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12Resource.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Resource.h"
 
 namespace RayEngine
 {
@@ -129,7 +129,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_Heap));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DescriptorHeap. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create DescriptorHeap. " + DXErrorString(hr));
 			}
 			else
 			{

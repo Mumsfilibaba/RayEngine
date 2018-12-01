@@ -21,8 +21,8 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "..\..\Include\Defines.h"
-#include "..\..\Include\Types.h"
+#include "../../Include/Defines.h"
+#include "../../Include/Types.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -35,34 +35,25 @@ failure and or malfunction of any kind.
 
 namespace RayEngine
 {
-	namespace System
+	class WndclassCache
 	{
-		class WndclassCache
+		RE_STATIC_CLASS(WndclassCache);
+
+	private:
+		struct Cache
 		{
-		private:
-			struct Cache
-			{
-				WNDCLASSEX data = {};
-				int32 count = 0;
-			};
-
-		public:
-			WndclassCache() = delete;
-			~WndclassCache() = delete;
-			WndclassCache(WndclassCache&& other) = delete;
-			WndclassCache(const WndclassCache& other) = delete;
-			WndclassCache& operator=(WndclassCache&& other) = delete;
-			WndclassCache& operator=(const WndclassCache& other) = delete;
-
-		public:
-			static bool Register(WNDCLASSEX& wc);
-			static void Unregister(const Tchar* name, HINSTANCE hInstance);
-			static bool GetClass(const Tchar* name, WNDCLASSEX& wc);
-
-		private:
-			static std::unordered_map<std::string, Cache> s_Classes;
+			WNDCLASSEX data = {};
+			int32 count = 0;
 		};
-	}
+
+	public:
+		static bool Register(WNDCLASSEX& wc);
+		static void Unregister(const std::string& name, HINSTANCE hInstance);
+		static bool GetClass(const std::string& name, WNDCLASSEX& wc);
+
+	private:
+		static std::unordered_map<std::string, Cache> s_Classes;
+	};
 }
 
 #endif

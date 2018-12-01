@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12Swapchain.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12Swapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Factory.h"
-#include "..\..\Include\DX12\DX12DeviceContext.h"
-#include "..\..\Include\Win32\Win32WindowImpl.h"
+#include "../../Include/DX12/DX12Factory.h"
+#include "../../Include/DX12/DX12DeviceContext.h"
+#include "../../Include/Win32/Win32WindowImpl.h"
 
 namespace RayEngine
 {
@@ -85,13 +85,6 @@ namespace RayEngine
 		void DX12Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Swapchain::QueryFactory(IFactory** ppFactory) const
-		{
-			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
 		}
 
 
@@ -160,11 +153,13 @@ namespace RayEngine
 
 			IDXGIFactory5* pDXGIFactory = m_Factory->GetDXGIFactory();
 			ID3D12CommandQueue* pD3D12queue = m_Context->GetD3D12CommandQueue();
+
+			HWND hWnd = 0;
 			
-			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, pDesc->WindowHandle, &desc, nullptr, nullptr, &m_Swapchain);
+			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12 : Could not create swapchain. " + DXErrorString(hr));
+				LOG_ERROR("D3D12 : Could not create swapchain. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -173,7 +168,7 @@ namespace RayEngine
 
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 				
-				pDXGIFactory->MakeWindowAssociation(pDesc->WindowHandle, DXGI_MWA_NO_ALT_ENTER);
+				pDXGIFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
 				
 				CreateTextures(pDesc);
 			}
@@ -183,7 +178,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Swapchain::CreateTextures(const SwapchainDesc* pDesc)
 		{
-			using namespace System;
 			using namespace Microsoft::WRL;
 
 			m_Textures.resize(pDesc->BackBuffer.Count);
@@ -195,7 +189,7 @@ namespace RayEngine
 				HRESULT hr = m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer));
 				if (FAILED(hr))
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not get baqckbuffer. " + DXErrorString(hr));
+					LOG_ERROR("D3D12: Could not get backbuffer. " + DXErrorString(hr));
 					return;
 				}
 				else

@@ -20,9 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\System\Log\OutputLog.h"
-#include "..\..\Include\System\Log\NullLog.h"
+#include "../../Include/Debug/Debug.h"
 #include "..\..\Include\OpenGL\GLFactory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -50,7 +48,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLFactory::~GLFactory()
 		{
-			LogService::GraphicsLog(nullptr);
+			//sLogService::GraphicsLog(nullptr);
 		}
 
 
@@ -66,7 +64,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool GLFactory::CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc)
 		{
-			*ppDevice = new GLDevice(this, pDesc, m_DebugLayer);
+			*ppDevice = new GLDevice(pDesc);
 			return true;
 		}
 
@@ -83,7 +81,7 @@ namespace RayEngine
 		bool GLFactory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{
 #if defined(RE_PLATFORM_WINDOWS)
-			GLNativeDevice dc = GetDC(pSwapchainDesc->WindowHandle);
+			GLNativeDevice dc = 0;// GetDC(pSwapchainDesc->WindowHandle);
 			if (!SetPixelFormat(dc, pSwapchainDesc->BackBuffer.Format, pSwapchainDesc->DepthStencil.Format))
 			{
 				*ppDevice = nullptr;
@@ -92,8 +90,8 @@ namespace RayEngine
 			}
 #endif
 
-			*ppDevice = new GLDevice(this, pSwapchainDesc->WindowHandle, dc, pDeviceDesc, m_DebugLayer);
-			*ppSwapchain = new GLSwapchain(this, *ppDevice, pSwapchainDesc);
+			*ppDevice = new GLDevice(pDeviceDesc);
+			*ppSwapchain = nullptr;//new GLSwapchain(*ppDevice, pSwapchainDesc);
 			return true;
 		}
 
@@ -141,10 +139,10 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLFactory::Create(bool debugLayer)
 		{
-			if (debugLayer)
+			/*if (debugLayer)
 				LogService::GraphicsLog(new OutputLog());
 			else
-				LogService::GraphicsLog(new NullLog());
+				LogService::GraphicsLog(new NullLog());*/
 
 
 			int32 deviceID = 0;
@@ -152,7 +150,7 @@ namespace RayEngine
 
 
 #if defined(RE_PLATFORM_WINDOWS)
-			System::NativeWindowHandle dummyWindow = CreateDummyWindow();
+			NativeWindowHandle dummyWindow = CreateDummyWindow();
 
 			PIXELFORMATDESCRIPTOR pfd = {};
 			pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -194,7 +192,7 @@ namespace RayEngine
 			auto wglGetExtensionsString = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(LoadFunction("wglGetExtensionsStringARB"));
 			if (wglGetExtensionsString == nullptr)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: wglGetExtensionsStringARB is not supported.");
+				//LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: wglGetExtensionsStringARB is not supported.");
 				return;
 			}
 
@@ -209,7 +207,7 @@ namespace RayEngine
 			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
 			if (!ExtensionSupported("WGL_ARB_create_context"))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: WGL_ARB_create_context is not supported.");
+				//LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "OpenGL: WGL_ARB_create_context is not supported.");
 				return;
 			}
 			else
@@ -315,7 +313,7 @@ namespace RayEngine
 			ReleaseDC(dummyWindow, hDC);
 			DestroyWindow(dummyWindow);
 
-			System::WndclassCache::Unregister(RE_GL_CLASS_NAME, GetModuleHandle(0));
+			//System::WndclassCache::Unregister(RE_GL_CLASS_NAME, GetModuleHandle(0));
 #endif
 		}
 

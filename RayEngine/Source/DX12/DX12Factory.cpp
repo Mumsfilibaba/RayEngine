@@ -19,16 +19,14 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\System\Log\OutputLog.h"
-#include "..\..\Include\System\Log\NullLog.h"
+#include "../../Include/Debug/Debug.h"
 #include <vector>
 #include <cstdlib>
-#include "..\..\Include\DX12\DX12Factory.h"
+#include "../../Include/DX12/DX12Factory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12Swapchain.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Swapchain.h"
 
 namespace RayEngine
 {
@@ -51,7 +49,7 @@ namespace RayEngine
 			D3DRelease_S(m_Factory);
 			D3DRelease_S(m_DebugController);
 
-			LogService::GraphicsLog(nullptr);
+			//LogService::GraphicsLog(nullptr);
 		}
 
 
@@ -159,7 +157,7 @@ namespace RayEngine
 		void DX12Factory::Create(bool debugLayer)
 		{
 			uint32 factoryFlags = 0;
-			if (debugLayer)
+			/*if (debugLayer)
 			{
 				LogService::GraphicsLog(new OutputLog());
 
@@ -183,7 +181,7 @@ namespace RayEngine
 			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
 			{
 				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create factory");
-			}
+			}*/
 		}
 
 		

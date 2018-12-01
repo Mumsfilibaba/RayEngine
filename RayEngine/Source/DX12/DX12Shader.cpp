@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12Shader.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12Shader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
+#include "../../Include/DX12/DX12Device.h"
 
 namespace RayEngine
 {
@@ -108,7 +108,7 @@ namespace RayEngine
 			std::string errorString;
 			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not compile shader" + errorString);
+				LOG_ERROR("D3D12: Could not compile shader" + errorString);
 			}
 			else
 			{

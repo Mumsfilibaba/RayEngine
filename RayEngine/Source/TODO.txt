@@ -1,7 +1,10 @@
 TODO:
 -Linux
 -Check do changes for Linux in windows
--Change Win32SystemInfo.cpp to Win32SystemImpl.cpp
+
+-Fix loadImageFromFile (All Formats)
+-Properly free the windows console for error output
+-Linux when setting an icon or cursor from the functions, remember to create a new Image object.
 -Vulkan triangle
 
 -D3D12 Triangle

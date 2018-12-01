@@ -19,14 +19,14 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12Buffer.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12Buffer.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12DescriptorHeap.h"
-#include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
-#include "..\..\Include\DX12\DX12DeviceContext.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12DescriptorHeap.h"
+#include "../../Include/DX12/DX12DynamicUploadHeap.h"
+#include "../../Include/DX12/DX12DeviceContext.h"
 
 namespace RayEngine
 {
@@ -163,7 +163,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc, startingState, nullptr, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Buffer. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create Buffer. " + DXErrorString(hr));
 				return;
 			}
 			else

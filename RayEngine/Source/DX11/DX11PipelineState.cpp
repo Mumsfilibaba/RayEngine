@@ -20,12 +20,12 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX11\DX11PipelineState.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX11/DX11PipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX11\DX11Device.h"
-#include "..\..\Include\DX11\DX11Shader.h"
+#include "../../Include/DX11/DX11Device.h"
+#include "../../Include/DX11/DX11Shader.h"
 
 namespace RayEngine
 {
@@ -207,7 +207,7 @@ namespace RayEngine
 
 			if (m_VS == nullptr)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Cannot create a inputlayout without a VertexShader.");
+				LOG_ERROR("D3D11: Cannot create a inputlayout without a VertexShader.");
 				return;
 			}
 
@@ -224,7 +224,7 @@ namespace RayEngine
 				pD3DBlob->GetBufferPointer(), static_cast<size_t>(pD3DBlob->GetBufferSize()), &m_InputLayout);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create InputLayout. " + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create InputLayout. " + DXErrorString(hr));
 			}
 			else
 			{
@@ -263,7 +263,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateRasterizerState(&desc, &m_RasterizerState);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create RasterizerState." + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create RasterizerState." + DXErrorString(hr));
 			}
 			else
 			{
@@ -294,7 +294,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateDepthStencilState(&desc, &m_DepthStencilState);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create DepthStencilState" + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create DepthStencilState" + DXErrorString(hr));
 			}
 			else
 			{
@@ -354,7 +354,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateBlendState(&desc, &m_BlendState);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create BlendState" + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create BlendState" + DXErrorString(hr));
 			}
 			else
 			{

@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Mouse.h"
+#include "../../Include/System/Mouse.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\Win32\Win32WindowImpl.h"
+#include "../../Include/Win32/Win32WindowImpl.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN 1
@@ -42,22 +42,20 @@ namespace RayEngine
 	}
 
 
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	Math::Point Mouse::GetPosition(const System::NativeWindowHandle& window)
+	Math::Point Mouse::GetPosition(const IWindow* pWindow)
 	{
 		POINT mouse = {};
 		GetCursorPos(&mouse);
 
-		ScreenToClient(window, &mouse);
+		ScreenToClient(reinterpret_cast<const Win32WindowImpl*>(pWindow)->GetHWND(), &mouse);
 
 		return Math::Point(mouse.x, mouse.y);
 	}
 
 
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool Mouse::IsButtonPressed(MOUSEBUTTON button)
+	bool Mouse::IsButtonDown(MOUSEBUTTON button)
 	{
 		int32 vk = 0;
 		switch (button)
@@ -74,7 +72,6 @@ namespace RayEngine
 	}
 
 
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void Mouse::SetPosition(const Math::Point& position)
 	{
@@ -82,15 +79,14 @@ namespace RayEngine
 	}
 
 
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void Mouse::SetPosition(const Math::Point& position, const System::NativeWindowHandle& window)
+	void Mouse::SetPosition(const Math::Point& position, const IWindow* pWindow)
 	{
 		POINT mouse = {};
 		mouse.x = position.x;
 		mouse.y = position.y;
 
-		ClientToScreen(window, &mouse);
+		ClientToScreen(reinterpret_cast<const Win32WindowImpl*>(pWindow)->GetHWND(), &mouse);
 
 		SetCursorPos(mouse.x, mouse.y);
 	}

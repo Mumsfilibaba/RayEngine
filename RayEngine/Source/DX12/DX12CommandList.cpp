@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12CommandList.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12CommandList.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
+#include "../../Include/DX12/DX12Device.h"
 
 namespace RayEngine
 {
@@ -147,7 +147,7 @@ namespace RayEngine
 
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create CommandAllocator. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create CommandAllocator. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -160,7 +160,7 @@ namespace RayEngine
 			hr = pD3D12Device->CreateCommandList(nodeMask, type, m_Allocator, pInitalState, IID_PPV_ARGS(&m_List));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create CommandList. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create CommandList. " + DXErrorString(hr));
 			}
 			else
 			{

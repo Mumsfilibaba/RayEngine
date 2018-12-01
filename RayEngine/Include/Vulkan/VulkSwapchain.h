@@ -31,7 +31,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class VulkDevice;
 		class VulkDeviceContext;
-		class VulkFactory;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +39,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkSwapchain);
 
 		public:
-			VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
+			VulkSwapchain(IDevice* pDevice, const SwapchainDesc* pDesc);
 			~VulkSwapchain();
 
 			inline VkSurfaceKHR GetVkSurfaceKHR() const
@@ -60,8 +59,6 @@ namespace RayEngine
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
-			
-			void QueryFactory(IFactory** ppFactory) const override final;
 
 			void GetDesc(SwapchainDesc* pDesc) const override final;
 
@@ -83,7 +80,6 @@ namespace RayEngine
 
 		private:
 			VulkDevice* m_Device;
-			VulkFactory* m_Factory;
 			VulkDeviceContext* m_CommandQueue;
 			
 			VkSurfaceFormatKHR m_Format;

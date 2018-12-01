@@ -19,25 +19,24 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX11\DX11Swapchain.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX11/DX11Swapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\Win32\Win32WindowImpl.h"
-#include "..\..\Include\DX11\DX11Factory.h"
-#include "..\..\Include\DX11\DX11Device.h"
-#include "..\..\Include\DX11\DX11Texture.h"
-#include "..\..\Include\DX11\DX11DepthStencilView.h"
-#include "..\..\Include\DX11\DX11RenderTargetView.h"
+#include "../../Include/Win32/Win32WindowImpl.h"
+#include "../../Include/DX11/DX11Factory.h"
+#include "../../Include/DX11/DX11Device.h"
+#include "../../Include/DX11/DX11Texture.h"
+#include "../../Include/DX11/DX11DepthStencilView.h"
+#include "../../Include/DX11/DX11RenderTargetView.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Swapchain::DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc)
+		DX11Swapchain::DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc)
 			: m_Device(nullptr),
-			m_Factory(nullptr),
 			m_Swapchain(nullptr),
 			m_BackBuffer(nullptr),
 			m_DepthStencil(nullptr),
@@ -48,7 +47,6 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Factory = reinterpret_cast<DX11Factory*>(pFactory);
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
 			Create(pDesc);
@@ -90,13 +88,6 @@ namespace RayEngine
 		void DX11Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Swapchain::QueryFactory(IFactory** ppFactory) const
-		{
-			(*ppFactory) = m_Factory->QueryReference<DX11Factory>();
 		}
 
 
@@ -165,15 +156,15 @@ namespace RayEngine
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 			desc.Windowed = true;
 			
-			desc.OutputWindow = pDesc->WindowHandle;
+			//desc.OutputWindow = pDesc->WindowHandle;
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
-			IDXGIFactory* pDXGIFactory = m_Factory->GetDXGIFactory();
+			IDXGIFactory* pDXGIFactory = 0;// = m_Factory->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->CreateSwapChain(pD3D11Device, &desc, &m_Swapchain);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create SwapChain. " + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create SwapChain. " + DXErrorString(hr));
 				return;
 			}
 			else
@@ -182,7 +173,7 @@ namespace RayEngine
 
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 
-				pDXGIFactory->MakeWindowAssociation(pDesc->WindowHandle, DXGI_MWA_NO_ALT_ENTER);
+				//pDXGIFactory->MakeWindowAssociation(pDesc->WindowHandle, DXGI_MWA_NO_ALT_ENTER);
 			}				
 
 			CreateTextures();
@@ -194,13 +185,12 @@ namespace RayEngine
 		void DX11Swapchain::CreateTextures()
 		{
 			using namespace Microsoft::WRL;
-			using namespace System;
 
 			ComPtr<ID3D11Texture2D> pTexture = nullptr;
 			HRESULT hr = m_Swapchain->GetBuffer(0, IID_PPV_ARGS(&pTexture));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not get backbuffer. " + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not get backbuffer. " + DXErrorString(hr));
 			}
 			else
 			{

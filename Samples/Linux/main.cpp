@@ -20,10 +20,12 @@ int main()
     SystemDesc systemDesc = {};
     QuerySystemDesc(&systemDesc);
 
+	LOG_INFO("Screen: w: " + std::to_string(systemDesc.ScreenWidth) + ", h: " + std::to_string(systemDesc.ScreenHeight));
+
     const uint8* pPixels = nullptr;
     int32 width = 0;
     int32 height = 0;
-    if(!LoadImageFromFile("idea1.png", "", reinterpret_cast<const void**>(&pPixels), width, height, FORMAT_R8G8B8A8_UNORM))
+    if(!LoadImageFromFile("Walter.png", "", reinterpret_cast<const void**>(&pPixels), width, height, FORMAT_R8G8B8A8_UNORM))
     {
         LOG_ERROR("Failed to load file");
     }
@@ -38,7 +40,7 @@ int main()
     delete pPixels;
     pPixels = nullptr;
 
-    if(!LoadImageFromFile("multiply.png", "", reinterpret_cast<const void**>(&pPixels), width, height, FORMAT_R8G8B8A8_UNORM))
+    if(!LoadImageFromFile("Cursor.png", "", reinterpret_cast<const void**>(&pPixels), width, height, FORMAT_R8G8B8A8_UNORM))
     {
         LOG_ERROR("Failed to load file");
     }
@@ -57,15 +59,15 @@ int main()
     windowDesc.Title = "RayEngine";
     windowDesc.Width = 800;
     windowDesc.Height = 600;
-    windowDesc.x = (systemDesc.ScreenWidth - windowDesc.Width) / 2.0f;
-    windowDesc.y = (systemDesc.ScreenHeight - windowDesc.Height) / 2.0f;
+    windowDesc.x = static_cast<int32>((systemDesc.ScreenWidth - windowDesc.Width) / 2.0f);
+    windowDesc.y = static_cast<int32>((systemDesc.ScreenHeight - windowDesc.Height) / 2.0f);
     windowDesc.BackgroundColor.r = 127;
     windowDesc.BackgroundColor.g = 127;
     windowDesc.BackgroundColor.b = 127;
     windowDesc.pIcon = &icon;
     windowDesc.Cursor.pImage = &cursor;
     windowDesc.Cursor.Hotspot = Math::Point();
-    windowDesc.Style = WINDOWSTYLE_CLOSE | WINDOWSTYLE_MINIMIZABLE;
+    windowDesc.Style = WINDOWSTYLE_MAXIMIZABLE | WINDOWSTYLE_TITLEBAR;
     
     DeviceDesc deviceDesc = {};
     deviceDesc.Name = "Main Device";
@@ -93,12 +95,12 @@ int main()
     pWindow->Show();
 
     LOG_INFO("Window Created");
-    LOG_INFO("Device Created");
-    LOG_INFO("Swapchain Created");
+    //LOG_INFO("Device Created");
+    //LOG_INFO("Swapchain Created");
 
-    IDeviceContext* pContext = nullptr;
-    pDevice->GetImmediateContext(&pContext);
-    pContext->SetSwapChain(pSwapchain);
+    //IDeviceContext* pContext = nullptr;
+    //pDevice->GetImmediateContext(&pContext);
+    //pContext->SetSwapChain(pSwapchain);
 
     Event event = {};
     while (event.Type != EVENT_TYPE_QUIT)
@@ -108,18 +110,17 @@ int main()
         {
             LOG_INFO("Window closed");
             SendQuitMessage(0);
-            break;
         }
 
-        float color[] = { 0.392f, 0.584f, 0.929f, 1.0f };
-        pContext->ClearRendertargetView(nullptr, color);
-        pContext->ClearDepthStencilView(nullptr, 1.0f, 0);
-        pSwapchain->Present();
+        //float color[] = { 0.392f, 0.584f, 0.929f, 1.0f };
+        //pContext->ClearRendertargetView(nullptr, color);
+        //pContext->ClearDepthStencilView(nullptr, 1.0f, 0);
+        //pSwapchain->Present();
     }
 
     pWindow->Destroy();
-    ReRelease_S(pSwapchain);
-    ReRelease_S(pContext);
+    //ReRelease_S(pSwapchain);
+    //ReRelease_S(pContext);
     ReRelease_S(pDevice);
 
     return event.Quit.ExitCode;

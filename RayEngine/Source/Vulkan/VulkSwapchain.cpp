@@ -21,10 +21,10 @@ failure and or malfunction of any kind.
 
 #include <limits>
 #include <algorithm>
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Vulkan\VulkSwapchain.h"
-#include "..\..\Include\Vulkan\VulkFactory.h"
-#include "..\..\Include\Vulkan\VulkDevice.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Vulkan/VulkSwapchain.h"
+#include "../../Include/Vulkan/VulkFactory.h"
+#include "../../Include/Vulkan/VulkDevice.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #if defined(max)
@@ -41,9 +41,8 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkSwapchain::VulkSwapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc)
-			: m_Factory(nullptr),
-			m_Device(nullptr),
+		VulkSwapchain::VulkSwapchain(IDevice* pDevice, const SwapchainDesc* pDesc)
+			: m_Device(nullptr),
 			m_CommandQueue(nullptr),
 			m_Swapchain(VK_NULL_HANDLE),
 			m_Surface(VK_NULL_HANDLE),
@@ -52,7 +51,6 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<VulkFactory>();
 			m_Device = pDevice->QueryReference<VulkDevice>();
 
 			Create(pDesc);
@@ -89,13 +87,6 @@ namespace RayEngine
 		void VulkSwapchain::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkSwapchain::QueryFactory(IFactory** ppFactory) const
-		{
-			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
 		}
 
 
@@ -137,7 +128,7 @@ namespace RayEngine
 		{
 			if (m_Surface != 0)
 			{
-				VkInstance instance = reinterpret_cast<VulkFactory*>(m_Factory)->GetVkInstance();
+				VkInstance instance = 0;// reinterpret_cast<VulkFactory*>(m_Factory)->GetVkInstance();
 
 				vkDestroySurfaceKHR(instance, m_Surface, nullptr);
 				m_Surface = 0;
@@ -152,9 +143,7 @@ namespace RayEngine
 			}
 
 
-			ReRelease_S(m_Factory);
 			ReRelease_S(m_Device);
-			//Release DeviceContext
 
 			for (int32 i = 0; i < static_cast<int32>(m_Textures.size()); i++)
 			{
@@ -171,11 +160,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkSwapchain::Create(const SwapchainDesc* pDesc)
 		{
-			VkInstance instance = m_Factory->GetVkInstance();
-			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, pDesc->WindowHandle);
+			NativeWindowHandle handle = 0;
+
+			VkInstance instance = 0;// m_Factory->GetVkInstance();
+			VkResult result = VulkanCreateSwapchainSurface(instance, &m_Surface, handle);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
+				LOG_ERROR("Vulkan: Could not create surface.");
 				return;
 			}
 
@@ -185,7 +176,7 @@ namespace RayEngine
 			result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(adapter, m_Surface, &capabilities);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create surface.");
+				LOG_ERROR("Vulkan: Could not create surface.");
 				return;
 			}
 
@@ -194,7 +185,7 @@ namespace RayEngine
 			result = vkGetPhysicalDeviceSurfacePresentModesKHR(adapter, m_Surface, &count, nullptr);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
+				LOG_ERROR("Vulkan: Could not get supported presentation modes.");
 				return;
 			}
 
@@ -203,7 +194,7 @@ namespace RayEngine
 			result = vkGetPhysicalDeviceSurfacePresentModesKHR(adapter, m_Surface, &count, presentModes.data());
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported presentation modes.");
+				LOG_ERROR("Vulkan: Could not get supported presentation modes.");
 				return;
 			}
 
@@ -211,7 +202,7 @@ namespace RayEngine
 			m_Format = GetSupportedFormat(m_Device, m_Surface, ReToVkFormat(pDesc->BackBuffer.Format));
 			if (m_Format.format == VK_FORMAT_UNDEFINED)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Format is not supported.");
+				LOG_ERROR("Vulkan: Format is not supported.");
 				return;
 			}
 
@@ -241,7 +232,7 @@ namespace RayEngine
 			result = vkCreateSwapchainKHR(device, &scInfo, nullptr, &m_Swapchain);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create swapchain.");
+				LOG_ERROR("Vulkan: Could not create swapchain.");
 				return;
 			}
 
@@ -280,8 +271,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VkSurfaceFormatKHR VulkSwapchain::GetSupportedFormat(VulkDevice* pDevice, VkSurfaceKHR surface, VkFormat desiredFormat)
 		{
-			using namespace System;
-
 			VkSurfaceFormatKHR format = {};
 			format.format = VK_FORMAT_UNDEFINED;
 
@@ -291,7 +280,7 @@ namespace RayEngine
 			VkResult result = vkGetPhysicalDeviceSurfaceFormatsKHR(adapter, surface, &count, nullptr);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported surface formats.");
+				LOG_ERROR("Vulkan: Could not get supported surface formats.");
 				return format;
 			}
 
@@ -300,7 +289,7 @@ namespace RayEngine
 			result = vkGetPhysicalDeviceSurfaceFormatsKHR(adapter, surface, &count, formats.data());
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not get supported surface formats.");
+				LOG_ERROR("Vulkan: Could not get supported surface formats.");
 				return format;
 			}
 

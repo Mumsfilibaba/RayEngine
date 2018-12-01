@@ -53,7 +53,7 @@ namespace RayEngine
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void Clipboard::SetString(const std::string& string)
 	{
-		const Tchar* text = string.data();
+		const char* text = string.c_str();
 		int32 size = static_cast<int32>(string.size()) + 1;
 
 		HGLOBAL cb = GlobalAlloc(GMEM_MOVEABLE, size);

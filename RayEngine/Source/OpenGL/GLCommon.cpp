@@ -142,42 +142,6 @@ namespace RayEngine
 
 			return false;
 		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		LRESULT CALLBACK Win32WinCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-		{
-			if (msg == WM_CREATE)
-				return static_cast<LRESULT>(0);
-
-			return DefWindowProc(hWnd, msg, wParam, lParam);
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		HWND CreateDummyWindow()
-		{
-			WNDCLASSEX wcex = {};
-			wcex.cbSize = sizeof(WNDCLASSEX);
-			wcex.style = CS_HREDRAW | CS_VREDRAW;
-			wcex.lpfnWndProc = Win32WinCallback;
-			wcex.cbClsExtra = 0;
-			wcex.cbWndExtra = 0;
-			wcex.hInstance = GetModuleHandle(0);
-			wcex.hIcon = LoadIcon(wcex.hInstance, static_cast<LPCSTR>(IDI_APPLICATION));
-			wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-			wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-			wcex.lpszMenuName = NULL;
-			wcex.lpszClassName = RE_GL_CLASS_NAME;
-			wcex.hIconSm = LoadIcon(wcex.hInstance, static_cast<LPCSTR>(IDI_APPLICATION));
-			HWND dummyWindow = 0;
-			if (System::WndclassCache::Register(wcex))
-			{
-				dummyWindow = CreateWindow(wcex.lpszClassName, RE_GL_CLASS_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 100, NULL, NULL, wcex.hInstance, NULL);
-			}
-
-			return dummyWindow;
-		}
 #endif
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

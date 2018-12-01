@@ -19,15 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\System\Log\OutputLog.h"
-#include "..\..\Include\System\Log\NullLog.h"
+#include "../../Include/Debug/Debug.h"
 #include <vector>
-#include "..\..\Include\DX11\DX11Factory.h"
+#include "../../Include/DX11/DX11Factory.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX11\DX11Device.h"
-#include "..\..\Include\DX11\DX11Swapchain.h"
+#include "../../Include/DX11/DX11Device.h"
+#include "../../Include/DX11/DX11Swapchain.h"
 
 namespace RayEngine
 {
@@ -49,7 +47,7 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_Factory);
 
-			LogService::GraphicsLog(nullptr);
+			//LogService::GraphicsLog(nullptr);
 		}
 
 
@@ -99,7 +97,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX11Factory::CreateSwapchain(ISwapchain** ppSwapchain, IDevice* pDevice, const SwapchainDesc* pDesc)
 		{
-			return ((*ppSwapchain) = new DX11Swapchain(this, pDevice, pDesc)) != nullptr;
+			return ((*ppSwapchain) = new DX11Swapchain(pDevice, pDesc)) != nullptr;
 		}
 
 
@@ -107,7 +105,7 @@ namespace RayEngine
 		bool DX11Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{
 			IDevice* pDevice = new DX11Device(this, pDeviceDesc, m_DebugLayer);
-			ISwapchain* pSwapchain = new DX11Swapchain(this, pDevice, pSwapchainDesc);
+			ISwapchain* pSwapchain = new DX11Swapchain(pDevice, pSwapchainDesc);
 
 			(*ppDevice) = pDevice;
 			(*ppSwapchain) = pSwapchain;
@@ -161,7 +159,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Factory::Create()
 		{
-			if (m_DebugLayer)
+			/*if (m_DebugLayer)
 				LogService::GraphicsLog(new OutputLog());
 			else
 				LogService::GraphicsLog(new NullLog());
@@ -170,7 +168,7 @@ namespace RayEngine
 			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory))))
 			{
 				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "DX11: Could not create factoiry");
-			}
+			}*/
 		}
 
 

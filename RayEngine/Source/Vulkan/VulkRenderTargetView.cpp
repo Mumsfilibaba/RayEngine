@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Vulkan\VulkRenderTargetView.h"
-#include "..\..\Include\Vulkan\VulkRenderTargetView.h"
-#include "..\..\Include\Vulkan\VulkDevice.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Vulkan/VulkRenderTargetView.h"
+#include "../../Include/Vulkan/VulkRenderTargetView.h"
+#include "../../Include/Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -94,8 +94,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkRenderTargetView::Create(const RenderTargetViewDesc* pDesc)
 		{
-			using namespace System;
-
 			VkImage vkImage = reinterpret_cast<const VulkTexture*>(pDesc->pResource)->GetVkImage();
 			VkImageViewCreateInfo desc = {};
 			desc.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -123,7 +121,7 @@ namespace RayEngine
 			VkResult result = vkCreateImageView(vkDevice, &desc, nullptr, &m_View);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create ImageView. ");
+				LOG_ERROR("Vulkan: Could not create ImageView. ");
 			}
 			else
 			{

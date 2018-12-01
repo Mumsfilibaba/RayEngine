@@ -51,8 +51,6 @@ namespace RayEngine
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
-			
-			void QueryFactory(IFactory** ppFactory) const override final;
 
 			void GetDesc(SwapchainDesc* pDesc) const override final;
 

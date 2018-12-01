@@ -27,6 +27,7 @@ failure and or malfunction of any kind.
 namespace RayEngine
 {
 	KEY Win32ToRe(int32 keyCode);
+
 	int32 ReToWin32(KEY keyCode);
 }
 

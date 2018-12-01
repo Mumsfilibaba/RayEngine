@@ -20,30 +20,27 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Vulkan\VulkDevice.h"
-#include "..\..\Include\Vulkan\VulkFactory.h"
-#include "..\..\Include\Vulkan\VulkTexture.h"
-#include "..\..\Include\Vulkan\VulkRenderTargetView.h"
-#include "..\..\Include\Vulkan\VulkShader.h"
-#include "..\..\Include\Vulkan\VulkPipelineState.h"
-#include "..\..\Include\Vulkan\VulkRootLayout.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Vulkan/VulkDevice.h"
+#include "../../Include/Vulkan/VulkFactory.h"
+#include "../../Include/Vulkan/VulkTexture.h"
+#include "../../Include/Vulkan/VulkRenderTargetView.h"
+#include "../../Include/Vulkan/VulkShader.h"
+#include "../../Include/Vulkan/VulkPipelineState.h"
+#include "../../Include/Vulkan/VulkRootLayout.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		VulkDevice::VulkDevice(IFactory* pFactory, const DeviceDesc* pDesc)
-			: m_Factory(nullptr),
-			m_Device(nullptr),
+		VulkDevice::VulkDevice(const DeviceDesc* pDesc)
+			: m_Device(nullptr),
 			m_Adapter(nullptr),
 			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<VulkFactory>();
-
 			Create(pDesc);
 		}
 
@@ -51,8 +48,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VulkDevice::~VulkDevice()
 		{
-			ReRelease_S(m_Factory);
-
 			if (m_Device != nullptr)
 			{
 				vkDestroyDevice(m_Device, nullptr);
@@ -139,13 +134,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkDevice::QueryFactory(IFactory** ppFactory) const
-		{
-			(*ppFactory) = m_Factory->QueryReference<VulkFactory>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkDevice::GetDesc(DeviceDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -195,13 +183,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkDevice::Create(const DeviceDesc* pDesc)
 		{
-			VkInstance instance = m_Factory->GetVkInstance();
+			VkInstance instance = 0;// m_Factory->GetVkInstance();
 
 			uint32 adapterCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(instance, &adapterCount, nullptr);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
+				LOG_ERROR("Vulkan: Failed to enumerate Adapter.");
 				return;
 			}
 
@@ -210,12 +198,12 @@ namespace RayEngine
 			result = vkEnumeratePhysicalDevices(instance, &adapterCount, adapters.data());
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Failed to enumerate Adapter.");
+				LOG_ERROR("Vulkan: Failed to enumerate Adapter.");
 				return;
 			}
 			else
 			{
-				m_Adapter = adapters[pDesc->pAdapter->ApiID];
+				m_Adapter = adapters[0];
 			}
 
 
@@ -241,7 +229,7 @@ namespace RayEngine
 
 			if (index < 0)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: No supported queuefamilies.");
+				LOG_ERROR("Vulkan: No supported queuefamilies.");
 				return;
 			}
 
@@ -276,7 +264,7 @@ namespace RayEngine
 			result = vkCreateDevice(m_Adapter, &dInfo, nullptr, &m_Device);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create device.");
+				LOG_ERROR("Vulkan: Could not create device.");
 			}
 			else
 			{

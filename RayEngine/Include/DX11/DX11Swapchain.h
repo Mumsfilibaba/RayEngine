@@ -40,14 +40,13 @@ namespace RayEngine
 		class DX11DepthStencilView;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11Swapchain final : public ISwapchain
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Swapchain);
 
 		public:
-			DX11Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
+			DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc);
 			~DX11Swapchain();
 
 			inline DX11RenderTargetView* GetDX11RenderTargetView() const
@@ -67,8 +66,6 @@ namespace RayEngine
 			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
-			
-			void QueryFactory(IFactory** ppFactory) const override final;
 
 			void GetDesc(SwapchainDesc* pDesc) const override final;
 
@@ -89,7 +86,6 @@ namespace RayEngine
 
 		private:
 			DX11Device* m_Device;
-			DX11Factory* m_Factory;
 			IDXGISwapChain* m_Swapchain;
 			DX11Texture* m_BackBuffer;
 			DX11Texture* m_DepthStencil;

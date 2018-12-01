@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX11\DX11Shader.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX11/DX11Shader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX11\DX11Device.h"
-#include "..\..\Include\DX11\DX11ShaderConstantBlock.h"
+#include "../../Include/DX11/DX11Device.h"
+#include "../../Include/DX11/DX11ShaderConstantBlock.h"
 
 namespace RayEngine
 {
@@ -112,7 +112,7 @@ namespace RayEngine
 			std::string errorString;
 			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not compile shader. " + errorString);
+				LOG_ERROR("D3D11: Could not compile shader. " + errorString);
 				return;
 			}
 
@@ -168,7 +168,7 @@ namespace RayEngine
 
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create shader" + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create shader" + DXErrorString(hr));
 			}
 			else
 			{

@@ -19,24 +19,24 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12Device.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Factory.h"
-#include "..\..\Include\DX12\DX12Buffer.h"
-#include "..\..\Include\DX12\DX12Shader.h"
-#include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12DeviceContext.h"
-#include "..\..\Include\DX12\DX12PipelineState.h"
-#include "..\..\Include\DX12\DX12Sampler.h"
-#include "..\..\Include\DX12\DX12ShaderResourceView.h"
-#include "..\..\Include\DX12\DX12UnorderedAccessView.h"
-#include "..\..\Include\DX12\DX12RootLayout.h"
-#include "..\..\Include\DX12\DX12DepthStencilView.h"
-#include "..\..\Include\DX12\DX12RenderTargetView.h"
-#include "..\..\Include\DX12\DX12DynamicUploadHeap.h"
-#include "..\..\Include\DX12\DX12DescriptorHeap.h"
+#include "../../Include/DX12/DX12Factory.h"
+#include "../../Include/DX12/DX12Buffer.h"
+#include "../../Include/DX12/DX12Shader.h"
+#include "../../Include/DX12/DX12Texture.h"
+#include "../../Include/DX12/DX12DeviceContext.h"
+#include "../../Include/DX12/DX12PipelineState.h"
+#include "../../Include/DX12/DX12Sampler.h"
+#include "../../Include/DX12/DX12ShaderResourceView.h"
+#include "../../Include/DX12/DX12UnorderedAccessView.h"
+#include "../../Include/DX12/DX12RootLayout.h"
+#include "../../Include/DX12/DX12DepthStencilView.h"
+#include "../../Include/DX12/DX12RenderTargetView.h"
+#include "../../Include/DX12/DX12DynamicUploadHeap.h"
+#include "../../Include/DX12/DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -44,8 +44,7 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Device::DX12Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
-			: m_Factory(nullptr),
-			m_Adapter(nullptr),
+			: m_Adapter(nullptr),
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
 			m_UploadHeap(nullptr),
@@ -58,7 +57,6 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<DX12Factory>();
 			
 			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
 			m_UploadHeap->SetName(pDesc->Name + ": Dynamic Upload-Heap");
@@ -167,13 +165,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::QueryFactory(IFactory** ppFactory) const
-		{
-			(*ppFactory) = m_Factory->QueryReference<DX12Factory>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Device::GetDesc(DeviceDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -226,7 +217,7 @@ namespace RayEngine
 		void DX12Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
 		{
 			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
-			HRESULT hr = pDXGIFactory->EnumAdapters1(pDesc->pAdapter->ApiID, &m_Adapter);
+			HRESULT hr = pDXGIFactory->EnumAdapters1(0, &m_Adapter);
 			if (SUCCEEDED(hr))
 			{
 				hr = D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
@@ -237,7 +228,7 @@ namespace RayEngine
 						hr = m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice);
 						if (FAILED(hr))
 						{
-							LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create DebugDevice. " + DXErrorString(hr));
+							LOG_ERROR("D3D12: Could not create DebugDevice. " + DXErrorString(hr));
 							return;
 						}
 					}
@@ -263,12 +254,12 @@ namespace RayEngine
 				}
 				else
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create Device. " + DXErrorString(hr));
+					LOG_ERROR("D3D12: Could not create Device. " + DXErrorString(hr));
 				}
 			}
 			else
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not enumerate adapters. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not enumerate adapters. " + DXErrorString(hr));
 			}
 		}
 	}

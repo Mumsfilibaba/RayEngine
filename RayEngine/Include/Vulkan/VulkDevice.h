@@ -32,7 +32,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(VulkDevice);
 
 		public:
-			VulkDevice(IFactory* pFactory, const DeviceDesc* pDesc);
+			VulkDevice(const DeviceDesc* pDesc);
 			~VulkDevice();
 
 			inline VkDevice GetVkDevice() const
@@ -70,8 +70,6 @@ namespace RayEngine
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
 
 			void SetName(const std::string& name) override final;
-			
-			void QueryFactory(IFactory** ppFactory) const override final;
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
 
@@ -85,7 +83,6 @@ namespace RayEngine
 			void Create(const DeviceDesc* pDesc);
 
 		private:
-			VulkFactory* m_Factory;
 			VkDevice m_Device;
 			VkPhysicalDevice m_Adapter;
 			

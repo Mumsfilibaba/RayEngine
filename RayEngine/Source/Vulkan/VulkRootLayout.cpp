@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Vulkan\VulkRootLayout.h"
-#include "..\..\Include\Vulkan\VulkDevice.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Vulkan/VulkRootLayout.h"
+#include "../../Include/Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -120,7 +120,7 @@ namespace RayEngine
 			VkResult result = vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &m_Layout);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create pipelinelayout");
+				LOG_ERROR("Vulkan: Could not create pipelinelayout");
 			}
 			else
 			{

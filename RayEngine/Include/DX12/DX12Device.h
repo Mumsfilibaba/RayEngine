@@ -102,8 +102,6 @@ namespace RayEngine
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
 			
 			void SetName(const std::string& name) override final;
-			
-			void QueryFactory(IFactory** ppFactory) const override final;
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
 			

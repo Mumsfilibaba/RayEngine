@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX11\DX11RootLayout.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX11/DX11RootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX11\DX11Device.h"
-#include "..\..\Include\DX11\DX11RootVariableSlot.h"
-#include "..\..\Include\DX11\DX11ShaderConstantBlock.h"
+#include "../../Include/DX11/DX11Device.h"
+#include "../../Include/DX11/DX11RootVariableSlot.h"
+#include "../../Include/DX11/DX11ShaderConstantBlock.h"
 
 namespace RayEngine
 {
@@ -184,7 +184,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateSamplerState(&desc, &pD3D11Sampler);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create static SamplerState." + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create static SamplerState." + DXErrorString(hr));
 				return nullptr;
 			}
 

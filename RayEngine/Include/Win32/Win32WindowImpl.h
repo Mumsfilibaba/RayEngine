@@ -36,83 +36,87 @@ failure and or malfunction of any kind.
 
 namespace RayEngine
 {
-	namespace System
+	class Win32WindowImpl final : public IWindow
 	{
-		class RE_API Win32WindowImpl : public IWindowImpl
+		RE_IMPLEMENT_INTERFACE(Win32WindowImpl);
+
+	public:
+		Win32WindowImpl(const WindowDesc* pDesc);
+		~Win32WindowImpl();
+
+		inline HWND GetHWND() const
 		{
-		public:
-			Win32WindowImpl(const Win32WindowImpl& other) = delete;
-			Win32WindowImpl(Win32WindowImpl&& other) = delete;
-			Win32WindowImpl& operator=(const Win32WindowImpl& other) = delete;
-			Win32WindowImpl& operator=(Win32WindowImpl&& other) = delete;
+			return m_Hwnd;
+		}
+			
+		inline HINSTANCE GetHINSTANCE() const
+		{
+			return m_Hinstance;
+		}
 
-			Win32WindowImpl();
-			~Win32WindowImpl();
+		void Show() const override final;
 
-			bool Create(const WindowDesc& desc) override final;
+		void Close() const override final;
 
-			void Show() const override final;
+		bool PeekEvent(Event* pEvent) const override final;
 
-			void PeekEvents() override final;
-			
-			void PushEvent(const Event& pEvent) override final;
-			
-			bool PopEvent(Event& pEvent) override final;
-			
-			void GetEvent(Event& pEvent) override final;
-			
-			void SendQuitEvent(int32 exitCode) const override final;
-			
-			void SetIcon(const Bitmap& icon) override final;
-			
-			void SetCursor(const Bitmap& cursor, int32 hotspotX, int32 hotspotY) override final;
-			
-			void SetBackground(uint8 r, uint8 g, uint8 b) override final;
-			
-			void SetBackground(const Math::Color& color) override final;
+		void GetEvent(Event* pEvent) const override final;
 
-			IWindowImpl* Copy() const override final;
-			
-			const Tchar* GetTitle() const override final;
+		void SetIcon(const Image* pIcon) override final;
 
-			int32 GetWidth() const override final;
-			
-			int32 GetHeight() const override final;
+		void SetCursor(const Image* pCursor, const Math::Point& hotspot) override final;
 
-			NativeWindowHandle GetNativeHandle() const override final;
+		void SetTitle(const std::string& title) override final;
 			
-			void GetInfo(WindowDesc& desc) const override final;
+		void SetBackground(uint8 r, uint8 g, uint8 b) override final;
 
-			HWND GetHWND() const;
+		int32 GetWidth() const override final;
 			
-			HINSTANCE GetHINSTANCE() const;
+		int32 GetHeight() const override final;
 
-			LRESULT MsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		void GetDesc(WindowDesc* pDesc) const override final;
 
-		private:
-			void ProcessMouseEvent(UINT msg, WPARAM wParam, LPARAM lParam);
+		void Destroy() override final;
 
-		private:
-			mutable Tchar m_Title[256];
-			
-			std::queue<Event> m_Events;
-			
-			HWND m_Hwnd;
-			
-			HINSTANCE m_Hinstance;
-			
-			HBRUSH m_BgBrush;
-			
-			HICON m_Icon;
-			
-			HCURSOR m_Cursor;
-			
-			bool m_TrackingMouse;
+		void GetNativeWindowHandle(NativeWindowHandle* pHandle) const override final;
 
-		private:
-			static LRESULT CALLBACK MainMsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		};
-	}
+		LRESULT MsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	private:
+		void Create(const WindowDesc* pDesc);
+
+		void ProcessMouseEvent(UINT msg, WPARAM wParam, LPARAM lParam);
+
+		inline void PushEvent(const Event& event) const
+		{
+			m_Events.push(event);
+		}
+
+		void PopEvent(Event* pEvent) const 
+		{
+			if (!m_Events.empty())
+			{
+				*pEvent = m_Events.front();
+				m_Events.pop();
+			}
+		}
+
+	private:
+		WindowDesc m_Desc;
+
+		mutable std::queue<Event> m_Events;
+			
+		HWND m_Hwnd;
+		HINSTANCE m_Hinstance;
+		HBRUSH m_BgBrush;
+		HICON m_Icon;
+		HCURSOR m_Cursor;
+			
+		bool m_TrackingMouse;
+
+	private:
+		static LRESULT CALLBACK MainMsgCallback(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	};
 }
 
 #endif

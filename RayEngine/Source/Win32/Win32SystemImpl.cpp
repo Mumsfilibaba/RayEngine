@@ -19,69 +19,56 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "WndclassCache.h"
+#include "..\..\Include\System\System.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "../../Include/OpenGL/GLDeviceWin32.h"
+#include "../../Include/Win32/Win32WindowImpl.h"
+
+#if defined(CreateWindow)
+#undef CreateWindow
+#endif
 
 namespace RayEngine
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	std::unordered_map<std::string, WndclassCache::Cache> WndclassCache::s_Classes;
+	void QuerySystemDesc(SystemDesc* pDesc)
+	{
+		pDesc->Platform = PLATFORM_WIN32;
 		
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool WndclassCache::Register(WNDCLASSEX& wc)
-	{
-		if (s_Classes.find(wc.lpszClassName) == s_Classes.end())
-		{
-			Cache cache = {};
-			cache.data = wc;
-			cache.count = 1;
-
-			SetLastError(0);
-			if (RegisterClassEx(&wc) == 0)
-			{
-				int32 error = GetLastError();
-				return false;
-			}
-
-			s_Classes[wc.lpszClassName] = cache;
-		}
-		else
-		{
-			s_Classes[wc.lpszClassName].count++;
-		}
-
-		return true;
+		pDesc->ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+		pDesc->ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 	}
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void WndclassCache::Unregister(const std::string& name, HINSTANCE hInstance)
+	void SendQuitMessage(int32 exitCode)
 	{
-		if (s_Classes.find(name) != s_Classes.end())
-		{
-			s_Classes[name].count--;
-			if (s_Classes[name].count < 1)
-			{
-				UnregisterClass(name.c_str(), hInstance);
-
-				s_Classes.erase(name);
-			}
-		}
+		PostQuitMessage(exitCode);
 	}
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool WndclassCache::GetClass(const std::string& name, WNDCLASSEX& wc)
+	void CreateWindow(IWindow** ppWindow, WindowDesc* pDesc)
 	{
-		if (s_Classes.find(name) != s_Classes.end())
-		{
-			wc = s_Classes[name].data;
-			return true;
-		}
+		*ppWindow = new Win32WindowImpl(pDesc);
+	}
 
-		return false;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void CreateDevice(Graphics::IDevice** ppDevice, Graphics::DeviceDesc* pDesc, GRAPHICS_API api)
+	{
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void CreateWindowForRendering(IWindow** ppWindow, const WindowDesc* pWindowDesc,
+		Graphics::IDevice** ppDevice, Graphics::DeviceDesc* pDeviceDesc,
+		Graphics::ISwapchain** ppSwapchain, Graphics::SwapchainDesc* pSwapchainDesc,
+		GRAPHICS_API api)
+	{
+		*ppWindow = new Win32WindowImpl(pWindowDesc);
+		*ppDevice = new Graphics::GLDeviceWin32(pDeviceDesc);
 	}
 }
 

@@ -20,13 +20,13 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include <vector>
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\DX12\DX12PipelineState.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12PipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12Shader.h"
-#include "..\..\Include\DX12\DX12RootLayout.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Shader.h"
+#include "../../Include/DX12/DX12RootLayout.h"
 
 namespace RayEngine
 {
@@ -202,7 +202,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create PipelineState. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create PipelineState. " + DXErrorString(hr));
 			}
 		}
 
@@ -225,7 +225,7 @@ namespace RayEngine
 			HRESULT hr = pD3D12Device->CreateComputePipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Could not create PipelineState. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create PipelineState. " + DXErrorString(hr));
 			}
 		}
 

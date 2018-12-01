@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Vulkan\VulkTexture.h"
-#include "..\..\Include\Vulkan\VulkDevice.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Vulkan/VulkTexture.h"
+#include "../../Include/Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -160,7 +160,7 @@ namespace RayEngine
 			VkResult result = vkCreateImage(vkDevice, &desc, nullptr, &m_Image);
 			if (result != VK_SUCCESS)
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "Vulkan: Could not create image.");
+				LOG_ERROR("Vulkan: Could not create image.");
 			}
 			else
 			{

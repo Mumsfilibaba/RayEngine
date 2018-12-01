@@ -20,7 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\..\Include\System\Bitmap.h"
+#include "../../Include/Debug/Debug.h"
+//#include "..\..\Include\System\Bitmap.h"
 
 #if defined(RE_PLATFORM_ANDROID)
 

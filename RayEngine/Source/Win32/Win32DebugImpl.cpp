@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Clock.h"
-#include "..\..\Include\System\Log\ILog.h"
+#include "../../Include/System/Clock.h"
+#include "../../Include/Debug/Debug.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 
@@ -46,7 +46,7 @@ failure and or malfunction of any kind.
 namespace RayEngine
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void ILog::PlatformPrint(LOG_SEVERITY severity, const std::string& text)
+	void Debug::Log(LOG_SEVERITY severity, const std::string& text)
 	{
 		if (GetConsoleWindow() == 0)
 		{
@@ -58,29 +58,30 @@ namespace RayEngine
 		}
 
 		WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-		const Tchar* sText = nullptr;
+		std::string message;
 
 		if (severity == LOG_SEVERITY_INFO)
 		{
 			color = FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-			sText = RE_T("INFO: ");
+			message = "[INFO]: ";
 		}
 		else if (severity == LOG_SEVERITY_WARNING)
 		{
 			color = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
-			sText = RE_T("WARNING: ");
+			message = "[WARNING]: ";
 		}
 		else if (severity == LOG_SEVERITY_ERROR)
 		{
 			color = FOREGROUND_RED;
-			sText = RE_T("ERROR: ");
+			message = "[ERROR]: ";
 		}
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 
-		std::string date = (Clock::DateString() + ": ");
-		std::string totalString = date + sText + text + RE_T('\n');
+		std::string date = '[' + Clock::DateString() + "] ";
+		std::string totalString = date + message + text + '\n';
 		print(totalString.c_str());
+
 		OutputDebugString(totalString.c_str());
 	}
 }

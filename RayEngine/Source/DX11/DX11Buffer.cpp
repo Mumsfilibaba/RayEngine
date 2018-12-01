@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\DX11\DX11Buffer.h"
-#include "..\..\Include\System\Log\LogService.h"
+#include "../../Include/DX11/DX11Buffer.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX11\DX11Device.h"
-#include "..\..\Include\DX11\DX11DeviceContext.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX11/DX11Device.h"
+#include "../../Include/DX11/DX11DeviceContext.h"
 
 namespace RayEngine
 {
@@ -174,7 +174,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateBuffer(&desc, pInitData, &m_Resource);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D11: Could not create buffer. " + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create buffer. " + DXErrorString(hr));
 			}
 			else
 			{

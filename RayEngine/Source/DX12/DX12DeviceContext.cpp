@@ -19,23 +19,23 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\Log\LogService.h"
-#include "..\..\Include\Graphics\Viewport.h"
-#include "..\..\Include\DX12\DX12DeviceContext.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/Graphics/Viewport.h"
+#include "../../Include/DX12/DX12DeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12RootLayout.h"
-#include "..\..\Include\DX12\DX12PipelineState.h"
-#include "..\..\Include\DX12\DX12RendertargetView.h"
-#include "..\..\Include\DX12\DX12DepthStencilView.h"
-#include "..\..\Include\DX12\DX12ShaderResourceView.h"
-#include "..\..\Include\DX12\DX12UnorderedAccessView.h"
-#include "..\..\Include\DX12\DX12Buffer.h"
-#include "..\..\Include\DX12\DX12Sampler.h"
-#include "..\..\Include\DX12\DX12Resource.h"
-#include "..\..\Include\DX12\DX12RootVariableSlot.h"
-#include "..\..\Include\DX12\DX12CommandList.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12RootLayout.h"
+#include "../../Include/DX12/DX12PipelineState.h"
+#include "../../Include/DX12/DX12RendertargetView.h"
+#include "../../Include/DX12/DX12DepthStencilView.h"
+#include "../../Include/DX12/DX12ShaderResourceView.h"
+#include "../../Include/DX12/DX12UnorderedAccessView.h"
+#include "../../Include/DX12/DX12Buffer.h"
+#include "../../Include/DX12/DX12Sampler.h"
+#include "../../Include/DX12/DX12Resource.h"
+#include "../../Include/DX12/DX12RootVariableSlot.h"
+#include "../../Include/DX12/DX12CommandList.h"
 
 namespace RayEngine
 {
@@ -468,7 +468,7 @@ namespace RayEngine
 			HRESULT hr = m_Queue->Signal(m_Fence, m_CurrentFence);
 			if (FAILED(hr))
 			{
-				LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Signal fence failed. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Signal fence failed. " + DXErrorString(hr));
 				return;
 			}
 
@@ -480,7 +480,7 @@ namespace RayEngine
 				hr = m_Fence->SetEventOnCompletion(m_CurrentFence, ev);
 				if (FAILED(m_Fence->SetEventOnCompletion(m_CurrentFence, ev)))
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "D3D12: Failed to set event. " + DXErrorString(hr));
+					LOG_ERROR("D3D12: Failed to set event. " + DXErrorString(hr));
 					return;
 				}
 
@@ -585,7 +585,7 @@ namespace RayEngine
 				pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
 				if (FAILED(hr))
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, "DX12: Could not create CommandQueue. " + DXErrorString(hr));
+					LOG_ERROR("DX12: Could not create CommandQueue. " + DXErrorString(hr));
 					return;
 				}
 				else
@@ -598,7 +598,7 @@ namespace RayEngine
 				hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
 				if (FAILED(hr))
 				{
-					LogService::GraphicsLog()->Write(LOG_SEVERITY_ERROR, DXErrorString(hr) + "DX12: Could not create Fence");
+					LOG_ERROR("DX12: Could not create Fence. " + DXErrorString(hr));
 					return;
 				}
 				else
