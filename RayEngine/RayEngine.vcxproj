@@ -72,22 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\VulkanSDK\1.1.92.1\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\Debug;C:\VulkanSDK\1.1.73.0\Lib32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.73.0\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\VulkanSDK\1.1.92.1\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.92.1\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\VulkanSDK\1.1.92.1\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\Debug;C:\VulkanSDK\1.1.73.0\Lib32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\VulkanSDK\1.1.73.0\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\VulkanSDK\1.1.92.1\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.73.0\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -276,6 +276,7 @@
     <ClInclude Include="Include\Math\Vector3.h" />
     <ClInclude Include="Include\Math\Vector4.h" />
     <ClInclude Include="Include\OpenGL\GLSwapchainLinux.h" />
+    <ClInclude Include="Include\OpenGL\GLSwapchainWin32.h" />
     <ClInclude Include="Include\OpenGL\VAOCache.h" />
     <ClInclude Include="Include\System\Bitmap.h" />
     <ClInclude Include="Include\System\Clipboard.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="Source\Math\Vector4.cpp" />
     <ClCompile Include="Source\Math\RandomGenerator.cpp" />
     <ClCompile Include="Source\OpenGL\GLSwapchainLinux.cpp" />
+    <ClCompile Include="Source\OpenGL\GLSwapchainWin32.cpp" />
     <ClCompile Include="Source\OpenGL\VAOCache.cpp" />
     <ClCompile Include="Source\System\Clock.cpp" />
     <ClCompile Include="Source\System\Event.cpp" />

@@ -120,25 +120,5 @@ namespace RayEngine
 		public:
 			static std::string GetVendorString(int32 vendorID);
 		};
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		struct AdapterList
-		{
-		public:
-			AdapterList();
-			AdapterList(int32 count);
-			AdapterList(AdapterList&& other);
-			AdapterList(const AdapterList& other);
-			~AdapterList();
-
-			AdapterDesc& operator[](int32 index);
-			AdapterList& operator=(AdapterList&& other);
-			AdapterList& operator=(const AdapterList& other);
-
-		public:
-			AdapterDesc* pAdapters;
-			int32 Count;
-		};
 	}
 }

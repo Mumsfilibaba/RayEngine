@@ -82,12 +82,12 @@ namespace RayEngine
 		{
 #if defined(RE_PLATFORM_WINDOWS)
 			GLNativeDevice dc = 0;// GetDC(pSwapchainDesc->WindowHandle);
-			if (!SetPixelFormat(dc, pSwapchainDesc->BackBuffer.Format, pSwapchainDesc->DepthStencil.Format))
+			/*if (!SetPixelFormat(dc, pSwapchainDesc->BackBuffer.Format, pSwapchainDesc->DepthStencil.Format))
 			{
 				*ppDevice = nullptr;
 				*ppSwapchain = nullptr;
 				return false;
-			}
+			}Y*/
 #endif
 
 			*ppDevice = new GLDevice(pDeviceDesc);
@@ -150,7 +150,7 @@ namespace RayEngine
 
 
 #if defined(RE_PLATFORM_WINDOWS)
-			NativeWindowHandle dummyWindow = CreateDummyWindow();
+			NativeWindowHandle dummyWindow = 0;//CreateDummyWindow();
 
 			PIXELFORMATDESCRIPTOR pfd = {};
 			pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -321,7 +321,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool GLFactory::ExtensionSupported(const std::string& extension) const
 		{
-			for (int32 i = 0; i < m_Extensions.size(); i++)
+			for (std::size_t i = 0; i < m_Extensions.size(); i++)
 			{
 				if (m_Extensions[i] == extension)
 					return true;

@@ -50,6 +50,7 @@ if ((func = reinterpret_cast<decltype(func)>(LoadFunction(name))) == nullptr)			
 #define WGL_SUPPORT_OPENGL_ARB 0x2010
 #define WGL_DOUBLE_BUFFER_ARB 0x2011
 #define WGL_PIXEL_TYPE_ARB 0x2013
+#define WGL_TYPE_RGBA_FLOAT_ARB 0x21A0
 #define WGL_COLOR_BITS_ARB 0x2014
 #define WGL_RED_BITS_ARB 0x2015
 #define WGL_GREEN_BITS_ARB 0x2017

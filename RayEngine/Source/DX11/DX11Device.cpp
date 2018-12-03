@@ -42,7 +42,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Device::DX11Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
+		DX11Device::DX11Device(const DeviceDesc* pDesc)
 			: m_Factory(nullptr),
 			m_Adapter(nullptr),
 			m_Device(nullptr),
@@ -53,9 +53,8 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			m_Factory = pFactory->QueryReference<DX11Factory>();
 			
-			Create(pFactory, pDesc, debugLayer);
+			Create(pDesc);
 		}
 
 
@@ -63,8 +62,8 @@ namespace RayEngine
 		DX11Device::~DX11Device()
 		{
 			ReRelease_S(m_ImmediateContext);
-			ReRelease_S(m_Factory);
 			
+			D3DRelease_S(m_Factory);
 			D3DRelease_S(m_Adapter);
 			D3DRelease_S(m_Device);
 
@@ -211,7 +210,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
+		void DX11Device::Create(const DeviceDesc* pDesc)
 		{
 			IDXGIFactory* pDXGIFactory = reinterpret_cast<DX11Factory*>(pFactory)->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->EnumAdapters(0, &m_Adapter);
@@ -222,8 +221,10 @@ namespace RayEngine
 			}
 
 			uint32 deviceFlags = 0;
-			if (debugLayer)
+			if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
+			{
 				deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+			}
 
 			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);

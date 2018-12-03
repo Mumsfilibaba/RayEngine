@@ -19,30 +19,44 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#pragma once
+#include "../../Include/OpenGL/GLSwapchainWin32.h"
 
-#include "../Defines.h"
-#include "../Types.h"
-#include <vector>
-#include <string>
-#include "GlImpl.h"
-#include "GLConversions.h"
+#if defined(RE_PLATFORM_WINDOWS)
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);
+		GLSwapchainWin32::GLSwapchainWin32(const SwapchainDesc * pDesc, GLDeviceWin32 * pDevice)
+			: GLSwapchain(pDevice, pDesc),
+			m_pDevice(nullptr),
+			m_HDC(0)
+		{
+			m_pDevice = pDevice;
+			m_HDC = pDevice->GetHDC();
+		}
+
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		inline GLNativeContext GetCurrentContext()
+		GLSwapchainWin32::~GLSwapchainWin32()
 		{
-#if defined(RE_PLATFORM_WINDOWS)
-			return wglGetCurrentContext();
-#elif defined(RE_PLATFORM_LINUX)
-			return glXGetCurrentContext();
-#endif
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLSwapchainWin32::MakeCurrent() const
+		{
+			wglMakeCurrent(m_HDC, GetCurrentContext());
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLSwapchainWin32::Present() const
+		{
+			SwapBuffers(m_HDC);
 		}
 	}
 }
+
+#endif

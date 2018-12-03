@@ -314,7 +314,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) = 0;
-
 			
 			/*////////////////////////////////////////////////////////////
 
@@ -334,6 +333,16 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual void GetDesc(DeviceDesc* pDesc) const = 0;
+
+			/*////////////////////////////////////////////////////////////
+
+				Retrives the descriptor that describes the physical 
+				device being represented by the device object.
+
+				pDesc - A valid pointer to a Desc
+
+			////////////////////////////////////////////////////////////*/
+			virtual void GetAdapterDesc(AdapterDesc* pDesc) const = 0;
 		};
 	}
 }

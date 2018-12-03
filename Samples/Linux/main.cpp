@@ -81,9 +81,9 @@ int main()
     swapchainDesc.Name = "Swapchain";
     swapchainDesc.Width = windowDesc.Width;
     swapchainDesc.Height = windowDesc.Height;
-    swapchainDesc.Samples = 1;
+    swapchainDesc.Samples = 4;
     swapchainDesc.BackBuffer.Count = 2;
-    swapchainDesc.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM_SRGB;
+    swapchainDesc.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM;
     swapchainDesc.DepthStencil.Format = FORMAT_D24_UNORM_S8_UINT;
 
     IWindow* pWindow = nullptr;
@@ -95,32 +95,34 @@ int main()
     pWindow->Show();
 
     LOG_INFO("Window Created");
-    //LOG_INFO("Device Created");
-    //LOG_INFO("Swapchain Created");
+    LOG_INFO("Device Created");
+    LOG_INFO("Swapchain Created");
 
-    //IDeviceContext* pContext = nullptr;
-    //pDevice->GetImmediateContext(&pContext);
-    //pContext->SetSwapChain(pSwapchain);
+    IDeviceContext* pContext = nullptr;
+    pDevice->GetImmediateContext(&pContext);
+    pContext->SetSwapChain(pSwapchain);
 
     Event event = {};
     while (event.Type != EVENT_TYPE_QUIT)
     {
-        pWindow->GetEvent(&event);
-        if (event.Type == EVENT_TYPE_CLOSE)
-        {
-            LOG_INFO("Window closed");
-            SendQuitMessage(0);
-        }
+		if (pWindow->PeekEvent(&event))
+		{
+			if (event.Type == EVENT_TYPE_CLOSE)
+			{
+				LOG_INFO("Window closed");
+				SendQuitMessage(0);
+			}
+		}
 
-        //float color[] = { 0.392f, 0.584f, 0.929f, 1.0f };
-        //pContext->ClearRendertargetView(nullptr, color);
-        //pContext->ClearDepthStencilView(nullptr, 1.0f, 0);
-        //pSwapchain->Present();
+        float color[] = { 0.392f, 0.584f, 0.929f, 1.0f };
+        pContext->ClearRendertargetView(nullptr, color);
+        pContext->ClearDepthStencilView(nullptr, 1.0f, 0);
+        pSwapchain->Present();
     }
 
     pWindow->Destroy();
-    //ReRelease_S(pSwapchain);
-    //ReRelease_S(pContext);
+    ReRelease_S(pSwapchain);
+    ReRelease_S(pContext);
     ReRelease_S(pDevice);
 
     return event.Quit.ExitCode;

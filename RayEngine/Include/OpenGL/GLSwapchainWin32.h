@@ -19,30 +19,32 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#pragma once
+#include "GLSwapchain.h"
 
-#include "../Defines.h"
-#include "../Types.h"
-#include <vector>
-#include <string>
-#include "GlImpl.h"
-#include "GLConversions.h"
+#if defined(RE_PLATFORM_WINDOWS)
+#include "GLDeviceWin32.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void QueryExtensionsFromString(std::vector<std::string>& extensions, const std::string& str);
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		inline GLNativeContext GetCurrentContext()
+		class GLSwapchainWin32 final : public GLSwapchain
 		{
-#if defined(RE_PLATFORM_WINDOWS)
-			return wglGetCurrentContext();
-#elif defined(RE_PLATFORM_LINUX)
-			return glXGetCurrentContext();
-#endif
-		}
+			RE_IMPLEMENT_INTERFACE(GLSwapchainWin32);
+
+		public:
+			GLSwapchainWin32(const SwapchainDesc* pDesc, GLDeviceWin32* pDevice);
+			~GLSwapchainWin32();
+
+			void MakeCurrent() const override final;
+
+			void Present() const override final;
+
+		private:
+			const GLDeviceWin32* m_pDevice;
+			HDC m_HDC;
+		};
 	}
 }
+
+#endif

@@ -42,7 +42,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Device);
 
 		public:
-			DX11Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
+			DX11Device(const DeviceDesc* pDesc);
 			~DX11Device();
 
 			inline ID3D11Device* GetD3D11Device() const
@@ -78,6 +78,8 @@ namespace RayEngine
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
 
+			void GetAdapterDesc(AdapterDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;
@@ -85,11 +87,11 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
+			void Create(const DeviceDesc* pDesc);
 
 		private:
-			DX11Factory* m_Factory;
 			DX11DeviceContext* m_ImmediateContext;
+			IDXGIFactory* m_Factory;
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;
 			ID3D11Debug* m_DebugDevice;

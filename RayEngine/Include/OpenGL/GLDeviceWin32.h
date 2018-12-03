@@ -21,6 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "GLDevice.h"
+#include "GLSwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include <Windows.h>
@@ -33,6 +34,8 @@ namespace RayEngine
 		HWND CreateDummyWindow();
 
 		void SetStandardPixelformat(HDC hDC);
+
+		void CreateOpenGLDevice(HWND hwnd, IDevice** ppDevice, DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, SwapchainDesc* pSwapchainDesc);
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +68,6 @@ namespace RayEngine
 		private:
 			HDC m_HDC;
 			HWND m_Hwnd;
-			GLNativeContext m_Context;
 
 			bool m_IsWindowOwner;
 		};
