@@ -157,6 +157,43 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void GLDevice::GetAdapterDesc(AdapterDesc* pDesc) const
+		{
+			pDesc->VendorName = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+			pDesc->ModelName = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+			pDesc->DeviceID = -1;
+			pDesc->VendorID = -1;
+			pDesc->Flags = ADAPTER_FLAGS_SWAPCHAIN | ADAPTER_FLAGS_GRAPHICS;
+
+			if (ExtensionSupported("GL_ARB_compute_shader"))
+				pDesc->Flags |= ADAPTER_FLAGS_COMPUTE;
+			if (ExtensionSupported("GL_ARB_geometry_shader4"))
+				pDesc->Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
+			if (ExtensionSupported("GL_ARB_tessellation_shader"))
+				pDesc->Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
+
+			int32 info = 0;
+			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &info);
+			pDesc->Limits.Texture1D.Width = info;
+
+			pDesc->Limits.Texture2D.Width = info;
+			pDesc->Limits.Texture2D.Height = info;
+
+			glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &info);
+			pDesc->Limits.Texture3D.Width = info;
+			pDesc->Limits.Texture3D.Height = info;
+			pDesc->Limits.Texture3D.Depth = info;
+
+			glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &info);
+			pDesc->Limits.TextureCube.Width = info;
+			pDesc->Limits.TextureCube.Height = info;
+
+			glGetIntegerv(GL_MAX_DRAW_BUFFERS, &info);
+			pDesc->Limits.RenderTargetCount = info;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType GLDevice::GetReferenceCount() const
 		{
 			return m_References;

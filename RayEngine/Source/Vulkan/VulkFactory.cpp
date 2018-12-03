@@ -173,7 +173,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkFactory::EnumerateAdapters(AdapterList* pList) const
+		/*void VulkFactory::EnumerateAdapters(AdapterList* pList) const
 		{
 			uint32 deviceCount = 0;
 			VkResult result = vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
@@ -235,7 +235,7 @@ namespace RayEngine
 
 				FillAdapterDesc(&(*pList)[i], &features, &properties, i, supportFlags);
 			}
-		}
+		}*/
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -434,7 +434,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkFactory::FillAdapterDesc(AdapterDesc* pDesc, VkPhysicalDeviceFeatures* pFeatures, VkPhysicalDeviceProperties* pProperties, int32 id, int32 supportFlags)
 		{
-			pDesc->ApiID = id;
+			//pDesc->ApiID = id;
 			pDesc->VendorID = pProperties->vendorID;
 			pDesc->DeviceID = pProperties->deviceID;
 

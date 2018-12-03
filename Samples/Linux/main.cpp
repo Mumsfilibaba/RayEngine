@@ -81,7 +81,7 @@ int main()
     swapchainDesc.Name = "Swapchain";
     swapchainDesc.Width = windowDesc.Width;
     swapchainDesc.Height = windowDesc.Height;
-    swapchainDesc.Samples = 4;
+    swapchainDesc.Samples = 1;
     swapchainDesc.BackBuffer.Count = 2;
     swapchainDesc.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM;
     swapchainDesc.DepthStencil.Format = FORMAT_D24_UNORM_S8_UINT;
@@ -97,6 +97,12 @@ int main()
     LOG_INFO("Window Created");
     LOG_INFO("Device Created");
     LOG_INFO("Swapchain Created");
+
+	AdapterDesc adpaterDesc = {};
+	pDevice->GetAdapterDesc(&adpaterDesc);
+
+	LOG_INFO("Device Vendor: " + adpaterDesc.VendorName);
+	LOG_INFO("Device Model: " + adpaterDesc.ModelName);
 
     IDeviceContext* pContext = nullptr;
     pDevice->GetImmediateContext(&pContext);

@@ -43,9 +43,11 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Device::DX12Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
-			: m_Adapter(nullptr),
+		DX12Device::DX12Device(const DeviceDesc* pDesc)
+			: m_Factory(nullptr),
+			m_Adapter(nullptr),
 			m_Device(nullptr),
+			m_DebugController(nullptr),
 			m_DebugDevice(nullptr),
 			m_UploadHeap(nullptr),
 			m_ImmediateContext(nullptr),
@@ -61,7 +63,7 @@ namespace RayEngine
 			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
 			m_UploadHeap->SetName(pDesc->Name + ": Dynamic Upload-Heap");
 
-			Create(pFactory, pDesc, debugLayer);
+			Create(pDesc);
 		}
 
 
@@ -172,6 +174,49 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Device::GetAdapterDesc(AdapterDesc* pDesc) const
+		{
+			DXGI_ADAPTER_DESC1 desc = {};
+			m_Adapter->GetDesc1(&desc);
+
+			constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
+			char str[len];
+			wcstombs(str, desc.Description, len);
+
+			pDesc->ModelName = str;
+			pDesc->VendorName = AdapterDesc::GetVendorString(desc.VendorId);
+			pDesc->VendorID = desc.VendorId;
+			pDesc->DeviceID = desc.DeviceId;
+
+			pDesc->Flags |= ADAPTER_FLAGS_SWAPCHAIN;
+			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+				pDesc->Flags |= ADAPTER_FLAGS_SOFTWARE;
+
+
+			//These are constants for D3D_FEATURE_LEVEL_11_0 the lowest level RayEngine supports
+			pDesc->Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
+			pDesc->Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
+			pDesc->Flags |= ADAPTER_FLAGS_COMPUTE;
+			pDesc->Flags |= ADAPTER_FLAGS_GRAPHICS;
+
+
+			pDesc->Limits.RenderTargetCount = 8;
+
+			pDesc->Limits.Texture1D.Width = 16384;
+
+			pDesc->Limits.Texture2D.Width = 16384;
+			pDesc->Limits.Texture2D.Height = 16384;
+
+			pDesc->Limits.Texture3D.Width = 2048;
+			pDesc->Limits.Texture3D.Height = 2048;
+			pDesc->Limits.Texture3D.Depth = 2048;
+
+			pDesc->Limits.TextureCube.Width = 16384;
+			pDesc->Limits.TextureCube.Height = 16384;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::GetReferenceCount() const
 		{
 			return m_References;
@@ -214,16 +259,36 @@ namespace RayEngine
 	
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer)
+		void DX12Device::Create(const DeviceDesc* pDesc)
 		{
-			IDXGIFactory5* pDXGIFactory = reinterpret_cast<DX12Factory*>(pFactory)->GetDXGIFactory();
-			HRESULT hr = pDXGIFactory->EnumAdapters1(0, &m_Adapter);
+			int32 factoryFlags = 0;
+			if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
+			{
+				factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+				if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&m_DebugController))))
+				{
+					LOG_ERROR("DX12: Could not retrive the Debug interface");
+					return;
+				}
+				else
+				{
+					m_DebugController->EnableDebugLayer();
+				}
+			}
+
+			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
+			{
+				LOG_ERROR("DX12: Could not create factory");
+				return;
+			}
+
+			HRESULT hr = m_Factory->EnumAdapters1(0, &m_Adapter);
 			if (SUCCEEDED(hr))
 			{
 				hr = D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
 				if (SUCCEEDED(hr))
 				{
-					if (debugLayer)
+					if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
 					{
 						hr = m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice);
 						if (FAILED(hr))

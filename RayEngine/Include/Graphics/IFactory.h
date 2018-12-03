@@ -53,7 +53,7 @@ namespace RayEngine
 				about the adpaters in the system.
 
 			////////////////////////////////////////////////////////////*/
-			virtual void EnumerateAdapters(AdapterList* pList) const = 0;
+			//virtual void EnumerateAdapters(AdapterList* pList) const = 0;
 			
 			/*////////////////////////////////////////////////////////////
 

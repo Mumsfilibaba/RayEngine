@@ -44,7 +44,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12Device);
 
 		public:
-			DX12Device(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
+			DX12Device(const DeviceDesc* pDesc);
 			~DX12Device();
 
 			inline ID3D12Device* GetD3D12Device() const
@@ -52,27 +52,27 @@ namespace RayEngine
 				return m_Device;
 			}
 
-			DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const
+			inline DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const
 			{
 				return m_DsvHeap;
 			}
 
-			DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const
+			inline DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const
 			{
 				return m_RtvHeap;
 			}
 
-			DX12DescriptorHeap* GetDX12ResourceHeap() const
+			inline DX12DescriptorHeap* GetDX12ResourceHeap() const
 			{
 				return m_ResourceHeap;
 			}
 
-			DX12DescriptorHeap* GetDX12SamplerHeap() const
+			inline DX12DescriptorHeap* GetDX12SamplerHeap() const
 			{
 				return m_SamplerHeap;
 			}
 
-			DX12DynamicUploadHeap* GetDX12UploadHeap() const
+			inline DX12DynamicUploadHeap* GetDX12UploadHeap() const
 			{
 				return m_UploadHeap;
 			}
@@ -104,6 +104,8 @@ namespace RayEngine
 			void SetName(const std::string& name) override final;
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
+
+			void GetAdapterDesc(AdapterDesc* pDesc) const override final;
 			
 			IObject::CounterType GetReferenceCount() const override final;
 			
@@ -112,12 +114,13 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(IFactory* pFactory, const DeviceDesc* pDesc, bool debugLayer);
+			void Create(const DeviceDesc* pDesc);
 
 		private:
-			DX12Factory* m_Factory;
+			IDXGIFactory5* m_Factory;
 			IDXGIAdapter1* m_Adapter;
 			ID3D12Device* m_Device;
+			ID3D12Debug* m_DebugController;
 			ID3D12DebugDevice* m_DebugDevice;
 			DX12DeviceContext* m_ImmediateContext;
 			DX12DynamicUploadHeap* m_UploadHeap;

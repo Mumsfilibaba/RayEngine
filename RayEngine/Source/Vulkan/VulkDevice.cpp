@@ -139,6 +139,10 @@ namespace RayEngine
 			*pDesc = m_Desc;
 		}
 
+		void VulkDevice::GetAdapterDesc(AdapterDesc * pDesc) const
+		{
+		}
+
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType VulkDevice::GetReferenceCount() const

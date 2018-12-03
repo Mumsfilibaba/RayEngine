@@ -74,7 +74,6 @@ namespace RayEngine
 		public:
 			std::string VendorName;
 			std::string ModelName;
-			int32 ApiID;
 			int32 DeviceID;
 			int32 VendorID;
 			int64 Flags;

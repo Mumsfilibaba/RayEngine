@@ -35,7 +35,7 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLFactory::GLFactory(bool debugLayer)
-			: m_AdapterList(),
+			: //m_AdapterList(),
 			m_Extensions(),
 			m_DebugLayer(debugLayer),
 			m_References(0)
@@ -53,12 +53,12 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLFactory::EnumerateAdapters(AdapterList* pList) const
+		/*void GLFactory::EnumerateAdapters(AdapterList* pList) const
 		{
 			*pList = AdapterList(m_AdapterList.Count);
 			for (int32 i = 0; i < m_AdapterList.Count; i++)
 				(*pList)[i] = m_AdapterList.pAdapters[i];
-		}
+		}*/
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,7 +269,7 @@ namespace RayEngine
 				AdapterDesc adapterInfo = {};
 				adapterInfo.VendorName = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 				adapterInfo.ModelName = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-				adapterInfo.ApiID = 0;
+				//adapterInfo.ApiID = 0;
 				adapterInfo.DeviceID = deviceID;
 				adapterInfo.VendorID = vendorID;
 				adapterInfo.Flags = ADAPTER_FLAGS_SWAPCHAIN | ADAPTER_FLAGS_GRAPHICS;
@@ -301,8 +301,8 @@ namespace RayEngine
 				adapterInfo.Limits.RenderTargetCount = info;
 
 
-				m_AdapterList = AdapterList(1);
-				m_AdapterList[0] = adapterInfo;
+				//m_AdapterList = AdapterList(1);
+				//m_AdapterList[0] = adapterInfo;
 			}
 
 

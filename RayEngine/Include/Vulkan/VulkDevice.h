@@ -73,6 +73,8 @@ namespace RayEngine
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
 
+			void GetAdapterDesc(AdapterDesc* pDesc) const override final;
+
 			IObject::CounterType GetReferenceCount() const override final;
 			
 			IObject::CounterType Release() override final;

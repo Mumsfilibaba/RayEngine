@@ -53,7 +53,7 @@ namespace RayEngine
 			GLFactory(bool debugLayer);
 			~GLFactory();
 			
-			void EnumerateAdapters(AdapterList* pList) const override final;
+			//void EnumerateAdapters(AdapterList* pList) const override final;
 			
 			bool CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc) override final;
 			
@@ -77,7 +77,7 @@ namespace RayEngine
 			void Create(bool debugLayer);
 
 		private:
-			AdapterList m_AdapterList;
+			//AdapterList m_AdapterList;
 
 			std::vector<std::string> m_Extensions;
 

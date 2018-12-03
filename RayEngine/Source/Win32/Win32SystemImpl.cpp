@@ -84,13 +84,18 @@ namespace RayEngine
 		Graphics::ISwapchain** ppSwapchain, Graphics::SwapchainDesc* pSwapchainDesc,
 		GRAPHICS_API api)
 	{
+		using namespace Graphics;
+
 		Win32WindowImpl* pWindow = new Win32WindowImpl(pWindowDesc);
 		if (api == GRAPHICS_API_D3D12)
 		{
 		}
 		else if (api == GRAPHICS_API_D3D11)
 		{
-			*ppDevice
+			DX11Device* pDevice = new DX11Device(pDeviceDesc);;
+			*ppDevice = pDevice;
+
+			*ppSwapchain = new Graphics::DX11Swapchain(pDevice, pSwapchainDesc);
 		}
 		else if (api == GRAPHICS_API_OPENGL)
 		{

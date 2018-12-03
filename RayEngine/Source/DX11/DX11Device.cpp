@@ -98,6 +98,9 @@ namespace RayEngine
 		{
 			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			
+			std::string factoryName = name + " : Factory";
+			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(factoryName.size()), factoryName.c_str());
+
 			std::string adapterName = name + " : Adapter";
 			m_Adapter->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(adapterName.size()), adapterName.c_str());
 		}
@@ -107,6 +110,47 @@ namespace RayEngine
 		void DX11Device::GetDesc(DeviceDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX11Device::GetAdapterDesc(AdapterDesc* pDesc) const
+		{
+			using namespace Microsoft::WRL;
+
+			DXGI_ADAPTER_DESC desc = {};
+			m_Adapter->GetDesc(&desc);
+
+			constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
+			char str[len];
+			wcstombs(str, desc.Description, len);
+			
+			pDesc->ModelName = str;
+			pDesc->VendorName = AdapterDesc::GetVendorString(desc.VendorId);
+			pDesc->VendorID = desc.VendorId;
+			pDesc->DeviceID = desc.DeviceId;
+
+			//These are constants for D3D_FEATURE_LEVEL_11_0 the lowest level RayEngine supports
+			pDesc->Flags |= ADAPTER_FLAGS_SWAPCHAIN;
+			pDesc->Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
+			pDesc->Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
+			pDesc->Flags |= ADAPTER_FLAGS_COMPUTE;
+			pDesc->Flags |= ADAPTER_FLAGS_GRAPHICS;
+
+
+			pDesc->Limits.RenderTargetCount = 8;
+
+			pDesc->Limits.Texture1D.Width = 16384;
+
+			pDesc->Limits.Texture2D.Width = 16384;
+			pDesc->Limits.Texture2D.Height = 16384;
+
+			pDesc->Limits.Texture3D.Width = 2048;
+			pDesc->Limits.Texture3D.Height = 2048;
+			pDesc->Limits.Texture3D.Depth = 2048;
+
+			pDesc->Limits.TextureCube.Width = 16384;
+			pDesc->Limits.TextureCube.Height = 16384;
 		}
 
 
@@ -212,8 +256,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Device::Create(const DeviceDesc* pDesc)
 		{
-			IDXGIFactory* pDXGIFactory = reinterpret_cast<DX11Factory*>(pFactory)->GetDXGIFactory();
-			HRESULT hr = pDXGIFactory->EnumAdapters(0, &m_Adapter);
+			if (FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory))))
+			{
+				LOG_ERROR("DX11: Could not create factoiry");
+				return;
+			}
+
+			HRESULT hr = m_Factory->EnumAdapters(0, &m_Adapter);
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D11: Could not retrive adapter. " + DXErrorString(hr));
@@ -242,8 +291,7 @@ namespace RayEngine
 				m_Desc = *pDesc;
 			}
 
-
-			if (debugLayer)
+			if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
 			{
 				hr = m_Device->QueryInterface<ID3D11Debug>(&m_DebugDevice);
 				if (FAILED(hr))

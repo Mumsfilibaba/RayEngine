@@ -54,7 +54,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Factory::EnumerateAdapters(AdapterList* pList) const
+		/*void DX12Factory::EnumerateAdapters(AdapterList* pList) const
 		{
 			using namespace Microsoft::WRL;
 
@@ -81,13 +81,13 @@ namespace RayEngine
 			*pList = AdapterList(static_cast<int32>(adapterInfos.size()));
 			for (int32 i = 0; i < pList->Count; i++)
 				(*pList)[i] = adapterInfos[i];
-		}
+		}*/
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX12Factory::CreateDevice(IDevice** ppDevice, const DeviceDesc* pDesc)
 		{
-			return ((*ppDevice) = new DX12Device(this, pDesc, m_DebugController != nullptr)) != nullptr;
+			return false;// ((*ppDevice) = new DX12Device(this, pDesc, m_DebugController != nullptr)) != nullptr;
 		}
 
 
@@ -101,7 +101,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX12Factory::CreateDeviceAndSwapchain(IDevice** ppDevice, const DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, const SwapchainDesc* pSwapchainDesc)
 		{
-			IDevice* pDevice = new DX12Device(this, pDeviceDesc, m_DebugController != nullptr);
+			IDevice* pDevice = nullptr;// new DX12Device(this, pDeviceDesc, m_DebugController != nullptr);
 			ISwapchain* pSwapchain = new DX12Swapchain(this, pDevice, pSwapchainDesc);
 
 			(*ppDevice) = pDevice;
@@ -188,7 +188,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Factory::FillAdapterDesc(int32 adapterID, AdapterDesc* pDesc, DXGI_ADAPTER_DESC1* pDXGIDesc)
 		{
-			pDesc->ApiID = adapterID;
+			//pDesc->ApiID = adapterID;
 			pDesc->VendorID = pDXGIDesc->VendorId;
 			pDesc->DeviceID = pDXGIDesc->DeviceId;
 

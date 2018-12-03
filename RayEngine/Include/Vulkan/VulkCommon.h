@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
-#include "..\System\Window.h"
+#include "../Defines.h"
+#include "../System/Window.h"
 
 #if defined(RE_PLATFORM_ANDROID)
 #include "..\Android\AndroidVulkanWrapper.h"
