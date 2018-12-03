@@ -42,20 +42,26 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLDeviceWin32::GLDeviceWin32(const DeviceDesc* pDesc, HWND hwnd, PIXELFORMATDESCRIPTOR* pPFD)
+		GLDeviceWin32::GLDeviceWin32(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs)
 			: GLDevice(pDesc),
 			m_HDC(0),
 			m_Hwnd(0),
 			m_Context(0),
 			m_IsWindowOwner(false)
 		{
-			Create(pDesc, hwnd, pPFD);
+			Create(pDesc, hwnd, pPixelFormatAttribs);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDeviceWin32::~GLDeviceWin32()
 		{
+			if (m_Context != 0)
+			{
+				wglMakeCurrent(0, 0);
+				wglDeleteContext(m_Context);
+			}
+
 			if (m_HDC != 0)
 			{
 				ReleaseDC(m_Hwnd, m_HDC);
@@ -83,58 +89,23 @@ namespace RayEngine
 				return;
 			}
 
-			PIXELFORMATDESCRIPTOR pfd = {};
-			pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-			pfd.nVersion = 1;
-			pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-			pfd.iPixelType = PFD_TYPE_RGBA;
-			pfd.cColorBits = 32;
-			pfd.cRedBits = 0;
-			pfd.cRedShift = 0;
-			pfd.cGreenBits = 0;
-			pfd.cGreenShift = 0;
-			pfd.cBlueBits = 0;
-			pfd.cBlueShift = 0;
-			pfd.cAlphaBits = 0;
-			pfd.cAlphaShift = 0;
-			pfd.cAccumBits = 0;
-			pfd.cAccumRedBits = 0;
-			pfd.cAccumGreenBits = 0;
-			pfd.cAccumBlueBits = 0;
-			pfd.cAlphaBits = 0;
-			pfd.cDepthBits = 24;
-			pfd.cStencilBits = 8;
-			pfd.cAuxBuffers = 0;
-			pfd.iLayerType = PFD_MAIN_PLANE;
-			pfd.bReserved = 0;
-			pfd.dwDamageMask = 0;
-			pfd.dwLayerMask = 0;
-			pfd.dwVisibleMask = 0;
-
 			HDC hDC = GetDC(hWND);
-			int32 format = ChoosePixelFormat(hDC, &pfd);
-			SetPixelFormat(hDC, format, &pfd);
+			SetStandardPixelformat(hDC);
 
 			HGLRC hContext = wglCreateContext(hDC);
 			wglMakeCurrent(hDC, hContext);
 
-			//Get extensions for Win32
-			PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsString = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(LoadFunction("wglGetExtensionsStringARB"));
-			if (wglGetExtensionsString == nullptr)
+			if (!QueryWGLExtensions(hDC))
 			{
-				LOG_ERROR("OpenGL: wglGetExtensionsStringARB is not supported.");
-
 				wglMakeCurrent(0, 0);
 				wglDeleteContext(hContext);
 
 				ReleaseDC(hWND, hDC);
-
+				
 				DestroyWindow(hWND);
+
 				return;
 			}
-
-			std::string wglExtensions = wglGetExtensionsString(hDC);
-			QueryExtensionsFromString(m_Extensions, wglExtensions);
 
 			//Can we create a context?
 			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
@@ -177,13 +148,94 @@ namespace RayEngine
 			else
 			{
 				LOG_INFO("OpenGL: Created context. Version " + std::to_string(version[0]) + '.' + std::to_string(version[1]));
+
+				m_HDC = hDC;
+				m_Hwnd = hWND;
+				m_IsWindowOwner = true;
+
+				LoadOpenGL();
 			}
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLDeviceWin32::Create(const DeviceDesc* pDesc, HWND hwnd, PIXELFORMATDESCRIPTOR* pPFD)
+		void GLDeviceWin32::Create(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs)
 		{
+			HWND dummyWindow = CreateDummyWindow();
+			if (dummyWindow == 0)
+			{
+				LOG_ERROR("OpenGL: Failed to create window for context");
+				return;
+			}
+
+			HDC hDC = GetDC(dummyWindow);
+			SetStandardPixelformat(hDC);
+
+			HGLRC hContext = wglCreateContext(hDC);
+			wglMakeCurrent(hDC, hContext);
+
+			if (!QueryWGLExtensions(hDC))
+			{
+				wglMakeCurrent(0, 0);
+				wglDeleteContext(hContext);
+
+				ReleaseDC(dummyWindow, hDC);
+
+				DestroyWindow(dummyWindow);
+
+				return;
+			}
+
+
+			//Can we choose pixelformat
+			PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormat = nullptr;
+			if (!ExtensionSupported("WGL_ARB_pixel_format"))
+			{
+				LOG_ERROR("OpenGL: WGL_ARB_pixel_format is not supported.");
+			}
+			else
+			{
+				wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATARBPROC>(LoadFunction("wglChoosePixelFormatARB"));
+			}
+
+			//Can we create a context?
+			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
+			if (!ExtensionSupported("WGL_ARB_create_context"))
+			{
+				LOG_ERROR("OpenGL: WGL_ARB_create_context is not supported.");
+			}
+			else
+			{
+				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
+			}
+
+			wglMakeCurrent(0, 0);
+			wglDeleteContext(hContext);
+
+			ReleaseDC(dummyWindow, hDC);
+
+			DestroyWindow(dummyWindow);
+			
+			if (wglChoosePixelFormat == nullptr || wglCreateContext == nullptr)
+			{
+			}
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		bool GLDeviceWin32::QueryWGLExtensions(HDC hDC)
+		{
+			PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsString = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(LoadFunction("wglGetExtensionsStringARB"));
+			if (wglGetExtensionsString == nullptr)
+			{
+				LOG_ERROR("OpenGL: wglGetExtensionsStringARB is not supported.");
+				return false;
+			}
+
+			std::string wglExtensions = wglGetExtensionsString(hDC);
+			QueryExtensionsFromString(m_Extensions, wglExtensions);
+
+			return true;
 		}
 
 
@@ -221,6 +273,42 @@ namespace RayEngine
 			}
 
 			return dummyWindow;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void SetStandardPixelformat(HDC hDC)
+		{
+			PIXELFORMATDESCRIPTOR pfd = {};
+			pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+			pfd.nVersion = 1;
+			pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+			pfd.iPixelType = PFD_TYPE_RGBA;
+			pfd.cColorBits = 32;
+			pfd.cRedBits = 0;
+			pfd.cRedShift = 0;
+			pfd.cGreenBits = 0;
+			pfd.cGreenShift = 0;
+			pfd.cBlueBits = 0;
+			pfd.cBlueShift = 0;
+			pfd.cAlphaBits = 0;
+			pfd.cAlphaShift = 0;
+			pfd.cAccumBits = 0;
+			pfd.cAccumRedBits = 0;
+			pfd.cAccumGreenBits = 0;
+			pfd.cAccumBlueBits = 0;
+			pfd.cAlphaBits = 0;
+			pfd.cDepthBits = 24;
+			pfd.cStencilBits = 8;
+			pfd.cAuxBuffers = 0;
+			pfd.iLayerType = PFD_MAIN_PLANE;
+			pfd.bReserved = 0;
+			pfd.dwDamageMask = 0;
+			pfd.dwLayerMask = 0;
+			pfd.dwVisibleMask = 0;
+
+			int32 format = ChoosePixelFormat(hDC, &pfd);
+			SetPixelFormat(hDC, format, &pfd);
 		}
 	}
 }

@@ -32,6 +32,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		HWND CreateDummyWindow();
 
+		void SetStandardPixelformat(HDC hDC);
+
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class GLDeviceWin32 final : public GLDevice
@@ -40,7 +42,7 @@ namespace RayEngine
 
 		public:
 			GLDeviceWin32(const DeviceDesc* pDesc);
-			GLDeviceWin32(const DeviceDesc* pDesc, HWND hwnd, PIXELFORMATDESCRIPTOR* pPFD);
+			GLDeviceWin32(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs);
 			~GLDeviceWin32();
 
 			inline HDC GetHDC() const
@@ -56,7 +58,9 @@ namespace RayEngine
 		private:
 			void Create(const DeviceDesc* pDesc);
 
-			void Create(const DeviceDesc* pDesc, HWND hwnd, PIXELFORMATDESCRIPTOR* pPFD);
+			void Create(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs);
+
+			bool QueryWGLExtensions(HDC hDC);
 
 		private:
 			HDC m_HDC;
