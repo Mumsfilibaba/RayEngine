@@ -54,7 +54,7 @@ namespace RayEngine
 			std::string Name;
 			int32 Width;
 			int32 Height;
-			int32 Samples;
+			int32 SampleCount;
 			struct
 			{
 				FORMAT Format;

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "../../Include/Debug/Debug.h"
-#include "..\..\Include\DX11\DX11Device.h"
+#include "../../Include/DX11/DX11Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "../../Include/DX11/DX11DeviceContext.h"
@@ -261,21 +261,20 @@ namespace RayEngine
 				return;
 			}
 
-			HRESULT hr = m_Factory->EnumAdapters(0, &m_Adapter);
-			if (FAILED(hr))
+			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
+			if (!QueryAdapter(&supportedFeatureLevel))
 			{
-				LOG_ERROR("D3D11: Could not retrive adapter. " + DXErrorString(hr));
+				LOG_ERROR("D3D11: Failed to query adapter");
 				return;
 			}
-
+			
 			uint32 deviceFlags = 0;
 			if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
 			{
 				deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 			}
 
-			D3D_FEATURE_LEVEL supportedFeatureLevel = D3D_FEATURE_LEVEL_11_0;
-			hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
+			HRESULT hr = D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, 0, deviceFlags, &supportedFeatureLevel, 1, D3D11_SDK_VERSION, &m_Device, &m_FeatureLevel, nullptr);
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D11: Could not create Device and Immediate Context. " + DXErrorString(hr));
@@ -298,6 +297,92 @@ namespace RayEngine
 					LOG_ERROR("D3D11: Could not create Debug Interface. " + DXErrorString(hr));
 				}
 			}
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		bool DX11Device::QueryAdapter(D3D_FEATURE_LEVEL* pFeatureLevel)
+		{
+			D3D_FEATURE_LEVEL supportedFeatureLevels[] =
+			{
+				D3D_FEATURE_LEVEL_12_1,
+				D3D_FEATURE_LEVEL_12_0,
+				D3D_FEATURE_LEVEL_11_1,
+				D3D_FEATURE_LEVEL_11_0,
+				D3D_FEATURE_LEVEL_10_1,
+				D3D_FEATURE_LEVEL_10_0,
+				D3D_FEATURE_LEVEL_9_3,
+				D3D_FEATURE_LEVEL_9_2,
+				D3D_FEATURE_LEVEL_9_1,
+			};
+
+			int32 featureLevelCount = 9;
+			int32 adapterCount = 0;
+			HRESULT hr = 0;
+
+			int32 bestAdapterIndex = -1;
+			uint32 vendorID = 0;
+			D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
+			std::string adapterDesc;
+
+			Microsoft::WRL::ComPtr<IDXGIAdapter> adapter = nullptr;
+			for (int32 i = 0; m_Factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
+			{
+				DXGI_ADAPTER_DESC desc = {};
+				adapter->GetDesc(&desc);
+
+#if defined(RE_DEBUG)
+				constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
+				char str[len];
+				wcstombs(str, desc.Description, len);
+				std::string description = str;
+
+				LOG_INFO("D3D11: Adapter(" + std::to_string(i) + ") " + description);
+#endif
+
+				D3D_FEATURE_LEVEL fl;
+				hr = D3D11CreateDevice(adapter.Get(), D3D_DRIVER_TYPE_UNKNOWN, 0, 0, supportedFeatureLevels, featureLevelCount, D3D11_SDK_VERSION, nullptr, &fl, nullptr);
+				if (hr == E_INVALIDARG)
+				{
+					LOG_WARNING("D3D11: Adapter " + std::to_string(i) + " does not support a D3D_FEATURE_LEVEL higher than D3D_FEATURE_LEVEL_11_0");
+
+					D3D_FEATURE_LEVEL featureLevel_11_0 = D3D_FEATURE_LEVEL_11_0;
+					hr = D3D11CreateDevice(adapter.Get(), D3D_DRIVER_TYPE_UNKNOWN, 0, 0, &featureLevel_11_0, 1, D3D11_SDK_VERSION, nullptr, &fl, nullptr);
+					if (FAILED(hr))
+					{
+						LOG_WARNING("D3D11: Adapter " + std::to_string(i) + " does not support D3D11.");
+						continue;
+					}
+				}
+
+				if ((desc.VendorId != 0x163C && desc.VendorId != 0x8086 && desc.VendorId != 0x8087 && desc.VendorId != 0x1414) ||
+					(desc.VendorId == vendorID && fl > featureLevel) || 
+					(bestAdapterIndex < 0))
+				{
+					bestAdapterIndex = i;
+					featureLevel = fl;
+					vendorID = desc.VendorId;
+					adapterDesc = description;
+				}
+
+				adapterCount++;
+			}
+
+			if (adapterCount < 1 || bestAdapterIndex < 0)
+			{
+				return false;
+			}
+			else
+			{
+				if (FAILED(m_Factory->EnumAdapters(bestAdapterIndex, &m_Adapter)))
+				{
+					return false;
+				}
+			}
+
+			LOG_INFO("D3D11: Chosen adapter " + adapterDesc);
+			*pFeatureLevel = featureLevel;
+			return true;
 		}
 	}
 }

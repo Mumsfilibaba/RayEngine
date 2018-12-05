@@ -30,6 +30,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GetHighestSupportingSamples(ID3D11Device* pD3D11Device, uint32* count, uint32* quality, uint32 requested, DXGI_FORMAT format)
 		{
+			if (requested < 2)
+			{
+				*count = 1;
+				*quality = 0;
+				return;
+ 			}
+
 			UINT tempQuality = 0;
 			uint32 samples = requested;
 

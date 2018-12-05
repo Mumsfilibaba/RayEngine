@@ -113,9 +113,9 @@ namespace RayEngine
         std::string wglExtensions = reinterpret_cast<const char*>(glXQueryExtensionsString(pDisplay, screen));
         
         bool supportMsaa = ExtensionSupported(wglExtensions, "GLX_ARB_multisample");
-        int32 samples = pSwapchainDesc->Samples;
+        int32 samples = pSwapchainDesc->SampleCount;
         int32 sampleBuffers = None;
-        if (pSwapchainDesc->Samples > 1)
+        if (pSwapchainDesc->SampleCount > 1)
         {
             if (supportMsaa)
             {

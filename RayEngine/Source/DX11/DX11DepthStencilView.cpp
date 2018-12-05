@@ -166,7 +166,7 @@ namespace RayEngine
 			HRESULT hr = pD3D11Device->CreateDepthStencilView(pD3D11Resource, &desc, &m_View);
 			if (FAILED(hr))
 			{
-				LOG_ERROR("D3D11: Could not create DepthStencilView" + DXErrorString(hr));
+				LOG_ERROR("D3D11: Could not create DepthStencilView. " + DXErrorString(hr));
 			}
 			else
 			{

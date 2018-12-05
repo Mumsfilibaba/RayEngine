@@ -210,6 +210,7 @@ namespace RayEngine
 					depthStencilInfo.DepthStencil.OptimizedDepth = 1.0f;
 					depthStencilInfo.DepthStencil.OptimizedStencil = 0;
 					depthStencilInfo.Format = m_Desc.DepthStencil.Format;
+					depthStencilInfo.SampleCount = m_Desc.SampleCount;
 					depthStencilInfo.MipLevels = 1;
 					depthStencilInfo.Type = TEXTURE_TYPE_2D;
 					depthStencilInfo.Usage = RESOURCE_USAGE_DEFAULT;
@@ -227,9 +228,16 @@ namespace RayEngine
 			rtvInfo.Name = m_Desc.Name + ": BackBuffer RTV";
 			rtvInfo.Format = m_Desc.BackBuffer.Format;
 			rtvInfo.pResource = m_BackBuffer;
-			rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
-			rtvInfo.Texture2D.MipSlice = 0;
-			rtvInfo.Texture2D.PlaneSlice = 0;
+			if (m_Desc.SampleCount > 1)
+			{
+				rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2DMS;
+			}
+			else
+			{
+				rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+				rtvInfo.Texture2D.MipSlice = 0;
+				rtvInfo.Texture2D.PlaneSlice = 0;
+			}
 
 			m_Rtv = new DX11RenderTargetView(m_Device, &rtvInfo);
 
@@ -241,8 +249,15 @@ namespace RayEngine
 				dsvInfo.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
 				dsvInfo.pResource = m_DepthStencil;
 				dsvInfo.Format = m_Desc.DepthStencil.Format;
-				dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
-				dsvInfo.Texture2D.MipSlice = 0;
+				if (m_Desc.SampleCount > 1)
+				{
+					dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2DMS;
+				}
+				else
+				{
+					dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+					dsvInfo.Texture2D.MipSlice = 0;
+				}
 
 				m_Dsv = new DX11DepthStencilView(m_Device, &dsvInfo);
 			}

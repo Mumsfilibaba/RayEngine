@@ -235,7 +235,7 @@ namespace RayEngine
 
 				desc.SampleDesc.Quality = 0;
 				GetHighestSupportingSamples(pD3D11Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, pDesc->SampleCount, format);
-				
+
 				desc.MipLevels = pDesc->MipLevels;
 				desc.ArraySize = pDesc->DepthOrArraySize;
 

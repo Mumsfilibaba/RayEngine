@@ -420,7 +420,7 @@ namespace RayEngine
 				WGL_BLUE_BITS_ARB,							blueBits,
 				WGL_ALPHA_BITS_ARB,							alphaBits,
 				WGL_SAMPLE_BUFFERS_ARB,						GL_TRUE,
-				WGL_SAMPLES_ARB,							pSwapchainDesc->Samples,
+				WGL_SAMPLES_ARB,							pSwapchainDesc->SampleCount,
 				depthBits > 0 ? WGL_DEPTH_BITS_ARB : 0 ,	depthBits,
 				stencilBits > 0 ? WGL_STENCIL_BITS_ARB : 0, stencilBits,
 				0

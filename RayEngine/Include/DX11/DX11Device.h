@@ -97,6 +97,8 @@ namespace RayEngine
 		private:
 			void Create(const DeviceDesc* pDesc);
 
+			bool QueryAdapter(D3D_FEATURE_LEVEL* pFeatureLevel);
+
 		private:
 			DX11DeviceContext* m_ImmediateContext;
 			IDXGIFactory* m_Factory;
