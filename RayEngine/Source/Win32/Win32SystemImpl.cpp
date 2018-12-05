@@ -24,6 +24,8 @@ failure and or malfunction of any kind.
 #if defined(RE_PLATFORM_WINDOWS)
 #include "../../Include/DX11/DX11Device.h"
 #include "../../Include/DX11/DX11Swapchain.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Swapchain.h"
 #include "../../Include/OpenGL/GLDeviceWin32.h"
 #include "../../Include/OpenGL/GLSwapchain.h"
 #include "../../Include/Win32/Win32WindowImpl.h"
@@ -89,13 +91,17 @@ namespace RayEngine
 		Win32WindowImpl* pWindow = new Win32WindowImpl(pWindowDesc);
 		if (api == GRAPHICS_API_D3D12)
 		{
+			DX12Device* pDX12Device = new DX12Device(pDeviceDesc);
+			*ppDevice = pDX12Device;
+
+			*ppSwapchain = new DX12Swapchain(pDX12Device, pSwapchainDesc, pWindow->GetHWND());
 		}
 		else if (api == GRAPHICS_API_D3D11)
 		{
-			DX11Device* pDevice = new DX11Device(pDeviceDesc);;
-			*ppDevice = pDevice;
+			DX11Device* pDX11Device = new DX11Device(pDeviceDesc);
+			*ppDevice = pDX11Device;
 
-			*ppSwapchain = new Graphics::DX11Swapchain(pDevice, pSwapchainDesc);
+			*ppSwapchain = new DX11Swapchain(pDX11Device, pSwapchainDesc, pWindow->GetHWND());
 		}
 		else if (api == GRAPHICS_API_OPENGL)
 		{

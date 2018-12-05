@@ -23,7 +23,6 @@ failure and or malfunction of any kind.
 #include "..\..\Include\DX11\DX11Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX11/DX11Factory.h"
 #include "../../Include/DX11/DX11DeviceContext.h"
 #include "../../Include/DX11/DX11RenderTargetView.h"
 #include "../../Include/DX11/DX11DepthStencilView.h"
@@ -296,7 +295,7 @@ namespace RayEngine
 				hr = m_Device->QueryInterface<ID3D11Debug>(&m_DebugDevice);
 				if (FAILED(hr))
 				{
-					LOG_ERROR("D3D11: Could not create DebugDevice. " + DXErrorString(hr));
+					LOG_ERROR("D3D11: Could not create Debug Interface. " + DXErrorString(hr));
 				}
 			}
 		}

@@ -24,7 +24,6 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "../../Include/Win32/Win32WindowImpl.h"
-#include "../../Include/DX11/DX11Factory.h"
 #include "../../Include/DX11/DX11Device.h"
 #include "../../Include/DX11/DX11Texture.h"
 #include "../../Include/DX11/DX11DepthStencilView.h"
@@ -35,7 +34,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX11Swapchain::DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc)
+		DX11Swapchain::DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd)
 			: m_Device(nullptr),
 			m_Swapchain(nullptr),
 			m_BackBuffer(nullptr),
@@ -49,7 +48,7 @@ namespace RayEngine
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
 
-			Create(pDesc);
+			Create(pDesc, hwnd);
 		}
 
 
@@ -134,7 +133,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Swapchain::Create(const SwapchainDesc* pDesc)
+		void DX11Swapchain::Create(const SwapchainDesc* pDesc, HWND hwnd)
 		{
 			DXGI_SWAP_CHAIN_DESC desc = {};
 			desc.BufferCount = pDesc->BackBuffer.Count;
@@ -148,6 +147,7 @@ namespace RayEngine
 			desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
 			//TODO: Tearing?
+
 			m_Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 			desc.Flags = m_Flags;
 			desc.SampleDesc.Count = 1;
@@ -156,11 +156,10 @@ namespace RayEngine
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 			desc.Windowed = true;
 			
-			//desc.OutputWindow = pDesc->WindowHandle;
-
+			desc.OutputWindow = hwnd;
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
-			IDXGIFactory* pDXGIFactory = 0;// = m_Factory->GetDXGIFactory();
+			IDXGIFactory* pDXGIFactory = m_Device->GetDXGIFactory();
 			HRESULT hr = pDXGIFactory->CreateSwapChain(pD3D11Device, &desc, &m_Swapchain);
 			if (FAILED(hr))
 			{
@@ -173,7 +172,7 @@ namespace RayEngine
 
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 
-				//pDXGIFactory->MakeWindowAssociation(pDesc->WindowHandle, DXGI_MWA_NO_ALT_ENTER);
+				pDXGIFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
 			}				
 
 			CreateTextures();
@@ -198,7 +197,6 @@ namespace RayEngine
 				pTexture->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 
 				m_BackBuffer = new DX11Texture(m_Device, pTexture.Get());
-
 
 				if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
 				{

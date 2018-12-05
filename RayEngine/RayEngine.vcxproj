@@ -191,7 +191,6 @@
     <ClInclude Include="Include\DX11\DX11DepthStencilView.h" />
     <ClInclude Include="Include\DX11\DX11Device.h" />
     <ClInclude Include="Include\DX11\DX11DeviceContext.h" />
-    <ClInclude Include="Include\DX11\DX11Factory.h" />
     <ClInclude Include="Include\DX11\DX11PipelineState.h" />
     <ClInclude Include="Include\DX11\DX11RenderTargetView.h" />
     <ClInclude Include="Include\DX11\DX11RootLayout.h" />
@@ -210,7 +209,6 @@
     <ClInclude Include="Include\DX12\DX12DescriptorHeap.h" />
     <ClInclude Include="Include\DX12\DX12DeviceContext.h" />
     <ClInclude Include="Include\DX12\DX12DynamicUploadHeap.h" />
-    <ClInclude Include="Include\DX12\DX12Factory.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\DX12\DX12PipelineState.h" />
     <ClInclude Include="Include\DX12\DX12RenderTargetView.h" />
@@ -233,7 +231,6 @@
     <ClInclude Include="Include\Graphics\IBuffer.h" />
     <ClInclude Include="Include\Graphics\IDepthStencilView.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />
-    <ClInclude Include="Include\Graphics\IFactory.h" />
     <ClInclude Include="Include\Graphics\IPipelineState.h" />
     <ClInclude Include="Include\Graphics\IRenderTargetView.h" />
     <ClInclude Include="Include\Graphics\IResource.h" />
@@ -253,7 +250,6 @@
     <ClInclude Include="Include\OpenGL\GLDeviceContext.h" />
     <ClInclude Include="Include\OpenGL\GLDeviceLinux.h" />
     <ClInclude Include="Include\OpenGL\GLDeviceWin32.h" />
-    <ClInclude Include="Include\OpenGL\GLFactory.h" />
     <ClInclude Include="Include\OpenGL\GlImpl.h" />
     <ClInclude Include="Include\OpenGL\GLPipelineState.h" />
     <ClInclude Include="Include\OpenGL\GLRootLayout.h" />
@@ -334,7 +330,6 @@
     <ClCompile Include="Source\Android\AndroidAppState.cpp" />
     <ClCompile Include="Source\Android\AndroidBitmapImpl.cpp" />
     <ClCompile Include="Source\Android\AndroidClipboardImpl.cpp" />
-    <ClCompile Include="Source\Android\AndroidFactory.cpp" />
     <ClCompile Include="Source\Android\AndroidKeyboardImpl.cpp" />
     <ClCompile Include="Source\Android\AndroidKeycodes.cpp" />
     <ClCompile Include="Source\Android\AndroidLogImpl.cpp" />
@@ -348,7 +343,6 @@
     <ClCompile Include="Source\DX11\DX11Common.cpp" />
     <ClCompile Include="Source\DX11\DX11DepthStencilView.cpp" />
     <ClCompile Include="Source\DX11\DX11Device.cpp" />
-    <ClCompile Include="Source\DX11\DX11Factory.cpp" />
     <ClCompile Include="Source\DX11\DX11RenderTargetView.cpp" />
     <ClCompile Include="Source\DX11\DX11ShaderConstantBlock.cpp" />
     <ClCompile Include="Source\DX11\DX11ShaderResourceView.cpp" />
@@ -363,7 +357,6 @@
     <ClCompile Include="Source\DX12\DX12Device.cpp" />
     <ClCompile Include="Source\DX12\DX12DeviceContext.cpp" />
     <ClCompile Include="Source\DX12\DX12DynmicUploadHeap.cpp" />
-    <ClCompile Include="Source\DX12\DX12Factory.cpp" />
     <ClCompile Include="Source\DX12\DX12PipelineState.cpp" />
     <ClCompile Include="Source\DX12\DX12RenderTargetView.cpp" />
     <ClCompile Include="Source\DX12\DX12RootLayout.cpp" />
@@ -392,7 +385,6 @@
     <ClCompile Include="Source\OpenGL\GLDeviceContext.cpp" />
     <ClCompile Include="Source\OpenGL\GLDeviceLinux.cpp" />
     <ClCompile Include="Source\OpenGL\GLDeviceWin32.cpp" />
-    <ClCompile Include="Source\OpenGL\GLFactory.cpp" />
     <ClCompile Include="Source\OpenGL\GLImpl.cpp" />
     <ClCompile Include="Source\OpenGL\GLPipelineState.cpp" />
     <ClCompile Include="Source\OpenGL\GLRootLayout.cpp" />
@@ -435,7 +427,6 @@
     <ClCompile Include="Source\Vulkan\VulkCommon.cpp" />
     <ClCompile Include="Source\Vulkan\VulkTexture.cpp" />
     <ClCompile Include="Source\Win32\WIn32ClipboardImpl.cpp" />
-    <ClCompile Include="Source\Win32\Win32Factory.cpp" />
     <ClCompile Include="Source\Win32\Win32KeyboardImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32KeyCodes.cpp" />
     <ClCompile Include="Source\Win32\Win32DebugImpl.cpp" />

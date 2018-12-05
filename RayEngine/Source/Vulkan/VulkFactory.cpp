@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include <vector>
+/*#include <vector>
 #include "../../Include/Debug/Debug.h"
 #include "../../Include/Vulkan/VulkFactory.h"
 #include "../../Include/Vulkan/VulKDevice.h"
@@ -69,10 +69,10 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkFactory::Create(bool debugLayers)
 		{
-			/*if (debugLayers)
+			if (debugLayers)
 				LogService::GraphicsLog(new OutputLog());
 			else
-				LogService::GraphicsLog(new NullLog());*/
+				LogService::GraphicsLog(new NullLog());
 
 
 			VkApplicationInfo aInfo = {};
@@ -235,7 +235,7 @@ namespace RayEngine
 
 				FillAdapterDesc(&(*pList)[i], &features, &properties, i, supportFlags);
 			}
-		}*/
+		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -500,4 +500,4 @@ namespace RayEngine
 			return VK_FALSE;
 		}
 	}
-}
+}*/

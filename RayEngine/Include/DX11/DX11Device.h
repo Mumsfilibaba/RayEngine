@@ -23,9 +23,7 @@ failure and or malfunction of any kind.
 #include "..\Graphics\IDevice.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11Factory.h"
-
-#define QueryDX11Device(pDevice) reinterpret_cast<DX11Device*>(pDevice->QueryReference())
+#include "DX11Common.h"
 
 namespace RayEngine
 {
@@ -48,6 +46,16 @@ namespace RayEngine
 			inline ID3D11Device* GetD3D11Device() const
 			{
 				return m_Device;
+			}
+
+			inline IDXGIFactory* GetDXGIFactory() const
+			{
+				return m_Factory;
+			}
+
+			inline IDXGIAdapter* GetDXGIAdapter() const
+			{
+				return m_Adapter;
 			}
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;

@@ -57,11 +57,40 @@ namespace RayEngine
 			D3D11_TEXTURE2D_DESC desc = {};
 			pResource->GetDesc(&desc);
 
+			uint32 size = 0;
+			pResource->GetPrivateData(WKPDID_D3DDebugObjectName, &size, nullptr);
+			
+			m_Desc.Name.resize(size);
+			char* pName = const_cast<char*>(m_Desc.Name.data());
+			pResource->GetPrivateData(WKPDID_D3DDebugObjectName, &size, reinterpret_cast<void*>(pName));
+
+			m_Desc.Type = TEXTURE_TYPE_2D;
+			m_Desc.Format = DXToReFormat(desc.Format);
+			m_Desc.Usage = DX11ToReUsage(desc.Usage);
+
+			m_Desc.Flags = 0;
+			if (desc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
+				m_Desc.Flags |= TEXTURE_FLAGS_DEPTH_STENCIL;
+			if (desc.BindFlags & D3D11_BIND_RENDER_TARGET)
+				m_Desc.Flags |= TEXTURE_FLAGS_RENDERTARGET;
+			if (desc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
+				m_Desc.Flags |= TEXTURE_FLAGS_SHADER_RESOURCE;
+			if (desc.BindFlags & D3D11_BIND_UNORDERED_ACCESS)
+				m_Desc.Flags |= TEXTURE_FLAGS_UNORDERED_ACCESS;
+
+			if (desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE)
+				m_Desc.Flags |= TEXTURE_FLAGS_CUBEMAP;
+
+			if (desc.CPUAccessFlags & D3D11_CPU_ACCESS_WRITE)
+				m_Desc.CpuAccess |= CPU_ACCESS_FLAG_WRITE;
+			if (desc.CPUAccessFlags & D3D11_CPU_ACCESS_READ)
+				m_Desc.CpuAccess |= CPU_ACCESS_FLAG_READ;
+
 			m_Desc.Height = desc.Height;
 			m_Desc.Width = desc.Width;
-			m_Desc.MipLevels = desc.MipLevels;
 			m_Desc.DepthOrArraySize = desc.ArraySize;
-			m_Desc.Type = TEXTURE_TYPE_2D;
+			m_Desc.SampleCount = desc.SampleDesc.Count;
+			m_Desc.MipLevels = desc.MipLevels;
 		}
 
 
@@ -155,19 +184,12 @@ namespace RayEngine
 			if (pDesc->CpuAccess & CPU_ACCESS_FLAG_READ)
 				cpuAccessFlags |= D3D11_CPU_ACCESS_READ;
 
-
-			D3D11_USAGE usage;
-			if (pDesc->Usage == RESOURCE_USAGE_DEFAULT)
-				usage = D3D11_USAGE_DEFAULT;
-			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
-				usage = D3D11_USAGE_DYNAMIC;
-			else if (pDesc->Usage == RESOURCE_USAGE_STATIC)
-				usage = D3D11_USAGE_IMMUTABLE;
-
-
-			uint32 miscFlags = 0;
-
+			D3D11_USAGE usage = ReToDX11Usage(pDesc->Usage);
 			
+			uint32 miscFlags = 0;
+			if (pDesc->Flags & TEXTURE_FLAGS_CUBEMAP)
+				miscFlags |= D3D11_RESOURCE_MISC_TEXTURECUBE;
+
 			D3D11_SUBRESOURCE_DATA data = {};
 			D3D11_SUBRESOURCE_DATA* pInitData = nullptr;
 			if (pInitialData != nullptr)

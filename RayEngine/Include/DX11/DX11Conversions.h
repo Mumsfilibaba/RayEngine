@@ -158,5 +158,35 @@ namespace RayEngine
 			default: return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 			}
 		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		inline D3D11_USAGE ReToDX11Usage(RESOURCE_USAGE usage)
+		{
+			switch (usage)
+			{
+			case RESOURCE_USAGE_DEFAULT: return D3D11_USAGE_DEFAULT;
+			case RESOURCE_USAGE_DYNAMIC: return D3D11_USAGE_DYNAMIC;
+			case RESOURCE_USAGE_STATIC: return D3D11_USAGE_IMMUTABLE;
+			default: return static_cast<D3D11_USAGE>(0);
+			}
+
+			return static_cast<D3D11_USAGE>(0);
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		inline RESOURCE_USAGE DX11ToReUsage(D3D11_USAGE usage)
+		{
+			switch (usage)
+			{
+			case D3D11_USAGE_DEFAULT: return RESOURCE_USAGE_DEFAULT;
+			case D3D11_USAGE_DYNAMIC: return RESOURCE_USAGE_DYNAMIC;
+			case D3D11_USAGE_IMMUTABLE: return RESOURCE_USAGE_STATIC;
+			default: return RESOURCE_USAGE_UNKNOWN;
+			}
+
+			return RESOURCE_USAGE_UNKNOWN;
+		}
 	}
 }

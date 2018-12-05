@@ -23,18 +23,15 @@ failure and or malfunction of any kind.
 #include "../../Include/DX12/DX12Swapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Factory.h"
 #include "../../Include/DX12/DX12DeviceContext.h"
-#include "../../Include/Win32/Win32WindowImpl.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Swapchain::DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc)
-			: m_Factory(nullptr),
-			m_Context(nullptr),
+		DX12Swapchain::DX12Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd)
+			: m_Context(nullptr),
 			m_Swapchain(nullptr),
 			m_CurrentBuffer(0),
 			m_Textures(),
@@ -46,9 +43,7 @@ namespace RayEngine
 			m_Device = pDevice->QueryReference<DX12Device>();
 			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
 
-			m_Factory = pFactory->QueryReference<DX12Factory>();
-
-			Create(pDesc);
+			Create(pDesc, hwnd);
 		}
 
 
@@ -56,8 +51,7 @@ namespace RayEngine
 		DX12Swapchain::~DX12Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
-			
-			ReRelease_S(m_Factory);
+
 			ReRelease_S(m_Device);
 			ReRelease_S(m_Context);
 
@@ -134,7 +128,7 @@ namespace RayEngine
 
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Swapchain::Create(const SwapchainDesc* pDesc)
+		void DX12Swapchain::Create(const SwapchainDesc* pDesc, HWND hwnd)
 		{
 			DXGI_SWAP_CHAIN_DESC1 desc = {};
 			desc.BufferCount = pDesc->BackBuffer.Count;
@@ -151,12 +145,10 @@ namespace RayEngine
 			desc.Flags = 0;
 
 
-			IDXGIFactory5* pDXGIFactory = m_Factory->GetDXGIFactory();
+			IDXGIFactory5* pDXGIFactory = m_Device->GetDXGIFactory();
 			ID3D12CommandQueue* pD3D12queue = m_Context->GetD3D12CommandQueue();
-
-			HWND hWnd = 0;
 			
-			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hWnd, &desc, nullptr, nullptr, &m_Swapchain);
+			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hwnd, &desc, nullptr, nullptr, &m_Swapchain);
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D12 : Could not create swapchain. " + DXErrorString(hr));
@@ -168,7 +160,7 @@ namespace RayEngine
 
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 				
-				pDXGIFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
+				pDXGIFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
 				
 				CreateTextures(pDesc);
 			}

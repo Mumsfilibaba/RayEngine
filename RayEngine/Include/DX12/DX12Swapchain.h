@@ -41,7 +41,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12Swapchain);
 
 		public:
-			DX12Swapchain(IFactory* pFactory, IDevice* pDevice, const SwapchainDesc* pDesc);
+			DX12Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd);
 			~DX12Swapchain();
 
 			void Resize(int32 width, int32 height) override final;
@@ -61,12 +61,11 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const SwapchainDesc* pDesc);
+			void Create(const SwapchainDesc* pDesc, HWND hwnd);
 			
 			void CreateTextures(const SwapchainDesc* pDesc);
 
 		private:
-			DX12Factory* m_Factory;
 			DX12Device* m_Device;
 			DX12DeviceContext* m_Context;
 			IDXGISwapChain1* m_Swapchain;

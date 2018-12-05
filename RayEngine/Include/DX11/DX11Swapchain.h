@@ -46,7 +46,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX11Swapchain);
 
 		public:
-			DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc);
+			DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd);
 			~DX11Swapchain();
 
 			inline DX11RenderTargetView* GetDX11RenderTargetView() const
@@ -76,7 +76,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(const SwapchainDesc* pDesc);
+			void Create(const SwapchainDesc* pDesc, HWND hwnd);
 			
 			void CreateTextures();
 

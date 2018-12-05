@@ -21,7 +21,6 @@ failure and or malfunction of any kind.
 
 #include "../../Include/OpenGL/GLSwapchain.h"
 #include "../../Include/OpenGL/GLDevice.h"
-#include "../../Include/OpenGL/GLFactory.h"
 
 namespace RayEngine
 {

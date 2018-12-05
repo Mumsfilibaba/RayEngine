@@ -111,9 +111,6 @@
     <ClInclude Include="Include\System\Bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Graphics\IFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Win32\WndclassCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -151,9 +148,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Graphics\ISwapchain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DX12\DX12Factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DX12\DX12Common.h">
@@ -226,9 +220,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DX11\DX11Common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DX11\DX11Factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\DX11\DX11Device.h">
@@ -376,9 +367,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Interfaces\IObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\OpenGL\GLFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\OpenGL\GLShader.h">
@@ -572,16 +560,7 @@
     <ClCompile Include="Source\Android\AndroidVulkanCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Android\AndroidFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Win32\Win32VulkanCommon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Win32\Win32Factory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DX12\DX12Factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12Device.cpp">
@@ -627,9 +606,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX12\DX12DynmicUploadHeap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DX11\DX11Factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX11\DX11Device.cpp">
@@ -729,9 +705,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\OpenGL\GLImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\OpenGL\GLFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\OpenGL\GLDevice.cpp">

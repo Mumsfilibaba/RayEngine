@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IFactory.h"
+/*#include "..\Graphics\IFactory.h"
 #include "VulkCommon.h"
 
 namespace RayEngine
@@ -83,4 +83,4 @@ namespace RayEngine
 				uint64_t obj, size_t location, int32_t code, const char* pLayerPrefix, const char* pMsg, void* pUserData);
 		};
 	}
-}
+}*/

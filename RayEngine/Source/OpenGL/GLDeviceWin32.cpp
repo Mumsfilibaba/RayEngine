@@ -209,6 +209,13 @@ namespace RayEngine
 				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
 			}
 
+			//Support sRGB?
+			if (!ExtensionSupported("WGL_EXT_colorspace"))
+			{
+				pPixelFormatAttribs += 2;
+				LOG_WARNING("OpenGL: WGL_EXT_colorspace not supported. sRGB formats is not supported for Swapchains");
+			}
+
 			wglMakeCurrent(0, 0);
 			wglDeleteContext(dummyContext);
 
@@ -225,7 +232,7 @@ namespace RayEngine
 			int32 formatID = 0;
 			uint32 formatCount = 0;
 			HDC hDC = GetDC(hwnd);
-			if (!wglChoosePixelFormat(hDC, pPixelFormatAttribs, nullptr, 1, &formatID, &formatCount))
+			if (!wglChoosePixelFormat(hDC, pPixelFormatAttribs, NULL, 1, &formatID, &formatCount))
 			{
 				ReleaseDC(hwnd, hDC);
 
@@ -297,6 +304,13 @@ namespace RayEngine
 			std::string wglExtensions = wglGetExtensionsString(hDC);
 			QueryExtensionsFromString(m_Extensions, wglExtensions);
 
+#if defined(RE_DEBUG)
+			std::string message = "WGL Supported extensions:";
+			for (int32 i = 0; i < m_Extensions.size(); i++)
+				message += m_Extensions[i] + '\n';
+
+			LOG_INFO(message);
+#endif
 			return true;
 		}
 
@@ -331,7 +345,7 @@ namespace RayEngine
 			HWND dummyWindow = 0;
 			if (WndclassCache::Register(wcex))
 			{
-				dummyWindow = CreateWindow(wcex.lpszClassName, RE_GL_CLASS_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 100, NULL, NULL, wcex.hInstance, NULL);
+				dummyWindow = CreateWindow(wcex.lpszClassName, RE_GL_CLASS_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 100, 100, NULL, NULL, wcex.hInstance, NULL);
 			}
 
 			return dummyWindow;
@@ -393,23 +407,23 @@ namespace RayEngine
 
 			int32 pixelFormatAttribs[] =
 			{
-				WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-				WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-				WGL_DOUBLE_BUFFER_ARB, doubleBuffer,
-				WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-				WGL_SWAP_METHOD_ARB, WGL_SWAP_COPY_ARB,
-				WGL_STEREO_ARB, GL_FALSE,
-				WGL_COLORSPACE_EXT, colorSpace,
-				//WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,
-				//WGL_SAMPLES_ARB, pSwapchainDesc->Samples,
-				WGL_PIXEL_TYPE_ARB, pixelType,
-				WGL_RED_BITS_ARB, redBits,
-				WGL_GREEN_BITS_ARB, greenBits,
-				WGL_BLUE_BITS_ARB, blueBits,
-				WGL_ALPHA_BITS_ARB, alphaBits,
-				depthBits > 0 ? WGL_DEPTH_BITS_ARB : 0 , depthBits,
+				WGL_COLORSPACE_EXT,							colorSpace, //Assumed to be first, in case not suported on the system
+				WGL_DRAW_TO_WINDOW_ARB,						GL_TRUE,
+				WGL_SUPPORT_OPENGL_ARB,						GL_TRUE,
+				WGL_DOUBLE_BUFFER_ARB,						doubleBuffer,
+				WGL_ACCELERATION_ARB,						WGL_FULL_ACCELERATION_ARB,
+				WGL_SWAP_METHOD_ARB,						WGL_SWAP_COPY_ARB,
+				WGL_STEREO_ARB,								GL_FALSE,
+				WGL_PIXEL_TYPE_ARB,							pixelType,
+				WGL_RED_BITS_ARB,							redBits,
+				WGL_GREEN_BITS_ARB,							greenBits,
+				WGL_BLUE_BITS_ARB,							blueBits,
+				WGL_ALPHA_BITS_ARB,							alphaBits,
+				WGL_SAMPLE_BUFFERS_ARB,						GL_TRUE,
+				WGL_SAMPLES_ARB,							pSwapchainDesc->Samples,
+				depthBits > 0 ? WGL_DEPTH_BITS_ARB : 0 ,	depthBits,
 				stencilBits > 0 ? WGL_STENCIL_BITS_ARB : 0, stencilBits,
-				0, 0
+				0
 			};
 
 			GLDeviceWin32* pDevice = new GLDeviceWin32(pDeviceDesc, hwnd, pixelFormatAttribs);

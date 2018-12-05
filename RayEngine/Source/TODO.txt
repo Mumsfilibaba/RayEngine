@@ -1,7 +1,4 @@
 TODO:
--Linux
--Check do changes for Linux in windows
-
 -Fix loadImageFromFile (All Formats)
 -Properly free the windows console for error output
 -Linux when setting an icon or cursor from the functions, remember to create a new Image object.
@@ -19,20 +16,18 @@ TODO:
 -IDeviceContext::SetIndexBuffer()
 -DX12 - Dynamic uploadheap - Resize when needed
 -Generate MipMaps
--DX12 - Use AdapterFlags for descrete and integrated graphicscards, find out how to do this in directx, maybe winapi? Does not matter since directx only exists on windows anyway
 -DX12 - Check tearing support - Vulkan (if supported by the API)
 -DX12 - Setup breakpoints when errors occurs
 
 -DX11/DX12 - Bufferusage flags
 -DX11 - Static Samplers must be bound from 0 to n (in a single range), should be possible to not do this (DX11StaticSamplerRange?)
 
--Vulk - Create dummy surface and search for correct formats etc
 -Controller support
 
--Aquire pointers for native window etc
--Check if system supports vulkan in factory
--ANativeWindow pointer in AndroidWindowImpl
--Save current windowpointer (AndroidWindowImpl*) so events can be sent directly to it
+-Android: Aquire pointers for native window etc
+-Android: Check if system supports vulkan in factory
+-Android: ANativeWindow pointer in AndroidWindowImpl
+-Android: Save current windowpointer (AndroidWindowImpl*) so events can be sent directly to it
 
 For later:
 -Virtual Filesystem

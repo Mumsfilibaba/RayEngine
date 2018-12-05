@@ -23,7 +23,6 @@ failure and or malfunction of any kind.
 #include "../../Include/DX12/DX12Device.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Factory.h"
 #include "../../Include/DX12/DX12Buffer.h"
 #include "../../Include/DX12/DX12Shader.h"
 #include "../../Include/DX12/DX12Texture.h"

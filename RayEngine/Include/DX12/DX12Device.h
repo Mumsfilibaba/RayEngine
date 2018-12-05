@@ -25,8 +25,6 @@ failure and or malfunction of any kind.
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
 
-#define QueryDX12Device(pDevice) reinterpret_cast<DX12Device*>(pDevice->QueryReference())
-
 namespace RayEngine
 {
 	namespace Graphics
@@ -50,6 +48,16 @@ namespace RayEngine
 			inline ID3D12Device* GetD3D12Device() const
 			{
 				return m_Device;
+			}
+
+			inline IDXGIFactory5* GetDXGIFactory() const
+			{
+				return m_Factory;
+			}
+
+			inline IDXGIAdapter* GetDXGIAdapter() const
+			{
+				return m_Adapter;
 			}
 
 			inline DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const
