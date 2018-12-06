@@ -173,7 +173,6 @@ namespace RayEngine
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
-
 			HRESULT hr = pD3D11Device->CreateRenderTargetView(pD3D11Resource, &desc, &m_View);
 			if (FAILED(hr))
 			{

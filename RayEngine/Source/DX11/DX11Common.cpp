@@ -48,7 +48,7 @@ namespace RayEngine
 			}
 
 			*count = samples;
-			*quality = tempQuality;
+			*quality = (tempQuality - 1);
 		}
 	}
 }

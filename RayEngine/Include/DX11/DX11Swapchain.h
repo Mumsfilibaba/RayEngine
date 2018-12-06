@@ -87,13 +87,20 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			IDXGISwapChain* m_Swapchain;
+			ID3D11DeviceContext* m_ImmediateContext;
 			DX11Texture* m_BackBuffer;
+			DX11Texture* m_MSAABackBuffer;
 			DX11Texture* m_DepthStencil;
 			DX11RenderTargetView* m_Rtv;
 			DX11DepthStencilView* m_Dsv;
 
 			SwapchainDesc m_Desc;
+			
+			DXGI_FORMAT m_Format;
+
 			uint32 m_Flags;
+
+			bool m_UseMSAA;
 
 			IObject::CounterType m_References;
 		};

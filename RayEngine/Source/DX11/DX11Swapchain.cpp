@@ -37,16 +37,21 @@ namespace RayEngine
 		DX11Swapchain::DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd)
 			: m_Device(nullptr),
 			m_Swapchain(nullptr),
+			m_ImmediateContext(nullptr),
 			m_BackBuffer(nullptr),
+			m_MSAABackBuffer(nullptr),
 			m_DepthStencil(nullptr),
 			m_Rtv(nullptr),
 			m_Dsv(nullptr),
 			m_Desc(),
 			m_Flags(0),
-			m_References(0)
+			m_References(0),
+			m_UseMSAA(false),
+			m_Format(DXGI_FORMAT_UNKNOWN)
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
+			m_Device->GetD3D11Device()->GetImmediateContext(&m_ImmediateContext);
 
 			Create(pDesc, hwnd);
 		}
@@ -56,6 +61,7 @@ namespace RayEngine
 		DX11Swapchain::~DX11Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
+			D3DRelease_S(m_ImmediateContext);
 			
 			ReleaseResources();
 		}
@@ -128,6 +134,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Swapchain::Present() const
 		{
+			if (m_UseMSAA)
+			{
+				ID3D11Texture2D* pDst = m_BackBuffer->GetD3D11Texture2D();
+				ID3D11Texture2D* pSrc = m_MSAABackBuffer->GetD3D11Texture2D();
+				m_ImmediateContext->ResolveSubresource(pDst, 0, pSrc, 0, m_Format);
+			}
+
 			m_Swapchain->Present(0, 0);
 		}
 
@@ -137,7 +150,7 @@ namespace RayEngine
 		{
 			DXGI_SWAP_CHAIN_DESC desc = {};
 			desc.BufferCount = pDesc->BackBuffer.Count;
-			desc.BufferDesc.Format = ReToDXFormat(pDesc->BackBuffer.Format);
+			desc.BufferDesc.Format = m_Format = ReToDXFormat(pDesc->BackBuffer.Format);
 			desc.BufferDesc.Height = pDesc->Height;
 			desc.BufferDesc.Width = pDesc->Width;
 			desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -150,8 +163,10 @@ namespace RayEngine
 
 			m_Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 			desc.Flags = m_Flags;
+
 			desc.SampleDesc.Count = 1;
 			desc.SampleDesc.Quality = 0;
+			m_UseMSAA = (pDesc->SampleCount > 1);
 
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 			desc.Windowed = true;
@@ -193,11 +208,35 @@ namespace RayEngine
 			}
 			else
 			{
+				//Set name
 				std::string name = m_Desc.Name + ": BackBuffer";
 				pTexture->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 
+				//Create the backbuffer
 				m_BackBuffer = new DX11Texture(m_Device, pTexture.Get());
+				if (m_UseMSAA)
+				{
+					TextureDesc msaaBuffer = {};
+					msaaBuffer.Name = m_Desc.Name + ": MSAA Backbuffer";
+					msaaBuffer.Flags = TEXTURE_FLAGS_RENDERTARGET;
+					msaaBuffer.CpuAccess = CPU_ACCESS_FLAG_NONE;
+					msaaBuffer.Width = m_Desc.Width;
+					msaaBuffer.Height = m_Desc.Height;
+					msaaBuffer.DepthOrArraySize = 1;
+					msaaBuffer.Format = m_Desc.BackBuffer.Format;
+					msaaBuffer.SampleCount = m_Desc.SampleCount;
+					msaaBuffer.OptimizedColor[0] = 0.0f;
+					msaaBuffer.OptimizedColor[1] = 0.0f;
+					msaaBuffer.OptimizedColor[2] = 0.0f;
+					msaaBuffer.OptimizedColor[3] = 1.0f;
+					msaaBuffer.MipLevels = 1;
+					msaaBuffer.Type = TEXTURE_TYPE_2D;
+					msaaBuffer.Usage = RESOURCE_USAGE_DEFAULT;
 
+					m_MSAABackBuffer = new DX11Texture(m_Device, nullptr, &msaaBuffer);
+				}
+
+				//Create the depthstencil
 				if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
 				{
 					TextureDesc depthStencilInfo = {};
@@ -227,14 +266,15 @@ namespace RayEngine
 			RenderTargetViewDesc rtvInfo = {};
 			rtvInfo.Name = m_Desc.Name + ": BackBuffer RTV";
 			rtvInfo.Format = m_Desc.BackBuffer.Format;
-			rtvInfo.pResource = m_BackBuffer;
 			if (m_Desc.SampleCount > 1)
 			{
 				rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2DMS;
+				rtvInfo.pResource = m_MSAABackBuffer;
 			}
 			else
 			{
 				rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+				rtvInfo.pResource = m_BackBuffer;
 				rtvInfo.Texture2D.MipSlice = 0;
 				rtvInfo.Texture2D.PlaneSlice = 0;
 			}
@@ -268,6 +308,7 @@ namespace RayEngine
 		void DX11Swapchain::ReleaseResources()
 		{
 			ReRelease_S(m_BackBuffer);
+			ReRelease_S(m_MSAABackBuffer);
 			ReRelease_S(m_Rtv);
 			ReRelease_S(m_DepthStencil);
 			ReRelease_S(m_Dsv);
