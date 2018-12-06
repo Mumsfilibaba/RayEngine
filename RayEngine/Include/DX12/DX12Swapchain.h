@@ -31,8 +31,9 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12Factory;
 		class DX12Texture;
+		class DX12RenderTargetView;
+		class DX12DepthStencilView;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,18 +64,30 @@ namespace RayEngine
 		private:
 			void Create(const SwapchainDesc* pDesc, HWND hwnd);
 			
-			void CreateTextures(const SwapchainDesc* pDesc);
+			void CreateTextures();
+
+			void CreateViews();
+
+			void ReleaseResources();
 
 		private:
 			DX12Device* m_Device;
 			DX12DeviceContext* m_Context;
 			IDXGISwapChain1* m_Swapchain;
-			
+			DX12Texture* m_MSAABackBuffer;
+			DX12Texture* m_DepthStencil;
+			DX12DepthStencilView* m_DSV;
+
 			std::vector<DX12Texture*> m_Textures;
-			
+			std::vector<DX12RenderTargetView*> m_RTVs;
+
 			SwapchainDesc m_Desc;
 
+			DXGI_FORMAT m_Format;
+
 			mutable int32 m_CurrentBuffer;
+
+			bool m_UseMSAA;
 
 			IObject::CounterType m_References;
 		};

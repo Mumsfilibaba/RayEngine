@@ -89,7 +89,7 @@ int main()
     IWindow* pWindow = nullptr;
     IDevice* pDevice = nullptr;
     ISwapchain* pSwapchain = nullptr;
-    CreateWindowForRendering(&pWindow, &windowDesc, &pDevice, &deviceDesc, &pSwapchain, &swapchainDesc, GRAPHICS_API_D3D11);
+    CreateWindowForRendering(&pWindow, &windowDesc, &pDevice, &deviceDesc, &pSwapchain, &swapchainDesc, GRAPHICS_API_D3D12);
     
     pWindow->SetTitle("Hello World");
     pWindow->Show();

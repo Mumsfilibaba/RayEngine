@@ -48,6 +48,7 @@ namespace RayEngine
 			m_List(nullptr),
 			m_ComputeList(nullptr),
 			m_Fence(nullptr),
+			m_CurrentSwapchain(nullptr),
 			m_CurrentRootLayout(nullptr),
 			m_CurrentFence(0),
 			m_NumCommands(0),
@@ -84,7 +85,6 @@ namespace RayEngine
 			CommitDefferedBarriers();
 			m_List->GetD3D12GraphicsCommandList()->CopyResource(pD3D12Dst, pD3D12Src);
 
-
 			if (!m_IsDeffered)
 				ExecuteCommandLists();
 		}
@@ -96,7 +96,6 @@ namespace RayEngine
 			ID3D12Resource* pD3D12Dst = pDst->GetD3D12Resource();
 			ID3D12Resource* pD3D12Src = pSrc->GetD3D12Resource();
 
-
 			D3D12_TEXTURE_COPY_LOCATION srcLoc = {};
 			srcLoc.pResource = pD3D12Src;
 			srcLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
@@ -107,16 +106,13 @@ namespace RayEngine
 			srcLoc.PlacedFootprint.Footprint.Format = format;
 			srcLoc.PlacedFootprint.Footprint.RowPitch = width * stride * depth;
 
-
 			D3D12_TEXTURE_COPY_LOCATION dstLoc = {};
 			dstLoc.pResource = pD3D12Dst;
 			dstLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 			dstLoc.SubresourceIndex = 0;
 
-
 			CommitDefferedBarriers();
 			m_List->GetD3D12GraphicsCommandList()->CopyTextureRegion(&dstLoc, 0, 0, 0, &srcLoc, nullptr);
-
 
 			if (!m_IsDeffered)
 				ExecuteCommandLists();
@@ -127,16 +123,14 @@ namespace RayEngine
 		void DX12DeviceContext::TransitionResource(DX12Resource* pResource, D3D12_RESOURCE_STATES to, int32 subresource) const
 		{
 			D3D12_RESOURCE_STATES from = pResource->GetD3D12State();
-
 			if (from == to)
 				return;
 
 			D3D12_RESOURCE_BARRIER barrier = CreateTransitionBarrier(pResource, from, to, subresource);
 			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(1, &barrier);
+			pResource->SetD3D12State(to);
 
 			AddCommand();
-
-			pResource->SetD3D12State(to);
 		}
 
 
@@ -149,12 +143,10 @@ namespace RayEngine
 			for (int32 i = 0; i < count; i++)
 			{
 				D3D12_RESOURCE_STATES from = ppResource[i]->GetD3D12State();
-
 				if (from == pToStates[i])
 					continue;
 
 				barriers.push_back(CreateTransitionBarrier(ppResource[i], from, pToStates[i], pSbresources[i]));
-
 				ppResource[i]->SetD3D12State(pToStates[i]);
 			}
 
@@ -168,12 +160,10 @@ namespace RayEngine
 		void DX12DeviceContext::TransitionResourceIndirect(DX12Resource* pResource, D3D12_RESOURCE_STATES to, int32 subresource) const
 		{
 			D3D12_RESOURCE_STATES from = pResource->GetD3D12State();
-
 			if (from == to)
 				return;
 
 			m_DefferedBarriers.push_back(CreateTransitionBarrier(pResource, from, to, subresource));
-
 			pResource->SetD3D12State(to);
 		}
 
@@ -184,12 +174,10 @@ namespace RayEngine
 			for (int32 i = 0; i < count; i++)
 			{
 				D3D12_RESOURCE_STATES from = ppResource[i]->GetD3D12State();
-
 				if (from == pToStates[i])
 					continue;
 
 				m_DefferedBarriers.push_back(CreateTransitionBarrier(ppResource[i], from, pToStates[i], pSbresources[i]));
-
 				ppResource[i]->SetD3D12State(pToStates[i]);
 			}
 		}
@@ -472,7 +460,6 @@ namespace RayEngine
 				return;
 			}
 
-
 			if (m_Fence->GetCompletedValue() < m_CurrentFence)
 			{
 				HANDLE ev = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
@@ -526,7 +513,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetName(const std::string& name)
 		{
-			D3D12SetName(m_Queue, name);
+			if (!m_IsDeffered)
+			{
+				D3D12SetName(m_Queue, name + ": Queue");
+				D3D12SetName(m_Fence, name + ": Fence");
+			}
+
+			m_List->SetName(name + ": Graphics List");
+			m_ComputeList->SetName(name + ": Compute List");
 		}
 
 
@@ -547,17 +541,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12DeviceContext::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12DeviceContext::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -579,21 +570,14 @@ namespace RayEngine
 
 			HRESULT hr = 0;
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-
-			if (isDeffered)
+			if (!isDeffered)
 			{
-				pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
+				hr = pD3D12Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&m_Queue));
 				if (FAILED(hr))
 				{
 					LOG_ERROR("DX12: Could not create CommandQueue. " + DXErrorString(hr));
 					return;
 				}
-				else
-				{
-					D3D12SetName(m_Queue, "DeviceContext");
-				}
-
-
 
 				hr = pD3D12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
 				if (FAILED(hr))
@@ -611,6 +595,8 @@ namespace RayEngine
 			m_ComputeList = new DX12CommandList(m_Device, nullptr, D3D12_COMMAND_LIST_TYPE_COMPUTE, qDesc.NodeMask);
 
 			m_IsDeffered = isDeffered;
+
+			SetName("DX12DeviceContext");
 		}
 
 

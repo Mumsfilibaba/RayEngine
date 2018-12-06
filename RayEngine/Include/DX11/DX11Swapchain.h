@@ -32,9 +32,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11Factory;
 		class DX11Device;
-		class DX11DeviceContext;
 		class DX11Texture;
 		class DX11RenderTargetView;
 		class DX11DepthStencilView;

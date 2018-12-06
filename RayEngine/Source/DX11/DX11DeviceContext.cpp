@@ -122,23 +122,22 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
-			ID3D11RenderTargetView* pD3D11RenderTarget = nullptr;
-			if (pRenderTarget != nullptr)
-				pD3D11RenderTarget = reinterpret_cast<DX11RenderTargetView*>(pRenderTarget)->GetD3D11RenderTargetView();
-			
-			ID3D11DepthStencilView* pD3D11DepthStencil = nullptr;
-			if (pDepthStencil != nullptr)
-				pD3D11DepthStencil = reinterpret_cast<DX11DepthStencilView*>(pDepthStencil)->GetD3D11DepthStencilView();
-
-			
-			//Determine if the default framebuffer should be used
-			if (pD3D11RenderTarget == nullptr && pD3D11DepthStencil == nullptr)
-				m_UseDefaultFramebuffer = true;
+			if (pRenderTarget == nullptr && pDepthStencil == nullptr)
+			{
+				SetDefaultFramebuffer();
+			}
 			else
-				m_UseDefaultFramebuffer = false;
+			{
+				ID3D11RenderTargetView* pD3D11RenderTarget = nullptr;
+				if (pRenderTarget != nullptr)
+					pD3D11RenderTarget = reinterpret_cast<DX11RenderTargetView*>(pRenderTarget)->GetD3D11RenderTargetView();
 
+				ID3D11DepthStencilView* pD3D11DepthStencil = nullptr;
+				if (pDepthStencil != nullptr)
+					pD3D11DepthStencil = reinterpret_cast<DX11DepthStencilView*>(pDepthStencil)->GetD3D11DepthStencilView();
 
-			m_Context->OMSetRenderTargets(1, &pD3D11RenderTarget, pD3D11DepthStencil);
+				m_Context->OMSetRenderTargets(1, &pD3D11RenderTarget, pD3D11DepthStencil);
+			}
 		}
 
 
@@ -245,9 +244,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
-			if (m_UseDefaultFramebuffer)
-				SetDefaultFramebuffer();
-
 			m_Context->Draw(vertexCount, startVertex);
 		}
 
@@ -255,9 +251,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DeviceContext::DrawIndexed(int32 startVertex, int32 startIndex, int32 indexCount) const
 		{
-			if (m_UseDefaultFramebuffer)
-				SetDefaultFramebuffer();
-
 			m_Context->DrawIndexed(indexCount, startIndex, startVertex);
 		}
 
@@ -265,9 +258,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DeviceContext::DrawInstanced(int32 startVertex, int32 vertexCount, int32 startInstance, int32 instanceCount) const
 		{
-			if (m_UseDefaultFramebuffer)
-				SetDefaultFramebuffer();
-
 			m_Context->DrawInstanced(vertexCount, instanceCount, startVertex, startInstance);
 		}
 
@@ -275,9 +265,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DeviceContext::DrawIndexInstanced(int32 startVertex, int32 startIndex, int32 indexCount, int32 startInstance, int32 instanceCount) const
 		{
-			if (m_UseDefaultFramebuffer)
-				SetDefaultFramebuffer();
-
 			m_Context->DrawIndexedInstanced(indexCount, instanceCount, startIndex, startVertex, startInstance);
 		}
 
@@ -421,7 +408,6 @@ namespace RayEngine
 			ID3D11RenderTargetView* pRtv = nullptr;
 			if (pDX11Rtv != nullptr)
 				pRtv = m_CurrentSwapChain->GetDX11RenderTargetView()->GetD3D11RenderTargetView();
-
 
 			DX11DepthStencilView* pDX11Dsv = m_CurrentSwapChain->GetDX11DepthStencilView();
 			ID3D11DepthStencilView* pDsv = nullptr;

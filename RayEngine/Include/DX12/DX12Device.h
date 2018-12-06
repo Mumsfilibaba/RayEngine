@@ -30,7 +30,6 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12Factory;
 		class DX12DeviceContext;
 		class DX12DescriptorHeap;
 		class DX12DynamicUploadHeap;
@@ -85,6 +84,11 @@ namespace RayEngine
 				return m_UploadHeap;
 			}
 
+			inline DX12DeviceContext* GetDX12ImmediateContext() const
+			{
+				return m_ImmediateContext;
+			}
+
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
@@ -123,6 +127,8 @@ namespace RayEngine
 
 		private:
 			void Create(const DeviceDesc* pDesc);
+
+			bool QueryAdapter();
 
 		private:
 			IDXGIFactory5* m_Factory;

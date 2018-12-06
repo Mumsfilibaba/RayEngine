@@ -58,10 +58,6 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			
-			m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
-			m_UploadHeap->SetName(pDesc->Name + ": Dynamic Upload-Heap");
-
 			Create(pDesc);
 		}
 
@@ -77,8 +73,9 @@ namespace RayEngine
 			ReRelease_S(m_UploadHeap);
 			ReRelease_S(m_SamplerHeap);
 
-			D3DRelease_S(m_Device);
+			D3DRelease_S(m_Factory);
 			D3DRelease_S(m_Adapter);
+			D3DRelease_S(m_Device);
 
 			if (m_DebugDevice != nullptr)
 			{
@@ -162,6 +159,13 @@ namespace RayEngine
 		void DX12Device::SetName(const std::string& name)
 		{
 			D3D12SetName(m_Device, name);
+
+			m_UploadHeap->SetName(name + ": Dynamic Upload-Heap");
+			m_DsvHeap->SetName(name + ": DSV-Heap");
+			m_RtvHeap->SetName(name + ": RTV-Heap");
+			m_ResourceHeap->SetName(name + ": Resource-Heap (CBV/SRV)");
+			m_SamplerHeap->SetName(name + ": Sampler-Heap");
+			m_ImmediateContext->SetName(name + ": ImmediateContext");
 		}
 
 
@@ -225,17 +229,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Device::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -266,7 +267,7 @@ namespace RayEngine
 				factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 				if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&m_DebugController))))
 				{
-					LOG_ERROR("DX12: Could not retrive the Debug interface");
+					LOG_ERROR("D3D12: Could not retrive the Debug interface");
 					return;
 				}
 				else
@@ -277,54 +278,108 @@ namespace RayEngine
 
 			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
 			{
-				LOG_ERROR("DX12: Could not create factory");
+				LOG_ERROR("D3D12: Could not create factory");
 				return;
 			}
 
-			HRESULT hr = m_Factory->EnumAdapters1(0, &m_Adapter);
+			if (!QueryAdapter())
+			{
+				LOG_ERROR("D3D12: Failed to query adapter");
+				return;
+			}
+
+			HRESULT hr = D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
 			if (SUCCEEDED(hr))
 			{
-				hr = D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
-				if (SUCCEEDED(hr))
+				if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
 				{
-					if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
+					hr = m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice);
+					if (FAILED(hr))
 					{
-						hr = m_Device->QueryInterface<ID3D12DebugDevice>(&m_DebugDevice);
-						if (FAILED(hr))
-						{
-							LOG_ERROR("D3D12: Could not create DebugDevice. " + DXErrorString(hr));
-							return;
-						}
+						LOG_ERROR("D3D12: Could not create DebugDevice. " + DXErrorString(hr));
+						return;
 					}
-
-
-					m_DsvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, pDesc->DepthStencilDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_DsvHeap->SetName(pDesc->Name + ": DSV-Heap");
-
-					m_RtvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, pDesc->RendertargetDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-					m_RtvHeap->SetName(pDesc->Name + ": RTV-Heap");
-
-					m_ResourceHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, pDesc->ResourceDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-					m_ResourceHeap->SetName(pDesc->Name + ": Resource-Heap (CBV/SRV)");
-
-					m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, pDesc->SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-					m_SamplerHeap->SetName(pDesc->Name + ": Sampler-Heap");
-
-					m_ImmediateContext = new DX12DeviceContext(this, false);
-
-					D3D12SetName(m_Device, pDesc->Name);
-
-					m_Desc = *pDesc;
 				}
-				else
-				{
-					LOG_ERROR("D3D12: Could not create Device. " + DXErrorString(hr));
-				}
+
+				m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
+				m_DsvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, pDesc->DepthStencilDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+				m_RtvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, pDesc->RendertargetDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
+				m_ResourceHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, pDesc->ResourceDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+				m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, pDesc->SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+				m_ImmediateContext = new DX12DeviceContext(this, false);
+
+				SetName(pDesc->Name);
+
+				m_Desc = *pDesc;
 			}
 			else
 			{
-				LOG_ERROR("D3D12: Could not enumerate adapters. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create Device. " + DXErrorString(hr));
 			}
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		bool DX12Device::QueryAdapter()
+		{
+			HRESULT hr = 0;
+			int32 adapterCount = 0;
+			int32 bestAdapterIndex = -1;
+			uint32 vendorID = 0;
+			std::string adapterDesc;
+
+			Microsoft::WRL::ComPtr<IDXGIAdapter1> adapter = nullptr;
+			for (int32 i = 0; m_Factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
+			{
+				DXGI_ADAPTER_DESC1 desc = {};
+				adapter->GetDesc1(&desc);
+
+#if defined(RE_DEBUG)
+				constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
+				char str[len];
+				wcstombs(str, desc.Description, len);
+				std::string description = str;
+
+				LOG_INFO("D3D12: Adapter(" + std::to_string(i) + ") " + description);
+#endif
+				if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+				{
+					LOG_WARNING("D3D12: Adapter is a software adapter.");
+					continue;
+				}
+
+				if (FAILED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr)))
+				{
+					LOG_WARNING("D3D12: Adapter " + std::to_string(i) + " does not support D3D12");
+					continue;
+				}
+
+				//We skip the intel once for now
+				if ((desc.VendorId != 0x163C && desc.VendorId != 0x8086 && desc.VendorId != 0x8087) ||
+					(bestAdapterIndex < 0))
+				{
+					bestAdapterIndex = i;
+					vendorID = desc.VendorId;
+					adapterDesc = description;
+				}
+
+				adapterCount++;
+			}
+
+			if (adapterCount < 1 || bestAdapterIndex < 0)
+			{
+				return false;
+			}
+			else
+			{
+				if (FAILED(m_Factory->EnumAdapters1(bestAdapterIndex, &m_Adapter)))
+				{
+					return false;
+				}
+			}
+
+			LOG_INFO("D3D12: Chosen adapter " + adapterDesc);
+			return true;
 		}
 	}
 }

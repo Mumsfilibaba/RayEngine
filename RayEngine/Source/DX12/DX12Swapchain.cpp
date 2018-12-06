@@ -23,6 +23,8 @@ failure and or malfunction of any kind.
 #include "../../Include/DX12/DX12Swapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "../../Include/DX12/DX12DepthStencilView.h"
+#include "../../Include/DX12/DX12RenderTargetView.h"
 #include "../../Include/DX12/DX12DeviceContext.h"
 
 namespace RayEngine
@@ -31,17 +33,24 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Swapchain::DX12Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd)
-			: m_Context(nullptr),
+			: m_Device(nullptr),
+			m_Context(nullptr),
 			m_Swapchain(nullptr),
-			m_CurrentBuffer(0),
+			m_MSAABackBuffer(nullptr),
+			m_DepthStencil(nullptr),
+			m_DSV(nullptr),
 			m_Textures(),
+			m_RTVs(),
 			m_Desc(),
-			m_References(0)
+			m_Format(DXGI_FORMAT_UNKNOWN),
+			m_CurrentBuffer(0),
+			m_References(0),
+			m_UseMSAA(false)
 		{
 			AddRef();
 
-			m_Device = pDevice->QueryReference<DX12Device>();
-			m_Device->GetImmediateContext(reinterpret_cast<IDeviceContext**>(&m_Context));
+			m_Device = reinterpret_cast<DX12Device*>(pDevice);
+			m_Context = m_Device->GetDX12ImmediateContext();
 
 			Create(pDesc, hwnd);
 		}
@@ -51,20 +60,13 @@ namespace RayEngine
 		DX12Swapchain::~DX12Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
-
-			ReRelease_S(m_Device);
-			ReRelease_S(m_Context);
-
-			for (int32 i = 0; i < static_cast<int32>(m_Textures.size()); i++)
-			{
-				ReRelease_S(m_Textures[i]);
-			}
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Swapchain::Resize(int32 width, int32 height)
 		{
+			//TODO: Implement this 
 		}
 
 
@@ -72,6 +74,12 @@ namespace RayEngine
 		void DX12Swapchain::SetName(const std::string& name)
 		{
 			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
+			
+			for (int32 i = 0; i < m_Desc.BackBuffer.Count; i++)
+				m_Textures[i]->SetName(name + ": BackBuffer(" + std::to_string(i) + ')');
+
+			if (m_MSAABackBuffer != nullptr)
+				m_MSAABackBuffer->SetName(name + ": MSAA BackBuffer");
 		}
 
 
@@ -99,17 +107,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Swapchain::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Swapchain::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -136,14 +141,14 @@ namespace RayEngine
 			desc.Width = pDesc->Width;
 			desc.Height = pDesc->Height;
 			desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-			desc.SampleDesc.Count = 1;
-			
-			//TODO: Engine swap effect
 			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+			desc.SampleDesc.Count = 1;
+			desc.SampleDesc.Quality = 0;
 			
+			m_UseMSAA = (pDesc->SampleCount > 1);
+
 			//TODO: Tearing?
 			desc.Flags = 0;
-
 
 			IDXGIFactory5* pDXGIFactory = m_Device->GetDXGIFactory();
 			ID3D12CommandQueue* pD3D12queue = m_Context->GetD3D12CommandQueue();
@@ -158,25 +163,25 @@ namespace RayEngine
 			{
 				m_Desc = *pDesc;
 
-				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
-				
 				pDXGIFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
 				
-				CreateTextures(pDesc);
+				CreateTextures();
+				CreateViews();
+
+				SetName(m_Desc.Name);
 			}
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Swapchain::CreateTextures(const SwapchainDesc* pDesc)
+		void DX12Swapchain::CreateTextures()
 		{
 			using namespace Microsoft::WRL;
 
-			m_Textures.resize(pDesc->BackBuffer.Count);
-
-
+			//Get buffers from swapchain
 			ComPtr<ID3D12Resource> buffer = nullptr;
-			for (int32 i = 0; i < pDesc->BackBuffer.Count; i++)
+			m_Textures.resize(m_Desc.BackBuffer.Count);
+			for (int32 i = 0; i < m_Desc.BackBuffer.Count; i++)
 			{
 				HRESULT hr = m_Swapchain->GetBuffer(i, IID_PPV_ARGS(&buffer));
 				if (FAILED(hr))
@@ -186,10 +191,123 @@ namespace RayEngine
 				}
 				else
 				{
-					D3D12SetName(buffer.Get(), pDesc->Name + std::to_string(i));
-					
+					std::string name = m_Desc.Name + ": BackBuffer(" + std::to_string(i) + ')';
+					D3D12SetName(buffer.Get(), name);
+
 					m_Textures[i] = new DX12Texture(m_Device, buffer.Get());
 				}
+			}
+
+			//Create buffer for MSAA
+			if (m_UseMSAA)
+			{
+				TextureDesc msaaBuffer = {};
+				msaaBuffer.Name = m_Desc.Name + ": MSAA Backbuffer";
+				msaaBuffer.Flags = TEXTURE_FLAGS_RENDERTARGET;
+				msaaBuffer.CpuAccess = CPU_ACCESS_FLAG_NONE;
+				msaaBuffer.Width = m_Desc.Width;
+				msaaBuffer.Height = m_Desc.Height;
+				msaaBuffer.DepthOrArraySize = 1;
+				msaaBuffer.Format = m_Desc.BackBuffer.Format;
+				msaaBuffer.SampleCount = m_Desc.SampleCount;
+				msaaBuffer.OptimizedColor[0] = 0.0f;
+				msaaBuffer.OptimizedColor[1] = 0.0f;
+				msaaBuffer.OptimizedColor[2] = 0.0f;
+				msaaBuffer.OptimizedColor[3] = 1.0f;
+				msaaBuffer.MipLevels = 1;
+				msaaBuffer.Type = TEXTURE_TYPE_2D;
+				msaaBuffer.Usage = RESOURCE_USAGE_DEFAULT;
+
+				m_MSAABackBuffer = new DX12Texture(m_Device, nullptr, &msaaBuffer);
+			}
+
+			//Create the depthstencil if requested
+			if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
+			{
+				TextureDesc depthStencilInfo = {};
+				depthStencilInfo.Name = m_Desc.Name + ": DepthStencil";
+				depthStencilInfo.Flags = TEXTURE_FLAGS_DEPTH_STENCIL;
+				depthStencilInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
+				depthStencilInfo.Width = m_Desc.Width;
+				depthStencilInfo.Height = m_Desc.Height;
+				depthStencilInfo.DepthOrArraySize = 1;
+				depthStencilInfo.DepthStencil.OptimizedDepth = 1.0f;
+				depthStencilInfo.DepthStencil.OptimizedStencil = 0;
+				depthStencilInfo.Format = m_Desc.DepthStencil.Format;
+				depthStencilInfo.SampleCount = m_Desc.SampleCount;
+				depthStencilInfo.MipLevels = 1;
+				depthStencilInfo.Type = TEXTURE_TYPE_2D;
+				depthStencilInfo.Usage = RESOURCE_USAGE_DEFAULT;
+
+				m_DepthStencil = new DX12Texture(m_Device, nullptr, &depthStencilInfo);
+			}
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Swapchain::CreateViews()
+		{
+			//Set the amount of buffers needed
+			m_RTVs.resize(m_Desc.BackBuffer.Count);
+
+			//Create rendertarget views
+			RenderTargetViewDesc rtvInfo = {};
+			rtvInfo.Name = m_Desc.Name + ": BackBuffer RTV";
+			rtvInfo.Format = m_Desc.BackBuffer.Format;
+			if (m_UseMSAA)
+			{
+				rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2DMS;
+				rtvInfo.pResource = m_MSAABackBuffer;
+
+				m_RTVs[0] = new DX12RenderTargetView(m_Device, &rtvInfo);
+			}
+			else
+			{
+				rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+				rtvInfo.Texture2D.MipSlice = 0;
+				rtvInfo.Texture2D.PlaneSlice = 0;
+
+				for (int32 i = 0; i < m_Desc.BackBuffer.Count; i++)
+				{
+					rtvInfo.pResource = m_Textures[i];
+					m_RTVs[i] = new DX12RenderTargetView(m_Device, &rtvInfo);
+				}
+			}
+
+			//Create depthstencilview
+			if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
+			{
+				DepthStencilViewDesc dsvInfo = {};
+				dsvInfo.Name = m_Desc.Name + ": DepthStencil DSV";
+				dsvInfo.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
+				dsvInfo.pResource = m_DepthStencil;
+				dsvInfo.Format = m_Desc.DepthStencil.Format;
+				if (m_UseMSAA)
+				{
+					dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2DMS;
+				}
+				else
+				{
+					dsvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+					dsvInfo.Texture2D.MipSlice = 0;
+				}
+
+				m_DSV = new DX12DepthStencilView(m_Device, &dsvInfo);
+			}
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Swapchain::ReleaseResources()
+		{
+			ReRelease_S(m_MSAABackBuffer);
+			ReRelease_S(m_DepthStencil);
+			ReRelease_S(m_DSV);
+
+			for (int32 i = 0; i < static_cast<int32>(m_Textures.size()); i++)
+			{
+				ReRelease_S(m_Textures[i]);
+				ReRelease_S(m_RTVs[i]);
 			}
 		}
 	}

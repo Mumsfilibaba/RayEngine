@@ -20,7 +20,6 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "../../Include/Debug/Debug.h"
-#include "../../Include/OpenGL/GLFactory.h"
 #include "../../Include/OpenGL/GLDevice.h"
 #include "../../Include/OpenGL/GLDeviceContext.h"
 #include "../../Include/OpenGL/GLShader.h"

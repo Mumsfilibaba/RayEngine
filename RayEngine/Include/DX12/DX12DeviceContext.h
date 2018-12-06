@@ -34,10 +34,10 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12Device;
-		class DX12RootLayout;
 		class DX12Resource;
+		class DX12Swapchain;
+		class DX12RootLayout;
 		class DX12CommandList;
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,6 +150,7 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
+			mutable DX12Swapchain* m_CurrentSwapchain;
 			mutable DX12RootLayout* m_CurrentRootLayout;
 			DX12CommandList* m_List;
 			DX12CommandList* m_ComputeList;

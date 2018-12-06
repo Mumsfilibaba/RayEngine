@@ -188,10 +188,10 @@ namespace RayEngine
 				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 
 				pDXGIFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
-			}				
 
-			CreateTextures();
-			CreateViews();
+				CreateTextures();
+				CreateViews();
+			}				
 		}
 
 
@@ -266,7 +266,7 @@ namespace RayEngine
 			RenderTargetViewDesc rtvInfo = {};
 			rtvInfo.Name = m_Desc.Name + ": BackBuffer RTV";
 			rtvInfo.Format = m_Desc.BackBuffer.Format;
-			if (m_Desc.SampleCount > 1)
+			if (m_UseMSAA)
 			{
 				rtvInfo.ViewDimension = VIEWDIMENSION_TEXTURE2DMS;
 				rtvInfo.pResource = m_MSAABackBuffer;
