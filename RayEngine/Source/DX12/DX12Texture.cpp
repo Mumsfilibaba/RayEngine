@@ -140,18 +140,19 @@ namespace RayEngine
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 				pClearValue = &clearValue;
 			}
-
 			if (pDesc->Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 				pClearValue = &clearValue;
 			}
-
 			if (pDesc->Flags & TEXTURE_FLAGS_UNORDERED_ACCESS)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 			}
-
+			if (!(pDesc->Flags & TEXTURE_FLAGS_SHADER_RESOURCE))
+			{
+				flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
+			}
 
 			D3D12_RESOURCE_DESC desc = {};
 			desc.Width = pDesc->Width;
@@ -209,7 +210,6 @@ namespace RayEngine
 
 				m_Desc = *pDesc;
 			}
-
 
 			if (pInitialData != nullptr)
 			{

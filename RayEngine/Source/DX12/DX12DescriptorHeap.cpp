@@ -67,6 +67,8 @@ namespace RayEngine
 
 			if (pResource != nullptr)
 				next.GpuResourceAdress = pResource->GetD3D12Resource()->GetGPUVirtualAddress();
+			else
+				next.GpuResourceAdress = 0;
 
 			m_UsedCount++;
 			return next;

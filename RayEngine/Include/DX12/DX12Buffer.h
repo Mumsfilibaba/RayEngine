@@ -79,7 +79,6 @@ namespace RayEngine
 			
 			void CreateView(const BufferDesc* pDesc);
 
-
 		private:
 			DX12Device* m_Device;
 			

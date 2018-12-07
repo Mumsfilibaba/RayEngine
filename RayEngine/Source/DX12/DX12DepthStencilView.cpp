@@ -19,12 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\DX12\DX12DepthStencilView.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12DepthStencilView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12DescriptorHeap.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Texture.h"
+#include "../../Include/DX12/DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -81,17 +82,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12DepthStencilView::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12DepthStencilView::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -102,14 +100,20 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DepthStencilView::Create(const DepthStencilViewDesc* pDesc)
 		{
-			m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
-			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();
+			ID3D12Resource* pD3D12Resource = nullptr;
+			if (pDesc->pResource != nullptr)
+			{
+				m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
+				pD3D12Resource = m_Resource->GetD3D12Resource();
+			}
 
 			const DX12DescriptorHeap* pHeap = m_Device->GetDX12DepthStencilViewHeap();
 			m_View = pHeap->GetNext(m_Resource);
 
 
 			D3D12_DEPTH_STENCIL_VIEW_DESC desc = {};
+			desc.Format = ReToDXFormat(pDesc->Format);
+
 			desc.Flags = D3D12_DSV_FLAG_NONE;
 			if (pDesc->Flags & DEPTH_STENCIL_VIEW_FLAGS_READ_ONLY_STENCIL)
 				desc.Flags |= D3D12_DSV_FLAG_READ_ONLY_STENCIL;
@@ -152,7 +156,11 @@ namespace RayEngine
 			}
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			pD3D12Device->CreateDepthStencilView(pD3D12Resource, nullptr, m_View.CpuDescriptor);
+			pD3D12Device->CreateDepthStencilView(pD3D12Resource, &desc, m_View.CpuDescriptor);
+			if (pD3D12Resource == nullptr)
+			{
+				LOG_WARNING("D3D12: Created a null DepthStencilView-Descriptor");
+			}
 
 			m_Desc = *pDesc;
 		}

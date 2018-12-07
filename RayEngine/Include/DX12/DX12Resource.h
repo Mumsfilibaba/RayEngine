@@ -20,6 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
+#include "../Debug/Debug.h"
 #include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -30,11 +31,7 @@ namespace RayEngine
 	{
 		class DX12Resource
 		{
-		public:
-			DX12Resource(const DX12Resource& other) = delete;
-			DX12Resource& operator=(const DX12Resource& other) = delete;
-			DX12Resource(DX12Resource&& other) = delete;
-			DX12Resource& operator=(DX12Resource&& other) = delete;
+			RE_UNIQUE_OBJECT(DX12Resource);
 
 		protected:
 			inline DX12Resource()

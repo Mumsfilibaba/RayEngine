@@ -24,6 +24,10 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
+#include "DX12DepthStencilView.h"
+#include "DX12RenderTargetView.h"
+#include "DX12ShaderResourceView.h"
+#include "DX12UnorderedAccessView.h"
 
 namespace RayEngine
 {
@@ -89,6 +93,26 @@ namespace RayEngine
 				return m_ImmediateContext;
 			}
 
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullSRV() const
+			{
+				return m_NullSRV->GetD3D12CpuDescriptorHandle();
+			}
+
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullRTV() const
+			{
+				return m_NullRTV->GetD3D12CpuDescriptorHandle();
+			}
+
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullDSV() const
+			{
+				return m_NullDSV->GetD3D12CpuDescriptorHandle();
+			}
+
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullUAV() const
+			{
+				return m_NullUAV->GetD3D12CpuDescriptorHandle();
+			}
+
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
@@ -130,6 +154,8 @@ namespace RayEngine
 
 			bool QueryAdapter();
 
+			void CreateNullDescriptors();
+
 		private:
 			IDXGIFactory5* m_Factory;
 			IDXGIAdapter1* m_Adapter;
@@ -142,6 +168,10 @@ namespace RayEngine
 			DX12DescriptorHeap* m_DsvHeap;
 			DX12DescriptorHeap* m_RtvHeap;
 			DX12DescriptorHeap* m_SamplerHeap;
+			DX12ShaderResourceView* m_NullSRV;
+			DX12RenderTargetView* m_NullRTV;
+			DX12DepthStencilView* m_NullDSV;
+			DX12UnorderedAccessView* m_NullUAV;
 
 			DeviceDesc m_Desc;
 

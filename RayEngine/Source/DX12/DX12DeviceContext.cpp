@@ -25,6 +25,7 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Swapchain.h"
 #include "../../Include/DX12/DX12RootLayout.h"
 #include "../../Include/DX12/DX12PipelineState.h"
 #include "../../Include/DX12/DX12RendertargetView.h"
@@ -135,7 +136,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DeviceContext::TransitionResourceGroup(DX12Resource* const * ppResource, D3D12_RESOURCE_STATES* pToStates, int32* pSbresources, int32 count) const
+		void DX12DeviceContext::TransitionResourceGroup(DX12Resource* const * ppResource, D3D12_RESOURCE_STATES* pToStates, int32* pSubresources, int32 count) const
 		{
 			std::vector<D3D12_RESOURCE_BARRIER> barriers;
 			barriers.reserve(count);
@@ -146,11 +147,12 @@ namespace RayEngine
 				if (from == pToStates[i])
 					continue;
 
-				barriers.push_back(CreateTransitionBarrier(ppResource[i], from, pToStates[i], pSbresources[i]));
+				barriers.push_back(CreateTransitionBarrier(ppResource[i], from, pToStates[i], pSubresources[i]));
 				ppResource[i]->SetD3D12State(pToStates[i]);
 			}
 
-			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
+			uint32 barrierCount = static_cast<uint32>(barriers.size());
+			m_List->GetD3D12GraphicsCommandList()->ResourceBarrier(barrierCount, barriers.data());
 
 			AddCommand();
 		}
@@ -186,11 +188,15 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::ClearRendertargetView(IRenderTargetView* pView, float pColor[4]) const
 		{
-			DX12RenderTargetView* pDX12View = reinterpret_cast<DX12RenderTargetView*>(pView);
+			DX12RenderTargetView* pDX12View = nullptr;
+			if (pView == nullptr)
+				pDX12View = m_CurrentSwapchain->GetCurrentDX12RenderTargetView();
+			else
+				pDX12View = reinterpret_cast<DX12RenderTargetView*>(pView);
 			
 			//TODO: Subresource may not be zero
 
-			TransitionResource(pDX12View->GetD3D12Resource(), D3D12_RESOURCE_STATE_RENDER_TARGET, 0);
+			TransitionResource(pDX12View->GetDX12Resource(), D3D12_RESOURCE_STATE_RENDER_TARGET, 0);
 			m_List->GetD3D12GraphicsCommandList()->ClearRenderTargetView(pDX12View->GetD3D12CpuDescriptorHandle(), pColor, 0, nullptr);
 
 			AddCommand();
@@ -200,11 +206,15 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::ClearDepthStencilView(IDepthStencilView* pView, float depth, uint8 stencil) const
 		{
-			DX12RenderTargetView* pDX12View = reinterpret_cast<DX12RenderTargetView*>(pView);
-			
+			DX12DepthStencilView* pDX12View = nullptr;
+			if (pView == nullptr)
+				pDX12View = m_CurrentSwapchain->GetDX12DepthStencilView();
+			else
+				pDX12View = reinterpret_cast<DX12DepthStencilView*>(pView);
+
 			//TODO: Subresource may not be zero
 
-			TransitionResource(pDX12View->GetD3D12Resource(), D3D12_RESOURCE_STATE_DEPTH_WRITE, 0);
+			TransitionResource(pDX12View->GetDX12Resource(), D3D12_RESOURCE_STATE_DEPTH_WRITE, 0);
 			m_List->GetD3D12GraphicsCommandList()->ClearDepthStencilView(pDX12View->GetD3D12CpuDescriptorHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depth, stencil, 0, nullptr);
 
 			AddCommand();
@@ -214,28 +224,72 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetSwapChain(ISwapchain* pSwapChain) const
 		{
+			ReRelease_S(m_CurrentSwapchain);
+			m_CurrentSwapchain = pSwapChain->QueryReference<DX12Swapchain>();
+
+			SetDefaultFramebuffer();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12DeviceContext::SetDX12Rendertargets(DX12RenderTargetView** ppRenderTargets, int32 count, DX12DepthStencilView* pDepthStencil) const 
+		{
+			int32 pSubResources[9];
+			memset(pSubResources, 0, sizeof(pSubResources));
+
+			DX12Resource* ppResources[9];
+			D3D12_RESOURCE_STATES pToStates[9];
+
+			int32 numResources = 0;
+			D3D12_CPU_DESCRIPTOR_HANDLE pRTVs[8];
+			for (int32 i = 0; i < count; i++)
+			{
+				if (ppRenderTargets[i] != nullptr)
+				{
+					pRTVs[i] = ppRenderTargets[i]->GetD3D12CpuDescriptorHandle();
+					pToStates[numResources] = D3D12_RESOURCE_STATE_RENDER_TARGET;
+					ppResources[numResources] = ppRenderTargets[i]->GetDX12Resource();
+					numResources++;
+				}
+				else
+				{
+					pRTVs[i] = m_Device->GetD3D12NullRTV();
+				}
+			}
+
+			D3D12_CPU_DESCRIPTOR_HANDLE dsv = { 0 };
+			if (pDepthStencil != nullptr)
+			{
+				dsv = pDepthStencil->GetD3D12CpuDescriptorHandle();
+				pToStates[numResources] = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+				ppResources[numResources] = pDepthStencil->GetDX12Resource();
+				numResources++;
+			}
+			else
+			{
+				dsv = m_Device->GetD3D12NullDSV();
+			}
+
+			TransitionResourceGroup(ppResources, pToStates, pSubResources, numResources);
+			m_List->GetD3D12GraphicsCommandList()->OMSetRenderTargets(count, pRTVs, false, &dsv);
+
+			AddCommand();
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetRendertargets(IRenderTargetView* pRenderTarget, IDepthStencilView* pDepthStencil) const
 		{
-			//TODO: We need a nulldescriptor
-
-			DX12RenderTargetView* pDX12RenderTarget = reinterpret_cast<DX12RenderTargetView*>(pRenderTarget);
-			DX12DepthStencilView* pDX12DepthStencil = reinterpret_cast<DX12DepthStencilView*>(pDepthStencil);
-
-			D3D12_CPU_DESCRIPTOR_HANDLE rtv = pDX12RenderTarget->GetD3D12CpuDescriptorHandle();
-			D3D12_CPU_DESCRIPTOR_HANDLE dsv = pDX12DepthStencil->GetD3D12CpuDescriptorHandle();
-
-			DX12Resource* ppResources[] = { pDX12RenderTarget->GetD3D12Resource(), pDX12DepthStencil->GetD3D12Resource() };
-			D3D12_RESOURCE_STATES pToStates[] = { D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_DEPTH_WRITE };
-			int32 pSubresources[] = { 0, 0 };
-
-			TransitionResourceGroupIndirect(ppResources, pToStates, pSubresources, 2);
-			m_List->GetD3D12GraphicsCommandList()->OMSetRenderTargets(1, &rtv, false, &dsv);
-
-			AddCommand();
+			if (pRenderTarget == nullptr && pDepthStencil == nullptr)
+			{
+				SetDefaultFramebuffer();
+			}
+			else
+			{
+				DX12RenderTargetView* pDX12RenderTarget = reinterpret_cast<DX12RenderTargetView*>(pRenderTarget);
+				DX12DepthStencilView* pDX12DepthStencil = reinterpret_cast<DX12DepthStencilView*>(pDepthStencil);
+				SetDX12Rendertargets(&pDX12RenderTarget, 1, pDX12DepthStencil);
+			}
 		}
 
 
@@ -248,7 +302,7 @@ namespace RayEngine
 			//TODO: Maybe the subreource is not 0
 
 			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
-			TransitionResourceIndirect(pDX12View->GetD3D12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
+			TransitionResourceIndirect(pDX12View->GetDX12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
 			pDX12Slot->SetShaderResourceViews(m_List->GetD3D12GraphicsCommandList(), &srv, 1);
 
 			AddCommand();
@@ -262,7 +316,7 @@ namespace RayEngine
 			DX12DescriptorHandle uav = pDX12View->GetDX12DescriptorHandleSRVCBVUAV();
 
 			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
-			TransitionResourceIndirect(pDX12View->GetD3D12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
+			TransitionResourceIndirect(pDX12View->GetDX12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
 			pDX12Slot->SetUnorderedAccessViews(m_List->GetD3D12GraphicsCommandList(), &uav, 1);
 
 			AddCommand();
@@ -449,49 +503,12 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::Flush() const
 		{
-			if (m_IsDeffered)
-				return;
+			ExecuteCommandLists();
+			Synchronize();
 
-			m_CurrentFence++;
-			HRESULT hr = m_Queue->Signal(m_Fence, m_CurrentFence);
-			if (FAILED(hr))
-			{
-				LOG_ERROR("D3D12: Signal fence failed. " + DXErrorString(hr));
-				return;
-			}
-
-			if (m_Fence->GetCompletedValue() < m_CurrentFence)
-			{
-				HANDLE ev = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-
-				hr = m_Fence->SetEventOnCompletion(m_CurrentFence, ev);
-				if (FAILED(m_Fence->SetEventOnCompletion(m_CurrentFence, ev)))
-				{
-					LOG_ERROR("D3D12: Failed to set event. " + DXErrorString(hr));
-					return;
-				}
-
-				WaitForSingleObject(ev, INFINITE);
-				CloseHandle(ev);
-			}
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12DeviceContext::Reset() const
-		{
-			return m_List->Reset();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12DeviceContext::Close() const
-		{
-			if (!m_IsDeffered)
-				return false;
-
-			HRESULT hr = m_List->GetD3D12GraphicsCommandList()->Close();
-			return SUCCEEDED(hr);
+			m_List->Close();
+			m_List->ResetAllocator();
+			ResetCommandList();
 		}
 
 
@@ -567,7 +584,6 @@ namespace RayEngine
 			qDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
 			qDesc.NodeMask = 0;
 
-
 			HRESULT hr = 0;
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			if (!isDeffered)
@@ -585,14 +601,13 @@ namespace RayEngine
 					LOG_ERROR("DX12: Could not create Fence. " + DXErrorString(hr));
 					return;
 				}
-				else
-				{
-					Close();
-				}
 			}
 			
 			m_List = new DX12CommandList(m_Device, nullptr, D3D12_COMMAND_LIST_TYPE_DIRECT, qDesc.NodeMask);
+			m_List->Reset();
+
 			m_ComputeList = new DX12CommandList(m_Device, nullptr, D3D12_COMMAND_LIST_TYPE_COMPUTE, qDesc.NodeMask);
+			m_ComputeList->Reset();
 
 			m_IsDeffered = isDeffered;
 
@@ -616,12 +631,54 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12DeviceContext::Synchronize() const
+		{
+			if (m_IsDeffered)
+				return;
+
+			m_CurrentFence++;
+			HRESULT hr = m_Queue->Signal(m_Fence, m_CurrentFence);
+			if (FAILED(hr))
+			{
+				LOG_ERROR("D3D12: Signal fence failed. " + DXErrorString(hr));
+				return;
+			}
+
+			if (m_Fence->GetCompletedValue() < m_CurrentFence)
+			{
+				HANDLE ev = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+
+				hr = m_Fence->SetEventOnCompletion(m_CurrentFence, ev);
+				if (FAILED(m_Fence->SetEventOnCompletion(m_CurrentFence, ev)))
+				{
+					LOG_ERROR("D3D12: Failed to set event. " + DXErrorString(hr));
+					return;
+				}
+
+				WaitForSingleObject(ev, INFINITE);
+				CloseHandle(ev);
+			}
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::ExecuteCommandLists() const
 		{
-			ID3D12CommandList* lists[] = { m_ComputeList->GetD3D12GraphicsCommandList(), m_List->GetD3D12GraphicsCommandList() };
-			m_Queue->ExecuteCommandLists(1, lists);
+			if (m_NumCommands < 1)
+				return;
 
-			m_NumCommands = 0;
+			if (m_List->Close())
+			{
+				ID3D12CommandList* list = m_List->GetD3D12CommandList();
+				m_Queue->ExecuteCommandLists(1, &list);
+
+				ResetCommandList();
+				m_NumCommands = 0;
+			}
+			else
+			{
+				LOG_WARNING("D3D12: Failed to close commandlist. ");
+			}
 		}
 
 
@@ -649,6 +706,15 @@ namespace RayEngine
 			barrier.Transition.StateAfter = to;
 
 			return barrier;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12DeviceContext::SetDefaultFramebuffer() const
+		{
+			DX12RenderTargetView* pDX12RenderTarget = m_CurrentSwapchain->GetCurrentDX12RenderTargetView();
+			DX12DepthStencilView* pDX12DepthStencil = m_CurrentSwapchain->GetDX12DepthStencilView();
+			SetDX12Rendertargets(&pDX12RenderTarget, 1, pDX12DepthStencil);
 		}
 	}
 }

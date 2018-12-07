@@ -32,11 +32,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12RootVariableSlot
 		{
-		public:
-			DX12RootVariableSlot(const DX12RootVariableSlot& other) = delete;
-			DX12RootVariableSlot& operator=(const DX12RootVariableSlot& other) = delete;
-			DX12RootVariableSlot(DX12RootVariableSlot&& other) = delete;
-			DX12RootVariableSlot& operator=(DX12RootVariableSlot&& other) = delete;
+			RE_UNIQUE_OBJECT(DX12RootVariableSlot);
 
 		public:
 			DX12RootVariableSlot(D3D12_RESOURCE_STATES neededState);
@@ -50,7 +46,10 @@ namespace RayEngine
 			
 			virtual void SetConstantBuffers(ID3D12GraphicsCommandList* pCommandList, DX12DescriptorHandle* pBuffers, int32 count) const = 0;
 			
-			D3D12_RESOURCE_STATES GetNeededD3D12ResourceState() const;
+			inline D3D12_RESOURCE_STATES GetNeededD3D12ResourceState() const
+			{
+				return m_NeededState;
+			}
 
 		private:
 			D3D12_RESOURCE_STATES m_NeededState;
@@ -60,11 +59,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12GraphicsDescriptorRootSlot final : public DX12RootVariableSlot
 		{
-		public:
-			DX12GraphicsDescriptorRootSlot(const DX12GraphicsDescriptorRootSlot& other) = delete;
-			DX12GraphicsDescriptorRootSlot& operator=(const DX12GraphicsDescriptorRootSlot& other) = delete;
-			DX12GraphicsDescriptorRootSlot(DX12GraphicsDescriptorRootSlot&& other) = delete;
-			DX12GraphicsDescriptorRootSlot& operator=(DX12GraphicsDescriptorRootSlot&& other) = delete;
+			RE_UNIQUE_OBJECT(DX12GraphicsDescriptorRootSlot);
 
 		public:
 			DX12GraphicsDescriptorRootSlot(D3D12_RESOURCE_STATES neededState, int32 baseSlot);
@@ -86,11 +81,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12ComputeDescriptorRootSlot final : public DX12RootVariableSlot
 		{
-		public:
-			DX12ComputeDescriptorRootSlot(const DX12ComputeDescriptorRootSlot& other) = delete;
-			DX12ComputeDescriptorRootSlot& operator=(const DX12ComputeDescriptorRootSlot& other) = delete;
-			DX12ComputeDescriptorRootSlot(DX12ComputeDescriptorRootSlot&& other) = delete;
-			DX12ComputeDescriptorRootSlot& operator=(DX12ComputeDescriptorRootSlot&& other) = delete;
+			RE_UNIQUE_OBJECT(DX12ComputeDescriptorRootSlot);
 
 		public:
 			DX12ComputeDescriptorRootSlot(D3D12_RESOURCE_STATES neededState, int32 baseSlot);
@@ -112,11 +103,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12GraphicsRootSignatureSlot final : public DX12RootVariableSlot
 		{
-		public:
-			DX12GraphicsRootSignatureSlot(const DX12GraphicsRootSignatureSlot& other) = delete;
-			DX12GraphicsRootSignatureSlot& operator=(const DX12GraphicsRootSignatureSlot& other) = delete;
-			DX12GraphicsRootSignatureSlot(DX12GraphicsRootSignatureSlot&& other) = delete;
-			DX12GraphicsRootSignatureSlot& operator=(DX12GraphicsRootSignatureSlot&& other) = delete;
+			RE_UNIQUE_OBJECT(DX12GraphicsRootSignatureSlot);
 
 		public:
 			DX12GraphicsRootSignatureSlot(D3D12_RESOURCE_STATES neededState, int32 slot);
@@ -138,11 +125,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12ComputeRootSignatureSlot final : public DX12RootVariableSlot
 		{
-		public:
-			DX12ComputeRootSignatureSlot(const DX12ComputeRootSignatureSlot& other) = delete;
-			DX12ComputeRootSignatureSlot& operator=(const DX12ComputeRootSignatureSlot& other) = delete;
-			DX12ComputeRootSignatureSlot(DX12ComputeRootSignatureSlot&& other) = delete;
-			DX12ComputeRootSignatureSlot& operator=(DX12ComputeRootSignatureSlot&& other) = delete;
+			RE_UNIQUE_OBJECT(DX12ComputeRootSignatureSlot);
 
 		public:
 			DX12ComputeRootSignatureSlot(D3D12_RESOURCE_STATES neededState, int32 slot);

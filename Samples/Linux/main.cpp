@@ -74,8 +74,8 @@ int main()
     deviceDesc.DeviceFlags = DEVICE_FLAG_DEBUG;
     deviceDesc.SamplerDescriptorCount = 8;
     deviceDesc.ResourceDescriptorCount = 8;
-    deviceDesc.RendertargetDescriptorCount = 2;
-    deviceDesc.DepthStencilDescriptorCount = 2;
+    deviceDesc.RendertargetDescriptorCount = 4;
+    deviceDesc.DepthStencilDescriptorCount = 4;
 
     SwapchainDesc swapchainDesc = {};
     swapchainDesc.Name = "Swapchain";

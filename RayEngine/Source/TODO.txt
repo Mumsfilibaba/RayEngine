@@ -18,6 +18,8 @@ TODO:
 -Generate MipMaps
 -DX12 - Check tearing support - Vulkan (if supported by the API)
 -DX12 - Setup breakpoints when errors occurs
+-DX12 - Transitions should check if the state already is set.
+-DX12 - When commandlists are being reset the context should reset the state on resources that get reset to D3D12_RESOURCE_STATE_COMMON
 
 -DX11/DX12 - Bufferusage flags
 -DX11 - Static Samplers must be bound from 0 to n (in a single range), should be possible to not do this (DX11StaticSamplerRange?)

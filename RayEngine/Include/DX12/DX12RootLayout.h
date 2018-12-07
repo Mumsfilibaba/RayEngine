@@ -86,7 +86,6 @@ namespace RayEngine
 
 			DX12RootVariableSlot* CreateRootVariableSlot(const ShaderVariableDesc* pVariable, int32 rootSlot, bool placeDescriptorTable);
 
-
 		private:
 			DX12Device* m_Device;
 			ID3D12RootSignature* m_RootSignature;

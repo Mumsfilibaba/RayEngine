@@ -44,13 +44,38 @@ namespace RayEngine
 			DX12CommandList(DX12Device* pDevice, ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);
 			~DX12CommandList();
 
-			ID3D12CommandList* GetD3D12CommandList() const;
-			
-			ID3D12CommandAllocator* GetD3D12CommandAllocator() const;
-			
-			ID3D12GraphicsCommandList* GetD3D12GraphicsCommandList() const;
+			inline bool Reset() const
+			{
+				HRESULT hr = m_List->Reset(m_Allocator, nullptr);
+				return SUCCEEDED(hr);
+			}
 
-			bool Reset() const;
+			inline bool ResetAllocator() const
+			{
+				HRESULT hr = m_Allocator->Reset();
+				return SUCCEEDED(hr);
+			}
+
+			inline bool Close() const
+			{
+				HRESULT hr = m_List->Close();
+				return SUCCEEDED(hr);
+			}
+
+			inline ID3D12CommandList* GetD3D12CommandList() const
+			{
+				return m_List;
+			}
+
+			ID3D12CommandAllocator* GetD3D12CommandAllocator() const
+			{
+				return m_Allocator;
+			}
+
+			inline ID3D12GraphicsCommandList* GetD3D12GraphicsCommandList() const
+			{
+				return m_List;
+			}
 
 			void SetName(const std::string& name) override final;
 			

@@ -34,7 +34,8 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Buffer::DX12Buffer(IDevice* pDevice, const ResourceData* pInitalData, const BufferDesc* pDesc)
-			: m_Device(nullptr),
+			: DX12Resource(),
+			m_Device(nullptr),
 			m_MappedSubresource(-1),
 			m_Views(),
 			m_Desc(),
@@ -156,7 +157,6 @@ namespace RayEngine
 			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
 				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
 
-
 			D3D12_RESOURCE_STATES startingState = D3D12_RESOURCE_STATE_COMMON;
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			
@@ -175,7 +175,6 @@ namespace RayEngine
 
 				D3D12SetName(m_Resource, pDesc->Name);
 			}
-
 
 			if (pInitalData != nullptr)
 			{

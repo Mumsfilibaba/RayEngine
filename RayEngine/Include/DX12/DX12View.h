@@ -47,7 +47,7 @@ namespace RayEngine
 			}
 
 		public:
-			inline DX12Resource* GetD3D12Resource() const
+			inline DX12Resource* GetDX12Resource() const
 			{
 				return m_Resource;
 			}

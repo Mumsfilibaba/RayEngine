@@ -44,6 +44,21 @@ namespace RayEngine
 		public:
 			DX12Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd);
 			~DX12Swapchain();
+			
+			inline DX12Texture* GetCurrentDX12Buffer() const
+			{
+				return m_Textures[m_CurrentBuffer];
+			}
+
+			inline DX12DepthStencilView* GetDX12DepthStencilView() const
+			{
+				return m_DSV;
+			}
+
+			inline DX12RenderTargetView* GetCurrentDX12RenderTargetView() const
+			{
+				return m_RTVs[m_CurrentBuffer];
+			}
 
 			void Resize(int32 width, int32 height) override final;
 
@@ -62,6 +77,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
+
 			void Create(const SwapchainDesc* pDesc, HWND hwnd);
 			
 			void CreateTextures();

@@ -25,6 +25,8 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
+#include "DX12Resource.h"
+#include "DX12CommandList.h"
 
 #define RE_DX12_MAX_COMMANDS 15
 
@@ -34,10 +36,10 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12Device;
-		class DX12Resource;
 		class DX12Swapchain;
 		class DX12RootLayout;
-		class DX12CommandList;
+		class DX12RenderTargetView;
+		class DX12DepthStencilView;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +69,11 @@ namespace RayEngine
 			inline DX12CommandList* GetDX12ComputeList() const
 			{
 				return m_ComputeList;
+			}
+
+			inline void ResetCommandList() const
+			{
+				m_List->Reset();
 			}
 
 			void CopyResource(DX12Resource* pDst, DX12Resource* pSrc) const;
@@ -120,10 +127,6 @@ namespace RayEngine
 			void Dispatch(int32 threadGroupCountX, int32 threadGroupCountY, int32 threadGroupCountZ) const override final;
 
 			void Flush() const override final;
-			
-			bool Reset() const;
-			
-			bool Close() const;
 
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
 
@@ -140,28 +143,35 @@ namespace RayEngine
 		private:
 			void Create(bool isDeffered);
 			
+			void Synchronize() const;
+
+			void ExecuteCommandLists() const;
+
 			void AddCommand() const;
 			
-			void ExecuteCommandLists() const;
-			
+			void SetDefaultFramebuffer() const;
+
+			void SetDX12Rendertargets(DX12RenderTargetView** ppRenderTargets, int32 count, DX12DepthStencilView* pDepthStencil) const;
+
 			void CommitDefferedBarriers() const;
 
 			D3D12_RESOURCE_BARRIER CreateTransitionBarrier(DX12Resource* pResource, D3D12_RESOURCE_STATES from, D3D12_RESOURCE_STATES to, int32 subresource) const;
 
 		private:
 			DX12Device* m_Device;
-			mutable DX12Swapchain* m_CurrentSwapchain;
-			mutable DX12RootLayout* m_CurrentRootLayout;
+			ID3D12Fence* m_Fence;
+			ID3D12CommandQueue* m_Queue;
 			DX12CommandList* m_List;
 			DX12CommandList* m_ComputeList;
-			ID3D12CommandQueue* m_Queue;
-			ID3D12Fence* m_Fence;
+			mutable DX12Resource* m_CurrentDepthStencil;
+			mutable DX12Swapchain* m_CurrentSwapchain;
+			mutable DX12RootLayout* m_CurrentRootLayout;
 			
 			bool m_IsDeffered;
 			
-			mutable uint64 m_CurrentFence;
 			uint32 m_MaxCommands;
 			mutable uint32 m_NumCommands;
+			mutable uint64 m_CurrentFence;
 			
 			mutable std::vector<D3D12_RESOURCE_BARRIER> m_DefferedBarriers;
 

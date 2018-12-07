@@ -80,6 +80,9 @@ namespace RayEngine
 
 			if (m_MSAABackBuffer != nullptr)
 				m_MSAABackBuffer->SetName(name + ": MSAA BackBuffer");
+
+			if (m_DepthStencil != nullptr)
+				m_DepthStencil->SetName(name + ": DepthStencil");
 		}
 
 
@@ -125,6 +128,9 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Swapchain::Present() const
 		{
+			m_Context->TransitionResource(GetCurrentDX12Buffer(), D3D12_RESOURCE_STATE_PRESENT, 0);
+			m_Context->Flush();
+
 			m_Swapchain->Present(0, 0);
 
 			m_CurrentBuffer++;

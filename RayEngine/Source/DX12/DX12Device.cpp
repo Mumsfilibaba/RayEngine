@@ -72,6 +72,10 @@ namespace RayEngine
 			ReRelease_S(m_ImmediateContext);
 			ReRelease_S(m_UploadHeap);
 			ReRelease_S(m_SamplerHeap);
+			ReRelease_S(m_NullSRV);
+			ReRelease_S(m_NullRTV);
+			ReRelease_S(m_NullDSV);
+			ReRelease_S(m_NullUAV);
 
 			D3DRelease_S(m_Factory);
 			D3DRelease_S(m_Adapter);
@@ -308,6 +312,8 @@ namespace RayEngine
 				m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, pDesc->SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 				m_ImmediateContext = new DX12DeviceContext(this, false);
 
+				CreateNullDescriptors();
+
 				SetName(pDesc->Name);
 
 				m_Desc = *pDesc;
@@ -380,6 +386,56 @@ namespace RayEngine
 
 			LOG_INFO("D3D12: Chosen adapter " + adapterDesc);
 			return true;
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Device::CreateNullDescriptors()
+		{
+			ShaderResourceViewDesc srv = {};
+			srv.Name = "Null SRV";
+			srv.Flags = SHADER_RESOURCE_VIEW_FLAG_NONE;
+			srv.Format = FORMAT_R8G8B8A8_UNORM;
+			srv.pResource = nullptr;
+			srv.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+			srv.Texture2D.MinLODClamp = 0.0f;
+			srv.Texture2D.MipLevels = 0;
+			srv.Texture2D.MostDetailedMip = 0;
+			srv.Texture2D.PlaneSlice = 0;
+			
+			m_NullSRV = new DX12ShaderResourceView(this, &srv);
+
+			RenderTargetViewDesc rtv = {};
+			rtv.Name = "Null SRV";
+			rtv.Format = FORMAT_R8G8B8A8_UNORM;
+			rtv.pResource = nullptr;
+			rtv.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+			rtv.Texture2D.MipSlice = 0;
+			rtv.Texture2D.PlaneSlice = 0;
+			
+			m_NullRTV = new DX12RenderTargetView(this, &rtv);
+
+			DepthStencilViewDesc dsv = {};
+			dsv.Name = "Null DSV";
+			dsv.Format = FORMAT_D24_UNORM_S8_UINT;
+			dsv.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
+			dsv.pResource = nullptr;
+			dsv.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+			dsv.Texture2D.MipSlice = 0;
+
+			m_NullDSV = new DX12DepthStencilView(this, &dsv);
+
+			UnorderedAccessViewDesc uav = {};
+			uav.Name = "Null UAV";
+			uav.Format = FORMAT_R8G8B8A8_UNORM;
+			uav.Flags = UNORDERED_ACCESS_VIEW_FLAG_NONE;
+			uav.pResource = nullptr;
+			uav.pCounterResource = nullptr;
+			uav.ViewDimension = VIEWDIMENSION_TEXTURE2D;
+			uav.Texture2D.MipSlice = 0;
+			uav.Texture2D.PlaneSlice = 0;
+
+			m_NullUAV = new DX12UnorderedAccessView(this, &uav);
 		}
 	}
 }

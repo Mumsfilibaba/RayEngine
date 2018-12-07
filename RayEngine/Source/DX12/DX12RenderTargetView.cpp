@@ -19,12 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\DX12\DX12RenderTargetView.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12RenderTargetView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12DescriptorHeap.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Texture.h"
+#include "../../Include/DX12/DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -81,17 +82,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12RenderTargetView::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12RenderTargetView::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -102,16 +100,18 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12RenderTargetView::Create(const RenderTargetViewDesc* pDesc)
 		{
-			m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
-			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();
+			ID3D12Resource* pD3D12Resource = nullptr;
+			if (pDesc->pResource != nullptr)
+			{
+				m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
+				pD3D12Resource = m_Resource->GetD3D12Resource();
+			}
 			
 			const DX12DescriptorHeap* pHeap = m_Device->GetDX12RenderTargetViewHeap();
 			m_View = pHeap->GetNext(m_Resource);
 
-
 			D3D12_RENDER_TARGET_VIEW_DESC desc = {};
 			desc.Format = ReToDXFormat(pDesc->Format);
-
 			if (pDesc->ViewDimension == VIEWDIMENSION_BUFFER)
 			{
 				desc.ViewDimension = D3D12_RTV_DIMENSION_BUFFER;
@@ -164,6 +164,10 @@ namespace RayEngine
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			pD3D12Device->CreateRenderTargetView(pD3D12Resource, &desc, m_View.CpuDescriptor);
+			if (pD3D12Resource == nullptr)
+			{
+				LOG_WARNING("D3D12: Created a null RenderTargetView-Descriptor");
+			}
 
 			m_Desc = *pDesc;
 		}

@@ -43,61 +43,20 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12CommandList::~DX12CommandList()
 		{
 			D3DRelease_S(m_Allocator);
 			D3DRelease_S(m_List);
 		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D12CommandList* DX12CommandList::GetD3D12CommandList() const
-		{
-			return m_List;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D12CommandAllocator* DX12CommandList::GetD3D12CommandAllocator() const
-		{
-			return m_Allocator;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D12GraphicsCommandList* DX12CommandList::GetD3D12GraphicsCommandList() const
-		{
-			return m_List;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		bool DX12CommandList::Reset() const
-		{
-			if (FAILED(m_Allocator->Reset()))
-				return false;
-
-			if (FAILED(m_List->Reset(m_Allocator, nullptr)))
-				return false;
-
-			return true;
-		}
-
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12CommandList::SetName(const std::string& name)
 		{
-			D3D12SetName(m_List, name);
+			D3D12SetName(m_List, name + ": List");
 			D3D12SetName(m_Allocator, name + " : Allocator");
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +66,6 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12CommandList::GetReferenceCount() const
 		{
@@ -115,22 +73,17 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12CommandList::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12CommandList::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -138,24 +91,17 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12CommandList::Create(ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask)
 		{
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			HRESULT hr = pD3D12Device->CreateCommandAllocator(type, IID_PPV_ARGS(&m_Allocator));
 
+			HRESULT hr = pD3D12Device->CreateCommandAllocator(type, IID_PPV_ARGS(&m_Allocator));
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D12: Could not create CommandAllocator. " + DXErrorString(hr));
 				return;
 			}
-			else
-			{
-				D3D12SetName(m_Allocator, "CommandList : Allocator");
-			}
-
-
 
 			hr = pD3D12Device->CreateCommandList(nodeMask, type, m_Allocator, pInitalState, IID_PPV_ARGS(&m_List));
 			if (FAILED(hr))
@@ -164,7 +110,9 @@ namespace RayEngine
 			}
 			else
 			{
-				D3D12SetName(m_List, "CommandList : List");
+				SetName("CommandList");
+
+				Close();
 			}
 		}
 	}

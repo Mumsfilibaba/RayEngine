@@ -19,12 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\DX12\DX12UnorderedAccessView.h"
+#include "../../Include/Debug/Debug.h"
+#include "../../Include/DX12/DX12UnorderedAccessView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12Texture.h"
-#include "..\..\Include\DX12\DX12DescriptorHeap.h"
+#include "../../Include/DX12/DX12Device.h"
+#include "../../Include/DX12/DX12Texture.h"
+#include "../../Include/DX12/DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -80,17 +81,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12UnorderedAccessView::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12UnorderedAccessView::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -107,17 +105,18 @@ namespace RayEngine
 				pD3D12CounterResource = reinterpret_cast<const DX12Resource*>(pDesc->pCounterResource)->GetD3D12Resource();
 			}
 
+			ID3D12Resource* pD3D12Resource = nullptr;
+			if (pDesc->pResource != nullptr)
+			{
+				m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
+				pD3D12Resource = m_Resource->GetD3D12Resource();
+			}
 
-			m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
-			ID3D12Resource* pD3D12Resource = m_Resource->GetD3D12Resource();
-
-			DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12SamplerHeap();
+			DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12ResourceHeap();
 			m_View = pDX12Heap->GetNext(m_Resource);
-
 			
 			D3D12_UNORDERED_ACCESS_VIEW_DESC desc = {};
 			desc.Format = ReToDXFormat(pDesc->Format);
-
 			if (pDesc->ViewDimension == VIEWDIMENSION_BUFFER)
 			{
 				desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
@@ -165,6 +164,10 @@ namespace RayEngine
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			pD3D12Device->CreateUnorderedAccessView(pD3D12Resource, pD3D12CounterResource, &desc, m_View.CpuDescriptor);
+			if (pD3D12Resource == nullptr)
+			{
+				LOG_WARNING("D3D12: Created a null UnorderedAccessView-Descriptor");
+			}
 
 			m_Desc = *pDesc;
 		}
