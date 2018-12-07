@@ -25,6 +25,7 @@ failure and or malfunction of any kind.
 
 #include "../../Include/Debug/Debug.h"
 #include "../../Include/Utilities/EngineUtilities.h"
+#include "../../Include/Utilities/TextureUtilities.h"
 #include "Win32KeyCodes.h"
 #include "WndclassCache.h"
 #include <windowsx.h>
@@ -187,6 +188,7 @@ namespace RayEngine
 			return;
 		}
 
+
 		if (m_Icon != 0)
 		{
 			DestroyIcon(m_Icon);
@@ -204,6 +206,13 @@ namespace RayEngine
 
 		void* pPixels = nullptr;
 		pIcon->GetPixels(&pPixels);
+
+		if (format == FORMAT_R8G8B8A8_UNORM || format == FORMAT_R8G8B8A8_SINT ||
+			format == FORMAT_R8G8B8A8_SNORM || format == FORMAT_R8G8B8A8_UINT ||
+			format == FORMAT_R8G8B8A8_UNORM_SRGB)
+		{
+			ReverseImageRedBlue(pPixels, width, height, format);
+		}
 
 		HBITMAP hMask = CreateBitmap(width, height, 1, 1, 0);
 		HBITMAP hBitmap = CreateBitmap(width, height, 1, 32, reinterpret_cast<const void*>(pPixels));

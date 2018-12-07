@@ -100,17 +100,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12Texture::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -143,28 +140,34 @@ namespace RayEngine
 			if (pDesc->Flags & TEXTURE_FLAGS_DEPTH_STENCIL)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+				if (!(pDesc->Flags & TEXTURE_FLAGS_SHADER_RESOURCE))
+				{
+					flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
+				}
+
 				pClearValue = &clearValue;
 			}
 			if (pDesc->Flags & TEXTURE_FLAGS_UNORDERED_ACCESS)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 			}
-			if (!(pDesc->Flags & TEXTURE_FLAGS_SHADER_RESOURCE))
-			{
-				flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
-			}
+
 
 			D3D12_RESOURCE_DESC desc = {};
 			desc.Width = pDesc->Width;
 			desc.Height = pDesc->Height;
 			desc.DepthOrArraySize = pDesc->DepthOrArraySize;
-			desc.SampleDesc.Count = pDesc->SampleCount;
-			desc.SampleDesc.Quality = 0;
 			desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 			desc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
 			desc.Flags = flags;
 			desc.MipLevels = pDesc->MipLevels;
 			desc.Format = format;
+
+			desc.SampleDesc.Count = 1;
+			desc.SampleDesc.Quality = 0;
+
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+			GetHighestSupportingSamples(pD3D12Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, pDesc->SampleCount, desc.Format);
 
 			if (pDesc->Type == TEXTURE_TYPE_1D)
 			{
@@ -193,9 +196,7 @@ namespace RayEngine
 				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 
-			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			D3D12_RESOURCE_STATES startingState = D3D12_RESOURCE_STATE_COMMON;
-
 			HRESULT hr = pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc, startingState, pClearValue, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{

@@ -227,7 +227,7 @@ namespace RayEngine
 			ReRelease_S(m_CurrentSwapchain);
 			m_CurrentSwapchain = pSwapChain->QueryReference<DX12Swapchain>();
 
-			SetDefaultFramebuffer();
+			//SetDefaultFramebuffer();
 		}
 
 
@@ -261,7 +261,7 @@ namespace RayEngine
 			if (pDepthStencil != nullptr)
 			{
 				dsv = pDepthStencil->GetD3D12CpuDescriptorHandle();
-				pToStates[numResources] = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+				pToStates[numResources] = D3D12_RESOURCE_STATE_DEPTH_READ;
 				ppResources[numResources] = pDepthStencil->GetDX12Resource();
 				numResources++;
 			}
@@ -605,7 +605,6 @@ namespace RayEngine
 			
 			m_List = new DX12CommandList(m_Device, nullptr, D3D12_COMMAND_LIST_TYPE_DIRECT, qDesc.NodeMask);
 			m_List->Reset();
-
 			m_ComputeList = new DX12CommandList(m_Device, nullptr, D3D12_COMMAND_LIST_TYPE_COMPUTE, qDesc.NodeMask);
 			m_ComputeList->Reset();
 

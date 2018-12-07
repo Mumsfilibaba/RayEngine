@@ -25,7 +25,7 @@ int main()
     const uint8* pPixels = nullptr;
     int32 width = 0;
     int32 height = 0;
-    if(!LoadImageFromFile("Walter.png", "", reinterpret_cast<const void**>(&pPixels), width, height, FORMAT_R8G8B8A8_UNORM))
+    if(!LoadImageFromFile("Icon.png", "", reinterpret_cast<const void**>(&pPixels), width, height, FORMAT_R8G8B8A8_UNORM))
     {
         LOG_ERROR("Failed to load file");
     }
@@ -81,7 +81,7 @@ int main()
     swapchainDesc.Name = "Swapchain";
     swapchainDesc.Width = windowDesc.Width;
     swapchainDesc.Height = windowDesc.Height;
-    swapchainDesc.SampleCount = 1;
+    swapchainDesc.SampleCount = 4;
     swapchainDesc.BackBuffer.Count = 2;
     swapchainDesc.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM;
     swapchainDesc.DepthStencil.Format = FORMAT_D24_UNORM_S8_UINT;
@@ -90,13 +90,7 @@ int main()
     IDevice* pDevice = nullptr;
     ISwapchain* pSwapchain = nullptr;
     CreateWindowForRendering(&pWindow, &windowDesc, &pDevice, &deviceDesc, &pSwapchain, &swapchainDesc, GRAPHICS_API_D3D12);
-    
-    pWindow->SetTitle("Hello World");
     pWindow->Show();
-
-    LOG_INFO("Window Created");
-    LOG_INFO("Device Created");
-    LOG_INFO("Swapchain Created");
 
 	AdapterDesc adpaterDesc = {};
 	pDevice->GetAdapterDesc(&adpaterDesc);
@@ -115,7 +109,6 @@ int main()
 		{
 			if (event.Type == EVENT_TYPE_CLOSE)
 			{
-				LOG_INFO("Window closed");
 				SendQuitMessage(0);
 			}
 		}

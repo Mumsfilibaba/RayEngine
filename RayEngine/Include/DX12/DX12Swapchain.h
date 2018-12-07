@@ -57,7 +57,7 @@ namespace RayEngine
 
 			inline DX12RenderTargetView* GetCurrentDX12RenderTargetView() const
 			{
-				return m_RTVs[m_CurrentBuffer];
+				return (m_UseMSAA) ? m_RTVs[0] : m_RTVs[m_CurrentBuffer];
 			}
 
 			void Resize(int32 width, int32 height) override final;
@@ -77,7 +77,6 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-
 			void Create(const SwapchainDesc* pDesc, HWND hwnd);
 			
 			void CreateTextures();

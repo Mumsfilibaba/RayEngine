@@ -38,6 +38,29 @@ namespace RayEngine
 			if (FAILED(pObject->SetName(WidenString(name).c_str())))
 				return;
 		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		inline void GetHighestSupportingSamples(ID3D12Device* pD3D12Device, uint32* count, uint32* quality, uint32 requested, DXGI_FORMAT format)
+		{
+			D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msaaQuality = {};
+			msaaQuality.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
+			msaaQuality.Format = format;
+			msaaQuality.SampleCount = requested;
+
+			HRESULT hr = 0;
+			while (msaaQuality.SampleCount > 1)
+			{
+				hr = pD3D12Device->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msaaQuality, sizeof(D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS));
+				if (SUCCEEDED(hr))
+					break;
+
+				msaaQuality.SampleCount /= 2;
+			}
+
+			*count = msaaQuality.SampleCount;
+			*quality = msaaQuality.NumQualityLevels - 1;
+		}
 	}
 }
 

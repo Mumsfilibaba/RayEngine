@@ -23,7 +23,7 @@
     <ProjectGuid>{CF410AE4-B81B-4812-97D7-52B747E6AC86}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Windows</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -166,8 +166,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Cursor.png" />
+    <Image Include="Icon.png" />
     <Image Include="Textures\chess.jpg" />
-    <Image Include="Walter.png" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\ps.hlsl">

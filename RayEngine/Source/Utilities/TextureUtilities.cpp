@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "../../Include/Utilities/EngineUtilities.h"
 #include "../../Include/Utilities/TextureUtilities.h"
 
 #define STBI_NO_PSD
@@ -43,27 +44,32 @@ namespace RayEngine
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void ReverseImageRedBlue(void* pPixels, int32 width, int32 height, FORMAT format)
 	{
-		if (format == FORMAT_R8G8B8A8_UINT)
-		{
-			uint8* data = static_cast<uint8*>(pPixels);
+		uint32 components = FormatComponentCount(format);
+		if (components < 4)
+			return;
 
-			//TODO: Different loops based on components
-
-			uint8 temp = 0;
-			for (int32 i = (width * height * 4) - 1; i >= 0; i -= 4)
-			{
-				temp = data[i - 1];
-				data[i - 1] = data[i - 3];
-				data[i - 3] = temp;
-			}
-		}
-		else if (format == FORMAT_R32G32B32A32_FLOAT)
+		FORMAT_TYPE formatType = FormatType(format);
+		if (formatType == FORMAT_TYPE_FLOAT32)
 		{
 			float* data = static_cast<float*>(pPixels);
 
 			//TODO: Different loops based on components
 
 			float temp = 0;
+			for (int32 i = (width * height * components) - 1; i >= 0; i -= 4)
+			{
+				temp = data[i - 1];
+				data[i - 1] = data[i - 3];
+				data[i - 3] = temp;
+			}
+		}
+		else if (formatType == FORMAT_TYPE_UINT8)
+		{
+			uint8* data = static_cast<uint8*>(pPixels);
+
+			//TODO: Different loops based on components
+
+			uint8 temp = 0;
 			for (int32 i = (width * height * 4) - 1; i >= 0; i -= 4)
 			{
 				temp = data[i - 1];
