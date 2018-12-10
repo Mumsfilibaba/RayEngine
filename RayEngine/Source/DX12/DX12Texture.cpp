@@ -180,22 +180,24 @@ namespace RayEngine
 			desc.SampleDesc.Quality = 0;
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			GetHighestSupportingSamples(pD3D12Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, pDesc->SampleCount, desc.Format);
+			if (pDesc->Flags & TEXTURE_FLAGS_DEPTH_STENCIL | pDesc->Flags & TEXTURE_FLAGS_RENDERTARGET)
+			{
+				GetHighestSupportingSamples(pD3D12Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, pDesc->SampleCount, desc.Format);
+			}
 
-			D3D12_HEAP_PROPERTIES heapProp = {};
-			heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-			heapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-			heapProp.CreationNodeMask = 1;
-			heapProp.VisibleNodeMask = 1;
+			D3D12_HEAP_PROPERTIES heap = {};
+			heap.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+			heap.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+			heap.CreationNodeMask = 1;
+			heap.VisibleNodeMask = 1;
 
 			if (pDesc->Usage == RESOURCE_USAGE_DEFAULT || pDesc->Usage == RESOURCE_USAGE_STATIC)
-				heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
+				heap.Type = D3D12_HEAP_TYPE_DEFAULT;
 			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
-				heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
-
+				heap.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 			D3D12_RESOURCE_STATES startingState = D3D12_RESOURCE_STATE_COMMON;
-			HRESULT hr = pD3D12Device->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &desc, startingState, pClearValue, IID_PPV_ARGS(&m_Resource));
+			HRESULT hr = pD3D12Device->CreateCommittedResource(&heap, D3D12_HEAP_FLAG_NONE, &desc, startingState, pClearValue, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D12: Could not create Texture. " + DXErrorString(hr));
@@ -203,11 +205,10 @@ namespace RayEngine
 			}
 			else
 			{
-				m_State = startingState;
-
-				D3D12SetName(m_Resource, pDesc->Name);
-
 				m_Desc = *pDesc;
+				
+				SetName(m_Desc.Name);
+				SetD3D12State(startingState);
 			}
 
 			if (pInitialData != nullptr)
@@ -221,10 +222,10 @@ namespace RayEngine
 				DX12Resource* resources[] = { this, uploadHeap };
 				D3D12_RESOURCE_STATES states[] = { D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COPY_SOURCE };
 				int32 subresoures[] = { 0, 0 };
-			
+
 				pContext->TransitionResourceGroup(resources, states, subresoures, 2);
 				pContext->CopyTexture(this, uploadHeap, format, pDesc->Width, pDesc->Height, pDesc->DepthOrArraySize, pInitialData->ByteStride);
-
+				
 				ReRelease_S(pContext);
 			}
 		}

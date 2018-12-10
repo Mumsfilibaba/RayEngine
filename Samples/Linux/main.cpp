@@ -81,7 +81,7 @@ int main()
     swapchainDesc.Name = "Swapchain";
     swapchainDesc.Width = windowDesc.Width;
     swapchainDesc.Height = windowDesc.Height;
-    swapchainDesc.SampleCount = 4;
+    swapchainDesc.SampleCount = 1;
     swapchainDesc.BackBuffer.Count = 2;
     swapchainDesc.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM;
     swapchainDesc.DepthStencil.Format = FORMAT_D24_UNORM_S8_UINT;
