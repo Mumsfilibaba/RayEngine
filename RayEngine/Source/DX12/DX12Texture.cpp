@@ -152,23 +152,7 @@ namespace RayEngine
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 			}
 
-
 			D3D12_RESOURCE_DESC desc = {};
-			desc.Width = pDesc->Width;
-			desc.Height = pDesc->Height;
-			desc.DepthOrArraySize = pDesc->DepthOrArraySize;
-			desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-			desc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
-			desc.Flags = flags;
-			desc.MipLevels = pDesc->MipLevels;
-			desc.Format = format;
-
-			desc.SampleDesc.Count = 1;
-			desc.SampleDesc.Quality = 0;
-
-			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			GetHighestSupportingSamples(pD3D12Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, pDesc->SampleCount, desc.Format);
-
 			if (pDesc->Type == TEXTURE_TYPE_1D)
 			{
 				desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE1D;
@@ -183,6 +167,20 @@ namespace RayEngine
 				desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 			}
 
+			desc.Width = pDesc->Width;
+			desc.Height = pDesc->Height;
+			desc.DepthOrArraySize = pDesc->DepthOrArraySize;
+			desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+			desc.Alignment = 0;
+			desc.Flags = flags;
+			desc.MipLevels = pDesc->MipLevels;
+			desc.Format = format;
+
+			desc.SampleDesc.Count = 1;
+			desc.SampleDesc.Quality = 0;
+
+			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+			GetHighestSupportingSamples(pD3D12Device, &desc.SampleDesc.Count, &desc.SampleDesc.Quality, pDesc->SampleCount, desc.Format);
 
 			D3D12_HEAP_PROPERTIES heapProp = {};
 			heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
