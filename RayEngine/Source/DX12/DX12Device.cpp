@@ -77,14 +77,9 @@ namespace RayEngine
 			ReRelease_S(m_NullDSV);
 			ReRelease_S(m_NullUAV);
 
-			D3DRelease_S(m_Factory);
-			D3DRelease_S(m_Adapter);
-			D3DRelease_S(m_Device);
-
 			if (m_DebugDevice != nullptr)
 			{
 				m_DebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL);
-				D3DRelease(m_DebugDevice);
 			}
 		}
 
@@ -162,7 +157,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Device::SetName(const std::string& name)
 		{
-			D3D12SetName(m_Device, name);
+			D3D12SetName(m_Device.Get(), name);
 
 			m_UploadHeap->SetName(name + ": Dynamic Upload-Heap");
 			m_DsvHeap->SetName(name + ": DSV-Heap");
@@ -292,7 +287,7 @@ namespace RayEngine
 				return;
 			}
 
-			HRESULT hr = D3D12CreateDevice(m_Adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
+			HRESULT hr = D3D12CreateDevice(m_Adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
 			if (SUCCEEDED(hr))
 			{
 				if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
@@ -354,22 +349,23 @@ namespace RayEngine
 					continue;
 				}
 
-				if (FAILED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr)))
+				if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr)))
+				{
+					//We skip the intel once for now
+					if ((desc.VendorId != 0x163C && desc.VendorId != 0x8086 && desc.VendorId != 0x8087) ||
+						(bestAdapterIndex < 0))
+					{
+						bestAdapterIndex = i;
+						vendorID = desc.VendorId;
+						adapterDesc = description;
+					}
+
+					adapterCount++;
+				}
+				else
 				{
 					LOG_WARNING("D3D12: Adapter " + std::to_string(i) + " does not support D3D12");
-					continue;
 				}
-
-				//We skip the intel once for now
-				if ((desc.VendorId != 0x163C && desc.VendorId != 0x8086 && desc.VendorId != 0x8087) ||
-					(bestAdapterIndex < 0))
-				{
-					bestAdapterIndex = i;
-					vendorID = desc.VendorId;
-					adapterDesc = description;
-				}
-
-				adapterCount++;
 			}
 
 			if (adapterCount < 1 || bestAdapterIndex < 0)

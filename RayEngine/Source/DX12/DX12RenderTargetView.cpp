@@ -33,8 +33,7 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12RenderTargetView::DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc)
-			: DX12View(),
-			m_Device(nullptr),
+			: m_Device(nullptr),
 			m_Desc(),
 			m_References(0)
 		{

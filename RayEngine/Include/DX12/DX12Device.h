@@ -50,17 +50,17 @@ namespace RayEngine
 
 			inline ID3D12Device* GetD3D12Device() const
 			{
-				return m_Device;
+				return m_Device.Get();
 			}
 
 			inline IDXGIFactory5* GetDXGIFactory() const
 			{
-				return m_Factory;
+				return m_Factory.Get();
 			}
 
 			inline IDXGIAdapter* GetDXGIAdapter() const
 			{
-				return m_Adapter;
+				return m_Adapter.Get();
 			}
 
 			inline DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const
@@ -157,11 +157,11 @@ namespace RayEngine
 			void CreateNullDescriptors();
 
 		private:
-			IDXGIFactory5* m_Factory;
-			IDXGIAdapter1* m_Adapter;
-			ID3D12Device* m_Device;
-			ID3D12Debug* m_DebugController;
-			ID3D12DebugDevice* m_DebugDevice;
+			Microsoft::WRL::ComPtr<IDXGIFactory5> m_Factory;
+			Microsoft::WRL::ComPtr<IDXGIAdapter1> m_Adapter;
+			Microsoft::WRL::ComPtr<ID3D12Device> m_Device;
+			Microsoft::WRL::ComPtr<ID3D12Debug> m_DebugController;
+			Microsoft::WRL::ComPtr<ID3D12DebugDevice> m_DebugDevice;
 			DX12DeviceContext* m_ImmediateContext;
 			DX12DynamicUploadHeap* m_UploadHeap;
 			DX12DescriptorHeap* m_ResourceHeap;
@@ -172,9 +172,7 @@ namespace RayEngine
 			DX12RenderTargetView* m_NullRTV;
 			DX12DepthStencilView* m_NullDSV;
 			DX12UnorderedAccessView* m_NullUAV;
-
 			DeviceDesc m_Desc;
-
 			IObject::CounterType m_References;
 		};
 	}

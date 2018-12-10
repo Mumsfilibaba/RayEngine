@@ -88,7 +88,7 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 			DX12DeviceContext* m_Context;
-			IDXGISwapChain1* m_Swapchain;
+			Microsoft::WRL::ComPtr<IDXGISwapChain3> m_Swapchain;
 			DX12Texture* m_MSAABackBuffer;
 			DX12Texture* m_DepthStencil;
 			DX12DepthStencilView* m_DSV;

@@ -36,7 +36,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12Texture final : public ITexture, public DX12Resource
+		class DX12Texture final : public DX12Resource, public ITexture
 		{
 			RE_IMPLEMENT_INTERFACE(DX12Texture);
 

@@ -59,7 +59,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Swapchain::~DX12Swapchain()
 		{
-			D3DRelease_S(m_Swapchain);
 		}
 
 
@@ -159,15 +158,23 @@ namespace RayEngine
 			IDXGIFactory5* pDXGIFactory = m_Device->GetDXGIFactory();
 			ID3D12CommandQueue* pD3D12queue = m_Context->GetD3D12CommandQueue();
 			
-			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hwnd, &desc, nullptr, nullptr, &m_Swapchain);
+			Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain = nullptr;
+			HRESULT hr = pDXGIFactory->CreateSwapChainForHwnd(pD3D12queue, hwnd, &desc, nullptr, nullptr, &swapChain);
 			if (FAILED(hr))
 			{
-				LOG_ERROR("D3D12 : Could not create swapchain. " + DXErrorString(hr));
+				LOG_ERROR("D3D12: Could not create swapchain. " + DXErrorString(hr));
 				return;
 			}
 			else
 			{
+				if (FAILED(swapChain.As(&m_Swapchain)))
+				{
+					LOG_ERROR("D3D12: Could not retrive IDXGISwapChain3 interface");
+					return;
+				}
+
 				m_Desc = *pDesc;
+				m_CurrentBuffer = m_Swapchain->GetCurrentBackBufferIndex();
 
 				pDXGIFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
 				

@@ -61,6 +61,8 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 
+			D3D12_CPU_DESCRIPTOR_HANDLE m_CpuDescriptor;
+
 			DepthStencilViewDesc m_Desc;
 
 			IObject::CounterType m_References;

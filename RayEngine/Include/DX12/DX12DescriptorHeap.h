@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12DescriptorHeap);
 
 		public:
-			DX12DescriptorHeap(IDevice* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
+			DX12DescriptorHeap(IDevice* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, int32 num);
 			~DX12DescriptorHeap();
 
 			inline int32 GetDescriptorsLeft() const
@@ -61,7 +61,7 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
-			void Create(D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags);
+			void Create(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, int32 num);
 
 		private:
 			DX12Device* m_Device;

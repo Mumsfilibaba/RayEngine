@@ -31,7 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DescriptorHeap::DX12DescriptorHeap(IDevice* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
+		DX12DescriptorHeap::DX12DescriptorHeap(IDevice* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, int32 num)
 			: m_Device(nullptr),
 			m_Heap(nullptr),
 			m_Count(0),
@@ -99,17 +99,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12DescriptorHeap::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IObject::CounterType DX12DescriptorHeap::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			IObject::CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 
@@ -118,14 +115,13 @@ namespace RayEngine
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE type, int32 num, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
+		void DX12DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, int32 num)
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc = {};
 			desc.Flags = flags;
 			desc.NodeMask = 0;
 			desc.NumDescriptors = num;
 			desc.Type = type;
-
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
 			HRESULT hr = pD3D12Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_Heap));
