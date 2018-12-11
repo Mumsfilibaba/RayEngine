@@ -20,14 +20,9 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\Types.h"
-#include <wrl\client.h>
-#include <comdef.h>
-#include <dxgi.h>
-#include <d3dcommon.h>
 
 #if !defined(D3DRelease)
 #define D3DRelease(IObject) IObject->Release(); IObject = nullptr

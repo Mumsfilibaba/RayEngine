@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Defines.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
 #include "..\..\Include\Android\AndroidVulkanWrapper.h"

@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\DX11\DX11Common.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX11/DX11Common.h"
 
 namespace RayEngine
 {

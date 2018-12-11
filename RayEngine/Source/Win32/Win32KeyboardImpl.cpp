@@ -19,16 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "..\..\Include\System\Keyboard.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "Win32KeyCodes.h"
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-
-#include <Windows.h>
 
 namespace RayEngine
 {

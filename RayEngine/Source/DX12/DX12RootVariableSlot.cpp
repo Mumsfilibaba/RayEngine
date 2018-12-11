@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\DX12\DX12RootVariableSlot.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12\DX12RootVariableSlot.h"
 
 namespace RayEngine
 {
@@ -104,8 +105,8 @@ namespace RayEngine
 		{
 			for (int32 i = 0; i < count; i++)
 			{
-				D3D12_GPU_VIRTUAL_ADDRESS adress = pSRVs[i].GpuResourceAdress;
-				pCommandList->SetGraphicsRootShaderResourceView(m_Slot + i, adress);
+				//D3D12_GPU_VIRTUAL_ADDRESS adress = pSRVs[i].GpuResourceAdress;
+				//pCommandList->SetGraphicsRootShaderResourceView(m_Slot + i, adress);
 			}
 		}
 
@@ -126,8 +127,8 @@ namespace RayEngine
 		{
 			for (int32 i = 0; i < count; i++)
 			{
-				D3D12_GPU_VIRTUAL_ADDRESS adress = pUAVs[i].GpuResourceAdress;
-				pCommandList->SetGraphicsRootUnorderedAccessView(m_Slot + i, adress);
+				//D3D12_GPU_VIRTUAL_ADDRESS adress = pUAVs[i].GpuResourceAdress;
+				//pCommandList->SetGraphicsRootUnorderedAccessView(m_Slot + i, adress);
 			}
 		}
 
@@ -137,8 +138,8 @@ namespace RayEngine
 		{
 			for (int32 i = 0; i < count; i++)
 			{
-				D3D12_GPU_VIRTUAL_ADDRESS adress = pBuffers[i].GpuResourceAdress;
-				pCommandList->SetGraphicsRootConstantBufferView(m_Slot + i, adress);
+				//D3D12_GPU_VIRTUAL_ADDRESS adress = pBuffers[i].GpuResourceAdress;
+				//pCommandList->SetGraphicsRootConstantBufferView(m_Slot + i, adress);
 			}
 		}
 
@@ -220,8 +221,8 @@ namespace RayEngine
 		{
 			for (int32 i = 0; i < count; i++)
 			{
-				D3D12_GPU_VIRTUAL_ADDRESS adress = pSRVs[i].GpuResourceAdress;
-				pCommandList->SetComputeRootShaderResourceView(m_Slot + i, adress);
+				//D3D12_GPU_VIRTUAL_ADDRESS adress = pSRVs[i].GpuResourceAdress;
+				//pCommandList->SetComputeRootShaderResourceView(m_Slot + i, adress);
 			}
 		}
 
@@ -242,8 +243,8 @@ namespace RayEngine
 		{
 			for (int32 i = 0; i < count; i++)
 			{
-				D3D12_GPU_VIRTUAL_ADDRESS adress = pUAVs[i].GpuResourceAdress;
-				pCommandList->SetComputeRootUnorderedAccessView(m_Slot + i, adress);
+				//D3D12_GPU_VIRTUAL_ADDRESS adress = pUAVs[i];
+				//pCommandList->SetComputeRootUnorderedAccessView(m_Slot + i, adress);
 			}
 		}
 
@@ -253,8 +254,8 @@ namespace RayEngine
 		{
 			for (int32 i = 0; i < count; i++)
 			{
-				D3D12_GPU_VIRTUAL_ADDRESS adress = pBuffers[i].GpuResourceAdress;
-				pCommandList->SetComputeRootConstantBufferView(m_Slot + i, adress);
+				//D3D12_GPU_VIRTUAL_ADDRESS adress = pBuffers[i].GpuResourceAdress;
+				//pCommandList->SetComputeRootConstantBufferView(m_Slot + i, adress);
 			}
 		}
 

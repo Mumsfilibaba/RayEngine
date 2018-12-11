@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/Math/Point.h"
 
 #if defined(__ANDROID__)

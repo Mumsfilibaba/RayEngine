@@ -19,9 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include <limits>
-#include <algorithm>
-#include "../../Include/Debug/Debug.h"
+#include "RayEngine.h"
 #include "../../Include/Vulkan/VulkSwapchain.h"
 #include "../../Include/Vulkan/VulkFactory.h"
 #include "../../Include/Vulkan/VulkDevice.h"

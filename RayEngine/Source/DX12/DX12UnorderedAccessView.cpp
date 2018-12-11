@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
+#include "RayEngine.h"
 #include "../../Include/DX12/DX12UnorderedAccessView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -102,19 +102,18 @@ namespace RayEngine
 			ID3D12Resource* pD3D12CounterResource = nullptr;
 			if (pDesc->pCounterResource != nullptr)
 			{
-				pD3D12CounterResource = reinterpret_cast<const DX12Resource*>(pDesc->pCounterResource)->GetD3D12Resource();
+				pD3D12CounterResource = dynamic_cast<DX12Resource*>(pDesc->pCounterResource)->GetD3D12Resource();
 			}
 
 			ID3D12Resource* pD3D12Resource = nullptr;
 			if (pDesc->pResource != nullptr)
 			{
-				m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
+				m_Resource = dynamic_cast<DX12Resource*>(pDesc->pResource);
 				pD3D12Resource = m_Resource->GetD3D12Resource();
+
+				m_GpuVirtualAddress = pD3D12Resource->GetGPUVirtualAddress();
 			}
 
-			DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12ResourceHeap();
-			m_View = pDX12Heap->GetNext(m_Resource);
-			
 			D3D12_UNORDERED_ACCESS_VIEW_DESC desc = {};
 			desc.Format = ReToDXFormat(pDesc->Format);
 			if (pDesc->ViewDimension == VIEWDIMENSION_BUFFER)
@@ -163,10 +162,12 @@ namespace RayEngine
 			}
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			pD3D12Device->CreateUnorderedAccessView(pD3D12Resource, pD3D12CounterResource, &desc, m_View.CpuDescriptor);
+			m_Descriptor = m_Device->CreateResourceDescriptorHandle();
+
+			pD3D12Device->CreateUnorderedAccessView(pD3D12Resource, pD3D12CounterResource, &desc, m_Descriptor.CpuDescriptor);
 			if (pD3D12Resource == nullptr)
 			{
-				LOG_WARNING("D3D12: Created a null UnorderedAccessView-Descriptor");
+				LOG_WARNING("D3D12: Created an empty UnorderedAccessView-Descriptor");
 			}
 
 			m_Desc = *pDesc;

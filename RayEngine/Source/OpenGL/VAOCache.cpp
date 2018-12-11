@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/OpenGL/VAOCache.h"
 #define GL_ATTRIB_POINTER(offset) (void*)((char*)(nullptr) + offset)
 

@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/OpenGL/GLDevice.h"
-#include "../../Include/OpenGL/GLDeviceContext.h"
-#include "../../Include/OpenGL/GLShader.h"
-#include "../../Include/OpenGL/GLRootLayout.h"
-#include "../../Include/OpenGL/GLPipelineState.h"
-#include "../../Include/OpenGL/GLBuffer.h"
+#include "RayEngine.h"
+#include "OpenGL/GLDevice.h"
+#include "OpenGL/GLDeviceContext.h"
+#include "OpenGL/GLShader.h"
+#include "OpenGL/GLRootLayout.h"
+#include "OpenGL/GLPipelineState.h"
+#include "OpenGL/GLBuffer.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
@@ -37,7 +37,7 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDevice::GLDevice(const DeviceDesc* pDesc)
-			: m_ImmediateContext(nullptr),			
+			: m_pImmediateContext(nullptr),			
 			m_NativeContext(RE_GL_NULL_NATIVE_CONTEXT),
 			m_Desc(),
 			m_References(0),
@@ -53,14 +53,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLDevice::~GLDevice()
 		{
-			ReRelease_S(m_ImmediateContext);
+			ReRelease_S(m_pImmediateContext);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool GLDevice::GetImmediateContext(IDeviceContext** ppContext)
 		{
-			return (*ppContext = m_ImmediateContext->QueryReference<GLDeviceContext>());
+			return (*ppContext = m_pImmediateContext->QueryReference<GLDeviceContext>());
 		}
 
 
@@ -221,7 +221,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDevice::Create()
 		{
-			m_ImmediateContext = new GLDeviceContext(this, false);
+			m_pImmediateContext = new GLDeviceContext(this, false);
 		}
 	}
 }

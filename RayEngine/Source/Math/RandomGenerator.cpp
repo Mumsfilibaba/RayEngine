@@ -19,9 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/Math/RandomGenerator.h"
-#include <ctime>
-#include <cstdlib>
 
 namespace Math
 {

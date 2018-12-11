@@ -44,12 +44,12 @@ namespace RayEngine
 
 			inline D3D12_CPU_DESCRIPTOR_HANDLE  GetD3D12CpuDescriptorHandle() const
 			{
-				return m_SamplerState.CpuDescriptor;
+				return m_Descriptor.CpuDescriptor;
 			}
 			
 			inline D3D12_GPU_DESCRIPTOR_HANDLE  GetD3D12GpuDescriptorHandle() const
 			{
-				return m_SamplerState.GpuDescriptor;
+				return m_Descriptor.GpuDescriptor;
 			}
 
 			void SetName(const std::string& name) override final;
@@ -70,7 +70,7 @@ namespace RayEngine
 		private:
 			DX12Device* m_Device;
 
-			DX12DescriptorHandle m_SamplerState;
+			DX12DescriptorHandle m_Descriptor;
 
 			SamplerDesc m_Desc;
 

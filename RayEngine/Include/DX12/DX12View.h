@@ -36,7 +36,7 @@ namespace RayEngine
 		protected:
 			inline DX12View()
 				: m_Resource(nullptr),
-				m_View()
+				m_Descriptor()
 			{
 			}
 
@@ -52,25 +52,32 @@ namespace RayEngine
 				return m_Resource;
 			}
 
-			inline DX12DescriptorHandle GetDX12DescriptorHandleSRVCBVUAV() const
+			inline const DX12DescriptorHandle& GetDX12DescriptorHandle() const
 			{
-				return m_View;
+				return m_Descriptor;
 			}
 
 			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12CpuDescriptorHandle() const
 			{
-				return m_View.CpuDescriptor;
+				return m_Descriptor.CpuDescriptor;
 			}
 
 			inline D3D12_GPU_DESCRIPTOR_HANDLE GetD3D12GpuDescriptorHandle() const
 			{
-				return m_View.GpuDescriptor;
+				return m_Descriptor.GpuDescriptor;
+			}
+
+			inline D3D12_GPU_VIRTUAL_ADDRESS GetD3D12VirtualAddress() const
+			{
+				return m_GpuVirtualAddress;
 			}
 
 		protected:
 			DX12Resource* m_Resource;
 
-			DX12DescriptorHandle m_View;
+			DX12DescriptorHandle m_Descriptor;
+
+			D3D12_GPU_VIRTUAL_ADDRESS m_GpuVirtualAddress;
 		};
 	}
 }

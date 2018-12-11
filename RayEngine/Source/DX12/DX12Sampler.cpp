@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-
-#include "..\..\Include\DX12\DX12Sampler.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\..\Include\DX12\DX12Device.h"
-#include "..\..\Include\DX12\DX12DescriptorHeap.h"
+#include "DX12/DX12Device.h"
+#include "DX12/DX12Sampler.h"
+#include "DX12/DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -33,6 +33,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12Sampler::DX12Sampler(IDevice* pDevice, const SamplerDesc* pDesc)
 			: m_Device(nullptr),
+			m_Descriptor(),
 			m_Desc(),
 			m_References(0)
 		{
@@ -101,10 +102,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Sampler::Create(const SamplerDesc* pDesc)
 		{
-			const DX12DescriptorHeap* pDX12Heap = m_Device->GetDX12SamplerHeap();
-			m_SamplerState = pDX12Heap->GetNext(nullptr);
-
-
 			D3D12_SAMPLER_DESC desc = {};
 			desc.AddressU = ReToDX12TextureAdressMode(pDesc->AdressU);
 			desc.AddressV = ReToDX12TextureAdressMode(pDesc->AdressV);
@@ -120,9 +117,7 @@ namespace RayEngine
 			desc.BorderColor[2] = pDesc->BorderColor.B;
 			desc.BorderColor[3] = pDesc->BorderColor.A;
 
-			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			pD3D12Device->CreateSampler(&desc, m_SamplerState.CpuDescriptor);
-
+			m_Device->CreateSamplerDescriptorHandle(desc, m_Descriptor);
 
 			m_Desc = *pDesc;
 		}

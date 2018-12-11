@@ -19,11 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Android\AndroidWindowImpl.h"
-#include "..\..\Include\System\Clock.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
 
+#include "..\..\Include\System\Clock.h"
+#include "..\..\Include\Android\AndroidWindowImpl.h"
 #include "..\..\Include\Android\Android.h"
 #include <android\window.h>
 #include <mutex>

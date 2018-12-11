@@ -19,8 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include <string>
-#include "../../Include/Debug/Debug.h"
+#include "RayEngine.h"
 #include "../../Include/Utilities/EngineUtilities.h"
 #include "../../Include/OpenGL/GLShader.h"
 #include "../../Include/OpenGL/GLDevice.h"

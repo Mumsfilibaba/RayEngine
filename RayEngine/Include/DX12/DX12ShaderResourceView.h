@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12ShaderResourceView final : public IShaderResourceView
+		class DX12ShaderResourceView final : public DX12View, public IShaderResourceView
 		{
 			RE_IMPLEMENT_INTERFACE(DX12ShaderResourceView);
 
@@ -60,9 +60,7 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-
-			DX12View m_View;
-			
+						
 			ShaderResourceViewDesc m_Desc;
 
 			IObject::CounterType m_References;

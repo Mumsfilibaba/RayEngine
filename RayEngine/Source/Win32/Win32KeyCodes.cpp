@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "Win32KeyCodes.h"
 
 #if defined(RE_PLATFORM_WINDOWS)

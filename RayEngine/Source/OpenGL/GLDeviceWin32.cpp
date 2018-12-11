@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include//Utilities/EngineUtilities.h"
 #include "../../Include/OpenGL/GLDeviceWin32.h"
 #include "../../Include/OpenGL/GLSwapchainWin32.h"

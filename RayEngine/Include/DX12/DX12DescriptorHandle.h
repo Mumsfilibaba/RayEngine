@@ -33,7 +33,6 @@ namespace RayEngine
 			D3D12_GPU_DESCRIPTOR_HANDLE GpuDescriptor;
 			D3D12_CPU_DESCRIPTOR_HANDLE CpuDescriptor;
 			int32 DescriptorHeapIndex;
-			D3D12_GPU_VIRTUAL_ADDRESS GpuResourceAdress;
 		};
 	}
 }

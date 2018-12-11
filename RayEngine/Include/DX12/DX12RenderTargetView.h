@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12RenderTargetView final : public IRenderTargetView
+		class DX12RenderTargetView final : public DX12View, public IRenderTargetView
 		{
 			RE_IMPLEMENT_INTERFACE(DX12RenderTargetView);
 
@@ -60,8 +60,6 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-
-			D3D12_CPU_DESCRIPTOR_HANDLE m_CpuDescriptor;
 
 			RenderTargetViewDesc m_Desc;
 

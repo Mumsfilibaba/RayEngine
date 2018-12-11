@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX12/DX12RenderTargetView.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Device.h"
-#include "../../Include/DX12/DX12Texture.h"
-#include "../../Include/DX12/DX12DescriptorHeap.h"
+#include "DX12/DX12RenderTargetView.h"
+#include "DX12/DX12Device.h"
+#include "DX12/DX12Texture.h"
+#include "DX12/DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -102,12 +102,9 @@ namespace RayEngine
 			ID3D12Resource* pD3D12Resource = nullptr;
 			if (pDesc->pResource != nullptr)
 			{
-				m_Resource = pDesc->pResource->QueryReference<DX12Resource>();
+				m_Resource = dynamic_cast<DX12Resource*>(pDesc->pResource);
 				pD3D12Resource = m_Resource->GetD3D12Resource();
 			}
-			
-			const DX12DescriptorHeap* pHeap = m_Device->GetDX12RenderTargetViewHeap();
-			m_View = pHeap->GetNext(m_Resource);
 
 			D3D12_RENDER_TARGET_VIEW_DESC desc = {};
 			desc.Format = ReToDXFormat(pDesc->Format);
@@ -162,10 +159,12 @@ namespace RayEngine
 			}
 
 			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			pD3D12Device->CreateRenderTargetView(pD3D12Resource, &desc, m_View.CpuDescriptor);
+			m_Descriptor = m_Device->CreateRenderTargetDescriptorHandle();
+
+			pD3D12Device->CreateRenderTargetView(pD3D12Resource, &desc, m_Descriptor.CpuDescriptor);
 			if (pD3D12Resource == nullptr)
 			{
-				LOG_WARNING("D3D12: Created a null RenderTargetView-Descriptor");
+				LOG_WARNING("D3D12: Created an empty RenderTargetView-Descriptor");
 			}
 
 			m_Desc = *pDesc;

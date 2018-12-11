@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
+#include "../../Include/RayEngine.h"
 #include "../System/TimeStamp.h"
 #include "../Math/Vector3.h"
 

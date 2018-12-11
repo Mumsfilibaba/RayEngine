@@ -20,15 +20,13 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
+#include "RayEngine.h"
 #include "Event.h"
 #include "Image.h"
 #include "../Math/Color.h"
-#include <string>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(RE_PLATFORM_WINDOWS)
-#define WIN32_LEAN_AND_MEAN 1
-#include <Windows.h>
 #define RE_NULL_WINDOW 0
 #elif defined(RE_PLATFORM_ANDROID)
 #define RE_NULL_WINDOW nullptr

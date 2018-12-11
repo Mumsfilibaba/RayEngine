@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Android\AndroidVulkanWrapper.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\Android\AndroidVulkanWrapper.h"
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PFN_vkCreateInstance vkCreateInstance = nullptr;
 PFN_vkDestroyInstance vkDestroyInstance = nullptr;

@@ -19,16 +19,17 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/System/System.h"
+#include "RayEngine.h"
+#include "System/System.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX11/DX11Device.h"
-#include "../../Include/DX11/DX11Swapchain.h"
-#include "../../Include/DX12/DX12Device.h"
-#include "../../Include/DX12/DX12Swapchain.h"
-#include "../../Include/OpenGL/GLDeviceWin32.h"
-#include "../../Include/OpenGL/GLSwapchain.h"
-#include "../../Include/Win32/Win32WindowImpl.h"
+#include "DX11/DX11Device.h"
+#include "DX11/DX11Swapchain.h"
+#include "DX12/DX12Device.h"
+#include "DX12/DX12Swapchain.h"
+#include "OpenGL/GLDeviceWin32.h"
+#include "OpenGL/GLSwapchain.h"
+#include "Win32/Win32WindowImpl.h"
 
 #if defined(CreateWindow)
 #undef CreateWindow
@@ -54,7 +55,7 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void CreateWindow(IWindow** ppWindow, WindowDesc* pDesc)
+	void CreateSystemWindow(IWindow** ppWindow, WindowDesc* pDesc)
 	{
 		*ppWindow = new Win32WindowImpl(pDesc);
 	}

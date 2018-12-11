@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX12/DX12CommandList.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Device.h"
+#include "DX12/DX12CommandList.h"
+#include "DX12/DX12Device.h"
 
 namespace RayEngine
 {

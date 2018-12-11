@@ -45,7 +45,7 @@ namespace RayEngine
 
 			inline DX12DescriptorHandle GetDX12DescriptorHandleSRVCBVUAV() const
 			{
-				return m_Views.SRVCBVUAV;
+				return m_Views.SRV_CBV_UAV.Descriptor;
 			}
 
 			inline D3D12_VERTEX_BUFFER_VIEW GetD3D12VertexBufferView() const
@@ -86,7 +86,11 @@ namespace RayEngine
 			
 			union 
 			{
-				DX12DescriptorHandle SRVCBVUAV;
+				struct
+				{
+					DX12DescriptorHandle Descriptor;
+					D3D12_GPU_VIRTUAL_ADDRESS GpuVirtualAdress;
+				} SRV_CBV_UAV;
 				D3D12_VERTEX_BUFFER_VIEW Vertex;
 				D3D12_INDEX_BUFFER_VIEW Index;
 			} m_Views;

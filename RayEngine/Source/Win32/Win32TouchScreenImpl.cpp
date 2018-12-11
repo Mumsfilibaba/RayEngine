@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\TouchScreen.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include "System/TouchScreen.h"
 
 namespace RayEngine
 {

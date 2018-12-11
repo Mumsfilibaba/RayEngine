@@ -19,11 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/Math/Vector2.h"
 
 #if defined(__ANDROID__)
 #include <sstream>
 #endif
+
 
 namespace Math
 {

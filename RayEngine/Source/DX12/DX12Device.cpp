@@ -19,23 +19,23 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX12/DX12Device.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Buffer.h"
-#include "../../Include/DX12/DX12Shader.h"
-#include "../../Include/DX12/DX12Texture.h"
-#include "../../Include/DX12/DX12DeviceContext.h"
-#include "../../Include/DX12/DX12PipelineState.h"
-#include "../../Include/DX12/DX12Sampler.h"
-#include "../../Include/DX12/DX12ShaderResourceView.h"
-#include "../../Include/DX12/DX12UnorderedAccessView.h"
-#include "../../Include/DX12/DX12RootLayout.h"
-#include "../../Include/DX12/DX12DepthStencilView.h"
-#include "../../Include/DX12/DX12RenderTargetView.h"
-#include "../../Include/DX12/DX12DynamicUploadHeap.h"
-#include "../../Include/DX12/DX12DescriptorHeap.h"
+#include "DX12/DX12Device.h"
+#include "DX12/DX12Buffer.h"
+#include "DX12/DX12Shader.h"
+#include "DX12/DX12Texture.h"
+#include "DX12/DX12DeviceContext.h"
+#include "DX12/DX12PipelineState.h"
+#include "DX12/DX12Sampler.h"
+#include "DX12/DX12ShaderResourceView.h"
+#include "DX12/DX12UnorderedAccessView.h"
+#include "DX12/DX12RootLayout.h"
+#include "DX12/DX12DepthStencilView.h"
+#include "DX12/DX12RenderTargetView.h"
+#include "DX12/DX12DynamicUploadHeap.h"
+#include "DX12/DX12DescriptorHeap.h"
 
 namespace RayEngine
 {
@@ -49,7 +49,7 @@ namespace RayEngine
 			m_DebugController(nullptr),
 			m_DebugDevice(nullptr),
 			m_UploadHeap(nullptr),
-			m_ImmediateContext(nullptr),
+			m_pImmediateContext(nullptr),
 			m_ResourceHeap(nullptr),
 			m_DsvHeap(nullptr),
 			m_RtvHeap(nullptr),
@@ -69,13 +69,13 @@ namespace RayEngine
 			ReRelease_S(m_DsvHeap);
 			ReRelease_S(m_RtvHeap);
 			ReRelease_S(m_ResourceHeap);
-			ReRelease_S(m_ImmediateContext);
+			ReRelease_S(m_pImmediateContext);
 			ReRelease_S(m_UploadHeap);
 			ReRelease_S(m_SamplerHeap);
-			ReRelease_S(m_NullSRV);
-			ReRelease_S(m_NullRTV);
-			ReRelease_S(m_NullDSV);
-			ReRelease_S(m_NullUAV);
+			ReRelease_S(m_pEmptySRV);
+			ReRelease_S(m_pEmptyRTV);
+			ReRelease_S(m_pEmptyDSV);
+			ReRelease_S(m_pEmptyUAV);
 
 			if (m_DebugDevice != nullptr)
 			{
@@ -164,7 +164,7 @@ namespace RayEngine
 			m_RtvHeap->SetName(name + ": RTV-Heap");
 			m_ResourceHeap->SetName(name + ": Resource-Heap (CBV/SRV)");
 			m_SamplerHeap->SetName(name + ": Sampler-Heap");
-			m_ImmediateContext->SetName(name + ": ImmediateContext");
+			m_pImmediateContext->SetName(name + ": ImmediateContext");
 		}
 
 
@@ -244,9 +244,17 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void DX12Device::CreateSamplerDescriptorHandle(const D3D12_SAMPLER_DESC& desc, DX12DescriptorHandle& destHandle) const
+		{
+			destHandle = m_SamplerHeap->GetNext();
+			m_Device->CreateSampler(&desc, destHandle.CpuDescriptor);
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool DX12Device::GetImmediateContext(IDeviceContext** ppContext)
 		{
-			return ((*ppContext) = m_ImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
+			return ((*ppContext) = m_pImmediateContext->QueryReference<DX12DeviceContext>()) != nullptr;
 		}
 
 
@@ -301,13 +309,13 @@ namespace RayEngine
 				}
 
 				m_UploadHeap = new DX12DynamicUploadHeap(this, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 20);
-				m_DsvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, pDesc->DepthStencilDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-				m_RtvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, pDesc->RendertargetDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_NONE);
-				m_ResourceHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, pDesc->ResourceDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-				m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, pDesc->SamplerDescriptorCount, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-				m_ImmediateContext = new DX12DeviceContext(this, false);
+				m_DsvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, pDesc->DepthStencilDescriptorCount);
+				m_RtvHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, pDesc->RendertargetDescriptorCount);
+				m_ResourceHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, pDesc->ResourceDescriptorCount);
+				m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, pDesc->SamplerDescriptorCount);
+				m_pImmediateContext = new DX12DeviceContext(this, false);
 
-				CreateNullDescriptors();
+				CreateEmptyDescriptors();
 
 				SetName(pDesc->Name);
 
@@ -386,7 +394,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::CreateNullDescriptors()
+		void DX12Device::CreateEmptyDescriptors()
 		{
 			ShaderResourceViewDesc srv = {};
 			srv.Name = "Null SRV";
@@ -399,7 +407,7 @@ namespace RayEngine
 			srv.Texture2D.MostDetailedMip = 0;
 			srv.Texture2D.PlaneSlice = 0;
 			
-			m_NullSRV = new DX12ShaderResourceView(this, &srv);
+			m_pEmptySRV = new DX12ShaderResourceView(this, &srv);
 
 			RenderTargetViewDesc rtv = {};
 			rtv.Name = "Null SRV";
@@ -409,7 +417,7 @@ namespace RayEngine
 			rtv.Texture2D.MipSlice = 0;
 			rtv.Texture2D.PlaneSlice = 0;
 			
-			m_NullRTV = new DX12RenderTargetView(this, &rtv);
+			m_pEmptyRTV = new DX12RenderTargetView(this, &rtv);
 
 			DepthStencilViewDesc dsv = {};
 			dsv.Name = "Null DSV";
@@ -419,7 +427,7 @@ namespace RayEngine
 			dsv.ViewDimension = VIEWDIMENSION_TEXTURE2D;
 			dsv.Texture2D.MipSlice = 0;
 
-			m_NullDSV = new DX12DepthStencilView(this, &dsv);
+			m_pEmptyDSV = new DX12DepthStencilView(this, &dsv);
 
 			UnorderedAccessViewDesc uav = {};
 			uav.Name = "Null UAV";
@@ -431,7 +439,7 @@ namespace RayEngine
 			uav.Texture2D.MipSlice = 0;
 			uav.Texture2D.PlaneSlice = 0;
 
-			m_NullUAV = new DX12UnorderedAccessView(this, &uav);
+			m_pEmptyUAV = new DX12UnorderedAccessView(this, &uav);
 		}
 	}
 }

@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\TouchScreen.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\System\TouchScreen.h"
 #include "AndroidAppState.h"
 
 namespace RayEngine

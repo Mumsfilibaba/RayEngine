@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Android\AndroidBitmapImpl.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\Android\AndroidBitmapImpl.h"
 #include <cstring>
 
 namespace RayEngine

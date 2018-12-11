@@ -99,7 +99,7 @@ namespace RayEngine
 			bool QueryAdapter(D3D_FEATURE_LEVEL* pFeatureLevel);
 
 		private:
-			DX11DeviceContext* m_ImmediateContext;
+			DX11DeviceContext* m_pImmediateContext;
 			IDXGIFactory* m_Factory;
 			IDXGIAdapter* m_Adapter;
 			ID3D11Device* m_Device;

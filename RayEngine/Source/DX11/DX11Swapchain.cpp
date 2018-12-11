@@ -19,15 +19,15 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX11/DX11Swapchain.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/Win32/Win32WindowImpl.h"
-#include "../../Include/DX11/DX11Device.h"
-#include "../../Include/DX11/DX11Texture.h"
-#include "../../Include/DX11/DX11DepthStencilView.h"
-#include "../../Include/DX11/DX11RenderTargetView.h"
+#include "Win32/Win32WindowImpl.h"
+#include "DX11/DX11Swapchain.h"
+#include "DX11/DX11Device.h"
+#include "DX11/DX11Texture.h"
+#include "DX11/DX11DepthStencilView.h"
+#include "DX11/DX11RenderTargetView.h"
 
 namespace RayEngine
 {
@@ -37,7 +37,7 @@ namespace RayEngine
 		DX11Swapchain::DX11Swapchain(IDevice* pDevice, const SwapchainDesc* pDesc, HWND hwnd)
 			: m_Device(nullptr),
 			m_Swapchain(nullptr),
-			m_ImmediateContext(nullptr),
+			m_pImmediateContext(nullptr),
 			m_BackBuffer(nullptr),
 			m_MSAABackBuffer(nullptr),
 			m_DepthStencil(nullptr),
@@ -51,7 +51,7 @@ namespace RayEngine
 		{
 			AddRef();
 			m_Device = reinterpret_cast<DX11Device*>(pDevice);
-			m_Device->GetD3D11Device()->GetImmediateContext(&m_ImmediateContext);
+			m_Device->GetD3D11Device()->GetImmediateContext(&m_pImmediateContext);
 
 			Create(pDesc, hwnd);
 		}
@@ -61,7 +61,7 @@ namespace RayEngine
 		DX11Swapchain::~DX11Swapchain()
 		{
 			D3DRelease_S(m_Swapchain);
-			D3DRelease_S(m_ImmediateContext);
+			D3DRelease_S(m_pImmediateContext);
 			
 			ReleaseResources();
 		}
@@ -138,7 +138,7 @@ namespace RayEngine
 			{
 				ID3D11Texture2D* pDst = m_BackBuffer->GetD3D11Texture2D();
 				ID3D11Texture2D* pSrc = m_MSAABackBuffer->GetD3D11Texture2D();
-				m_ImmediateContext->ResolveSubresource(pDst, 0, pSrc, 0, m_Format);
+				m_pImmediateContext->ResolveSubresource(pDst, 0, pSrc, 0, m_Format);
 			}
 
 			m_Swapchain->Present(0, 0);

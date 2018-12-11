@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-
-#include "../../Include/System/System.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_LINUX)
+#include "../../Include/System/System.h"
 #include "../../Include/Utilities/StringUtilities.h"
 #include "../../Include/Utilities/EngineUtilities.h"
 #include "../../Include/OpenGL/GLDeviceLinux.h"
@@ -55,7 +55,7 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void CreateWindow(IWindow** ppWindow, WindowDesc* pDesc)
+    void CreateSystemWindow(IWindow** ppWindow, WindowDesc* pDesc)
     {
         *ppWindow = new LinuxWindowImpl(pDesc);
     }

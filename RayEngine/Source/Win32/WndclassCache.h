@@ -21,17 +21,9 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "../../Include/Defines.h"
-#include "../../Include/Types.h"
+#include "../../Include/RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-
-#include <unordered_map>
-#include <Windows.h>
 
 namespace RayEngine
 {

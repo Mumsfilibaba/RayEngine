@@ -19,15 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "..\..\Include\Defines.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-
-#include <Windows.h>
-#include <crtdbg.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 extern int main(int args, char* argsv[]);

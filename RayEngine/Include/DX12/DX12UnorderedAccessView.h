@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12UnorderedAccessView final : public IUnorderedAccessView
+		class DX12UnorderedAccessView final : public DX12View, public IUnorderedAccessView
 		{
 			RE_IMPLEMENT_INTERFACE(DX12UnorderedAccessView);
 
@@ -60,8 +60,6 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-
-			DX12View m_View;
 
 			UnorderedAccessViewDesc m_Desc;
 

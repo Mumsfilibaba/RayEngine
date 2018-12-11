@@ -97,7 +97,7 @@ namespace RayEngine
 			void Create();
 
 		protected:
-			GLDeviceContext* m_ImmediateContext;
+			GLDeviceContext* m_pImmediateContext;
 			
 			GLNativeContext m_NativeContext;
 

@@ -19,9 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/Utilities/EngineUtilities.h"
-#include <sstream>
-#include <fstream>
 
 namespace RayEngine
 {

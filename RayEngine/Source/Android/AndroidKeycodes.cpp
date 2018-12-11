@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "AndroidKeycodes.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "AndroidKeycodes.h"
 #include <android/input.h>
 
 namespace RayEngine

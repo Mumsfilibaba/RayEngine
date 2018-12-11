@@ -19,15 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "..\..\Include\System\Clipboard.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-
-#include <Windows.h>
 
 namespace RayEngine
 {

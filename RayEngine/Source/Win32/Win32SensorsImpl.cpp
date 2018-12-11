@@ -19,6 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/System/Sensors.h"
 
 #if defined(RE_PLATFORM_WINDOWS)

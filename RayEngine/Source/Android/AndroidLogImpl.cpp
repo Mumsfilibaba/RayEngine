@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\Android\AndroidLogImpl.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\Android\AndroidLogImpl.h"
 #include <android/log.h>
 
 namespace RayEngine

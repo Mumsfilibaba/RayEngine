@@ -19,9 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/System/Clock.h"
-#include <chrono>
-#include <ctime>
 
 namespace RayEngine
 {

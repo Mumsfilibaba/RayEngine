@@ -19,21 +19,21 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX11/DX11Device.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX11/DX11DeviceContext.h"
-#include "../../Include/DX11/DX11RenderTargetView.h"
-#include "../../Include/DX11/DX11DepthStencilView.h"
-#include "../../Include/DX11/DX11Texture.h"
-#include "../../Include/DX11/DX11Shader.h"
-#include "../../Include/DX11/DX11Sampler.h"
-#include "../../Include/DX11/DX11ShaderResourceView.h"
-#include "../../Include/DX11/DX11UnorderedAccessView.h"
-#include "../../Include/DX11/DX11RootLayout.h"
-#include "../../Include/DX11/DX11PipelineState.h"
-#include "../../Include/DX11/DX11Buffer.h"
+#include "DX11/DX11Device.h"
+#include "DX11/DX11DeviceContext.h"
+#include "DX11/DX11RenderTargetView.h"
+#include "DX11/DX11DepthStencilView.h"
+#include "DX11/DX11Texture.h"
+#include "DX11/DX11Shader.h"
+#include "DX11/DX11Sampler.h"
+#include "DX11/DX11ShaderResourceView.h"
+#include "DX11/DX11UnorderedAccessView.h"
+#include "DX11/DX11RootLayout.h"
+#include "DX11/DX11PipelineState.h"
+#include "DX11/DX11Buffer.h"
 #include <d3dcommon.h>
 
 namespace RayEngine
@@ -46,7 +46,7 @@ namespace RayEngine
 			m_Adapter(nullptr),
 			m_Device(nullptr),
 			m_DebugDevice(nullptr),
-			m_ImmediateContext(nullptr),
+			m_pImmediateContext(nullptr),
 			m_FeatureLevel(),
 			m_Desc(),
 			m_References(0)
@@ -60,7 +60,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11Device::~DX11Device()
 		{
-			ReRelease_S(m_ImmediateContext);
+			ReRelease_S(m_pImmediateContext);
 			
 			D3DRelease_S(m_Factory);
 			D3DRelease_S(m_Adapter);
@@ -80,7 +80,7 @@ namespace RayEngine
 			if (ppContext == nullptr)
 				return false;
 
-			(*ppContext) = m_ImmediateContext->QueryReference<DX11DeviceContext>();
+			(*ppContext) = m_pImmediateContext->QueryReference<DX11DeviceContext>();
 			return (*ppContext) != nullptr;
 		}
 
@@ -284,7 +284,7 @@ namespace RayEngine
 			{
 				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 
-				m_ImmediateContext = new DX11DeviceContext(this, false);
+				m_pImmediateContext = new DX11DeviceContext(this, false);
 
 				m_Desc = *pDesc;
 			}

@@ -19,24 +19,24 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/Graphics/Viewport.h"
-#include "../../Include/DX12/DX12DeviceContext.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Device.h"
-#include "../../Include/DX12/DX12Swapchain.h"
-#include "../../Include/DX12/DX12RootLayout.h"
-#include "../../Include/DX12/DX12PipelineState.h"
-#include "../../Include/DX12/DX12RendertargetView.h"
-#include "../../Include/DX12/DX12DepthStencilView.h"
-#include "../../Include/DX12/DX12ShaderResourceView.h"
-#include "../../Include/DX12/DX12UnorderedAccessView.h"
-#include "../../Include/DX12/DX12Buffer.h"
-#include "../../Include/DX12/DX12Sampler.h"
-#include "../../Include/DX12/DX12Resource.h"
-#include "../../Include/DX12/DX12RootVariableSlot.h"
-#include "../../Include/DX12/DX12CommandList.h"
+#include "Graphics/Viewport.h"
+#include "DX12/DX12DeviceContext.h"
+#include "DX12/DX12Device.h"
+#include "DX12/DX12Swapchain.h"
+#include "DX12/DX12RootLayout.h"
+#include "DX12/DX12PipelineState.h"
+#include "DX12/DX12RendertargetView.h"
+#include "DX12/DX12DepthStencilView.h"
+#include "DX12/DX12ShaderResourceView.h"
+#include "DX12/DX12UnorderedAccessView.h"
+#include "DX12/DX12Buffer.h"
+#include "DX12/DX12Sampler.h"
+#include "DX12/DX12Resource.h"
+#include "DX12/DX12RootVariableSlot.h"
+#include "DX12/DX12CommandList.h"
 
 namespace RayEngine
 {
@@ -253,7 +253,7 @@ namespace RayEngine
 				}
 				else
 				{
-					pRTVs[i] = m_Device->GetD3D12NullRTV();
+					pRTVs[i] = m_Device->GetEmptyRenderTargetView();
 				}
 			}
 
@@ -267,7 +267,7 @@ namespace RayEngine
 			}
 			else
 			{
-				dsv = m_Device->GetD3D12NullDSV();
+				dsv = m_Device->GetEmptyDepthStencilView();
 			}
 
 			TransitionResourceGroup(ppResources, pToStates, pSubResources, numResources);
@@ -297,7 +297,7 @@ namespace RayEngine
 		void DX12DeviceContext::SetShaderResourceViews(IShaderResourceView* pShaderResourceView, int32 startRootIndex) const
 		{
 			DX12ShaderResourceView* pDX12View = reinterpret_cast<DX12ShaderResourceView*>(pShaderResourceView);
-			DX12DescriptorHandle srv = pDX12View->GetDX12DescriptorHandleSRVCBVUAV();
+			DX12DescriptorHandle srv = pDX12View->GetDX12DescriptorHandle();
 			
 			//TODO: Maybe the subreource is not 0
 
@@ -313,7 +313,7 @@ namespace RayEngine
 		void DX12DeviceContext::SetUnorderedAccessViews(IUnorderedAccessView* pUnorderedAccessView, int32 startRootIndex) const
 		{
 			DX12ShaderResourceView* pDX12View = reinterpret_cast<DX12ShaderResourceView*>(pUnorderedAccessView);
-			DX12DescriptorHandle uav = pDX12View->GetDX12DescriptorHandleSRVCBVUAV();
+			DX12DescriptorHandle uav = pDX12View->GetDX12DescriptorHandle();
 
 			DX12RootVariableSlot* pDX12Slot = m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex);
 			TransitionResourceIndirect(pDX12View->GetDX12Resource(), pDX12Slot->GetNeededD3D12ResourceState(), 0);
@@ -340,7 +340,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::SetSamplers(ISampler* pSampler, int32 startRootIndex) const
 		{
-			DX12DescriptorHandle sampler = reinterpret_cast<DX12Buffer*>(pSampler)->GetDX12DescriptorHandleSRVCBVUAV();
+			DX12DescriptorHandle sampler;// = reinterpret_cast<DX12Sampler*>(pSampler)->Get();
 			m_CurrentRootLayout->GetDX12RootVariableSlot(startRootIndex)->SetSamplers(m_List->GetD3D12GraphicsCommandList(), &sampler, 1);
 
 			AddCommand();

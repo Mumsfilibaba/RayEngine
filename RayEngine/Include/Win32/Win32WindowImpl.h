@@ -20,17 +20,10 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\..\Include\Defines.h"
+#include "../../Include/RayEngine.h"
+
 #if defined(RE_PLATFORM_WINDOWS)
-
-#include "..\System\Window.h"
-#include <queue>
-
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-
-#include <Windows.h>
+#include "../System/Window.h"
 
 #define WNDCLASS_NAME RE_T("Win32WindowImpl")
 

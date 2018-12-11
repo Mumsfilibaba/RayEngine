@@ -20,12 +20,9 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\DXBase\DXCommon.h"
+#include "DXBase\DXCommon.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include <d3d12.h>
-#include <dxgi1_6.h>
-
 #include "DX12Conversions.h"
 
 namespace RayEngine

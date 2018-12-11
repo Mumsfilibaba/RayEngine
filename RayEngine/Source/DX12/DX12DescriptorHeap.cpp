@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX12/DX12DescriptorHeap.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Device.h"
-#include "../../Include/DX12/DX12Resource.h"
+#include "DX12/DX12DescriptorHeap.h"
+#include "DX12/DX12Device.h"
+#include "DX12/DX12Resource.h"
 
 namespace RayEngine
 {
@@ -42,19 +42,18 @@ namespace RayEngine
 			AddRef();
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
-			Create(type, num, flags);
+			Create(type, flags, num);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12DescriptorHeap::~DX12DescriptorHeap()
 		{
-			D3DRelease_S(m_Heap);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12DescriptorHandle DX12DescriptorHeap::GetNext(const DX12Resource* pResource) const
+		DX12DescriptorHandle DX12DescriptorHeap::GetNext() const
 		{
 			DX12DescriptorHandle next = {};
 			next.DescriptorHeapIndex = m_UsedCount;
@@ -65,11 +64,6 @@ namespace RayEngine
 			next.GpuDescriptor = m_Heap->GetGPUDescriptorHandleForHeapStart();
 			next.GpuDescriptor.ptr += m_UsedCount * m_DescriptorSize;
 
-			if (pResource != nullptr)
-				next.GpuResourceAdress = pResource->GetD3D12Resource()->GetGPUVirtualAddress();
-			else
-				next.GpuResourceAdress = 0;
-
 			m_UsedCount++;
 			return next;
 		}
@@ -78,7 +72,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DescriptorHeap::SetName(const std::string& name)
 		{
-			D3D12SetName(m_Heap, name);
+			D3D12SetName(m_Heap.Get(), name);
 		}
 		
 

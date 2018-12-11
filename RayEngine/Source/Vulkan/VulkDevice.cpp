@@ -19,8 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include <vector>
-#include "../../Include/Debug/Debug.h"
+#include "RayEngine.h"
 #include "../../Include/Vulkan/VulkDevice.h"
 #include "../../Include/Vulkan/VulkFactory.h"
 #include "../../Include/Vulkan/VulkTexture.h"

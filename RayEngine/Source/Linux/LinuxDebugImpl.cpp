@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
+#include "RayEngine.h"
 #include "../../Include/System/Clock.h"
-#include <iostream>
 
 #if defined(RE_PLATFORM_LINUX)
+#include <iostream>
 
 namespace RayEngine
 {

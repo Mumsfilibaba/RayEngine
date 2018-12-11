@@ -21,9 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "../../Include/Debug/Debug.h"
-#include <typeinfo>
-#include <string>
+#include "RayEngine.h"
 
 #define LOAD_GL_FUNC(func)																					\
 if ((func = reinterpret_cast<decltype(func)>(LoadFunction(#func))) == nullptr)								\
@@ -34,10 +32,6 @@ if ((func = reinterpret_cast<decltype(func)>(LoadFunction(name))) == nullptr)			
 	LOG_WARNING(std::string("OpenGL: Function \'") + std::string(name) + std::string("\' not supported."))	\
 
 #if defined (RE_PLATFORM_WINDOWS)
-#define WIN32_LEAN_AND_MEAN 1
-#include <Windows.h>
-#include <gl\GL.h>
-#include <gl\GLU.h>
 
 /*////////////////////////////////////////////////////////////
 	WGL

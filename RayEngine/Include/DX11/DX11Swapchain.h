@@ -85,7 +85,7 @@ namespace RayEngine
 		private:
 			DX11Device* m_Device;
 			IDXGISwapChain* m_Swapchain;
-			ID3D11DeviceContext* m_ImmediateContext;
+			ID3D11DeviceContext* m_pImmediateContext;
 			DX11Texture* m_BackBuffer;
 			DX11Texture* m_MSAABackBuffer;
 			DX11Texture* m_DepthStencil;

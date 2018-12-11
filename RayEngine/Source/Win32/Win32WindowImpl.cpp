@@ -19,16 +19,15 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/Win32/Win32WindowImpl.h"
 
 #if defined (RE_PLATFORM_WINDOWS)
 
-#include "../../Include/Debug/Debug.h"
 #include "../../Include/Utilities/EngineUtilities.h"
 #include "../../Include/Utilities/TextureUtilities.h"
 #include "Win32KeyCodes.h"
 #include "WndclassCache.h"
-#include <windowsx.h>
 
 namespace RayEngine
 {

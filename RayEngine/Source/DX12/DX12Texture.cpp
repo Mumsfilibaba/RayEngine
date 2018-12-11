@@ -19,8 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include <utility>
-#include "../../Include/Debug/Debug.h"
+#include "RayEngine.h"
 #include "../../Include/DX12/DX12Texture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
@@ -57,7 +56,7 @@ namespace RayEngine
 			m_Device = reinterpret_cast<DX12Device*>(pDevice);
 
 			m_Resource = pResource;
-			pResource->AddRef();
+			m_Resource->AddRef();
 
 			//TODO: Get desc from D3D12 resource
 		}
@@ -132,6 +131,7 @@ namespace RayEngine
 			clearValue.DepthStencil.Stencil = pDesc->DepthStencil.OptimizedStencil;
 
 			D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
+			D3D12_RESOURCE_STATES startingState = D3D12_RESOURCE_STATE_COMMON;
 			if (pDesc->Flags & TEXTURE_FLAGS_RENDERTARGET)
 			{
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -142,6 +142,7 @@ namespace RayEngine
 				flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 				if (!(pDesc->Flags & TEXTURE_FLAGS_SHADER_RESOURCE))
 				{
+					startingState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 					flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 				}
 
@@ -196,7 +197,6 @@ namespace RayEngine
 			else if (pDesc->Usage == RESOURCE_USAGE_DYNAMIC)
 				heap.Type = D3D12_HEAP_TYPE_UPLOAD;
 
-			D3D12_RESOURCE_STATES startingState = D3D12_RESOURCE_STATE_COMMON;
 			HRESULT hr = pD3D12Device->CreateCommittedResource(&heap, D3D12_HEAP_FLAG_NONE, &desc, startingState, pClearValue, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{

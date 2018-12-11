@@ -48,7 +48,7 @@ namespace RayEngine
 				return m_Count - m_UsedCount;
 			}
 
-			DX12DescriptorHandle GetNext(const DX12Resource* pResource) const;
+			DX12DescriptorHandle GetNext() const;
 
 			void SetName(const std::string& name) override final;
 
@@ -65,7 +65,7 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-			ID3D12DescriptorHeap* m_Heap;
+			Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_Heap;
 			
 			int32 m_DescriptorSize;
 			int32 m_Count;

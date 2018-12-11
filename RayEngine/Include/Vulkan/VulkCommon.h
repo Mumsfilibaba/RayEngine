@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
+#include "../RayEngine.h"
 #include "../System/Window.h"
 
 #if defined(RE_PLATFORM_ANDROID)

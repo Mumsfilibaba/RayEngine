@@ -19,14 +19,14 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX12/DX12Buffer.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Device.h"
-#include "../../Include/DX12/DX12DescriptorHeap.h"
-#include "../../Include/DX12/DX12DynamicUploadHeap.h"
-#include "../../Include/DX12/DX12DeviceContext.h"
+#include "DX12/DX12Device.h"
+#include "DX12/DX12Buffer.h"
+#include "DX12/DX12DescriptorHeap.h"
+#include "DX12/DX12DynamicUploadHeap.h"
+#include "DX12/DX12DeviceContext.h"
 
 namespace RayEngine
 {
@@ -201,11 +201,10 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Buffer::CreateView(const BufferDesc* pDesc)
 		{
-			const DX12Device* pDX12Device = m_Device;
 			if (pDesc->Usage == BUFFER_USAGE_CONSTANT || pDesc->Usage == BUFFER_USAGE_SHADER_RESOURCE || pDesc->Usage == BUFFER_USAGE_UNORDERED_ACCESS)
 			{
-				m_Views.SRVCBVUAV = pDX12Device->GetDX12ResourceHeap()->GetNext(this);
-				m_Views.SRVCBVUAV.GpuResourceAdress = m_Resource->GetGPUVirtualAddress();
+				m_Views.SRV_CBV_UAV.Descriptor = m_Device->CreateResourceDescriptorHandle();
+				m_Views.SRV_CBV_UAV.GpuVirtualAdress = m_Resource->GetGPUVirtualAddress();
 			}
 			else if (pDesc->Usage == BUFFER_USAGE_VERTEX)
 			{

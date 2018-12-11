@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX12/DX12Swapchain.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12DepthStencilView.h"
-#include "../../Include/DX12/DX12RenderTargetView.h"
-#include "../../Include/DX12/DX12DeviceContext.h"
+#include "DX12/DX12Swapchain.h"
+#include "DX12/DX12DepthStencilView.h"
+#include "DX12/DX12RenderTargetView.h"
+#include "DX12/DX12DeviceContext.h"
 
 namespace RayEngine
 {

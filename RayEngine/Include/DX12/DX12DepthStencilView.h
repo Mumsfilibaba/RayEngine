@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12DepthStencilView : public IDepthStencilView, public DX12View
+		class DX12DepthStencilView : public DX12View, public IDepthStencilView
 		{
 			RE_IMPLEMENT_INTERFACE(DX12DepthStencilView);
 
@@ -60,8 +60,6 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-
-			D3D12_CPU_DESCRIPTOR_HANDLE m_CpuDescriptor;
 
 			DepthStencilViewDesc m_Desc;
 

@@ -19,9 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "..\..\Include\System\\Keyboard.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "..\..\Include\System\\Keyboard.h"
 #include "AndroidAppState.h"
 
 namespace RayEngine
@@ -32,7 +33,6 @@ namespace RayEngine
 		//Not implemented on android
 		return false;
 	}
-
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

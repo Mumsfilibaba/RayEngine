@@ -19,9 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
+#include "RayEngine.h"
 #include "../../Include/Math/Matrix3.h"
-#include <cassert>
-#include <cstring>
 
 namespace Math
 {

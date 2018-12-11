@@ -18,8 +18,9 @@ contributor be held liable. This includes computer
 failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
+
+#include "RayEngine.h"
 #include "Linux.h"
-#include "../../Include/Debug/Debug.h"
 
 #if defined(RE_PLATFORM_LINUX)
 

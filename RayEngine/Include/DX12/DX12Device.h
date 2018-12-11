@@ -24,6 +24,7 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
+#include "DX12DescriptorHeap.h"
 #include "DX12DepthStencilView.h"
 #include "DX12RenderTargetView.h"
 #include "DX12ShaderResourceView.h"
@@ -35,7 +36,6 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12DeviceContext;
-		class DX12DescriptorHeap;
 		class DX12DynamicUploadHeap;
 
 
@@ -63,24 +63,19 @@ namespace RayEngine
 				return m_Adapter.Get();
 			}
 
-			inline DX12DescriptorHeap* GetDX12DepthStencilViewHeap() const
+			inline DX12DescriptorHandle CreateDepthStencilDescriptorHandle() const
 			{
-				return m_DsvHeap;
+				return m_DsvHeap->GetNext();
 			}
 
-			inline DX12DescriptorHeap* GetDX12RenderTargetViewHeap() const
+			inline DX12DescriptorHandle CreateRenderTargetDescriptorHandle() const
 			{
-				return m_RtvHeap;
+				return m_RtvHeap->GetNext();
 			}
 
-			inline DX12DescriptorHeap* GetDX12ResourceHeap() const
+			inline DX12DescriptorHandle CreateResourceDescriptorHandle() const
 			{
-				return m_ResourceHeap;
-			}
-
-			inline DX12DescriptorHeap* GetDX12SamplerHeap() const
-			{
-				return m_SamplerHeap;
+				return m_ResourceHeap->GetNext();
 			}
 
 			inline DX12DynamicUploadHeap* GetDX12UploadHeap() const
@@ -90,28 +85,30 @@ namespace RayEngine
 
 			inline DX12DeviceContext* GetDX12ImmediateContext() const
 			{
-				return m_ImmediateContext;
+				return m_pImmediateContext;
 			}
 
-			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullSRV() const
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetEmptyShaderResourceView() const
 			{
-				return m_NullSRV->GetD3D12CpuDescriptorHandle();
+				return m_pEmptySRV->GetD3D12CpuDescriptorHandle();
 			}
 
-			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullRTV() const
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetEmptyRenderTargetView() const
 			{
-				return m_NullRTV->GetD3D12CpuDescriptorHandle();
+				return m_pEmptyRTV->GetD3D12CpuDescriptorHandle();
 			}
 
-			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullDSV() const
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetEmptyDepthStencilView() const
 			{
-				return m_NullDSV->GetD3D12CpuDescriptorHandle();
+				return m_pEmptyDSV->GetD3D12CpuDescriptorHandle();
 			}
 
-			inline D3D12_CPU_DESCRIPTOR_HANDLE GetD3D12NullUAV() const
+			inline D3D12_CPU_DESCRIPTOR_HANDLE GetEmptyUnorderedAccessView() const
 			{
-				return m_NullUAV->GetD3D12CpuDescriptorHandle();
+				return m_pEmptyUAV->GetD3D12CpuDescriptorHandle();
 			}
+
+			void CreateSamplerDescriptorHandle(const D3D12_SAMPLER_DESC& desc, DX12DescriptorHandle& destHandle) const;
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
@@ -154,7 +151,7 @@ namespace RayEngine
 
 			bool QueryAdapter();
 
-			void CreateNullDescriptors();
+			void CreateEmptyDescriptors();
 
 		private:
 			Microsoft::WRL::ComPtr<IDXGIFactory5> m_Factory;
@@ -162,16 +159,16 @@ namespace RayEngine
 			Microsoft::WRL::ComPtr<ID3D12Device> m_Device;
 			Microsoft::WRL::ComPtr<ID3D12Debug> m_DebugController;
 			Microsoft::WRL::ComPtr<ID3D12DebugDevice> m_DebugDevice;
-			DX12DeviceContext* m_ImmediateContext;
+			DX12DeviceContext* m_pImmediateContext;
 			DX12DynamicUploadHeap* m_UploadHeap;
 			DX12DescriptorHeap* m_ResourceHeap;
 			DX12DescriptorHeap* m_DsvHeap;
 			DX12DescriptorHeap* m_RtvHeap;
 			DX12DescriptorHeap* m_SamplerHeap;
-			DX12ShaderResourceView* m_NullSRV;
-			DX12RenderTargetView* m_NullRTV;
-			DX12DepthStencilView* m_NullDSV;
-			DX12UnorderedAccessView* m_NullUAV;
+			DX12RenderTargetView* m_pEmptyRTV;
+			DX12DepthStencilView* m_pEmptyDSV;
+			DX12ShaderResourceView* m_pEmptySRV;
+			DX12UnorderedAccessView* m_pEmptyUAV;
 			DeviceDesc m_Desc;
 			IObject::CounterType m_References;
 		};

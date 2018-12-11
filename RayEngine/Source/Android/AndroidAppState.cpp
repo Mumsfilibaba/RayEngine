@@ -18,10 +18,10 @@ contributor be held liable. This includes computer
 failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
-
-#include "AndroidAppState.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_ANDROID)
+#include "AndroidAppState.h"
 #include "AndroidKeycodes.h"
 
 namespace RayEngine

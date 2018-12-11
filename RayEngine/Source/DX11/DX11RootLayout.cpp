@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../../Include/Debug/Debug.h"
-#include "../../Include/DX11/DX11RootLayout.h"
+#include "RayEngine.h"
+#include "DX11/DX11RootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX11/DX11Device.h"
-#include "../../Include/DX11/DX11RootVariableSlot.h"
-#include "../../Include/DX11/DX11ShaderConstantBlock.h"
+#include "DX11/DX11Device.h"
+#include "DX11/DX11RootVariableSlot.h"
+#include "DX11/DX11ShaderConstantBlock.h"
 
 namespace RayEngine
 {
