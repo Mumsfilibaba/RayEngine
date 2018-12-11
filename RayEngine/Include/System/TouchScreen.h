@@ -20,12 +20,12 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../RayEngine.h"
-#include "../Math/Vector2.h"
+#include "RayEngine.h"
+#include "Math/Vector2.h"
 
 namespace RayEngine
 {
-	class TouchScreen
+	class RAYENGINE_API TouchScreen
 	{
 		RE_STATIC_CLASS(TouchScreen);
 

@@ -20,12 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
+#include "RayEngine.h"
 
 namespace RayEngine
 {
-    class Image final
+    class RAYENGINE_API Image final
     {
     public:
         Image(const void* pPixels, int32 width, int32 height, FORMAT format);

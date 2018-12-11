@@ -20,10 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <string>
-#include <cassert>
-#include "../Defines.h"
-#include "../Types.h"
+#include "RayEngine.h"
 
 namespace RayEngine
 {
@@ -69,7 +66,7 @@ namespace RayEngine
 			values that the adapter support.
 
 		////////////////////////////////////////////////////////////*/
-		struct AdapterDesc
+		struct RAYENGINE_API AdapterDesc
 		{
 		public:
 			std::string VendorName;

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\..\Include\Graphics\ITexture.h"
+#include "Graphics/ITexture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11Texture final : public ITexture
+		class RAYENGINE_API DX11Texture final : public ITexture
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Texture);
 

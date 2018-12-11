@@ -20,9 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
-#include <string>
+#include "RayEngine.h"
 
 #if !defined(RE_DISABLE_DBG_LOG)
 #define LOG_INFO(x) RayEngine::Debug::Log(LOG_SEVERITY_INFO, x)
@@ -47,7 +45,7 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	class Debug final
+	class RAYENGINE_API Debug final
 	{
 		RE_STATIC_CLASS(Debug);
 

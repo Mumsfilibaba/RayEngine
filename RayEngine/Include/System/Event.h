@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
+#include "RayEngine.h"
 #include "../System/KeyCodes.h"
 #include "../System/TimeStamp.h"
 #include "../System/Sensors.h"
@@ -63,7 +62,7 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct RE_API Event
+	struct RAYENGINE_API Event
 	{
 	public:
 		Event();

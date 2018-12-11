@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IShaderResourceView.h"
+#include "Graphics/IShaderResourceView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11ShaderResourceView final : public IShaderResourceView
+		class RAYENGINE_API DX11ShaderResourceView final : public IShaderResourceView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11ShaderResourceView);
 

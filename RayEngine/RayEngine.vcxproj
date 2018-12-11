@@ -40,7 +40,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -79,6 +79,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\VulkanSDK\1.1.92.1\Include;$(SolutionDir)RayEngine\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.92.1\Lib;$(LibraryPath)</LibraryPath>
+    <TargetExt>,dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -113,7 +114,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;RAYENGINE_EXPORT;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -275,6 +276,7 @@
     <ClInclude Include="Include\OpenGL\GLSwapchainWin32.h" />
     <ClInclude Include="Include\OpenGL\VAOCache.h" />
     <ClInclude Include="Include\RayEngine.h" />
+    <ClInclude Include="Include\System\Application.h" />
     <ClInclude Include="Include\System\Bitmap.h" />
     <ClInclude Include="Include\System\Clipboard.h" />
     <ClInclude Include="Include\System\Clock.h" />
@@ -291,7 +293,7 @@
     <ClInclude Include="Include\System\System.h" />
     <ClInclude Include="Include\System\TimeStamp.h" />
     <ClInclude Include="Include\System\TouchScreen.h" />
-    <ClInclude Include="Include\System\Window.h" />
+    <ClInclude Include="Include\System\IWindow.h" />
     <ClInclude Include="Include\Types.h" />
     <ClInclude Include="Include\Utilities\EngineUtilities.h" />
     <ClInclude Include="Include\Utilities\StringUtilities.h" />
@@ -411,6 +413,7 @@
     <ClCompile Include="Source\OpenGL\GLSwapchainLinux.cpp" />
     <ClCompile Include="Source\OpenGL\GLSwapchainWin32.cpp" />
     <ClCompile Include="Source\OpenGL\VAOCache.cpp" />
+    <ClCompile Include="Source\System\Application.cpp" />
     <ClCompile Include="Source\System\Clock.cpp" />
     <ClCompile Include="Source\System\Event.cpp" />
     <ClCompile Include="Source\System\Image.cpp" />

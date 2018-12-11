@@ -20,13 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
-#include <string>
+#include "RayEngine.h"
 
 namespace RayEngine
 {
-	class Clipboard
+	class RAYENGINE_API Clipboard
 	{
 		RE_STATIC_CLASS(Clipboard);
 

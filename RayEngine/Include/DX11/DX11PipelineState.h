@@ -20,10 +20,10 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IPipelineState.h"
+#include "Graphics\IPipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "..\DX11\DX11Shader.h"
+#include "DX11\DX11Shader.h"
 
 namespace RayEngine
 {
@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11PipelineState final : public IPipelineState
+		class RAYENGINE_API DX11PipelineState final : public IPipelineState
 		{
 			RE_IMPLEMENT_INTERFACE(DX11PipelineState);
 

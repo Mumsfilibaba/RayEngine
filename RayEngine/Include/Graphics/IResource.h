@@ -26,7 +26,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class IResource : public IDeviceObject
+		class RAYENGINE_API IResource : public IDeviceObject
 		{
 			RE_INTERFACE(IResource);
 

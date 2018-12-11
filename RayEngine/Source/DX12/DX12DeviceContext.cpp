@@ -520,7 +520,7 @@ namespace RayEngine
 
 			DX12DeviceContext* pDX12DeviceContext = reinterpret_cast<DX12DeviceContext*>(pDefferedContext);
 			
-			ID3D12CommandList* lists[] = { pDX12DeviceContext->GetDX12List()->GetD3D12CommandList() };
+			ID3D12CommandList* lists[] = { pDX12DeviceContext->GetD3D12CommandList() };
 			m_Queue->ExecuteCommandLists(1, lists);
 
 			Flush();

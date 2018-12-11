@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\..\Include\Graphics\ISwapchain.h"
+#include "RayEngine.h"
+#include "Graphics/ISwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -39,7 +39,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11Swapchain final : public ISwapchain
+		class RAYENGINE_API DX11Swapchain final : public ISwapchain
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Swapchain);
 

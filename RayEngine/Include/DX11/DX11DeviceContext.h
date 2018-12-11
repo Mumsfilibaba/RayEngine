@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDeviceContext.h"
+#include "Graphics\IDeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -39,7 +39,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11DeviceContext final : public IDeviceContext
+		class RAYENGINE_API DX11DeviceContext final : public IDeviceContext
 		{
 			RE_IMPLEMENT_INTERFACE(DX11DeviceContext);
 

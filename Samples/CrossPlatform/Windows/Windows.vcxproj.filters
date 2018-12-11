@@ -30,9 +30,6 @@
     <FxCompile Include="Shaders\ps.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HelloTriangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Linux\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -20,12 +20,12 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
+#include "RayEngine.h"
 #include "TimeStamp.h"
-#include <string>
 
 namespace RayEngine
 {
-	class Clock
+	class RAYENGINE_API Clock
 	{
 	public:
 		Clock();

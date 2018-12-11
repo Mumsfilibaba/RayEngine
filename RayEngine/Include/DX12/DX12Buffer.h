@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\..\Include\Graphics\IBuffer.h"
+#include "Graphics\IBuffer.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Resource.h"
@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12Buffer final : public IBuffer, public DX12Resource
+		class RAYENGINE_API DX12Buffer final : public DX12Resource, public IBuffer
 		{
 			RE_IMPLEMENT_INTERFACE(DX12Buffer);
 

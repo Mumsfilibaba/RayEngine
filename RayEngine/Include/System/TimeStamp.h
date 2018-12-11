@@ -20,12 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
+#include "RayEngine.h"
 
 namespace RayEngine
 {
-	class TimeStamp
+	class RAYENGINE_API TimeStamp
 	{
 	public:
 		TimeStamp(int64 nanoseconds = 0);

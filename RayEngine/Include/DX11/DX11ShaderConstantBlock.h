@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\Graphics\IDeviceObject.h"
+#include "RayEngine.h"
+#include "Graphics/IDeviceObject.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11ShaderConstantBlock final : public IDeviceObject
+		class RAYENGINE_API DX11ShaderConstantBlock final : public IDeviceObject
 		{
 			RE_IMPLEMENT_INTERFACE(DX11ShaderConstantBlock);
 

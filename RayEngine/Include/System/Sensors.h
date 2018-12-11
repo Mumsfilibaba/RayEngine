@@ -20,9 +20,9 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../../Include/RayEngine.h"
-#include "../System/TimeStamp.h"
-#include "../Math/Vector3.h"
+#include "RayEngine.h"
+#include "System/TimeStamp.h"
+#include "Math/Vector3.h"
 
 namespace RayEngine
 {
@@ -37,7 +37,7 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	struct SensorData
+	struct RAYENGINE_API SensorData
 	{
 		inline SensorData()
 		{
@@ -83,7 +83,7 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	class Sensors
+	class RAYENGINE_API Sensors
 	{
 		RE_STATIC_CLASS(Sensors);
 

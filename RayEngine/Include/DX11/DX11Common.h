@@ -29,7 +29,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		void GetHighestSupportingSamples(ID3D11Device* pD3D11Device, uint32* count, uint32* quality, uint32 requested, DXGI_FORMAT format);
+		void RAYENGINE_API GetHighestSupportingSamples(ID3D11Device* pD3D11Device, uint32* count, uint32* quality, uint32 requested, DXGI_FORMAT format);
 	}
 }
 #endif

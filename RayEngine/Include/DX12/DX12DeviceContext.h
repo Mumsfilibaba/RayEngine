@@ -45,31 +45,14 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12DeviceContext final : public IDeviceContext
 		{
+			friend class DX12Device;
+			friend class DX12Swapchain;
+
 			RE_IMPLEMENT_INTERFACE(DX12DeviceContext);
 
 		public:
 			DX12DeviceContext(IDevice* pDevice, bool isDeffered);
 			~DX12DeviceContext();
-
-			inline ID3D12Fence* GetD3D12Fence() const
-			{
-				return m_Fence;
-			}
-
-			inline ID3D12CommandQueue* GetD3D12CommandQueue() const
-			{
-				return m_Queue;
-			}
-
-			inline DX12CommandList* GetDX12List() const
-			{
-				return m_List;
-			}
-
-			inline DX12CommandList* GetDX12ComputeList() const
-			{
-				return m_ComputeList;
-			}
 
 			inline void ResetCommandList() const
 			{
@@ -141,6 +124,16 @@ namespace RayEngine
 			IObject::CounterType AddRef() override final;
 
 		private:
+			inline ID3D12CommandList* GetD3D12CommandList() const
+			{
+				return m_List->GetD3D12CommandList();
+			}
+
+			inline ID3D12CommandQueue* GetD3D12CommandQueue() const
+			{
+				return m_Queue;
+			}
+
 			void Create(bool isDeffered);
 			
 			void Synchronize() const;

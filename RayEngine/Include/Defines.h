@@ -46,14 +46,14 @@ failure and or malfunction of any kind.
 #define RE_T(x) x
 #endif
 
-#if defined(RE_STATIC)
-#define RE_API
-#else
 #if defined(RE_PLATFORM_WINDOWS)
-#define RE_API __declspec(dllexport)
+#if defined(RAYENGINE_EXPORT)
+#define RAYENGINE_API __declspec(dllexport)
 #else
-#define RE_API __declspec(dllimport)
+#define RAYENGINE_API __declspec(dllimport)
 #endif
+#else
+#define RAYENGINE_API
 #endif
 
 #if !defined(RE_UNIQUE_OBJECT)

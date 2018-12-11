@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\ISampler.h"
+#include "Graphics\ISampler.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11Sampler final : public ISampler
+		class RAYENGINE_API DX11Sampler final : public ISampler
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Sampler);
 

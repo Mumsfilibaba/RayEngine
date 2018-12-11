@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -30,13 +30,9 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IDX11RootVariableSlot
+		class RAYENGINE_API IDX11RootVariableSlot
 		{
-		public:
-			IDX11RootVariableSlot(const IDX11RootVariableSlot& other) = delete;
-			IDX11RootVariableSlot& operator=(const IDX11RootVariableSlot& other) = delete;
-			IDX11RootVariableSlot(IDX11RootVariableSlot&& other) = delete;
-			IDX11RootVariableSlot& operator=(IDX11RootVariableSlot&& other) = delete;
+			RE_INTERFACE(IDX11RootVariableSlot);
 
 		public:
 			IDX11RootVariableSlot() {}
@@ -54,13 +50,9 @@ namespace RayEngine
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		template<typename TShader>
-		class DX11RootVariableSlotImpl final : public IDX11RootVariableSlot
+		class RAYENGINE_API DX11RootVariableSlotImpl final : public IDX11RootVariableSlot
 		{
-		public:
-			DX11RootVariableSlotImpl(const DX11RootVariableSlotImpl& other) = delete;
-			DX11RootVariableSlotImpl& operator=(const DX11RootVariableSlotImpl& other) = delete;
-			DX11RootVariableSlotImpl(DX11RootVariableSlotImpl&& other) = delete;
-			DX11RootVariableSlotImpl& operator=(DX11RootVariableSlotImpl&& other) = delete;
+			RE_IMPLEMENT_INTERFACE(DX11RootVariableSlotImpl);
 
 		public:
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

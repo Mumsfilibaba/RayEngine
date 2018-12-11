@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
+#include "RayEngine.h"
 
 #if !defined(ReRelease)
 #define ReRelease(pObject) pObject->Release(); pObject = nullptr
@@ -33,7 +32,7 @@ failure and or malfunction of any kind.
 
 namespace RayEngine
 {
-	class IObject
+	class RAYENGINE_API IObject
 	{
 		RE_INTERFACE(IObject);
 

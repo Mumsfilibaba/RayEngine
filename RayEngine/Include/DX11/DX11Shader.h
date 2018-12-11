@@ -20,12 +20,12 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\Graphics\IShader.h"
+#include "RayEngine.h"
+#include "Graphics/IShader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
-#include "..\DXBase\DXShaderBase.h"
+#include "../DXBase/DXShaderBase.h"
 
 namespace RayEngine
 {
@@ -34,7 +34,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11Device;
 		class DX11ShaderConstantBlock;
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,9 +51,8 @@ namespace RayEngine
 		}
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11Shader final : public IShader, public DXShaderBase
+		class RAYENGINE_API DX11Shader final : public IShader, public DXShaderBase
 		{ 
 			RE_IMPLEMENT_INTERFACE(DX11Shader);
 

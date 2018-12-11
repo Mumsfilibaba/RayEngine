@@ -15,7 +15,7 @@ held liable. This includes computer failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <string>
+#include "RayEngine.h"
 #include "IDeviceObject.h"
 
 namespace RayEngine
@@ -75,7 +75,7 @@ namespace RayEngine
 			StrideBytes - The number of bytes of this element.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct InputElementDesc
+		struct RAYENGINE_API InputElementDesc
 		{
 			std::string Semantic;
 			int32 SemanticIndex;
@@ -99,7 +99,7 @@ namespace RayEngine
 			ElementCount - Number of elements in pElements.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct InputLayoutDesc
+		struct RAYENGINE_API InputLayoutDesc
 		{
 			InputElementDesc* pElements;
 			int32 ElementCount;
@@ -160,7 +160,7 @@ namespace RayEngine
 			AntialiasedLineEnable = false;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct RasterizerStateDesc
+		struct RAYENGINE_API RasterizerStateDesc
 		{
 			bool ConservativeRasterizerEnable;
 			int32 ForcedSampleCount;
@@ -227,7 +227,7 @@ namespace RayEngine
 			BackFace.StencilFunc = COMPARISON_FUNC_ALWAYS
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct DepthStencilStateDesc
+		struct RAYENGINE_API DepthStencilStateDesc
 		{
 			bool DepthEnable;
 			DEPTH_WRITE_MASK DepthWriteMask;
@@ -280,7 +280,7 @@ namespace RayEngine
 			RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct RenderTargetBlendDesc
+		struct RAYENGINE_API RenderTargetBlendDesc
 		{
 			bool BlendEnable;
 			BLEND_TYPE SrcBlend;
@@ -323,7 +323,7 @@ namespace RayEngine
 			LogicOpEnable = false;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct BlendStateDesc
+		struct RAYENGINE_API BlendStateDesc
 		{
 			bool AlphaToCoverageEnable;
 			bool IndependentBlendEnable;
@@ -340,7 +340,7 @@ namespace RayEngine
 			pComputeShader - The computeshader to use in the pipeline.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct ComputePipelineDesc
+		struct RAYENGINE_API ComputePipelineDesc
 		{
 			IShader* pComputeShader;
 		};
@@ -385,7 +385,7 @@ namespace RayEngine
 			pPixelShader - Shader for the pixelstage
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct GraphicsPipelineDesc
+		struct RAYENGINE_API GraphicsPipelineDesc
 		{
 			int32 RenderTargetCount;
 			FORMAT RenderTargetFormats[8];
@@ -425,7 +425,7 @@ namespace RayEngine
 			ComputePipeline - Descibes a computepipeline;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		struct PipelineStateDesc
+		struct RAYENGINE_API PipelineStateDesc
 		{
 			std::string Name;
 			PIPELINE_TYPE Type;
@@ -484,7 +484,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IPipelineState : public IDeviceObject
+		class RAYENGINE_API IPipelineState : public IDeviceObject
 		{
 			RE_INTERFACE(IPipelineState);
 

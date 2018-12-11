@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Graphics/IDevice.h"
-#include "../System/Window.h"
+#include "Graphics/IDevice.h"
+#include "System/IWindow.h"
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -33,7 +33,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class GLDevice : public IDevice
+		class RAYENGINE_API GLDevice : public IDevice
 		{
 			RE_IMPLEMENT_INTERFACE(GLDevice);
 

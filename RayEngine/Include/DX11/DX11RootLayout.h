@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\Graphics\IRootLayout.h"
+#include "RayEngine.h"
+#include "Graphics\IRootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -37,7 +37,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11RootLayout : public IRootLayout
+		class RAYENGINE_API DX11RootLayout : public IRootLayout
 		{
 			RE_IMPLEMENT_INTERFACE(DX11RootLayout);
 

@@ -20,22 +20,18 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
+#include "RayEngine.h"
 #include "DXCommon.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include <d3dcompiler.h>
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class DXShaderBase
+		class RAYENGINE_API DXShaderBase
 		{
-		public:
-			DXShaderBase(const DXShaderBase& other) = delete;
-			DXShaderBase& operator=(const DXShaderBase& other) = delete;
-			DXShaderBase(DXShaderBase&& other) = delete;
-			DXShaderBase& operator=(DXShaderBase&& other) = delete;
+			RE_UNIQUE_OBJECT(DXShaderBase);
 
 		protected:
 			DXShaderBase();

@@ -70,7 +70,7 @@ namespace RayEngine
 			the view can access.
 
 		///////////////////////////////////////////////////////////*/
-		struct DepthStencilViewDesc
+		struct RAYENGINE_API DepthStencilViewDesc
 		{
 			std::string Name;
 			int32 Flags;
@@ -118,7 +118,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IDepthStencilView : public IDeviceObject
+		class RAYENGINE_API IDepthStencilView : public IDeviceObject
 		{
 			RE_INTERFACE(IDepthStencilView);
 

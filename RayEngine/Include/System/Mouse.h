@@ -20,14 +20,14 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../RayEngine.h"
-#include "../System/KeyCodes.h"
-#include "../System/Window.h"
-#include "../Math/Point.h"
+#include "RayEngine.h"
+#include "System/KeyCodes.h"
+#include "System/IWindow.h"
+#include "Math/Point.h"
 
 namespace RayEngine
 {
-	class Mouse
+	class RAYENGINE_API Mouse
 	{
 		RE_STATIC_CLASS(Mouse);
 

@@ -49,7 +49,7 @@ namespace RayEngine
 			number of bytes.
 
 		////////////////////////////////////////////////////////////*/
-		struct BufferDesc
+		struct RAYENGINE_API BufferDesc
 		{
 			std::string Name;
 			RESOURCE_USAGE Usage;
@@ -61,7 +61,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IBuffer : public IResource
+		class RAYENGINE_API IBuffer : public IResource
 		{
 			RE_INTERFACE(IBuffer);
 

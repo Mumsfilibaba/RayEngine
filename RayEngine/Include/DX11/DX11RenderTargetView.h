@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IRenderTargetView.h"
+#include "Graphics\IRenderTargetView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -33,9 +33,8 @@ namespace RayEngine
 		class DX11Device;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11RenderTargetView final : public IRenderTargetView
+		class RAYENGINE_API DX11RenderTargetView final : public IRenderTargetView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11RenderTargetView);
 

@@ -20,13 +20,12 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
+#include "RayEngine.h"
 #include "../System/KeyCodes.h"
 
 namespace RayEngine
 {
-	class Keyboard
+	class RAYENGINE_API Keyboard
 	{
 		RE_STATIC_CLASS(Keyboard);
 

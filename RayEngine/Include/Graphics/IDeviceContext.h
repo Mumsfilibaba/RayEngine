@@ -43,7 +43,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IDeviceContext : public IDeviceObject
+		class RAYENGINE_API IDeviceContext : public IDeviceObject
 		{
 			RE_INTERFACE(IDeviceContext);
 

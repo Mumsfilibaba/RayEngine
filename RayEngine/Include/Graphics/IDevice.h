@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "AdapterDesc.h"
-#include "../Interfaces/IObject.h"
+#include "Interfaces/IObject.h"
 
 namespace RayEngine
 {
@@ -99,7 +99,7 @@ namespace RayEngine
 			be created by the system.
 
 		////////////////////////////////////////////////////////////*/
-		struct DeviceDesc
+		struct RAYENGINE_API  DeviceDesc
 		{
 			std::string Name;
 			int32 DeviceFlags;
@@ -111,7 +111,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IDevice : public IObject
+		class RAYENGINE_API IDevice : public IObject
 		{
 			RE_INTERFACE(IDevice);
 

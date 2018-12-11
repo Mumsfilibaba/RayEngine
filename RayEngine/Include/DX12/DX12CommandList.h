@@ -34,9 +34,8 @@ namespace RayEngine
 		class DX12Resource;
 
 
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12CommandList final : public IDeviceObject
+		class RAYENGINE_API DX12CommandList final : public IDeviceObject
 		{
 			RE_IMPLEMENT_INTERFACE(DX12CommandList);
 

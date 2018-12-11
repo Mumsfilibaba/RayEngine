@@ -69,9 +69,6 @@
     <ClInclude Include="Include\System\KeyCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\System\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Win32\Win32WindowImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -441,6 +438,12 @@
     <ClInclude Include="Include\RayEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\System\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\System\IWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Android\Android.cpp">
@@ -795,6 +798,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Include\RayEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

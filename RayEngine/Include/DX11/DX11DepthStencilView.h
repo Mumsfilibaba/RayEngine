@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDepthStencilView.h"
+#include "Graphics\IDepthStencilView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11DepthStencilView final : public IDepthStencilView
+		class RAYENGINE_API DX11DepthStencilView final : public IDepthStencilView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11DepthStencilView);
 

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IUnorderedAccessView.h"
+#include "Graphics/IUnorderedAccessView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11UnorderedAccessView final : public IUnorderedAccessView
+		class RAYENGINE_API DX11UnorderedAccessView final : public IUnorderedAccessView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11UnorderedAccessView);
 
