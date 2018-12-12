@@ -33,7 +33,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API GLDevice : public IDevice
+		class GLDevice : public IDevice
 		{
 			RE_IMPLEMENT_INTERFACE(GLDevice);
 
@@ -80,8 +80,6 @@ namespace RayEngine
 			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc) override final;
 			
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
-
-			void SetName(const std::string& name) override final;
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
 

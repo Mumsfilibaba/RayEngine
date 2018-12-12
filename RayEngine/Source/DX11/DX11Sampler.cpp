@@ -49,14 +49,7 @@ namespace RayEngine
 		{
 			D3DRelease_S(m_SamplerState);
 		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Sampler::SetName(const std::string& name)
-		{
-			m_SamplerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-		}
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Sampler::QueryDevice(IDevice** ppDevice) const
@@ -118,7 +111,6 @@ namespace RayEngine
 			desc.BorderColor[2] = pDesc->BorderColor.B;
 			desc.BorderColor[3] = pDesc->BorderColor.A;
 
-
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateSamplerState(&desc, &m_SamplerState);
 			if (FAILED(hr))
@@ -128,8 +120,6 @@ namespace RayEngine
 			else
 			{
 				m_Desc = *pDesc;
-
-				m_SamplerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

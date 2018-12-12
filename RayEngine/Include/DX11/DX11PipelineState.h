@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11PipelineState final : public IPipelineState
+		class DX11PipelineState final : public IPipelineState
 		{
 			RE_IMPLEMENT_INTERFACE(DX11PipelineState);
 
@@ -137,8 +137,6 @@ namespace RayEngine
 			{
 				return m_CS;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

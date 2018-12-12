@@ -83,13 +83,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Swapchain::SetName(const std::string& name)
-		{
-			m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Swapchain::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
@@ -185,8 +178,6 @@ namespace RayEngine
 			{
 				m_Desc = *pDesc;
 
-				m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
-
 				pDXGIFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
 
 				CreateTextures();
@@ -208,16 +199,11 @@ namespace RayEngine
 			}
 			else
 			{
-				//Set name
-				std::string name = m_Desc.Name + ": BackBuffer";
-				pTexture->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-
 				//Create the backbuffer
 				m_BackBuffer = new DX11Texture(m_Device, pTexture.Get());
 				if (m_UseMSAA)
 				{
 					TextureDesc msaaBuffer = {};
-					msaaBuffer.Name = m_Desc.Name + ": MSAA Backbuffer";
 					msaaBuffer.Flags = TEXTURE_FLAGS_RENDERTARGET;
 					msaaBuffer.CpuAccess = CPU_ACCESS_FLAG_NONE;
 					msaaBuffer.Width = m_Desc.Width;
@@ -240,7 +226,6 @@ namespace RayEngine
 				if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
 				{
 					TextureDesc depthStencilInfo = {};
-					depthStencilInfo.Name = m_Desc.Name + ": DepthStencil";
 					depthStencilInfo.Flags = TEXTURE_FLAGS_DEPTH_STENCIL;
 					depthStencilInfo.CpuAccess = CPU_ACCESS_FLAG_NONE;
 					depthStencilInfo.Width = m_Desc.Width;
@@ -264,7 +249,6 @@ namespace RayEngine
 		void DX11Swapchain::CreateViews()
 		{
 			RenderTargetViewDesc rtvInfo = {};
-			rtvInfo.Name = m_Desc.Name + ": BackBuffer RTV";
 			rtvInfo.Format = m_Desc.BackBuffer.Format;
 			if (m_UseMSAA)
 			{
@@ -285,7 +269,6 @@ namespace RayEngine
 			if (m_Desc.DepthStencil.Format != FORMAT_UNKNOWN)
 			{
 				DepthStencilViewDesc dsvInfo = {};
-				dsvInfo.Name = m_Desc.Name + ": DepthStencil DSV";
 				dsvInfo.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
 				dsvInfo.pResource = m_DepthStencil;
 				dsvInfo.Format = m_Desc.DepthStencil.Format;

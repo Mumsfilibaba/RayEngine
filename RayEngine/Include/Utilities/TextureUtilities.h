@@ -20,9 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
-#include <string>
+#include "RayEngine.h"
 
 namespace RayEngine
 {
@@ -39,7 +37,7 @@ namespace RayEngine
 		format - The format of each pixel
 
 	////////////////////////////////////////////////////////////*/
-	void ReverseImageRedBlue(void* pPixels, int32 width, int32 height, FORMAT format);
+	void RAYENGINE_API ReverseImageRedBlue(void* pPixels, int32 width, int32 height, FORMAT format);
 
 	/*////////////////////////////////////////////////////////////
 
@@ -70,7 +68,7 @@ namespace RayEngine
 		Returns true on successfull load.
 
 	////////////////////////////////////////////////////////////*/
-	bool LoadImageFromFile(const std::string& filename, const std::string& filepath, const void** ppPixels, int32& width, int32& height, FORMAT format);	
+	bool RAYENGINE_API LoadImageFromFile(const std::string& filename, const std::string& filepath, const void** ppPixels, int32& width, int32& height, FORMAT format);
 		
 	/*////////////////////////////////////////////////////////////
 
@@ -92,7 +90,7 @@ namespace RayEngine
 		Returns true on successfull resize.
 
 	////////////////////////////////////////////////////////////*/
-	bool ResizeImage(void** ppPixels, int32 width, int32 height, int32 newWidth, int32 newHeight, FORMAT format);
+	bool RAYENGINE_API ResizeImage(void** ppPixels, int32 width, int32 height, int32 newWidth, int32 newHeight, FORMAT format);
 
 	/*////////////////////////////////////////////////////////////
 
@@ -115,5 +113,5 @@ namespace RayEngine
 		Returns true on successfull load.
 
 	////////////////////////////////////////////////////////////*/
-	bool SaveImageToFile(const std::string& filename, const std::string& filepath, const void* const pPixels, int32 width, int32 height, FORMAT format, IMAGE_EXTENSION extension);
+	bool RAYENGINE_API SaveImageToFile(const std::string& filename, const std::string& filepath, const void* const pPixels, int32 width, int32 height, FORMAT format, IMAGE_EXTENSION extension);
 }

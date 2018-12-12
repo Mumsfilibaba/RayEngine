@@ -43,13 +43,6 @@ namespace RayEngine
 			Create(pDesc);
 		}
 
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11DepthStencilView::SetName(const std::string& name)
-		{
-			m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-		}
-
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX11DepthStencilView::~DX11DepthStencilView()
@@ -171,8 +164,6 @@ namespace RayEngine
 			else
 			{
 				m_Desc = *pDesc;
-
-				m_View->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

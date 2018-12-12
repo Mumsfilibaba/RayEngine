@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\Graphics\IDeviceContext.h"
+#include "Graphics\IDeviceContext.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -112,8 +111,6 @@ namespace RayEngine
 			void Flush() const override final;
 
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

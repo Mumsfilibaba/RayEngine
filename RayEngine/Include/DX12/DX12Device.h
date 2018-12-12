@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDevice.h"
+#include "Graphics\IDevice.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -133,8 +133,6 @@ namespace RayEngine
 			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc) override final;
 			
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
-			
-			void SetName(const std::string& name) override final;
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
 

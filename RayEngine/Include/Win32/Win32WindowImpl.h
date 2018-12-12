@@ -59,7 +59,7 @@ namespace RayEngine
 
 		void SetCursor(const Image* pCursor, const Math::Point& hotspot) override final;
 
-		void SetTitle(const std::string& title) override final;
+		void SetTitle(const char* pTitle) override final;
 			
 		void SetBackground(uint8 r, uint8 g, uint8 b) override final;
 

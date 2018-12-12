@@ -49,14 +49,6 @@ namespace RayEngine
 			D3DRelease_S(m_Allocator);
 			D3DRelease_S(m_List);
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12CommandList::SetName(const std::string& name)
-		{
-			D3D12SetName(m_List, name + ": List");
-			D3D12SetName(m_Allocator, name + " : Allocator");
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,8 +102,6 @@ namespace RayEngine
 			}
 			else
 			{
-				SetName("CommandList");
-
 				Close();
 			}
 		}

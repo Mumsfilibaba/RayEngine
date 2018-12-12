@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDevice.h"
-#include "..\Graphics\IShaderResourceView.h"
+#include "Graphics\IDevice.h"
+#include "Graphics\IShaderResourceView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -42,9 +42,7 @@ namespace RayEngine
 		public:
 			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc* pDesc);
 			~DX12ShaderResourceView();
-
-			void SetName(const std::string& name) override final;
-			
+						
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(ShaderResourceViewDesc* pDesc) const override final;

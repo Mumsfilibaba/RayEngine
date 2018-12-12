@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX12Buffer final : public DX12Resource, public IBuffer
+		class DX12Buffer final : public DX12Resource, public IBuffer
 		{
 			RE_IMPLEMENT_INTERFACE(DX12Buffer);
 
@@ -61,8 +61,6 @@ namespace RayEngine
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			
 			void Unmap() override final;
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

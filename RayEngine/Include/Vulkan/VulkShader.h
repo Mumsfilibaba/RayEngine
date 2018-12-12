@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IShader.h"
+#include "Graphics\IShader.h"
 #include "VulkCommon.h"
 #include "VulkDevice.h"
 
@@ -36,9 +36,9 @@ namespace RayEngine
 			VulkShader(IDevice* pDevice, const ShaderDesc* pDesc);
 			~VulkShader();
 
-			inline const std::string& GetEntryPoint() const
+			inline const char* GetEntryPoint() const
 			{
-				return m_Desc.EntryPoint;
+				return m_Desc.pEntryPoint;
 			}
 			
 			inline VkShaderModule GetVkShaderModule() const
@@ -50,8 +50,6 @@ namespace RayEngine
 			{
 				return m_Desc.Type;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

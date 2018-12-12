@@ -25,7 +25,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	class Matrix3
+	class RAYENGINE_API Matrix3
 	{
 	public:
 		Matrix3();

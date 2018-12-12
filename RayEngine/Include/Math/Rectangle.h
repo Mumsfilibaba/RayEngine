@@ -24,7 +24,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	struct Rectangle
+	struct RAYENGINE_API Rectangle
 	{
 	public:
 		Rectangle();

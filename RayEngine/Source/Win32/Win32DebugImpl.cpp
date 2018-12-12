@@ -41,7 +41,7 @@ failure and or malfunction of any kind.
 namespace RayEngine
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void Debug::Log(LOG_SEVERITY severity, const std::string& text)
+	void Debug::Log(LOG_SEVERITY severity, const char* pText)
 	{
 		if (GetConsoleWindow() == 0)
 		{
@@ -52,9 +52,10 @@ namespace RayEngine
 			SetConsoleTitle(RE_T("RayEngine Log"));
 		}
 
-		WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-		std::string message;
+		WORD white = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+		WORD color = white;
 
+		std::string message;
 		if (severity == LOG_SEVERITY_INFO)
 		{
 			color = FOREGROUND_GREEN | FOREGROUND_INTENSITY;
@@ -72,10 +73,10 @@ namespace RayEngine
 		}
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-
 		std::string date = '[' + Clock::DateString() + "] ";
-		std::string totalString = date + message + text + '\n';
+		std::string totalString = date + message + pText + '\n';
 		print(totalString.c_str());
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), white);
 
 		OutputDebugString(totalString.c_str());
 	}

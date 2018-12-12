@@ -55,19 +55,18 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct ShaderDesc
+		struct RAYENGINE_API ShaderDesc
 		{
-			std::string Name;
-			std::string EntryPoint;
-			std::string Source;
+			const char* pEntryPoint;
+			const char* pSource;
+			int32 Flags;
 			SHADER_TYPE Type;
 			SHADER_SOURCE_LANG SrcLang;
-			int32 Flags;
 		};
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IShader : public IDeviceObject
+		class RAYENGINE_API IShader : public IDeviceObject
 		{
 			RE_INTERFACE(IShader);
 

@@ -101,7 +101,6 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct RAYENGINE_API  DeviceDesc
 		{
-			std::string Name;
 			int32 DeviceFlags;
 			int32 DepthStencilDescriptorCount;
 			int32 RendertargetDescriptorCount;
@@ -314,15 +313,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) = 0;
-			
-			/*////////////////////////////////////////////////////////////
-
-				Sets the name of the object.
-
-				name - A new name of the object.
-
-			////////////////////////////////////////////////////////////*/
-			virtual void SetName(const std::string& name) = 0;
 
 			/*////////////////////////////////////////////////////////////
 

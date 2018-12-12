@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\..\Include\Graphics\IDevice.h"
-#include "..\..\Include\Graphics\IDepthStencilView.h"
+#include "Graphics\IDevice.h"
+#include "Graphics\IDepthStencilView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -42,8 +42,6 @@ namespace RayEngine
 		public:
 			DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc* pDesc);
 			~DX12DepthStencilView();
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

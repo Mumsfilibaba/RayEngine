@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\Graphics\IRootLayout.h"
+#include "Graphics\IRootLayout.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -63,8 +62,6 @@ namespace RayEngine
 			{
 				return static_cast<int32>(m_VariableSlots.size());
 			}
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

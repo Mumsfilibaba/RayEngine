@@ -20,7 +20,6 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Debug/Debug.h"
 #include "DX12Common.h"
 
 #if defined(RE_PLATFORM_WINDOWS)

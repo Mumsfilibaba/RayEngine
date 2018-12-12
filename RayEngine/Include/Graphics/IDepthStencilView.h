@@ -72,7 +72,6 @@ namespace RayEngine
 		///////////////////////////////////////////////////////////*/
 		struct RAYENGINE_API DepthStencilViewDesc
 		{
-			std::string Name;
 			int32 Flags;
 			FORMAT Format;
 			VIEWDIMENSION ViewDimension;

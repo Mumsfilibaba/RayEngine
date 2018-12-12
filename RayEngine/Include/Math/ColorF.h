@@ -20,12 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Math/Vector4.h"
+#include "Math/Vector4.h"
 
 namespace Math
 {
-	class ColorF
+	class RAYENGINE_API ColorF
 	{
 	public:
 		ColorF(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f);

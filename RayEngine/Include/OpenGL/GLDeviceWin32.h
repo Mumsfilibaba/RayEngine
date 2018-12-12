@@ -24,7 +24,6 @@ failure and or malfunction of any kind.
 #include "GLSwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include <Windows.h>
 
 namespace RayEngine
 {

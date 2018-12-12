@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11ShaderResourceView final : public IShaderResourceView
+		class DX11ShaderResourceView final : public IShaderResourceView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11ShaderResourceView);
 
@@ -46,8 +46,6 @@ namespace RayEngine
 			{
 				return m_View;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

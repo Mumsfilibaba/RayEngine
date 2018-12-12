@@ -79,7 +79,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\VulkanSDK\1.1.92.1\Include;$(SolutionDir)RayEngine\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Dependencies\x64\Debug;C:\VulkanSDK\1.1.92.1\Lib;$(LibraryPath)</LibraryPath>
-    <TargetExt>,dll</TargetExt>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -123,6 +123,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>vulkan-1.lib;opengl32.lib;dxgi.lib;d3d11.lib;d3d12.lib;dxguid.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
       <AdditionalDependencies>vulkan-1.lib; d3d12.lib;dxgi.lib; d3dcompiler.lib; d3d11.lib;  dxguid.lib; Opengl32.lib;</AdditionalDependencies>
@@ -432,6 +433,7 @@
     <ClCompile Include="Source\Vulkan\VulkSwapchain.cpp" />
     <ClCompile Include="Source\Vulkan\VulkCommon.cpp" />
     <ClCompile Include="Source\Vulkan\VulkTexture.cpp" />
+    <ClCompile Include="Source\Win32\Win32ApplicationImpl.cpp" />
     <ClCompile Include="Source\Win32\WIn32ClipboardImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32KeyboardImpl.cpp" />
     <ClCompile Include="Source\Win32\Win32KeyCodes.cpp" />

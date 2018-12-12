@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDevice.h"
+#include "Graphics\IDevice.h"
 #include "VulkCommon.h"
 
 namespace RayEngine

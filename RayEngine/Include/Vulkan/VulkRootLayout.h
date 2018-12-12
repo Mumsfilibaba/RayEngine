@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IRootLayout.h"
+#include "Graphics\IRootLayout.h"
 #include "VulkCommon.h"
 
 namespace RayEngine
@@ -39,8 +39,6 @@ namespace RayEngine
 			{
 				return m_Layout;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

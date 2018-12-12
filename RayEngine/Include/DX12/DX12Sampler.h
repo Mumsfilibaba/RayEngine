@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\ISampler.h"
+#include "Graphics\ISampler.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12DescriptorHandle.h"
@@ -51,8 +51,6 @@ namespace RayEngine
 			{
 				return m_Descriptor.GpuDescriptor;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

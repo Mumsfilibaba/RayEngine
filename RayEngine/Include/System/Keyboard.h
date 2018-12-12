@@ -21,7 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "RayEngine.h"
-#include "../System/KeyCodes.h"
+#include "System/KeyCodes.h"
 
 namespace RayEngine
 {

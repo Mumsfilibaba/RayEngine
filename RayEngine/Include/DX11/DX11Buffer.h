@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11Buffer final : public IBuffer
+		class DX11Buffer final : public IBuffer
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Buffer);
 
@@ -56,8 +56,6 @@ namespace RayEngine
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			
 			void Unmap() override final;
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

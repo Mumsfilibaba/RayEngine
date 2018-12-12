@@ -53,13 +53,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Shader::SetName(const std::string& name)
-		{
-			m_Shader->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Shader::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
@@ -110,7 +103,7 @@ namespace RayEngine
 
 
 			std::string errorString;
-			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
+			if (!CompileFromString(pDesc->pSource, pDesc->pEntryPoint, pDesc->Type, flags, errorString))
 			{
 				LOG_ERROR("D3D11: Could not compile shader. " + errorString);
 				return;
@@ -173,8 +166,6 @@ namespace RayEngine
 			else
 			{
 				m_Desc = *pDesc;
-
-				m_Shader->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

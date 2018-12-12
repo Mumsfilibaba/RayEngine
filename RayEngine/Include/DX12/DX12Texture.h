@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\ITexture.h"
-#include "..\Graphics\IDevice.h"
+#include "Graphics\IDevice.h"
+#include "Graphics\ITexture.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Resource.h"
@@ -44,8 +44,6 @@ namespace RayEngine
 			DX12Texture(IDevice* pDevice, const ResourceData* const pInitialData, const TextureDesc* pDesc);
 			DX12Texture(IDevice* pDevice, ID3D12Resource* pResource);
 			~DX12Texture();
-			
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

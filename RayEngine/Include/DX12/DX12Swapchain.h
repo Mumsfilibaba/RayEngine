@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\Graphics\ISwapchain.h"
+#include "Graphics\ISwapchain.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Texture.h"
@@ -63,8 +62,6 @@ namespace RayEngine
 			void Resize(int32 width, int32 height) override final;
 
 			void Present() const override final;
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

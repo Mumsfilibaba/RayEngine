@@ -69,8 +69,8 @@ namespace RayEngine
 		struct RAYENGINE_API AdapterDesc
 		{
 		public:
-			std::string VendorName;
-			std::string ModelName;
+			char VendorName[256];
+			char ModelName[256];
 			int32 DeviceID;
 			int32 VendorID;
 			int64 Flags;
@@ -114,7 +114,7 @@ namespace RayEngine
 			static constexpr int32 MicrosoftVendorID = 0x1414;
 
 		public:
-			static std::string GetVendorString(int32 vendorID);
+			static const char* GetVendorString(int32 vendorID);
 		};
 	}
 }

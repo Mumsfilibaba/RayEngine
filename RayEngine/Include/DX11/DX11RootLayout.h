@@ -37,7 +37,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11RootLayout : public IRootLayout
+		class DX11RootLayout : public IRootLayout
 		{
 			RE_IMPLEMENT_INTERFACE(DX11RootLayout);
 
@@ -49,8 +49,6 @@ namespace RayEngine
 			{
 				return m_VariableSlots[slotIndex];
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

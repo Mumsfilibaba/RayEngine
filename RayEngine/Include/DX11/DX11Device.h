@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11Device final : public IDevice
+		class DX11Device final : public IDevice
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Device);
 
@@ -80,8 +80,6 @@ namespace RayEngine
 			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc) override final;
 			
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
-		
-			void SetName(const std::string& name) override final;
 
 			void GetDesc(DeviceDesc* pDesc) const override final;
 

@@ -73,23 +73,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11PipelineState::SetName(const std::string& name)
-		{
-			std::string tmpName = name + " : InputLayout";
-			m_InputLayout->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(tmpName.size()), tmpName.c_str());
-
-			tmpName = name + " : BlendState";
-			m_BlendState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(tmpName.size()), tmpName.c_str());
-
-			tmpName = name + " : RasterizerState";
-			m_RasterizerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(tmpName.size()), tmpName.c_str());
-
-			tmpName = name + " : DepthStencilState";
-			m_DepthStencilState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(tmpName.size()), tmpName.c_str());
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX11Device>();
@@ -225,11 +208,6 @@ namespace RayEngine
 			{
 				LOG_ERROR("D3D11: Could not create InputLayout. " + DXErrorString(hr));
 			}
-			else
-			{
-				std::string name = m_Desc.Name + ": InputLayout";
-				m_InputLayout->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-			}
 		}
 
 
@@ -264,11 +242,6 @@ namespace RayEngine
 			{
 				LOG_ERROR("D3D11: Could not create RasterizerState." + DXErrorString(hr));
 			}
-			else
-			{
-				std::string name = m_Desc.Name + ": RasterizerState";
-				m_RasterizerState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-			}
 		}
 
 
@@ -294,11 +267,6 @@ namespace RayEngine
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D11: Could not create DepthStencilState" + DXErrorString(hr));
-			}
-			else
-			{
-				std::string name = m_Desc.Name + ": DepthStencilState";
-				m_DepthStencilState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 			}
 		}
 
@@ -355,11 +323,6 @@ namespace RayEngine
 			{
 				LOG_ERROR("D3D11: Could not create BlendState" + DXErrorString(hr));
 			}
-			else
-			{
-				std::string name = m_Desc.Name + ": BlendState";
-				m_BlendState->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-			}
 		}
 
 
@@ -371,7 +334,7 @@ namespace RayEngine
 			pD3D11Desc->InputSlot = static_cast<uint32>(pDesc->InputSlot);
 			pD3D11Desc->InputSlotClass = (pDesc->StepType == ELEMENT_STEP_TYPE_VERTEX) ? D3D11_INPUT_PER_VERTEX_DATA : D3D11_INPUT_PER_INSTANCE_DATA;
 			pD3D11Desc->InstanceDataStepRate = static_cast<uint32>(pDesc->DataStepRate);
-			pD3D11Desc->SemanticName = pDesc->Semantic.c_str();
+			pD3D11Desc->SemanticName = pDesc->pSemantic;
 			pD3D11Desc->SemanticIndex = pDesc->SemanticIndex;
 		}
 	}

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IPipelineState.h"
+#include "Graphics\IPipelineState.h"
 #include "VulkRootLayout.h"
 #include "VulkShader.h"
 
@@ -50,9 +50,7 @@ namespace RayEngine
 			{
 				return m_RenderPass;
 			}
-
-			void SetName(const std::string& name) override final;
-			
+						
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(PipelineStateDesc* pDesc) const;

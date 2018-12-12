@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDeviceObject.h"
+#include "Graphics\IDeviceObject.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX12CommandList final : public IDeviceObject
+		class DX12CommandList final : public IDeviceObject
 		{
 			RE_IMPLEMENT_INTERFACE(DX12CommandList);
 
@@ -75,8 +75,6 @@ namespace RayEngine
 			{
 				return m_List;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

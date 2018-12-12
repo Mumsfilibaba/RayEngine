@@ -29,7 +29,7 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		class RAYENGINE_API DXShaderBase
+		class DXShaderBase
 		{
 			RE_UNIQUE_OBJECT(DXShaderBase);
 

@@ -82,13 +82,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Buffer::SetName(const std::string& name)
-		{
-			D3D12SetName(m_Resource, name);
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Buffer::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
@@ -172,8 +165,6 @@ namespace RayEngine
 				
 				m_State = startingState;
 				m_Desc = *pDesc;
-
-				D3D12SetName(m_Resource, pDesc->Name);
 			}
 
 			if (pInitalData != nullptr)

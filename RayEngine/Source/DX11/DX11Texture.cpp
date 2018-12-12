@@ -57,13 +57,6 @@ namespace RayEngine
 			D3D11_TEXTURE2D_DESC desc = {};
 			pResource->GetDesc(&desc);
 
-			uint32 size = 0;
-			pResource->GetPrivateData(WKPDID_D3DDebugObjectName, &size, nullptr);
-			
-			m_Desc.Name.resize(size);
-			char* pName = const_cast<char*>(m_Desc.Name.data());
-			pResource->GetPrivateData(WKPDID_D3DDebugObjectName, &size, reinterpret_cast<void*>(pName));
-
 			m_Desc.Type = TEXTURE_TYPE_2D;
 			m_Desc.Format = DXToReFormat(desc.Format);
 			m_Desc.Usage = DX11ToReUsage(desc.Usage);
@@ -109,14 +102,6 @@ namespace RayEngine
 			{
 				D3DRelease_S(m_Texture3D);
 			}
-		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Texture::SetName(const std::string& name)
-		{
-			ID3D11DeviceChild* pDeviceChild = m_Texture1D;
-			pDeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
 		}
 
 		
@@ -267,8 +252,6 @@ namespace RayEngine
 			else
 			{
 				m_Desc = *pDesc;
-
-				pD3D11DeviceChild->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
 			}
 		}
 	}

@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDevice.h"
-#include "..\Graphics\IUnorderedAccessView.h"
+#include "Graphics\IDevice.h"
+#include "Graphics\IUnorderedAccessView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -42,8 +42,6 @@ namespace RayEngine
 		public:
 			DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc* pDesc);
 			~DX12UnorderedAccessView();
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

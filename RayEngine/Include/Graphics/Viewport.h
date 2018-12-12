@@ -20,15 +20,14 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Defines.h"
-#include "../Types.h"
+#include "RayEngine.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		struct Viewport
+		struct RAYENGINE_API Viewport
 		{
 		public:
 			float Width;

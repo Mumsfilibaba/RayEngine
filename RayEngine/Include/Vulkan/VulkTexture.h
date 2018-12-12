@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\ITexture.h"
+#include "Graphics\ITexture.h"
 #include "VulkCommon.h"
 
 namespace RayEngine
@@ -47,8 +47,6 @@ namespace RayEngine
 			}
 
 			void InvalidateResource();
-			
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

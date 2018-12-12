@@ -103,7 +103,7 @@ namespace RayEngine
 		ShaderSpaces.
 
 		////////////////////////////////////////////////////////////*/
-		struct ShaderVariableDesc
+		struct RAYENGINE_API ShaderVariableDesc
 		{
 			SHADER_TYPE ShaderStage;
 			VARIABLE_TYPE Type;
@@ -117,7 +117,7 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct StaticSamplerDesc
+		struct RAYENGINE_API StaticSamplerDesc
 		{
 			SHADER_TYPE ShaderStage = SHADER_TYPE_UNKNOWN;
 			SAMPLER_FILTER_MODE FilterMode = SAMPLER_FILTER_MODE_UNKNOWN;
@@ -138,9 +138,8 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct RootLayoutDesc
+		struct RAYENGINE_API RootLayoutDesc
 		{
-			std::string Name;
 			PIPELINE_TYPE PipelineType;
 			int32 Flags;
 			ShaderVariableDesc* pVariables;
@@ -151,7 +150,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IRootLayout : public IDeviceObject
+		class RAYENGINE_API IRootLayout : public IDeviceObject
 		{
 			RE_INTERFACE(IRootLayout);
 

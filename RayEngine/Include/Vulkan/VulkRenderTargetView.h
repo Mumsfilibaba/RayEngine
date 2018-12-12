@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IRenderTargetView.h"
+#include "Graphics\IRenderTargetView.h"
 #include "VulkImageView.h"
 
 namespace RayEngine
@@ -34,8 +34,6 @@ namespace RayEngine
 		public:
 			VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc);
 			~VulkRenderTargetView();
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

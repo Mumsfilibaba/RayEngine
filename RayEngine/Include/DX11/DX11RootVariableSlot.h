@@ -30,7 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API IDX11RootVariableSlot
+		class IDX11RootVariableSlot
 		{
 			RE_INTERFACE(IDX11RootVariableSlot);
 
@@ -50,7 +50,7 @@ namespace RayEngine
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		template<typename TShader>
-		class RAYENGINE_API DX11RootVariableSlotImpl final : public IDX11RootVariableSlot
+		class DX11RootVariableSlotImpl final : public IDX11RootVariableSlot
 		{
 			RE_IMPLEMENT_INTERFACE(DX11RootVariableSlotImpl);
 

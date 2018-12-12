@@ -23,9 +23,9 @@ failure and or malfunction of any kind.
 #include "RayEngine.h"
 
 #if !defined(RE_DISABLE_DBG_LOG)
-#define LOG_INFO(x) RayEngine::Debug::Log(LOG_SEVERITY_INFO, x)
-#define LOG_ERROR(x) RayEngine::Debug::Log(LOG_SEVERITY_ERROR, x)
-#define LOG_WARNING(x) RayEngine::Debug::Log(LOG_SEVERITY_WARNING, x)
+#define LOG_INFO(x) RayEngine::Debug::Log(RayEngine::LOG_SEVERITY_INFO, std::string(x).c_str())
+#define LOG_ERROR(x) RayEngine::Debug::Log(RayEngine::LOG_SEVERITY_ERROR, std::string(x).c_str())
+#define LOG_WARNING(x) RayEngine::Debug::Log(RayEngine::LOG_SEVERITY_WARNING, std::string(x).c_str())
 #else
 #define LOG_INFO(x)
 #define LOG_ERROR(x)
@@ -58,6 +58,6 @@ namespace RayEngine
 			message - The message as a string.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		static void Log(LOG_SEVERITY severity, const std::string& message);
+		static void Log(LOG_SEVERITY severity, const char* pMessage);
 	};
 }

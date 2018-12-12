@@ -62,13 +62,6 @@ namespace RayEngine
 			}
 		}
 		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::SetName(const std::string& name)
-		{
-			D3D12SetName(m_PipelineState, name);
-		}
-
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::QueryDevice(IDevice ** ppDevice) const
@@ -121,10 +114,6 @@ namespace RayEngine
 				CreateGraphicsState();
 			else if (m_Desc.Type == PIPELINE_TYPE_COMPUTE)
 				CreateComputeState();
-
-
-			if (m_PipelineState != nullptr)
-				D3D12SetName(m_PipelineState, m_Desc.Name);
 		}
 
 
@@ -243,7 +232,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12PipelineState::SetInputElementDesc(D3D12_INPUT_ELEMENT_DESC* pD3D12Desc, const InputElementDesc* pDesc)
 		{
-			pD3D12Desc->SemanticName = pDesc->Semantic.c_str();
+			pD3D12Desc->SemanticName = pDesc->pSemantic;
 			pD3D12Desc->SemanticIndex = pDesc->SemanticIndex;
 
 			pD3D12Desc->Format = ReToDXFormat(pDesc->Format);

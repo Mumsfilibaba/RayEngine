@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "../../Include/Vulkan/VulkTexture.h"
-#include "../../Include/Vulkan/VulkDevice.h"
+#include "Vulkan/VulkTexture.h"
+#include "Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -71,13 +71,6 @@ namespace RayEngine
 		void VulkTexture::InvalidateResource()
 		{
 			m_Image = VK_NULL_HANDLE;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkTexture::SetName(const std::string& name)
-		{
-			//Not releveant
 		}
 
 		

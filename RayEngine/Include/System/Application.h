@@ -22,6 +22,9 @@ failure and or malfunction of any kind.
 
 #include "RayEngine.h"
 #include "IWindow.h"
+#include "Graphics/IDevice.h"
+#include "Graphics/IDeviceContext.h"
+#include "Graphics/ISwapchain.h"
 
 namespace RayEngine
 {
@@ -35,7 +38,43 @@ namespace RayEngine
 
 		int32 Run();
 
+		virtual void OnUpdate();
+		virtual void OnRender();
+
+	protected:
+		inline IWindow* GetWindow() const
+		{
+			return m_pWindow;
+		}
+
+		inline Graphics::ISwapchain* GetSwapChain() const
+		{
+			return m_pSwapChain;
+		}
+
+		inline Graphics::IDevice* GetDevice() const
+		{
+			return m_pDevice;
+		}
+
+		inline Graphics::IDeviceContext* GetContext() const
+		{
+			return m_pContext;
+		}
+
+	private:
+		void Initialize();
+
 	private:
 		IWindow* m_pWindow;
+		Graphics::IDevice* m_pDevice;
+		Graphics::IDeviceContext* m_pContext;
+		Graphics::ISwapchain* m_pSwapChain;
+
+	private:
+		static void InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc,
+			Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
+			Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc,
+			GRAPHICS_API api);
 	};
 }

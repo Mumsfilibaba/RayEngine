@@ -19,7 +19,7 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "../System/Window.h" 
+#include "System/IWindow.h" 
 
 #if defined(RE_PLATFORM_LINUX)
 #include "../System/KeyCodes.h"

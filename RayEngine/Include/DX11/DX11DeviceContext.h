@@ -25,8 +25,6 @@ failure and or malfunction of any kind.
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
 
-#define QueryDX11DeviceContext(pContext) reinterpret_cast<DX11DeviceContext*>(pContext->QueryReference());
-
 namespace RayEngine
 {
 	namespace Graphics
@@ -39,7 +37,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11DeviceContext final : public IDeviceContext
+		class DX11DeviceContext final : public IDeviceContext
 		{
 			RE_IMPLEMENT_INTERFACE(DX11DeviceContext);
 
@@ -102,8 +100,6 @@ namespace RayEngine
 			bool Close() const;
 			
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

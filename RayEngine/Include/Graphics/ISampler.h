@@ -20,8 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <limits>
-#include <string>
+#include "RayEngine.h"
 #include "IDeviceObject.h"
 
 #if defined(max)
@@ -35,30 +34,29 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct SamplerDesc
+		struct RAYENGINE_API SamplerDesc
 		{
-			std::string Name = "";
 			SAMPLER_FILTER_MODE FilterMode = SAMPLER_FILTER_MODE_UNKNOWN;
 			SAMPLER_ADRESS_MODE AdressU = SAMPLER_ADRESS_MODE_UNKNOWN;
 			SAMPLER_ADRESS_MODE AdressV = SAMPLER_ADRESS_MODE_UNKNOWN;
 			SAMPLER_ADRESS_MODE AdressW = SAMPLER_ADRESS_MODE_UNKNOWN;
-			float MipLODBias = 0.0f;
-			float MinLOD = 0.0f;
+			float MipLODBias;
+			float MinLOD;
 			float MaxLOD = std::numeric_limits<float>::max();
-			uint32 MaxAnistropy = 16;
-			COMPARISON_FUNC ComparisonFunc = COMPARISON_FUNC_UNKNOWN;
+			uint32 MaxAnistropy;
+			COMPARISON_FUNC ComparisonFunc;
 			struct
 			{
-				float R = 0.0f;
-				float G = 0.0f;
-				float B = 0.0f;
-				float A = 0.0f;
+				float R;
+				float G;
+				float B;
+				float A;
 			} BorderColor;
 		};
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class ISampler : public IDeviceObject
+		class RAYENGINE_API ISampler : public IDeviceObject
 		{
 			RE_INTERFACE(ISampler);
 		

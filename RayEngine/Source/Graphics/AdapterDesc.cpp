@@ -27,7 +27,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		std::string AdapterDesc::GetVendorString(int32 vendorID)
+		const char* AdapterDesc::GetVendorString(int32 vendorID)
 		{
 			switch (vendorID)
 			{

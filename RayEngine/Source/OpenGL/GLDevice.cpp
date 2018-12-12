@@ -142,13 +142,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLDevice::SetName(const std::string& name)
-		{
-			//Not relevant
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDevice::GetDesc(DeviceDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -158,8 +151,9 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLDevice::GetAdapterDesc(AdapterDesc* pDesc) const
 		{
-			pDesc->VendorName = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
-			pDesc->ModelName = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+			strcpy(pDesc->VendorName, reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+			strcpy(pDesc->ModelName, reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+
 			pDesc->DeviceID = -1;
 			pDesc->VendorID = -1;
 			pDesc->Flags = ADAPTER_FLAGS_SWAPCHAIN | ADAPTER_FLAGS_GRAPHICS;

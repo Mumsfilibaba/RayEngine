@@ -40,15 +40,6 @@ namespace RayEngine
 			~IDeviceObject() {}
 
 			/*////////////////////////////////////////////////////////////
-
-				Sets the name of the object.
-
-				name - A new name of the object.
-
-			////////////////////////////////////////////////////////////*/
-			virtual void SetName(const std::string& name) = 0;
-
-			/*////////////////////////////////////////////////////////////
 				
 				Querys the device that created the object.
 

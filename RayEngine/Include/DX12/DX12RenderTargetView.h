@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDevice.h"
-#include "..\Graphics\IRenderTargetView.h"
+#include "Graphics\IDevice.h"
+#include "Graphics\IRenderTargetView.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -42,8 +42,6 @@ namespace RayEngine
 		public:
 			DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc);
 			~DX12RenderTargetView();
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

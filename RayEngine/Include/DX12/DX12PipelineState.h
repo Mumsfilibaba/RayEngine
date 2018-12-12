@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IPipelineState.h"
+#include "Graphics\IPipelineState.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -47,8 +47,6 @@ namespace RayEngine
 			{
 				return m_PipelineState;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11Texture final : public ITexture
+		class DX11Texture final : public ITexture
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Texture);
 
@@ -57,8 +57,6 @@ namespace RayEngine
 			{
 				return m_Texture3D;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

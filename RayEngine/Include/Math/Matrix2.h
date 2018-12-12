@@ -24,7 +24,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	class VECTORALIGN Matrix2
+	class RAYENGINE_API VECTORALIGN  Matrix2
 	{
 	public:
 		Matrix2();

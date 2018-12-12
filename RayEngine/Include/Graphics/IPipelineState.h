@@ -77,7 +77,7 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		struct RAYENGINE_API InputElementDesc
 		{
-			std::string Semantic;
+			const char* pSemantic;
 			int32 SemanticIndex;
 			FORMAT Format;
 			ELEMENT_STEP_TYPE StepType;
@@ -427,7 +427,6 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		struct RAYENGINE_API PipelineStateDesc
 		{
-			std::string Name;
 			PIPELINE_TYPE Type;
 			IRootLayout* pRootLayout;
 
@@ -442,7 +441,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		inline void CopyPipelineStateDesc(PipelineStateDesc* pDest, const PipelineStateDesc* pSrc)
 		{
-			pDest->Name = pSrc->Name;
 			pDest->Type = pSrc->Type;
 			pDest->pRootLayout = pSrc->pRootLayout;
 

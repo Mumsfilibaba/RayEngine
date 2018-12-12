@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "../../Include/Vulkan/VulkShader.h"
-#include "../../Include/Vulkan/VulkDevice.h"
+#include "Vulkan/VulkShader.h"
+#include "Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -54,14 +54,7 @@ namespace RayEngine
 
 			ReRelease_S(m_Device);
 		}
-
-
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkShader::SetName(const std::string& name)
-		{
-			//Not relevant for now
-		}
-
+		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkShader::QueryDevice(IDevice** ppDevice) const

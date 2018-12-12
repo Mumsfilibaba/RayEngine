@@ -69,13 +69,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Texture::SetName(const std::string& name)
-		{
-			D3D12SetName(m_Resource, name);
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Texture::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
@@ -206,8 +199,6 @@ namespace RayEngine
 			else
 			{
 				m_Desc = *pDesc;
-				
-				SetName(m_Desc.Name);
 				SetD3D12State(startingState);
 			}
 

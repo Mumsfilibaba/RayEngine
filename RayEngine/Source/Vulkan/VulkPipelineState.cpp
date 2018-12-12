@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "../../Include/Vulkan/VulkPipelineState.h"
-#include "../../Include/Vulkan/VulkDevice.h"
+#include "Vulkan/VulkPipelineState.h"
+#include "Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -72,13 +72,6 @@ namespace RayEngine
 					m_Desc.GraphicsPipeline.InputLayout.ElementCount = 0;
 				}
 			}
-		}
-
-
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::SetName(const std::string& name)
-		{
-			// not relvant yet
 		}
 
 
@@ -475,7 +468,7 @@ namespace RayEngine
 
 			desc.pSpecializationInfo = nullptr;
 			desc.module = module;
-			desc.pName = pVulkShader->GetEntryPoint().c_str();
+			desc.pName = pVulkShader->GetEntryPoint();
 			
 			SHADER_TYPE type = pVulkShader->GetType();
 			if (type == SHADER_TYPE_VERTEX)

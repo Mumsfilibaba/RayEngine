@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Graphics/IShader.h"
+#include "Graphics/IShader.h"
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -44,8 +44,6 @@ namespace RayEngine
 			{
 				return m_Shader;
 			}
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDeviceObject.h"
+#include "Graphics\IDeviceObject.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12DescriptorHandle.h"
@@ -49,8 +49,6 @@ namespace RayEngine
 			}
 
 			DX12DescriptorHandle GetNext() const;
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

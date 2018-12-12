@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11RenderTargetView final : public IRenderTargetView
+		class DX11RenderTargetView final : public IRenderTargetView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11RenderTargetView);
 
@@ -46,8 +46,6 @@ namespace RayEngine
 			{
 				return m_View;
 			}
-			
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

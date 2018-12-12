@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../../Include/Graphics/IRootLayout.h"
+#include "Graphics/IRootLayout.h"
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -39,8 +39,6 @@ namespace RayEngine
 		public:
 			GLRootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc);
 			~GLRootLayout();
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

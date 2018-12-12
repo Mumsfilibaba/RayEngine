@@ -25,7 +25,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	class RandomGenerator
+	class RAYENGINE_API RandomGenerator
 	{
 	public:
 		RandomGenerator();

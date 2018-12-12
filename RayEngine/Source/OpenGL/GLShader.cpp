@@ -54,13 +54,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLShader::SetName(const std::string& name)
-		{
-			//Not relevant
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLShader::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<GLDevice>();
@@ -105,7 +98,7 @@ namespace RayEngine
 			m_Desc = *pDesc;
 
 			if (pDesc->SrcLang == SHADER_SOURCE_LANG_GLSL)
-				CompileGLSL(pDesc->Source);
+				CompileGLSL(pDesc->pSource);
 		}
 
 

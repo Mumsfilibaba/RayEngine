@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "..\..\Include\Vulkan\VulkCommon.h"
+#include "Vulkan\VulkCommon.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 VkResult VKAPI_PTR vkCreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback)

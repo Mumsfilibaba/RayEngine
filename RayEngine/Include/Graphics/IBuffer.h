@@ -51,7 +51,6 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////*/
 		struct RAYENGINE_API BufferDesc
 		{
-			std::string Name;
 			RESOURCE_USAGE Usage;
 			CPU_ACCESS_FLAG CpuAccess;
 			BUFFER_USAGE Type;

@@ -20,9 +20,9 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "../../Include/Vulkan/VulkSwapchain.h"
-#include "../../Include/Vulkan/VulkFactory.h"
-#include "../../Include/Vulkan/VulkDevice.h"
+#include "Vulkan/VulkSwapchain.h"
+#include "Vulkan/VulkFactory.h"
+#include "Vulkan/VulkDevice.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #if defined(max)
@@ -71,13 +71,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkSwapchain::Present() const
 		{
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkSwapchain::SetName(const std::string& name)
-		{
-			//Not relevant
 		}
 
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\Utilities\StringUtilities.h"
+#include "Utilities\StringUtilities.h"
 
 namespace RayEngine
 {

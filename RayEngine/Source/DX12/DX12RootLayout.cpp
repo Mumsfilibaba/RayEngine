@@ -52,13 +52,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12RootLayout::SetName(const std::string& name)
-		{
-			D3D12SetName(m_RootSignature, name);
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12RootLayout::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
@@ -195,8 +188,6 @@ namespace RayEngine
 			else
 			{
 				m_Desc = *pDesc;
-
-				D3D12SetName(m_RootSignature, pDesc->Name);
 			}
 		}
 

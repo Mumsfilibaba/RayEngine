@@ -25,7 +25,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	class Color
+	class RAYENGINE_API Color
 	{
 	public:
 		Color(uint8 r = 0, uint8 g = 0, uint8 b = 0, uint8 a = 0);

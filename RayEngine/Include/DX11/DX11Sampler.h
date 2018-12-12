@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11Sampler final : public ISampler
+		class DX11Sampler final : public ISampler
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Sampler);
 
@@ -46,8 +46,6 @@ namespace RayEngine
 			{
 				return m_SamplerState;
 			}
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

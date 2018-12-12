@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Graphics/IPipelineState.h"
+#include "Graphics/IPipelineState.h"
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -255,8 +255,6 @@ namespace RayEngine
 			{
 				return m_Desc.Type;
 			}
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

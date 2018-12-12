@@ -20,12 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <string>
 #include "MathCommon.h"
 
 namespace Math
 {
-	class Vector3
+	class RAYENGINE_API Vector3
 	{
 	public:
 		Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f);

@@ -20,9 +20,10 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IResource.h"
-#include "DX12Resource.h"
+#include "Graphics\IResource.h"
+
 #if defined(RE_PLATFORM_WINDOWS)
+#include "DX12Resource.h"
 #include "DX12DescriptorHandle.h"
 
 namespace RayEngine

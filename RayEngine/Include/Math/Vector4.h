@@ -25,7 +25,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	class VECTORALIGN Vector4
+	class RAYENGINE_API VECTORALIGN Vector4
 	{
 	public:
 		Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);

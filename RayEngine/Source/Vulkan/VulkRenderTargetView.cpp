@@ -20,9 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "../../Include/Vulkan/VulkRenderTargetView.h"
-#include "../../Include/Vulkan/VulkRenderTargetView.h"
-#include "../../Include/Vulkan/VulkDevice.h"
+#include "Vulkan/VulkRenderTargetView.h"
+#include "Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -41,12 +40,6 @@ namespace RayEngine
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VulkRenderTargetView::~VulkRenderTargetView()
-		{
-		}
-
-
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkRenderTargetView::SetName(const std::string& name)
 		{
 		}
 

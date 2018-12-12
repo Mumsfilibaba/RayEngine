@@ -21,11 +21,11 @@ failure and or malfunction of any kind.
 
 #pragma once
 #include "RayEngine.h"
-#include "../System/KeyCodes.h"
-#include "../System/TimeStamp.h"
-#include "../System/Sensors.h"
-#include "../Math/Vector2.h"
-#include "../Math/Point.h"
+#include "System/KeyCodes.h"
+#include "System/TimeStamp.h"
+#include "System/Sensors.h"
+#include "Math/Vector2.h"
+#include "Math/Point.h"
 
 namespace RayEngine
 {

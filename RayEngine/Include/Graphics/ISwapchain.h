@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "../Interfaces/IObject.h"
+#include "Interfaces/IObject.h"
 
 namespace RayEngine
 {
@@ -49,9 +49,8 @@ namespace RayEngine
 			Height - The height of the buffers.
 
 		////////////////////////////////////////////////////////////*/
-		struct SwapchainDesc
+		struct RAYENGINE_API SwapchainDesc
 		{
-			std::string Name;
 			int32 Width;
 			int32 Height;
 			int32 SampleCount;
@@ -69,7 +68,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class ISwapchain : public IObject
+		class RAYENGINE_API ISwapchain : public IObject
 		{
 			RE_INTERFACE(ISwapchain);
 
@@ -94,15 +93,6 @@ namespace RayEngine
 				Presents and swaps the buffers.
 			////////////////////////////////////////////////////////////*/
 			virtual void Present() const = 0;
-
-			/*////////////////////////////////////////////////////////////
-
-				Sets the name of the object.
-
-				name - A new name of the object.
-
-			////////////////////////////////////////////////////////////*/
-			virtual void SetName(const std::string& name) = 0;
 
 			/*////////////////////////////////////////////////////////////
 				

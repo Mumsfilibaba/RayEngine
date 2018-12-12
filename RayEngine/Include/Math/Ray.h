@@ -24,7 +24,7 @@ failure and or malfunction of any kind.
 
 namespace Math
 {
-	class Ray
+	class RAYENGINE_API Ray
 	{
 	public:
 		Ray(const Vector3& origin = Vector3(), const Vector3& direction = Vector3());

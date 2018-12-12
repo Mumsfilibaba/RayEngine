@@ -20,12 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <string>
 #include "MathUtilities.h"
 
 namespace Math
 {
-	class Point
+	class RAYENGINE_API Point
 	{
 	public:
 		Point(int x = 0, int y = 0);

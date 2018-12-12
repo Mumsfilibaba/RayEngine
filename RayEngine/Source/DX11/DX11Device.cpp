@@ -93,19 +93,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Device::SetName(const std::string& name)
-		{
-			m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(name.size()), name.c_str());
-			
-			std::string factoryName = name + " : Factory";
-			m_Factory->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(factoryName.size()), factoryName.c_str());
-
-			std::string adapterName = name + " : Adapter";
-			m_Adapter->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(adapterName.size()), adapterName.c_str());
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Device::GetDesc(DeviceDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -124,8 +111,9 @@ namespace RayEngine
 			char str[len];
 			wcstombs(str, desc.Description, len);
 			
-			pDesc->ModelName = str;
-			pDesc->VendorName = AdapterDesc::GetVendorString(desc.VendorId);
+			strcpy(pDesc->ModelName, str);
+			strcpy(pDesc->VendorName, AdapterDesc::GetVendorString(desc.VendorId));
+
 			pDesc->VendorID = desc.VendorId;
 			pDesc->DeviceID = desc.DeviceId;
 
@@ -282,8 +270,6 @@ namespace RayEngine
 			}
 			else
 			{
-				m_Device->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<uint32>(pDesc->Name.size()), pDesc->Name.c_str());
-
 				m_pImmediateContext = new DX11DeviceContext(this, false);
 
 				m_Desc = *pDesc;

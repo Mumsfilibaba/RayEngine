@@ -20,32 +20,22 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "..\..\Include\Defines.h"
-
 #if defined(RE_PLATFORM_WINDOWS)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-extern int main(int args, char* argsv[]);
+extern int main(int argc, char* argv[]);
 
 #if defined(UNICODE)
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+/*int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
-
 	return main(0, nullptr);
-}
-
+}*/
 #else
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)
+/*int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)
 {
-	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
-
-	return main(0, nullptr);
-}
-
+	return main(__argc, __argv);
+}*/
 #endif //UNICODE or ASCII
 #endif //PLATFORM WINDOWS

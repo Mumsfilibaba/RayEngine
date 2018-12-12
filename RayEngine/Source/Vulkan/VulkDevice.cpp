@@ -20,13 +20,13 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "../../Include/Vulkan/VulkDevice.h"
-#include "../../Include/Vulkan/VulkFactory.h"
-#include "../../Include/Vulkan/VulkTexture.h"
-#include "../../Include/Vulkan/VulkRenderTargetView.h"
-#include "../../Include/Vulkan/VulkShader.h"
-#include "../../Include/Vulkan/VulkPipelineState.h"
-#include "../../Include/Vulkan/VulkRootLayout.h"
+#include "Vulkan/VulkDevice.h"
+#include "Vulkan/VulkFactory.h"
+#include "Vulkan/VulkTexture.h"
+#include "Vulkan/VulkRenderTargetView.h"
+#include "Vulkan/VulkShader.h"
+#include "Vulkan/VulkPipelineState.h"
+#include "Vulkan/VulkRootLayout.h"
 
 namespace RayEngine
 {
@@ -122,13 +122,6 @@ namespace RayEngine
 		bool VulkDevice::CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc)
 		{
 			return ((*ppPipelineState = new VulkPipelineState(this, pDesc)));
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkDevice::SetName(const std::string& name)
-		{
-			//Not relevant for now
 		}
 
 

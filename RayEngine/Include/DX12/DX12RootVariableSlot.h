@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Defines.h"
+#include "RayEngine.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12DescriptorHandle.h"

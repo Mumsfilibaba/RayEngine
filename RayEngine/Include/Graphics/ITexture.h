@@ -52,9 +52,8 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct TextureDesc
+		struct RAYENGINE_API TextureDesc
 		{
-			std::string Name;
 			TEXTURE_TYPE Type;
 			FORMAT Format;
 			RESOURCE_USAGE Usage;
@@ -76,7 +75,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class ITexture : public IResource
+		class RAYENGINE_API ITexture : public IResource
 		{
 			RE_INTERFACE(ITexture);
 

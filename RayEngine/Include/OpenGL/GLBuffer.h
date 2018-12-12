@@ -21,8 +21,8 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "../Graphics/IBuffer.h"
-#include "../OpenGL/GLCommon.h"
+#include "Graphics/IBuffer.h"
+#include "OpenGL/GLCommon.h"
 
 namespace RayEngine
 {
@@ -49,8 +49,6 @@ namespace RayEngine
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			
 			void Unmap() override final;
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

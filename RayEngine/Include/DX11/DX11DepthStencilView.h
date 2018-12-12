@@ -34,7 +34,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11DepthStencilView final : public IDepthStencilView
+		class DX11DepthStencilView final : public IDepthStencilView
 		{
 			RE_IMPLEMENT_INTERFACE(DX11DepthStencilView);
 
@@ -46,9 +46,7 @@ namespace RayEngine
 			{
 				return m_View;
 			}
-
-			void SetName(const std::string& name) override final;
-			
+						
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(DepthStencilViewDesc* pDesc) const override final;

@@ -39,7 +39,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11Swapchain final : public ISwapchain
+		class DX11Swapchain final : public ISwapchain
 		{
 			RE_IMPLEMENT_INTERFACE(DX11Swapchain);
 
@@ -60,8 +60,6 @@ namespace RayEngine
 			void Resize(int32 width, int32 height) override final;
 
 			void Present() const override final;
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11ShaderConstantBlock final : public IDeviceObject
+		class DX11ShaderConstantBlock final : public IDeviceObject
 		{
 			RE_IMPLEMENT_INTERFACE(DX11ShaderConstantBlock);
 
@@ -46,8 +46,6 @@ namespace RayEngine
 			void SetConstant(uint32 constant, uint32 index);
 
 			ID3D11Buffer* GetD3D11Buffer() const;
-			
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

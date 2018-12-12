@@ -130,6 +130,11 @@ namespace RayEngine
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void Win32WindowImpl::SetCursor(const Image* pCursor, const Math::Point& hotspot)
 	{
+		if (pCursor == nullptr)
+		{
+			return;
+		}
+
 		FORMAT format = pCursor->GetFormat();
 		if (FormatStride(format) != 4 && FormatComponentCount(format) != 4)
 		{
@@ -180,13 +185,17 @@ namespace RayEngine
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void Win32WindowImpl::SetIcon(const Image* pIcon)
 	{
+		if (pIcon == nullptr)
+		{
+			return;
+		}
+
 		FORMAT format = pIcon->GetFormat();
 		if (FormatStride(format) != 4 && FormatComponentCount(format) != 4)
 		{
 			LOG_ERROR("Format needs to be a 8-bit RGBA value");
 			return;
 		}
-
 
 		if (m_Icon != 0)
 		{
@@ -237,10 +246,10 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void Win32WindowImpl::SetTitle(const std::string& title)
+	void Win32WindowImpl::SetTitle(const char* pTitle)
 	{
-		SetWindowText(m_Hwnd, title.c_str());
-		m_Desc.Title = title;
+		SetWindowText(m_Hwnd, pTitle);
+		m_Desc.pTitle = pTitle;
 	}
 
 
@@ -336,20 +345,20 @@ namespace RayEngine
 		WndclassCache::Register(wndClass);
 
 		int32 windowStyle = 0;
-		if (pDesc->Style == WINDOWSTYLE_BORDERLESS)
+		if (pDesc->Style == WINDOW_STYLE_BORDERLESS)
 		{
 			windowStyle = WS_POPUP;
 		}
 		else
 		{
 			windowStyle = WS_OVERLAPPED;
-			if (pDesc->Style & WINDOWSTYLE_TITLEBAR)
+			if (pDesc->Style & WINDOW_STYLE_TITLEBAR)
 				windowStyle |= WS_CAPTION;
-			if (pDesc->Style & WINDOWSTYLE_RESIZEABLE)
+			if (pDesc->Style & WINDOW_STYLE_RESIZEABLE)
 				windowStyle |= WS_THICKFRAME;
-			if (pDesc->Style & WINDOWSTYLE_MINIMIZABLE)
+			if (pDesc->Style & WINDOW_STYLE_MINIMIZABLE)
 				windowStyle |= WS_MINIMIZEBOX | WS_SYSMENU;
-			if (pDesc->Style & WINDOWSTYLE_MAXIMIZABLE)
+			if (pDesc->Style & WINDOW_STYLE_MAXIMIZABLE)
 				windowStyle |= WS_MAXIMIZEBOX | WS_SYSMENU;
 		}
 
@@ -358,19 +367,20 @@ namespace RayEngine
 
 		int32 posX = pDesc->x;
 		int32 posY = pDesc->y;
-		const char* pTitle = m_Desc.Title.c_str();
 
 		SetLastError(0);
-		m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, pTitle, windowStyle, posX, posY, client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
+		m_Hwnd = CreateWindowEx(0, WNDCLASS_NAME, m_Desc.pTitle, windowStyle, posX, posY, client.right - client.left, client.bottom - client.top, 0, 0, m_Hinstance, 0);
 		if (m_Hwnd == 0)
 		{
 			error = GetLastError();
 
-			LOG_ERROR("Could not create window");
+			LOG_ERROR("Win32: Could not create window");
 			return;
 		}
 		else
 		{
+			LOG_INFO("Win32: Created Window");
+
 			SetWindowLongPtr(m_Hwnd, GWLP_USERDATA, reinterpret_cast<uintptr_t>(this));
 				
 			SetIcon(pDesc->pIcon);

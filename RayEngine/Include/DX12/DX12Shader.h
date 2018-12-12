@@ -20,12 +20,11 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <vector>
-#include "..\Graphics\IShader.h"
+#include "Graphics\IShader.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
-#include "..\DXBase\DXShaderBase.h"
+#include "DXBase\DXShaderBase.h"
 
 namespace RayEngine
 {
@@ -33,7 +32,6 @@ namespace RayEngine
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12Device;
-
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +44,6 @@ namespace RayEngine
 			~DX12Shader();
 
 			D3D12_SHADER_BYTECODE GetD3D12ByteCode() const;
-
-			void SetName(const std::string& name) override final;
 
 			void QueryDevice(IDevice** ppDevice) const override final;
 

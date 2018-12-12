@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include <string>
+#include "RayEngine.h"
 #include "IDeviceObject.h"
 
 namespace RayEngine
@@ -41,9 +41,8 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct ShaderResourceViewDesc
+		struct RAYENGINE_API ShaderResourceViewDesc
 		{
-			std::string Name = "";
 			int32 Flags = SHADER_RESOURCE_VIEW_FLAG_NONE;
 			FORMAT Format = FORMAT_UNKNOWN;
 			VIEWDIMENSION ViewDimension = VIEWDIMENSION_UNKNOWN;
@@ -129,7 +128,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IShaderResourceView : public IDeviceObject
+		class RAYENGINE_API IShaderResourceView : public IDeviceObject
 		{
 			RE_INTERFACE(IShaderResourceView);
 

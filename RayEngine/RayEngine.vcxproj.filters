@@ -803,6 +803,9 @@
     <ClCompile Include="Source\System\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Win32\Win32ApplicationImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Source\TODO.txt" />

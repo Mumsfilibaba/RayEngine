@@ -43,9 +43,8 @@ namespace RayEngine
 		/*////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////*/
-		struct UnorderedAccessViewDesc
+		struct RAYENGINE_API UnorderedAccessViewDesc
 		{
-			std::string Name;
 			int32 Flags;
 			FORMAT Format;
 			VIEWDIMENSION ViewDimension;
@@ -97,7 +96,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IUnorderedAccessView : public IDeviceObject
+		class RAYENGINE_API IUnorderedAccessView : public IDeviceObject
 		{
 			RE_INTERFACE(IUnorderedAccessView);
 

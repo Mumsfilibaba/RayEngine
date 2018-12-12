@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "..\Graphics\IDeviceObject.h"
+#include "Graphics\IDeviceObject.h"
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Resource.h"
@@ -48,8 +48,6 @@ namespace RayEngine
 			}
 
 			void SetData(const void* pData, int32 size);
-
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

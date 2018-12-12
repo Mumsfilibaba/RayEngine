@@ -21,10 +21,7 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "../Defines.h"
-#include "../Types.h"
-#include <vector>
-#include <string>
+#include "RayEngine.h"
 #include "GlImpl.h"
 #include "GLConversions.h"
 

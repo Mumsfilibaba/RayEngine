@@ -528,20 +528,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DeviceContext::SetName(const std::string& name)
-		{
-			if (!m_IsDeffered)
-			{
-				D3D12SetName(m_Queue, name + ": Queue");
-				D3D12SetName(m_Fence, name + ": Fence");
-			}
-
-			m_List->SetName(name + ": Graphics List");
-			m_ComputeList->SetName(name + ": Compute List");
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
@@ -609,8 +595,6 @@ namespace RayEngine
 			m_ComputeList->Reset();
 
 			m_IsDeffered = isDeffered;
-
-			SetName("DX12DeviceContext");
 		}
 
 

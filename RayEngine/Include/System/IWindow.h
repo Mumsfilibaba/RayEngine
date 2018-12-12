@@ -52,15 +52,15 @@ namespace RayEngine
 #endif
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	enum WINDOWSTYLE
+	enum WINDOW_STYLE
 	{
-		WINDOWSTYLE_UNKNOWN = (1 << 0),
-		WINDOWSTYLE_BORDERLESS = (1 << 1),
-		WINDOWSTYLE_TITLEBAR = (1 << 3),
-		WINDOWSTYLE_RESIZEABLE = (1 << 4),
-		WINDOWSTYLE_MINIMIZABLE = (1 << 5),
-		WINDOWSTYLE_MAXIMIZABLE = (1 << 6),
-		WINDOWSTYLE_STANDARD_WINDOW = WINDOWSTYLE_TITLEBAR | WINDOWSTYLE_RESIZEABLE | WINDOWSTYLE_MINIMIZABLE | WINDOWSTYLE_MAXIMIZABLE,
+		WINDOW_STYLE_UNKNOWN = (1 << 0),
+		WINDOW_STYLE_BORDERLESS = (1 << 1),
+		WINDOW_STYLE_TITLEBAR = (1 << 3),
+		WINDOW_STYLE_RESIZEABLE = (1 << 4),
+		WINDOW_STYLE_MINIMIZABLE = (1 << 5),
+		WINDOW_STYLE_MAXIMIZABLE = (1 << 6),
+		WINDOW_STYLE_STANDARD= WINDOW_STYLE_TITLEBAR | WINDOW_STYLE_RESIZEABLE | WINDOW_STYLE_MINIMIZABLE | WINDOW_STYLE_MAXIMIZABLE,
 	};
 
 
@@ -76,7 +76,7 @@ namespace RayEngine
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	struct RAYENGINE_API WindowDesc
 	{
-		std::string Title;
+		const char* pTitle;
 		int32 Width;
 		int32 Height;	
 		int32 Style;
@@ -161,7 +161,7 @@ namespace RayEngine
 			pIcon - A valid pointer to an image.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-		virtual void SetTitle(const std::string& title) = 0;
+		virtual void SetTitle(const char* pTitle) = 0;
 
 		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		

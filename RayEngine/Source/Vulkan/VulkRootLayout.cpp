@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #include "RayEngine.h"
-#include "../../Include/Vulkan/VulkRootLayout.h"
-#include "../../Include/Vulkan/VulkDevice.h"
+#include "Vulkan/VulkRootLayout.h"
+#include "Vulkan/VulkDevice.h"
 
 namespace RayEngine
 {
@@ -53,13 +53,6 @@ namespace RayEngine
 			}
 
 			ReRelease_S(m_Device);
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkRootLayout::SetName(const std::string& name)
-		{
-			//Not relevant
 		}
 
 

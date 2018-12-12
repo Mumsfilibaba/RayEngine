@@ -55,6 +55,7 @@ failure and or malfunction of any kind.
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 
 #include <typeinfo>
 #include <locale>

@@ -70,9 +70,8 @@ namespace RayEngine
 			FORMAT_R8G8B8A8_UNORM only the 0-plane is available.
 
 		///////////////////////////////////////////////////////////*/
-		struct RenderTargetViewDesc
+		struct RAYENGINE_API RenderTargetViewDesc
 		{
-			std::string Name;
 			FORMAT Format;
 			VIEWDIMENSION ViewDimension;
 			IResource* pResource;
@@ -132,7 +131,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IRenderTargetView : public IDeviceObject
+		class RAYENGINE_API IRenderTargetView : public IDeviceObject
 		{
 			RE_INTERFACE(IRenderTargetView);
 

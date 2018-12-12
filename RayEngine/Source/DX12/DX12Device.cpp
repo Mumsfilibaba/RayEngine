@@ -155,20 +155,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::SetName(const std::string& name)
-		{
-			D3D12SetName(m_Device.Get(), name);
-
-			m_UploadHeap->SetName(name + ": Dynamic Upload-Heap");
-			m_DsvHeap->SetName(name + ": DSV-Heap");
-			m_RtvHeap->SetName(name + ": RTV-Heap");
-			m_ResourceHeap->SetName(name + ": Resource-Heap (CBV/SRV)");
-			m_SamplerHeap->SetName(name + ": Sampler-Heap");
-			m_pImmediateContext->SetName(name + ": ImmediateContext");
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Device::GetDesc(DeviceDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -185,8 +171,9 @@ namespace RayEngine
 			char str[len];
 			wcstombs(str, desc.Description, len);
 
-			pDesc->ModelName = str;
-			pDesc->VendorName = AdapterDesc::GetVendorString(desc.VendorId);
+			strcpy(pDesc->ModelName, str);
+			strcpy(pDesc->VendorName, AdapterDesc::GetVendorString(desc.VendorId));
+
 			pDesc->VendorID = desc.VendorId;
 			pDesc->DeviceID = desc.DeviceId;
 
@@ -317,8 +304,6 @@ namespace RayEngine
 
 				CreateEmptyDescriptors();
 
-				SetName(pDesc->Name);
-
 				m_Desc = *pDesc;
 			}
 			else
@@ -397,7 +382,6 @@ namespace RayEngine
 		void DX12Device::CreateEmptyDescriptors()
 		{
 			ShaderResourceViewDesc srv = {};
-			srv.Name = "Null SRV";
 			srv.Flags = SHADER_RESOURCE_VIEW_FLAG_NONE;
 			srv.Format = FORMAT_R8G8B8A8_UNORM;
 			srv.pResource = nullptr;
@@ -410,7 +394,6 @@ namespace RayEngine
 			m_pEmptySRV = new DX12ShaderResourceView(this, &srv);
 
 			RenderTargetViewDesc rtv = {};
-			rtv.Name = "Null SRV";
 			rtv.Format = FORMAT_R8G8B8A8_UNORM;
 			rtv.pResource = nullptr;
 			rtv.ViewDimension = VIEWDIMENSION_TEXTURE2D;
@@ -420,7 +403,6 @@ namespace RayEngine
 			m_pEmptyRTV = new DX12RenderTargetView(this, &rtv);
 
 			DepthStencilViewDesc dsv = {};
-			dsv.Name = "Null DSV";
 			dsv.Format = FORMAT_D24_UNORM_S8_UINT;
 			dsv.Flags = DEPTH_STENCIL_VIEW_FLAGS_NONE;
 			dsv.pResource = nullptr;
@@ -430,7 +412,6 @@ namespace RayEngine
 			m_pEmptyDSV = new DX12DepthStencilView(this, &dsv);
 
 			UnorderedAccessViewDesc uav = {};
-			uav.Name = "Null UAV";
 			uav.Format = FORMAT_R8G8B8A8_UNORM;
 			uav.Flags = UNORDERED_ACCESS_VIEW_FLAG_NONE;
 			uav.pResource = nullptr;

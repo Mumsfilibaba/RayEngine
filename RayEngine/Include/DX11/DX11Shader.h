@@ -25,7 +25,7 @@ failure and or malfunction of any kind.
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
-#include "../DXBase/DXShaderBase.h"
+#include "DXBase/DXShaderBase.h"
 
 namespace RayEngine
 {
@@ -52,7 +52,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API DX11Shader final : public IShader, public DXShaderBase
+		class DX11Shader final : public IShader, public DXShaderBase
 		{ 
 			RE_IMPLEMENT_INTERFACE(DX11Shader);
 
@@ -66,8 +66,6 @@ namespace RayEngine
 				static_assert(IsD3D11Shader<D3D11ShaderType>(), "GetD3D11Shader() - T must be a valid D3D11 shadertype. For example ID3D11VertexShader");
 				return reinterpret_cast<D3D11ShaderType*>(m_Shader);
 			}
-						
-			void SetName(const std::string& name) override final;
 			
 			void QueryDevice(IDevice** ppDevice) const override final;
 

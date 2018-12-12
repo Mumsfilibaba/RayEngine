@@ -50,13 +50,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Shader::SetName(const std::string& name)
-		{
-			//Not relevant
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Shader::QueryDevice(IDevice** ppDevice) const
 		{
 			(*ppDevice) = m_Device->QueryReference<DX12Device>();
@@ -106,7 +99,7 @@ namespace RayEngine
 				flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
 			std::string errorString;
-			if (!CompileFromString(pDesc->Source, pDesc->EntryPoint, pDesc->Type, flags, errorString))
+			if (!CompileFromString(pDesc->pSource, pDesc->pEntryPoint, pDesc->Type, flags, errorString))
 			{
 				LOG_ERROR("D3D12: Could not compile shader" + errorString);
 			}
