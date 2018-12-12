@@ -33,7 +33,7 @@ namespace RayEngine
 		RE_UNIQUE_OBJECT(Application);
 
 	public:
-		Application();
+		Application(GRAPHICS_API api);
 		~Application();
 
 		int32 Run();
@@ -63,7 +63,7 @@ namespace RayEngine
 		}
 
 	private:
-		void Initialize();
+		void Initialize(GRAPHICS_API api);
 
 	private:
 		IWindow* m_pWindow;

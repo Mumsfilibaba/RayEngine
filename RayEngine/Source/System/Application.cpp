@@ -25,12 +25,12 @@ failure and or malfunction of any kind.
 namespace RayEngine
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	Application::Application()
+	Application::Application(GRAPHICS_API api)
 		: m_pWindow(nullptr),
 		m_pDevice(nullptr),
 		m_pSwapChain(nullptr)
 	{
-		Initialize();
+		Initialize(api);
 	}
 
 
@@ -60,11 +60,6 @@ namespace RayEngine
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void Application::OnRender()
 	{
-		float color[] = { 0.392f, 0.584f, 0.929f, 1.0f };
-		m_pContext->ClearRendertargetView(nullptr, color);
-		m_pContext->ClearDepthStencilView(nullptr, 1.0f, 0);
-
-		m_pSwapChain->Present();
 	}
 
 
@@ -93,7 +88,7 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void Application::Initialize()
+	void Application::Initialize(GRAPHICS_API api)
 	{
 		using namespace Graphics;
 
@@ -127,6 +122,6 @@ namespace RayEngine
 		swc.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM;
 		swc.DepthStencil.Format = FORMAT_D24_UNORM_S8_UINT;
 
-		InitGraphics(&m_pWindow, wnd, &m_pDevice, dev, &m_pSwapChain, swc, GRAPHICS_API_D3D12);
+		InitGraphics(&m_pWindow, wnd, &m_pDevice, dev, &m_pSwapChain, swc, api);
 	}
 }

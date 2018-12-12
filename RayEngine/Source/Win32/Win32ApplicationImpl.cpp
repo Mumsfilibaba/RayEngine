@@ -44,6 +44,13 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void InitD3D11(HWND hwnd, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
+		Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc)
+	{
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void Application::InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc,
 		Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
 		Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc,
@@ -54,6 +61,10 @@ namespace RayEngine
 		{
 			pWindow = new Win32WindowImpl(&windowDesc);
 			InitD3D12(pWindow->GetHWND(),  ppDevice, deviceDesc, ppSwapChain, swapChainDesc);
+		}
+		else if (api == GRAPHICS_API_D3D11)
+		{
+
 		}
 		else
 		{

@@ -2,9 +2,12 @@
 
 #include <System/Application.h>
 
-class Sandbox : public RayEngine::Application
+class Sandbox final : public RayEngine::Application
 {
 public:
 	Sandbox();
 	~Sandbox();
+
+	void OnUpdate() override final;
+	void OnRender() override final;
 };
