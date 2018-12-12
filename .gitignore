@@ -26,3 +26,5 @@
 *.opendb
 *.db-shm
 *.db-wal
+*.exp
+*.ilk
