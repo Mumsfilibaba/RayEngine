@@ -19,17 +19,17 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "System/System.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11/DX11Device.h"
-#include "DX11/DX11Swapchain.h"
-#include "DX12/DX12Device.h"
-#include "DX12/DX12Swapchain.h"
-#include "OpenGL/GLDeviceWin32.h"
-#include "OpenGL/GLSwapchain.h"
-#include "Win32/Win32WindowImpl.h"
+#include <System/System.h>
+#include <DX11/DX11Device.h>
+#include <DX11/DX11Swapchain.h>
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Swapchain.h>
+#include <OpenGL/GLDeviceWin32.h>
+#include <OpenGL/GLSwapchain.h>
+#include <Win32/Win32WindowImpl.h>
 
 namespace RayEngine
 {

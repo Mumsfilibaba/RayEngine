@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/System/Mouse.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/Win32/Win32WindowImpl.h"
+#include <System/Mouse.h>
+#include <Win32/Win32WindowImpl.h>
 
 namespace RayEngine
 {

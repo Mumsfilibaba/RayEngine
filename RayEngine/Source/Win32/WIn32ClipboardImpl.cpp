@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "..\..\Include\System\Clipboard.h"
+#include <RayEngine.h>
+#include <System\Clipboard.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 

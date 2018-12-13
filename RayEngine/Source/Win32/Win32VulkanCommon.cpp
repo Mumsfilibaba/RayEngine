@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/Vulkan/VulkCommon.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/Win32/Win32WindowImpl.h"
+#include <Vulkan/VulkCommon.h>
+#include <Win32/Win32WindowImpl.h>
 
 namespace RayEngine
 {

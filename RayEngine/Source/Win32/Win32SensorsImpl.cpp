@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/System/Sensors.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include <System/Sensors.h>
 
 namespace RayEngine
 {

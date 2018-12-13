@@ -20,11 +20,9 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-
-#include "../../Include/RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-
 namespace RayEngine
 {
 	class WndclassCache
@@ -47,5 +45,4 @@ namespace RayEngine
 		static std::unordered_map<std::string, Cache> s_Classes;
 	};
 }
-
 #endif

@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/System/TimeStamp.h"
+#include <RayEngine.h>
+#include <System/TimeStamp.h>
 
 namespace RayEngine
 {

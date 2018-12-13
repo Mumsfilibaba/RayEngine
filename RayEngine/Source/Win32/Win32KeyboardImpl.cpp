@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "..\..\Include\System\Keyboard.h"
+#include <RayEngine.h>
+#include <System\Keyboard.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "Win32KeyCodes.h"

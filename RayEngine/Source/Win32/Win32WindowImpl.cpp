@@ -19,13 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/Win32/Win32WindowImpl.h"
+#include <RayEngine.h>
 
 #if defined (RE_PLATFORM_WINDOWS)
-
-#include "../../Include/Utilities/EngineUtilities.h"
-#include "../../Include/Utilities/TextureUtilities.h"
+#include <Win32/Win32WindowImpl.h>
+#include <Utilities/EngineUtilities.h>
+#include <Utilities/TextureUtilities.h>
 #include "Win32KeyCodes.h"
 #include "WndclassCache.h"
 
