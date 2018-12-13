@@ -20,12 +20,12 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
-#include "Graphics/IShader.h"
+#include <RayEngine.h>
+#include <Graphics/IShader.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include <DXBase/DXShaderBase.h>
 #include "DX11Common.h"
-#include "DXBase/DXShaderBase.h"
 
 namespace RayEngine
 {
@@ -66,16 +66,12 @@ namespace RayEngine
 				static_assert(IsD3D11Shader<D3D11ShaderType>(), "GetD3D11Shader() - T must be a valid D3D11 shadertype. For example ID3D11VertexShader");
 				return reinterpret_cast<D3D11ShaderType*>(m_Shader);
 			}
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(ShaderDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderDesc* pDesc);
@@ -86,7 +82,7 @@ namespace RayEngine
 
 			ShaderDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

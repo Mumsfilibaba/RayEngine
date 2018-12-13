@@ -229,7 +229,6 @@
     <ClInclude Include="Include\DXBase\DXShaderBase.h" />
     <ClInclude Include="Include\Graphics\AdapterDesc.h" />
     <ClInclude Include="Include\Graphics\IDeviceContext.h" />
-    <ClInclude Include="Include\Graphics\IDeviceObject.h" />
     <ClInclude Include="Include\Graphics\IBuffer.h" />
     <ClInclude Include="Include\Graphics\IDepthStencilView.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />

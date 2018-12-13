@@ -50,19 +50,17 @@ namespace RayEngine
 			void GetDesc(SwapchainDesc* pDesc) const override final;
 
 			virtual void MakeCurrent() const = 0;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			GLDevice* m_Device;
 
 			SwapchainDesc m_Desc;
 			
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

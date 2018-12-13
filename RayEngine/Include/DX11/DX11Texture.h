@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics/ITexture.h"
+#include <Graphics/ITexture.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -30,6 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class DX11Device;
 
 
@@ -57,16 +58,12 @@ namespace RayEngine
 			{
 				return m_Texture3D;
 			}
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(TextureDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* const pInitialData, const TextureDesc* pDesc);
@@ -82,7 +79,7 @@ namespace RayEngine
 
 			TextureDesc m_Desc;
 			
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

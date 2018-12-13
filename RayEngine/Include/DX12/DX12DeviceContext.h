@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDeviceContext.h"
+#include <Graphics\IDeviceContext.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -112,13 +112,9 @@ namespace RayEngine
 
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
 			
-			void QueryDevice(IDevice** ppDevice) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType Release() override final;
-			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			inline ID3D12CommandList* GetD3D12CommandList() const
@@ -165,7 +161,7 @@ namespace RayEngine
 			
 			mutable std::vector<D3D12_RESOURCE_BARRIER> m_DefferedBarriers;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IShader.h"
+#include <Graphics\IShader.h>
 #include "VulkCommon.h"
 #include "VulkDevice.h"
 
@@ -28,6 +28,8 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
+		class IDevice;
+
 		class VulkShader final : public IShader
 		{
 			RE_IMPLEMENT_INTERFACE(VulkShader);
@@ -50,16 +52,12 @@ namespace RayEngine
 			{
 				return m_Desc.Type;
 			}
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(ShaderDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderDesc* pDesc);
@@ -71,7 +69,7 @@ namespace RayEngine
 			
 			ShaderDesc m_Desc;
 		
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

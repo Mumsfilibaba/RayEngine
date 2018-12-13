@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Vulkan\VulkDeviceContext.h"
+#include <RayEngine.h>
+#include <Vulkan\VulkDeviceContext.h>
 
 namespace RayEngine
 {
@@ -165,23 +165,10 @@ namespace RayEngine
 		}
 
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkDeviceContext::QueryDevice(IDevice** ppDevice) const
-		{
-		}
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkDeviceContext::GetReferenceCount() const
+		CounterType VulkDeviceContext::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkDeviceContext::Release()
-		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -190,10 +177,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkDeviceContext::AddRef()
+		CounterType VulkDeviceContext::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 	}
 }

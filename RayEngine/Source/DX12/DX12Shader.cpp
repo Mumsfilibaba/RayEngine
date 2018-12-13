@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12Device.h"
-#include "DX12/DX12Shader.h"
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Shader.h>
 
 namespace RayEngine
 {
@@ -50,13 +50,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Shader::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12Shader::GetDesc(ShaderDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -64,26 +57,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Shader::GetReferenceCount() const
+		CounterType DX12Shader::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Shader::AddRef()
+		CounterType DX12Shader::Release()
 		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Shader::Release()
-		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

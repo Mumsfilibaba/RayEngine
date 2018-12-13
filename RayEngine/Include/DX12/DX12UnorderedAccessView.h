@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDevice.h"
-#include "Graphics\IUnorderedAccessView.h"
+#include <Graphics\IDevice.h>
+#include <Graphics\IUnorderedAccessView.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -43,15 +43,11 @@ namespace RayEngine
 			DX12UnorderedAccessView(IDevice* pDevice, const UnorderedAccessViewDesc* pDesc);
 			~DX12UnorderedAccessView();
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(UnorderedAccessViewDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const UnorderedAccessViewDesc* pDesc);
@@ -61,7 +57,7 @@ namespace RayEngine
 
 			UnorderedAccessViewDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

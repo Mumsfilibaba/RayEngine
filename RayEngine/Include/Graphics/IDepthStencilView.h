@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "IDeviceObject.h"
+#include <Interfaces/IObject.h>
 
 namespace RayEngine
 {
@@ -117,7 +117,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API IDepthStencilView : public IDeviceObject
+		class RAYENGINE_API IDepthStencilView : public IObject
 		{
 			RE_INTERFACE(IDepthStencilView);
 

@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Vulkan/VulkRootLayout.h"
-#include "Vulkan/VulkDevice.h"
+#include <RayEngine.h>
+#include <Vulkan/VulkDevice.h>
+#include <Vulkan/VulkRootLayout.h>
 
 namespace RayEngine
 {
@@ -57,30 +57,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkRootLayout::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkRootLayout::GetDesc(RootLayoutDesc * pDesc) const
 		{
 			*pDesc = m_Desc;
 		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkRootLayout::GetReferenceCount() const
-		{
-			return m_References;
-		}
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkRootLayout::Release()
+		CounterType VulkRootLayout::Release()
 		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -89,10 +75,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkRootLayout::AddRef()
+		CounterType VulkRootLayout::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 

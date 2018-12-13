@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDevice.h"
+#include <Graphics\IDevice.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -138,11 +138,9 @@ namespace RayEngine
 
 			void GetAdapterDesc(AdapterDesc* pDesc) const override final;
 			
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType Release() override final;
-			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const DeviceDesc* pDesc);
@@ -168,7 +166,7 @@ namespace RayEngine
 			DX12ShaderResourceView* m_pEmptySRV;
 			DX12UnorderedAccessView* m_pEmptyUAV;
 			DeviceDesc m_Desc;
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

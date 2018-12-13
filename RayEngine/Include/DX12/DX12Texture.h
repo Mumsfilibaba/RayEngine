@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDevice.h"
-#include "Graphics\ITexture.h"
+#include <Graphics\IDevice.h>
+#include <Graphics\ITexture.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Resource.h"
@@ -45,15 +45,11 @@ namespace RayEngine
 			DX12Texture(IDevice* pDevice, ID3D12Resource* pResource);
 			~DX12Texture();
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(TextureDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* const pInitialData, const TextureDesc* pDesc);
@@ -63,7 +59,7 @@ namespace RayEngine
 
 			TextureDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

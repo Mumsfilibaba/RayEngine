@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12Device.h"
-#include "DX12/DX12Sampler.h"
-#include "DX12/DX12DescriptorHeap.h"
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Sampler.h>
+#include <DX12/DX12DescriptorHeap.h>
 
 namespace RayEngine
 {
@@ -48,13 +48,6 @@ namespace RayEngine
 		DX12Sampler::~DX12Sampler()
 		{
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Sampler::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,29 +55,19 @@ namespace RayEngine
 		{
 			*pDesc = m_Desc;
 		}
-	
+
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Sampler::GetReferenceCount() const
+		CounterType DX12Sampler::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Sampler::AddRef()
+		CounterType DX12Sampler::Release()
 		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Sampler::Release()
-		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

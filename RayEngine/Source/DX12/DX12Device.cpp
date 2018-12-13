@@ -19,23 +19,23 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12Device.h"
-#include "DX12/DX12Buffer.h"
-#include "DX12/DX12Shader.h"
-#include "DX12/DX12Texture.h"
-#include "DX12/DX12DeviceContext.h"
-#include "DX12/DX12PipelineState.h"
-#include "DX12/DX12Sampler.h"
-#include "DX12/DX12ShaderResourceView.h"
-#include "DX12/DX12UnorderedAccessView.h"
-#include "DX12/DX12RootLayout.h"
-#include "DX12/DX12DepthStencilView.h"
-#include "DX12/DX12RenderTargetView.h"
-#include "DX12/DX12DynamicUploadHeap.h"
-#include "DX12/DX12DescriptorHeap.h"
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Buffer.h>
+#include <DX12/DX12Shader.h>
+#include <DX12/DX12Texture.h>
+#include <DX12/DX12Sampler.h>
+#include <DX12/DX12RootLayout.h>
+#include <DX12/DX12DeviceContext.h>
+#include <DX12/DX12PipelineState.h>
+#include <DX12/DX12DescriptorHeap.h>
+#include <DX12/DX12RenderTargetView.h>
+#include <DX12/DX12DepthStencilView.h>
+#include <DX12/DX12DynamicUploadHeap.h>
+#include <DX12/DX12ShaderResourceView.h>
+#include <DX12/DX12UnorderedAccessView.h>
 
 namespace RayEngine
 {
@@ -206,23 +206,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Device::GetReferenceCount() const
-		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Device::AddRef()
+		CounterType DX12Device::AddRef()
 		{
 			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Device::Release()
+		CounterType DX12Device::Release()
 		{
-			IObject::CounterType counter = --m_References;
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

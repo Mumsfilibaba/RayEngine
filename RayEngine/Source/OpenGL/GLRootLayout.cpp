@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/OpenGL/GLDevice.h"
-#include "../../Include/OpenGL/GLRootLayout.h"
+#include <RayEngine.h>
+#include <OpenGL/GLDevice.h>
+#include <OpenGL/GLRootLayout.h>
 
 namespace RayEngine
 {
@@ -54,13 +54,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLRootLayout::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<GLDevice>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLRootLayout::GetDesc(RootLayoutDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -68,27 +61,20 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLRootLayout::GetReferenceCount() const
+		CounterType GLRootLayout::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLRootLayout::Release()
+		CounterType GLRootLayout::Release()
 		{
-			IObject::CounterType refs = --m_References;
+			CounterType refs = --m_References;
 			if (refs < 1)
 				delete this;
 
 			return refs;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLRootLayout::AddRef()
-		{
-			return ++m_References;
 		}
 	}
 }

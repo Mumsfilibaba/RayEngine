@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics/IShader.h"
+#include <Graphics/IShader.h>
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -28,6 +28,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class GLDevice;
 
 
@@ -45,15 +46,11 @@ namespace RayEngine
 				return m_Shader;
 			}
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(ShaderDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderDesc* pDesc);
@@ -67,7 +64,7 @@ namespace RayEngine
 
 			int32 m_Shader;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

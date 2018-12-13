@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDevice.h"
+#include <Graphics\IDevice.h>
 #include "VulkSwapchain.h"
 
 namespace RayEngine
@@ -73,11 +73,9 @@ namespace RayEngine
 
 			void GetAdapterDesc(AdapterDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
-			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const DeviceDesc* pDesc);
@@ -88,7 +86,7 @@ namespace RayEngine
 			
 			DeviceDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

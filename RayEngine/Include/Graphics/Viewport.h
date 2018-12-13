@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 namespace RayEngine
 {

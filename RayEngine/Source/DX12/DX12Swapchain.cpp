@@ -81,26 +81,19 @@ namespace RayEngine
 		{
 			*pDesc = m_Desc;
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Swapchain::GetReferenceCount() const
-		{
-			return m_References;
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Swapchain::AddRef()
+		CounterType DX12Swapchain::AddRef()
 		{
 			return ++m_References;
 		}
 
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12Swapchain::Release()
+		CounterType DX12Swapchain::Release()
 		{
-			IObject::CounterType counter = --m_References;
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

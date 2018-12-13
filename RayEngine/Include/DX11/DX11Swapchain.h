@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
-#include "Graphics/ISwapchain.h"
+#include <RayEngine.h>
+#include <Graphics/ISwapchain.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -64,12 +64,10 @@ namespace RayEngine
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(SwapchainDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const SwapchainDesc* pDesc, HWND hwnd);
@@ -98,7 +96,7 @@ namespace RayEngine
 
 			bool m_UseMSAA;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

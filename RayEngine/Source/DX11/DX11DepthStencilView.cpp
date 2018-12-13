@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11/DX11DepthStencilView.h"
-#include "DX11/DX11Device.h"
-#include "DX11/DX11Texture.h"
+#include <DX11/DX11DepthStencilView.h>
+#include <DX11/DX11Device.h>
+#include <DX11/DX11Texture.h>
 
 namespace RayEngine
 {
@@ -52,13 +52,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11DepthStencilView::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX11Device>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DepthStencilView::GetDesc(DepthStencilViewDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -66,26 +59,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11DepthStencilView::GetReferenceCount() const
+		CounterType DX11DepthStencilView::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11DepthStencilView::AddRef()
+		CounterType DX11DepthStencilView::Release()
 		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11DepthStencilView::Release()
-		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

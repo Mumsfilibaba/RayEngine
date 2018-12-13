@@ -20,13 +20,15 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IRenderTargetView.h"
+#include <Graphics\IRenderTargetView.h>
 #include "VulkImageView.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		class IDevice;
+
 		class VulkRenderTargetView final : public IRenderTargetView, public VulkImageView
 		{
 			RE_IMPLEMENT_INTERFACE(VulkRenderTargetView);
@@ -34,16 +36,12 @@ namespace RayEngine
 		public:
 			VulkRenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc);
 			~VulkRenderTargetView();
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(RenderTargetViewDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const RenderTargetViewDesc* pDesc);
@@ -51,7 +49,7 @@ namespace RayEngine
 		private:
 			RenderTargetViewDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

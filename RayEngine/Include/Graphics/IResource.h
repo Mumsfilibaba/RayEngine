@@ -20,13 +20,13 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "IDeviceObject.h"
+#include <Interfaces/IObject.h>
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
-		class RAYENGINE_API IResource : public IDeviceObject
+		class RAYENGINE_API IResource : public IObject
 		{
 			RE_INTERFACE(IResource);
 

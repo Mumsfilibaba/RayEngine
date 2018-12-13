@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDeviceObject.h"
+#include <Interfaces/IObject.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12DescriptorHandle.h"
@@ -30,12 +30,13 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class DX12Device;
 		class DX12Resource;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12DescriptorHeap final : public IDeviceObject
+		class DX12DescriptorHeap final : public IObject
 		{
 			RE_IMPLEMENT_INTERFACE(DX12DescriptorHeap);
 
@@ -50,13 +51,9 @@ namespace RayEngine
 
 			DX12DescriptorHandle GetNext() const;
 
-			void QueryDevice(IDevice** ppDevice) const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
-
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, int32 num);
@@ -69,7 +66,7 @@ namespace RayEngine
 			int32 m_Count;
 			mutable int32 m_UsedCount;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

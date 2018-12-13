@@ -19,21 +19,21 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11/DX11Device.h"
-#include "DX11/DX11DeviceContext.h"
-#include "DX11/DX11RenderTargetView.h"
-#include "DX11/DX11DepthStencilView.h"
-#include "DX11/DX11Texture.h"
-#include "DX11/DX11Shader.h"
-#include "DX11/DX11Sampler.h"
-#include "DX11/DX11ShaderResourceView.h"
-#include "DX11/DX11UnorderedAccessView.h"
-#include "DX11/DX11RootLayout.h"
-#include "DX11/DX11PipelineState.h"
-#include "DX11/DX11Buffer.h"
+#include <DX11/DX11Device.h>
+#include <DX11/DX11DeviceContext.h>
+#include <DX11/DX11RenderTargetView.h>
+#include <DX11/DX11DepthStencilView.h>
+#include <DX11/DX11Texture.h>
+#include <DX11/DX11Shader.h>
+#include <DX11/DX11Sampler.h>
+#include <DX11/DX11ShaderResourceView.h>
+#include <DX11/DX11UnorderedAccessView.h>
+#include <DX11/DX11RootLayout.h>
+#include <DX11/DX11PipelineState.h>
+#include <DX11/DX11Buffer.h>
 #include <d3dcommon.h>
 
 namespace RayEngine
@@ -142,26 +142,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11Device::GetReferenceCount() const
+		CounterType DX11Device::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11Device::AddRef()
+		CounterType DX11Device::Release()
 		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11Device::Release()
-		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

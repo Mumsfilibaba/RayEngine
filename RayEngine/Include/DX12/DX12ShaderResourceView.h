@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDevice.h"
-#include "Graphics\IShaderResourceView.h"
+#include <Graphics\IDevice.h>
+#include <Graphics\IShaderResourceView.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -42,16 +42,12 @@ namespace RayEngine
 		public:
 			DX12ShaderResourceView(IDevice* pDevice, const ShaderResourceViewDesc* pDesc);
 			~DX12ShaderResourceView();
-						
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(ShaderResourceViewDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderResourceViewDesc* pDesc);
@@ -61,7 +57,7 @@ namespace RayEngine
 						
 			ShaderResourceViewDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

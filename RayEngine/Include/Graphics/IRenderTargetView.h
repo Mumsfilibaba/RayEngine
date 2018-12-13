@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "IDeviceObject.h"
+#include <Interfaces/IObject.h>
 
 namespace RayEngine
 {
@@ -131,7 +131,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API IRenderTargetView : public IDeviceObject
+		class RAYENGINE_API IRenderTargetView : public IObject
 		{
 			RE_INTERFACE(IRenderTargetView);
 

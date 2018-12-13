@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/DX12/DX12UnorderedAccessView.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "../../Include/DX12/DX12Device.h"
-#include "../../Include/DX12/DX12Texture.h"
-#include "../../Include/DX12/DX12DescriptorHeap.h"
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Texture.h>
+#include <DX12/DX12DescriptorHeap.h>
+#include <DX12/DX12UnorderedAccessView.h>
 
 namespace RayEngine
 {
@@ -51,13 +51,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12UnorderedAccessView::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12UnorderedAccessView::GetDesc(UnorderedAccessViewDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -65,23 +58,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12UnorderedAccessView::GetReferenceCount() const
-		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12UnorderedAccessView::AddRef()
+		CounterType DX12UnorderedAccessView::AddRef()
 		{
 			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12UnorderedAccessView::Release()
+		CounterType DX12UnorderedAccessView::Release()
 		{
-			IObject::CounterType counter = --m_References;
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

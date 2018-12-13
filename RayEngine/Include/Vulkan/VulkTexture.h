@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\ITexture.h"
+#include <Graphics\ITexture.h>
 #include "VulkCommon.h"
 
 namespace RayEngine
@@ -28,6 +28,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class VulkDevice;
 
 
@@ -47,16 +48,12 @@ namespace RayEngine
 			}
 
 			void InvalidateResource();
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(TextureDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* const pInitialData, const TextureDesc* pDesc);
@@ -68,7 +65,7 @@ namespace RayEngine
 			
 			TextureDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

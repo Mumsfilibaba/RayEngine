@@ -20,30 +20,30 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "IDeviceObject.h"
+#include <Interfaces/IObject.h>
 
 namespace RayEngine
 {
 	namespace Graphics
 	{	
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class ITexture;
 		class IBuffer;
 		class ISampler;
+		class ITexture;
+		class ISwapchain;
+		class IRootLayout;
+		class IPipelineState;
 		class IRenderTargetView;
 		class IDepthStencilView;
 		class IShaderResourceView;
 		class IUnorderedAccessView;
-		class IRootLayout;
-		class IPipelineState;
-		class ISwapchain;
 
-		struct Viewport;
 		struct Rect;
+		struct Viewport;
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API IDeviceContext : public IDeviceObject
+		class RAYENGINE_API IDeviceContext : public IObject
 		{
 			RE_INTERFACE(IDeviceContext);
 

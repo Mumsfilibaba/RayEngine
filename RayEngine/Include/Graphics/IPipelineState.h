@@ -15,8 +15,8 @@ held liable. This includes computer failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
-#include "IDeviceObject.h"
+#include <RayEngine.h>
+#include <Interfaces/IObject.h>
 
 namespace RayEngine
 {
@@ -482,7 +482,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API IPipelineState : public IDeviceObject
+		class RAYENGINE_API IPipelineState : public IObject
 		{
 			RE_INTERFACE(IPipelineState);
 

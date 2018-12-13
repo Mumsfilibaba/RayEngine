@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
-#include "Graphics\IRootLayout.h"
+#include <RayEngine.h>
+#include <Graphics\IRootLayout.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -49,16 +49,12 @@ namespace RayEngine
 			{
 				return m_VariableSlots[slotIndex];
 			}
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(RootLayoutDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const RootLayoutDesc* pDesc);
@@ -78,7 +74,7 @@ namespace RayEngine
 
 			RootLayoutDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

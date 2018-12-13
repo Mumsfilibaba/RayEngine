@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12DescriptorHeap.h"
-#include "DX12/DX12Device.h"
-#include "DX12/DX12Resource.h"
+#include <DX12/DX12DescriptorHeap.h>
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Resource.h>
 
 namespace RayEngine
 {
@@ -67,33 +67,19 @@ namespace RayEngine
 			m_UsedCount++;
 			return next;
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DescriptorHeap::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12DescriptorHeap::GetReferenceCount() const
-		{
-			return m_References;
-		}
 
 	
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12DescriptorHeap::AddRef()
+		CounterType DX12DescriptorHeap::AddRef()
 		{
 			return ++m_References;
 		}
 
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12DescriptorHeap::Release()
+		CounterType DX12DescriptorHeap::Release()
 		{
-			IObject::CounterType counter = --m_References;
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

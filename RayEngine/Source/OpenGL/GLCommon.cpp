@@ -19,8 +19,8 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/OpenGL/GLCommon.h"
+#include <RayEngine.h>
+#include <OpenGL/GLCommon.h>
 #if defined(RE_PLATFORM_WINDOWS)
 #include "../Win32/WndclassCache.h"
 #endif

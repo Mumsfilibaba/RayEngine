@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDevice.h"
-#include "Graphics\IDepthStencilView.h"
+#include <Graphics\IDevice.h>
+#include <Graphics\IDepthStencilView.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -31,6 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class DX12Device;
 
 
@@ -42,16 +43,12 @@ namespace RayEngine
 		public:
 			DX12DepthStencilView(IDevice* pDevice, const DepthStencilViewDesc* pDesc);
 			~DX12DepthStencilView();
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(DepthStencilViewDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const DepthStencilViewDesc* pDesc);
@@ -61,7 +58,7 @@ namespace RayEngine
 
 			DepthStencilViewDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

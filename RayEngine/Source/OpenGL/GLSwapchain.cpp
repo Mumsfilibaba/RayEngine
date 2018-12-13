@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/OpenGL/GLSwapchain.h"
-#include "../../Include/OpenGL/GLDevice.h"
+#include <RayEngine.h>
+#include <OpenGL/GLDevice.h>
+#include <OpenGL/GLSwapchain.h>
 
 namespace RayEngine
 {
@@ -67,28 +67,20 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLSwapchain::GetReferenceCount() const
+		CounterType GLSwapchain::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLSwapchain::Release()
+		CounterType GLSwapchain::Release()
 		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
 			return counter;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLSwapchain::AddRef()
-		{
-			m_References++;
-			return m_References;
 		}
 	}
 }

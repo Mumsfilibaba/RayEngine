@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
-#include "IDeviceObject.h"
+#include <RayEngine.h>
+#include <Interfaces/IObject.h>
 
 #if defined(max)
 #undef max
@@ -56,7 +56,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API ISampler : public IDeviceObject
+		class RAYENGINE_API ISampler : public IObject
 		{
 			RE_INTERFACE(ISampler);
 		

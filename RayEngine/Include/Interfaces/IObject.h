@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if !defined(ReRelease)
 #define ReRelease(pObject) pObject->Release(); pObject = nullptr
@@ -32,6 +32,8 @@ failure and or malfunction of any kind.
 
 namespace RayEngine
 {
+	typedef uint32 CounterType;
+
 	class RAYENGINE_API IObject
 	{
 		RE_INTERFACE(IObject);
@@ -40,18 +42,11 @@ namespace RayEngine
 		IObject() {}
 		~IObject() {}
 
-		typedef uint32 CounterType;
-
 		/*////////////////////////////////////////////////////////////
 			Increments objects reference counter and returns the 
 			new referencecount.
 		////////////////////////////////////////////////////////////*/
 		virtual CounterType AddRef() = 0;
-		
-		/*////////////////////////////////////////////////////////////
-			Returns the current referencecount
-		////////////////////////////////////////////////////////////*/
-		virtual CounterType GetReferenceCount() const = 0;
 		
 		/*////////////////////////////////////////////////////////////
 			Decrements the referencecounter and returns the new 

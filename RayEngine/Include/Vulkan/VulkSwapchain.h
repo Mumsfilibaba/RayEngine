@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\ISwapchain.h"
+#include <Graphics\ISwapchain.h>
 #include "VulkTexture.h"
 
 namespace RayEngine
@@ -58,12 +58,10 @@ namespace RayEngine
 			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(SwapchainDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void ReleaseObjects();
@@ -87,7 +85,7 @@ namespace RayEngine
 
 			std::vector<VulkTexture*> m_Textures;
 			
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

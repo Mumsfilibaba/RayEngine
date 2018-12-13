@@ -29,22 +29,12 @@ namespace RayEngine
 {
 	namespace Graphics
 	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		HWND CreateDummyWindow();
-
-		void SetStandardPixelformat(HDC hDC);
-
-		void CreateOpenGLDevice(HWND hwnd, IDevice** ppDevice, DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, SwapchainDesc* pSwapchainDesc);
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class GLDeviceWin32 final : public GLDevice
 		{
 			RE_IMPLEMENT_INTERFACE(GLDeviceWin32);
 
 		public:
-			GLDeviceWin32(const DeviceDesc* pDesc);
-			GLDeviceWin32(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs);
+			GLDeviceWin32(const DeviceDesc* pDesc, const SwapchainDesc* pScDesc, HWND hwnd);
 			~GLDeviceWin32();
 
 			inline HDC GetHDC() const
@@ -58,9 +48,7 @@ namespace RayEngine
 			}
 
 		private:
-			void Create(const DeviceDesc* pDesc);
-
-			void Create(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs);
+			void Create(const DeviceDesc* pDesc, const SwapchainDesc* pScDesc, HWND hwnd);
 
 			bool QueryWGLExtensions(HDC hDC);
 

@@ -300,9 +300,6 @@
     <ClInclude Include="Include\Utilities\StringUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Graphics\IDeviceObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DX11\DX11ShaderConstantBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>

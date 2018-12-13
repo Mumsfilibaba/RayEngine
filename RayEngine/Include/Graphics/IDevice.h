@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
+#include <Interfaces/IObject.h>
 #include "AdapterDesc.h"
-#include "Interfaces/IObject.h"
 
 namespace RayEngine
 {

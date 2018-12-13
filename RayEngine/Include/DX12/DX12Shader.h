@@ -20,17 +20,18 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IShader.h"
+#include <Graphics\IShader.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
+#include <DXBase\DXShaderBase.h>
 #include "DX12Common.h"
-#include "DXBase\DXShaderBase.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class DX12Device;
 
 
@@ -45,15 +46,11 @@ namespace RayEngine
 
 			D3D12_SHADER_BYTECODE GetD3D12ByteCode() const;
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(ShaderDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ShaderDesc* pDesc);
@@ -63,7 +60,7 @@ namespace RayEngine
 
 			ShaderDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

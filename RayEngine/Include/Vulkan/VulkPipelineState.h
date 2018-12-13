@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IPipelineState.h"
+#include <Graphics\IPipelineState.h>
 #include "VulkRootLayout.h"
 #include "VulkShader.h"
 
@@ -29,6 +29,8 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
+
 		typedef std::pair<VkVertexInputAttributeDescription, VkVertexInputBindingDescription> VkInputElement;
 
 
@@ -50,16 +52,12 @@ namespace RayEngine
 			{
 				return m_RenderPass;
 			}
-						
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(PipelineStateDesc* pDesc) const;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const PipelineStateDesc* pDesc);
@@ -92,7 +90,7 @@ namespace RayEngine
 			
 			PipelineStateDesc m_Desc;
 			
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

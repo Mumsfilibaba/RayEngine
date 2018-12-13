@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
-#include "Graphics/IDeviceObject.h"
+#include <RayEngine.h>
+#include <Interfaces/IObject.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX11ShaderConstantBlock final : public IDeviceObject
+		class DX11ShaderConstantBlock final : public IObject
 		{
 			RE_IMPLEMENT_INTERFACE(DX11ShaderConstantBlock);
 
@@ -43,17 +43,16 @@ namespace RayEngine
 			DX11ShaderConstantBlock(DX11Device* pDevice, int32 numConstants);
 			~DX11ShaderConstantBlock();
 
+			inline ID3D11Buffer* GetD3D11Buffer() const
+			{
+				return m_ConstantBuffer;
+			}
+
 			void SetConstant(uint32 constant, uint32 index);
-
-			ID3D11Buffer* GetD3D11Buffer() const;
 			
-			void QueryDevice(IDevice** ppDevice) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType Release() override final;
-			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(int32 numConstants);
@@ -63,7 +62,7 @@ namespace RayEngine
 			ID3D11Buffer* m_ConstantBuffer;
 			
 			std::vector<uint32> m_Constants;
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

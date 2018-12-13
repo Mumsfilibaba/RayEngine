@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDevice.h"
-#include "Graphics\IRenderTargetView.h"
+#include <Graphics\IDevice.h>
+#include <Graphics\IRenderTargetView.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12View.h"
@@ -31,6 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class DX12Device;
 
 
@@ -43,15 +44,11 @@ namespace RayEngine
 			DX12RenderTargetView(IDevice* pDevice, const RenderTargetViewDesc* pDesc);
 			~DX12RenderTargetView();
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(RenderTargetViewDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const RenderTargetViewDesc* pDesc);
@@ -61,7 +58,7 @@ namespace RayEngine
 
 			RenderTargetViewDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

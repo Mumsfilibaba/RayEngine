@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Vulkan/VulkTexture.h"
-#include "Vulkan/VulkDevice.h"
+#include <RayEngine.h>
+#include <Vulkan/VulkDevice.h>
+#include <Vulkan/VulkTexture.h>
 
 namespace RayEngine
 {
@@ -73,32 +73,18 @@ namespace RayEngine
 			m_Image = VK_NULL_HANDLE;
 		}
 
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkTexture::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
-		}
-
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkTexture::GetDesc(TextureDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
 		}
-
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkTexture::GetReferenceCount() const
-		{
-			return m_References;
-		}
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkTexture::Release()
+		CounterType VulkTexture::Release()
 		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -107,10 +93,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkTexture::AddRef()
+		CounterType VulkTexture::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 

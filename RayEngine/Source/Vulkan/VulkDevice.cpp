@@ -19,14 +19,14 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Vulkan/VulkDevice.h"
-#include "Vulkan/VulkFactory.h"
-#include "Vulkan/VulkTexture.h"
-#include "Vulkan/VulkRenderTargetView.h"
-#include "Vulkan/VulkShader.h"
-#include "Vulkan/VulkPipelineState.h"
-#include "Vulkan/VulkRootLayout.h"
+#include <RayEngine.h>
+#include <Vulkan/VulkDevice.h>
+#include <Vulkan/VulkShader.h>
+#include <Vulkan/VulkFactory.h>
+#include <Vulkan/VulkTexture.h>
+#include <Vulkan/VulkRootLayout.h>
+#include <Vulkan/VulkPipelineState.h>
+#include <Vulkan/VulkRenderTargetView.h>
 
 namespace RayEngine
 {
@@ -137,24 +137,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkDevice::GetReferenceCount() const
+		CounterType VulkDevice::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkDevice::AddRef()
+		CounterType VulkDevice::Release()
 		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkDevice::Release()
-		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 

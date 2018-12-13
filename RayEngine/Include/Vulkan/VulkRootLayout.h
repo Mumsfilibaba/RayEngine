@@ -20,13 +20,15 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IRootLayout.h"
+#include <Graphics\IRootLayout.h>
 #include "VulkCommon.h"
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
+		class IDevice;
+
 		class VulkRootLayout final : public IRootLayout
 		{
 			RE_IMPLEMENT_INTERFACE(VulkRootLayout);
@@ -39,16 +41,12 @@ namespace RayEngine
 			{
 				return m_Layout;
 			}
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(RootLayoutDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
+						
+			CounterType Release() override final;
 			
-			IObject::CounterType Release() override final;
-			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(IDevice* pDevice, const RootLayoutDesc* pDesc);
@@ -60,7 +58,7 @@ namespace RayEngine
 
 			RootLayoutDesc m_Desc;
 			
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

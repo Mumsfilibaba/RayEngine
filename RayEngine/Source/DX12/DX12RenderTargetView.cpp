@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12RenderTargetView.h"
-#include "DX12/DX12Device.h"
-#include "DX12/DX12Texture.h"
-#include "DX12/DX12DescriptorHeap.h"
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Texture.h>
+#include <DX12/DX12DescriptorHeap.h>
+#include <DX12/DX12RenderTargetView.h>
 
 namespace RayEngine
 {
@@ -48,13 +48,6 @@ namespace RayEngine
 		DX12RenderTargetView::~DX12RenderTargetView()
 		{
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12RenderTargetView::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,26 +55,19 @@ namespace RayEngine
 		{
 			*pDesc = m_Desc;
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12RenderTargetView::GetReferenceCount() const
-		{
-			return m_References;
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12RenderTargetView::AddRef()
+		CounterType DX12RenderTargetView::AddRef()
 		{
 			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12RenderTargetView::Release()
+		CounterType DX12RenderTargetView::Release()
 		{
-			IObject::CounterType counter = --m_References;
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

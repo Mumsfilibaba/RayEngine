@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Vulkan/VulkShader.h"
-#include "Vulkan/VulkDevice.h"
+#include <RayEngine.h>
+#include <Vulkan/VulkShader.h>
+#include <Vulkan/VulkDevice.h>
 
 namespace RayEngine
 {
@@ -54,13 +54,6 @@ namespace RayEngine
 
 			ReRelease_S(m_Device);
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkShader::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,16 +64,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkShader::GetReferenceCount() const
+		CounterType VulkShader::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkShader::Release()
-		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -89,10 +75,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkShader::AddRef()
+		CounterType VulkShader::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 

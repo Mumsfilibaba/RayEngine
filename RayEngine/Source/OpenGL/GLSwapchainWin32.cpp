@@ -29,7 +29,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLSwapchainWin32::GLSwapchainWin32(const SwapchainDesc * pDesc, GLDeviceWin32 * pDevice)
+		GLSwapchainWin32::GLSwapchainWin32(const SwapchainDesc* pDesc, GLDeviceWin32* pDevice)
 			: GLSwapchain(pDevice, pDesc),
 			m_pDevice(nullptr),
 			m_HDC(0)

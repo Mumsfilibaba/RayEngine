@@ -19,22 +19,23 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Graphics/Viewport.h"
-#include "DX11/DX11DeviceContext.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11/DX11Device.h"
-#include "DX11/DX11RenderTargetView.h"
-#include "DX11/DX11DepthStencilView.h"
-#include "DX11/DX11ShaderResourceView.h"
-#include "DX11/DX11UnorderedAccessView.h"
-#include "DX11/DX11PipelineState.h"
-#include "DX11/DX11Buffer.h"
-#include "DX11/DX11Sampler.h"
-#include "DX11/DX11RootLayout.h"
-#include "DX11/DX11RootVariableSlot.h"
-#include "DX11/DX11Swapchain.h"
+#include <Graphics/Viewport.h>
+
+#include <DX11/DX11Device.h>
+#include <DX11/DX11Buffer.h>
+#include <DX11/DX11Sampler.h>
+#include <DX11/DX11Swapchain.h>
+#include <DX11/DX11RootLayout.h>
+#include <DX11/DX11DeviceContext.h>
+#include <DX11/DX11PipelineState.h>
+#include <DX11/DX11RootVariableSlot.h>
+#include <DX11/DX11RenderTargetView.h>
+#include <DX11/DX11DepthStencilView.h>
+#include <DX11/DX11ShaderResourceView.h>
+#include <DX11/DX11UnorderedAccessView.h>
 
 namespace RayEngine
 {
@@ -314,33 +315,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11DeviceContext::QueryDevice(IDevice** ppDevice) const
+		CounterType DX11DeviceContext::AddRef()
 		{
-			(*ppDevice) = m_Device->QueryReference<DX11Device>();
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11DeviceContext::GetReferenceCount() const
+		CounterType DX11DeviceContext::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11DeviceContext::AddRef()
-		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11DeviceContext::Release()
-		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

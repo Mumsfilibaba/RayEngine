@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IRootLayout.h"
+#include <Graphics\IRootLayout.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -30,6 +30,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class DX12Device;
 		class DX12RootVariableSlot;
 
@@ -63,15 +64,11 @@ namespace RayEngine
 				return static_cast<int32>(m_VariableSlots.size());
 			}
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(RootLayoutDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 
 		private:
@@ -91,7 +88,7 @@ namespace RayEngine
 
 			std::vector<DX12RootVariableSlot*> m_VariableSlots;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

@@ -20,8 +20,8 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "RayEngine.h"
-#include "IDeviceObject.h"
+#include <RayEngine.h>
+#include <Interfaces/IObject.h>
 
 namespace RayEngine
 {
@@ -128,7 +128,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API IShaderResourceView : public IDeviceObject
+		class RAYENGINE_API IShaderResourceView : public IObject
 		{
 			RE_INTERFACE(IShaderResourceView);
 

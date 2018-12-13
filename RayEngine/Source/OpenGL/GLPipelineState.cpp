@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/OpenGL/GLDevice.h"
-#include "../../Include/OpenGL/GLShader.h"
-#include "../../Include/OpenGL/GLPipelineState.h"
+#include <RayEngine.h>
+#include <OpenGL/GLDevice.h>
+#include <OpenGL/GLShader.h>
+#include <OpenGL/GLPipelineState.h>
 
 namespace RayEngine
 {
@@ -87,13 +87,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<GLDevice>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLPipelineState::GetDesc(PipelineStateDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -101,16 +94,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLPipelineState::GetReferenceCount() const
+		CounterType GLPipelineState::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLPipelineState::Release()
-		{
-			IObject::CounterType refs = --m_References;
+			CounterType refs = --m_References;
 			if (refs < 1)
 				delete this;
 
@@ -119,7 +105,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLPipelineState::AddRef()
+		CounterType GLPipelineState::AddRef()
 		{
 			return ++m_References;
 		}

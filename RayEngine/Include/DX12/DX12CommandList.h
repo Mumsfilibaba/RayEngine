@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDeviceObject.h"
+#include <Interfaces/IObject.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Common.h"
@@ -35,7 +35,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class DX12CommandList final : public IDeviceObject
+		class DX12CommandList final : public IObject
 		{
 			RE_IMPLEMENT_INTERFACE(DX12CommandList);
 
@@ -76,13 +76,9 @@ namespace RayEngine
 				return m_List;
 			}
 			
-			void QueryDevice(IDevice** ppDevice) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType Release() override final;
-			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);
@@ -92,7 +88,7 @@ namespace RayEngine
 			ID3D12GraphicsCommandList* m_List;
 			ID3D12CommandAllocator* m_Allocator;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

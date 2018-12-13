@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Vulkan/VulkPipelineState.h"
-#include "Vulkan/VulkDevice.h"
+#include <RayEngine.h>
+#include <Vulkan/VulkDevice.h>
+#include <Vulkan/VulkPipelineState.h>
 
 namespace RayEngine
 {
@@ -76,13 +76,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<VulkDevice>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkPipelineState::GetDesc(PipelineStateDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -90,16 +83,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkPipelineState::GetReferenceCount() const
+		CounterType VulkPipelineState::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkPipelineState::Release()
-		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -108,10 +94,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkPipelineState::AddRef()
+		CounterType VulkPipelineState::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 

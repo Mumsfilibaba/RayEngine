@@ -66,7 +66,7 @@ namespace RayEngine
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class RAYENGINE_API IShader : public IDeviceObject
+		class RAYENGINE_API IShader : public IObject
 		{
 			RE_INTERFACE(IShader);
 

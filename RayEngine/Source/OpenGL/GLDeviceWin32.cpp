@@ -34,24 +34,18 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLDeviceWin32::GLDeviceWin32(const DeviceDesc* pDesc)
-			: GLDevice(pDesc),
-			m_HDC(0),
-			m_Hwnd(0),
-			m_IsWindowOwner(false)
-		{
-			Create(pDesc);
-		}
+		HWND CreateDummyWindow();
+		void SetStandardPixelformat(HDC hDC);
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLDeviceWin32::GLDeviceWin32(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs)
+		GLDeviceWin32::GLDeviceWin32(const DeviceDesc* pDesc, const SwapchainDesc* pScDesc, HWND hwnd)
 			: GLDevice(pDesc),
 			m_HDC(0),
 			m_Hwnd(0),
 			m_IsWindowOwner(false)
 		{
-			Create(pDesc, hwnd, pPixelFormatAttribs);
+			Create(pDesc, pScDesc, hwnd);
 		}
 
 
@@ -82,86 +76,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLDeviceWin32::Create(const DeviceDesc* pDesc)
-		{
-			HWND hWND = CreateDummyWindow();
-			if (hWND == 0)
-			{
-				LOG_ERROR("OpenGL: Failed to create window for context");
-				return;
-			}
-
-			HDC hDC = GetDC(hWND);
-			SetStandardPixelformat(hDC);
-
-			HGLRC hContext = wglCreateContext(hDC);
-			wglMakeCurrent(hDC, hContext);
-
-			if (!QueryWGLExtensions(hDC))
-			{
-				wglMakeCurrent(0, 0);
-				wglDeleteContext(hContext);
-
-				ReleaseDC(hWND, hDC);
-				
-				DestroyWindow(hWND);
-
-				return;
-			}
-
-			//Can we create a context?
-			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContext = nullptr;
-			if (!ExtensionSupported("WGL_ARB_create_context"))
-			{
-				LOG_ERROR("OpenGL: WGL_ARB_create_context is not supported.");
-				return;
-			}
-			else
-			{
-				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
-
-				wglMakeCurrent(0, 0);
-				wglDeleteContext(hContext);
-			}
-
-			//Create real context
-			int attribs[] =
-			{
-				WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-				WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-				WGL_CONTEXT_FLAGS_ARB, (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG) ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
-				0
-			};
-
-			m_NativeContext = wglCreateContext(hDC, 0, attribs);
-			wglMakeCurrent(hDC, m_NativeContext);
-
-			//Did we get a 3.3 or higher
-			int32 version[2];
-			glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
-			glGetIntegerv(GL_MINOR_VERSION, &version[1]);
-
-			if ((version[0] * 10) + version[1] < 33)
-			{
-				LOG_ERROR("OpenGL: OpenGL version is to low. Only support 3.3 and higher. Current version is: " + std::to_string(version[0]) + '.' + std::to_string(version[1]));
-
-				wglMakeCurrent(0, 0);
-			}
-			else
-			{
-				LOG_INFO("OpenGL: Created context. Version " + std::to_string(version[0]) + '.' + std::to_string(version[1]));
-
-				m_HDC = hDC;
-				m_Hwnd = hWND;
-				m_IsWindowOwner = true;
-
-				LoadOpenGL();
-			}
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLDeviceWin32::Create(const DeviceDesc* pDesc, HWND hwnd, int32* pPixelFormatAttribs)
+		void GLDeviceWin32::Create(const DeviceDesc* pDesc, const SwapchainDesc* pScDesc, HWND hwnd)
 		{
 			HWND dummyWindow = CreateDummyWindow();
 			if (dummyWindow == 0)
@@ -210,7 +125,44 @@ namespace RayEngine
 				wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadFunction("wglCreateContextAttribsARB"));
 			}
 
+			//Setup pixelformat
+			int32 depthBits = FormatDepthBits(pScDesc->DepthStencil.Format);
+			int32 stencilBits = FormatStencilBits(pScDesc->DepthStencil.Format);
+			int32 colorSpace = FormatIsSRGB(pScDesc->BackBuffer.Format) ? WGL_COLORSPACE_SRGB_EXT : WGL_COLORSPACE_LINEAR_EXT;
+			int32 redBits = FormatRedComponentBits(pScDesc->BackBuffer.Format);
+			int32 greenBits = FormatGreenComponentBits(pScDesc->BackBuffer.Format);
+			int32 blueBits = FormatBlueComponentBits(pScDesc->BackBuffer.Format);
+			int32 alphaBits = FormatAlphaComponentBits(pScDesc->BackBuffer.Format);
+			int32 pixelType = FormatIsFloat(pScDesc->BackBuffer.Format) ? WGL_TYPE_RGBA_FLOAT_ARB : WGL_TYPE_RGBA_ARB;
+			int32 doubleBuffer = (pScDesc->BackBuffer.Count > 1) ? GL_TRUE : GL_FALSE;
+			if (pScDesc->BackBuffer.Count > 2)
+			{
+				LOG_WARNING("OpenGL: Implementation does not support more than 2 buffers in swapchain.");
+			}
+
+			int32 pixelFormatAttribs[] =
+			{
+				WGL_COLORSPACE_EXT,							colorSpace,
+				WGL_DRAW_TO_WINDOW_ARB,						GL_TRUE,
+				WGL_SUPPORT_OPENGL_ARB,						GL_TRUE,
+				WGL_DOUBLE_BUFFER_ARB,						doubleBuffer,
+				WGL_ACCELERATION_ARB,						WGL_FULL_ACCELERATION_ARB,
+				WGL_SWAP_METHOD_ARB,						WGL_SWAP_COPY_ARB,
+				WGL_STEREO_ARB,								GL_FALSE,
+				WGL_PIXEL_TYPE_ARB,							pixelType,
+				WGL_RED_BITS_ARB,							redBits,
+				WGL_GREEN_BITS_ARB,							greenBits,
+				WGL_BLUE_BITS_ARB,							blueBits,
+				WGL_ALPHA_BITS_ARB,							alphaBits,
+				WGL_SAMPLE_BUFFERS_ARB,						GL_TRUE,
+				WGL_SAMPLES_ARB,							pScDesc->SampleCount,
+				depthBits > 0 ? WGL_DEPTH_BITS_ARB : 0 ,	depthBits,
+				stencilBits > 0 ? WGL_STENCIL_BITS_ARB : 0, stencilBits,
+				0
+			};
+
 			//Support sRGB?
+			int32* pPixelFormatAttribs = pixelFormatAttribs;
 			if (!ExtensionSupported("WGL_EXT_colorspace"))
 			{
 				pPixelFormatAttribs += 2;
@@ -306,7 +258,7 @@ namespace RayEngine
 			QueryExtensionsFromString(m_Extensions, wglExtensions);
 
 #if defined(RE_DEBUG)
-			std::string message = "WGL Supported extensions:";
+			std::string message = "WGL Supported extensions:\n";
 			for (int32 i = 0; i < m_Extensions.size(); i++)
 				message += m_Extensions[i] + '\n';
 
@@ -386,51 +338,6 @@ namespace RayEngine
 
 			int32 format = ChoosePixelFormat(hDC, &pfd);
 			SetPixelFormat(hDC, format, &pfd);
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void CreateOpenGLDevice(HWND hwnd, IDevice** ppDevice, DeviceDesc* pDeviceDesc, ISwapchain** ppSwapchain, SwapchainDesc* pSwapchainDesc)
-		{
-			int32 depthBits = FormatDepthBits(pSwapchainDesc->DepthStencil.Format);
-			int32 stencilBits = FormatStencilBits(pSwapchainDesc->DepthStencil.Format);
-			int32 colorSpace = FormatIsSRGB(pSwapchainDesc->BackBuffer.Format) ? WGL_COLORSPACE_SRGB_EXT : WGL_COLORSPACE_LINEAR_EXT;
-			int32 redBits = FormatRedComponentBits(pSwapchainDesc->BackBuffer.Format);
-			int32 greenBits = FormatGreenComponentBits(pSwapchainDesc->BackBuffer.Format);
-			int32 blueBits = FormatBlueComponentBits(pSwapchainDesc->BackBuffer.Format);
-			int32 alphaBits = FormatAlphaComponentBits(pSwapchainDesc->BackBuffer.Format);
-			int32 pixelType = FormatIsFloat(pSwapchainDesc->BackBuffer.Format) ? WGL_TYPE_RGBA_FLOAT_ARB : WGL_TYPE_RGBA_ARB;
-			int32 doubleBuffer = (pSwapchainDesc->BackBuffer.Count > 1) ? GL_TRUE : GL_FALSE;
-			if (pSwapchainDesc->BackBuffer.Count > 2)
-			{
-				LOG_WARNING("OpenGL: Implementation does not support more than 2 buffers in swapchain.");
-			}
-
-			int32 pixelFormatAttribs[] =
-			{
-				WGL_COLORSPACE_EXT,							colorSpace, //Assumed to be first, in case not suported on the system
-				WGL_DRAW_TO_WINDOW_ARB,						GL_TRUE,
-				WGL_SUPPORT_OPENGL_ARB,						GL_TRUE,
-				WGL_DOUBLE_BUFFER_ARB,						doubleBuffer,
-				WGL_ACCELERATION_ARB,						WGL_FULL_ACCELERATION_ARB,
-				WGL_SWAP_METHOD_ARB,						WGL_SWAP_COPY_ARB,
-				WGL_STEREO_ARB,								GL_FALSE,
-				WGL_PIXEL_TYPE_ARB,							pixelType,
-				WGL_RED_BITS_ARB,							redBits,
-				WGL_GREEN_BITS_ARB,							greenBits,
-				WGL_BLUE_BITS_ARB,							blueBits,
-				WGL_ALPHA_BITS_ARB,							alphaBits,
-				WGL_SAMPLE_BUFFERS_ARB,						GL_TRUE,
-				WGL_SAMPLES_ARB,							pSwapchainDesc->SampleCount,
-				depthBits > 0 ? WGL_DEPTH_BITS_ARB : 0 ,	depthBits,
-				stencilBits > 0 ? WGL_STENCIL_BITS_ARB : 0, stencilBits,
-				0
-			};
-
-			GLDeviceWin32* pDevice = new GLDeviceWin32(pDeviceDesc, hwnd, pixelFormatAttribs);
-			*ppDevice = pDevice;
-
-			*ppSwapchain = new GLSwapchainWin32(pSwapchainDesc, pDevice);
 		}
 	}
 }

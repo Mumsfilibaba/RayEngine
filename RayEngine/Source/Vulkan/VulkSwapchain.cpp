@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "Vulkan/VulkSwapchain.h"
-#include "Vulkan/VulkFactory.h"
-#include "Vulkan/VulkDevice.h"
+#include <RayEngine.h>
+#include <Vulkan/VulkDevice.h>
+#include <Vulkan/VulkFactory.h>
+#include <Vulkan/VulkSwapchain.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #if defined(max)
@@ -89,16 +89,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkSwapchain::GetReferenceCount() const
+		CounterType VulkSwapchain::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkSwapchain::Release()
-		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -107,10 +100,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType VulkSwapchain::AddRef()
+		CounterType VulkSwapchain::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 

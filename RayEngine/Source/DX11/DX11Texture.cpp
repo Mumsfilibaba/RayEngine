@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11/DX11Texture.h"
-#include "DX11/DX11Device.h"
+#include <DX11/DX11Texture.h>
+#include <DX11/DX11Device.h>
 
 namespace RayEngine
 {
@@ -104,13 +104,6 @@ namespace RayEngine
 			}
 		}
 
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11Texture::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX11Device>();
-		}
-
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Texture::GetDesc(TextureDesc* pDesc) const
@@ -120,26 +113,16 @@ namespace RayEngine
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11Texture::GetReferenceCount() const
+		CounterType DX11Texture::AddRef()
 		{
-			return m_References;
-		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11Texture::AddRef()
-		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11Texture::Release()
+		CounterType DX11Texture::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

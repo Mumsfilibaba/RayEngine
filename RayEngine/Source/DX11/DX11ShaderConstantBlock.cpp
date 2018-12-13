@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11/DX11Device.h"
-#include "DX11/DX11ShaderConstantBlock.h"
+#include <DX11/DX11Device.h>
+#include <DX11/DX11ShaderConstantBlock.h>
 
 namespace RayEngine
 {
@@ -58,40 +58,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		ID3D11Buffer* DX11ShaderConstantBlock::GetD3D11Buffer() const
+		CounterType DX11ShaderConstantBlock::AddRef()
 		{
-			return m_ConstantBuffer;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX11ShaderConstantBlock::QueryDevice(IDevice** ppDevice) const
+		CounterType DX11ShaderConstantBlock::Release()
 		{
-			(*ppDevice) = m_Device->QueryReference<DX11Device>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11ShaderConstantBlock::GetReferenceCount() const
-		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11ShaderConstantBlock::AddRef()
-		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX11ShaderConstantBlock::Release()
-		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

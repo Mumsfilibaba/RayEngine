@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/Graphics/Viewport.h"
-#include "../../Include/OpenGL/GLDeviceContext.h"
-#include "../../Include/OpenGL/GLDevice.h"
-#include "../../Include/OpenGL/GLPipelineState.h"
-#include "../../Include/OpenGL/GLRootLayout.h"
-#include "../../Include/OpenGL/GLSwapchain.h"
+#include <RayEngine.h>
+#include <Graphics/Viewport.h>
+#include <OpenGL/GLDeviceContext.h>
+#include <OpenGL/GLDevice.h>
+#include <OpenGL/GLPipelineState.h>
+#include <OpenGL/GLRootLayout.h>
+#include <OpenGL/GLSwapchain.h>
 
 namespace RayEngine
 {
@@ -226,22 +226,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLDeviceContext::QueryDevice(IDevice** ppDevice) const
+		CounterType GLDeviceContext::Release()
 		{
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLDeviceContext::GetReferenceCount() const
-		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLDeviceContext::Release()
-		{
-			IObject::CounterType counter = m_References--;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -250,10 +237,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLDeviceContext::AddRef()
+		CounterType GLDeviceContext::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 
 

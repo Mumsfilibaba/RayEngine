@@ -31,10 +31,6 @@ failure and or malfunction of any kind.
 #include "OpenGL/GLSwapchain.h"
 #include "Win32/Win32WindowImpl.h"
 
-#if defined(CreateWindow)
-#undef CreateWindow
-#endif
-
 namespace RayEngine
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,27 +53,14 @@ namespace RayEngine
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void CreateSystemWindow(IWindow** ppWindow, WindowDesc* pDesc)
 	{
-		*ppWindow = new Win32WindowImpl(pDesc);
+
 	}
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void CreateDevice(Graphics::IDevice** ppDevice, Graphics::DeviceDesc* pDesc, GRAPHICS_API api)
 	{
-		if (api == GRAPHICS_API_D3D12)
-		{
-		}
-		else if (api == GRAPHICS_API_D3D11)
-		{
-			*ppDevice = new Graphics::DX11Device(pDesc);
-		}
-		else if (api == GRAPHICS_API_OPENGL)
-		{
-			*ppDevice = new Graphics::GLDeviceWin32(pDesc);
-		}
-		else if (api == GRAPHICS_API_VULKAN)
-		{
-		}
+
 	}
 
 
@@ -87,32 +70,7 @@ namespace RayEngine
 		Graphics::ISwapchain** ppSwapchain, Graphics::SwapchainDesc* pSwapchainDesc,
 		GRAPHICS_API api)
 	{
-		using namespace Graphics;
 
-		Win32WindowImpl* pWindow = new Win32WindowImpl(pWindowDesc);
-		if (api == GRAPHICS_API_D3D12)
-		{
-			DX12Device* pDX12Device = new DX12Device(pDeviceDesc);
-			*ppDevice = pDX12Device;
-
-			*ppSwapchain = new DX12Swapchain(pDX12Device, pSwapchainDesc, pWindow->GetHWND());
-		}
-		else if (api == GRAPHICS_API_D3D11)
-		{
-			DX11Device* pDX11Device = new DX11Device(pDeviceDesc);
-			*ppDevice = pDX11Device;
-
-			*ppSwapchain = new DX11Swapchain(pDX11Device, pSwapchainDesc, pWindow->GetHWND());
-		}
-		else if (api == GRAPHICS_API_OPENGL)
-		{
-			CreateOpenGLDevice(pWindow->GetHWND(), ppDevice, pDeviceDesc, ppSwapchain, pSwapchainDesc);
-		}
-		else if (api == GRAPHICS_API_VULKAN)
-		{
-		}
-
-		*ppWindow = pWindow;
 	}
 }
 

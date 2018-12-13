@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics/IRootLayout.h"
+#include <Graphics/IRootLayout.h>
 #include "GLCommon.h"
 
 namespace RayEngine
@@ -28,6 +28,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class GLDevice;
 
 
@@ -40,15 +41,11 @@ namespace RayEngine
 			GLRootLayout(IDevice* pDevice, const RootLayoutDesc* pDesc);
 			~GLRootLayout();
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(RootLayoutDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const RootLayoutDesc* pDesc);
@@ -58,7 +55,7 @@ namespace RayEngine
 
 			RootLayoutDesc m_Desc;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

@@ -19,9 +19,9 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/OpenGL/GLDevice.h"
-#include "../../Include/OpenGL/GLBuffer.h"
+#include <RayEngine.h>
+#include <OpenGL/GLDevice.h>
+#include <OpenGL/GLBuffer.h>
 
 namespace RayEngine
 {
@@ -89,13 +89,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLBuffer::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<GLDevice>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLBuffer::GetDesc(BufferDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -103,16 +96,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLBuffer::GetReferenceCount() const
+		CounterType GLBuffer::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLBuffer::Release()
-		{
-			IObject::CounterType refs = --m_References;
+			CounterType refs = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -121,7 +107,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLBuffer::AddRef()
+		CounterType GLBuffer::AddRef()
 		{
 			return ++m_References;
 		}

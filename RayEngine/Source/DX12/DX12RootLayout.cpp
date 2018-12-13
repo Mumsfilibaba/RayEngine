@@ -19,12 +19,12 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12Device.h"
-#include "DX12/DX12RootLayout.h"
-#include "DX12/DX12RootVariableSlot.h"
+#include <DX12/DX12Device.h>
+#include <DX12/DX12RootLayout.h>
+#include <DX12/DX12RootVariableSlot.h>
 
 namespace RayEngine
 {
@@ -52,13 +52,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12RootLayout::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12RootLayout::GetDesc(RootLayoutDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -66,30 +59,20 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12RootLayout::GetReferenceCount() const
+		CounterType DX12RootLayout::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12RootLayout::Release()
+		CounterType DX12RootLayout::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = m_References;
 			if (counter < 1)
 				delete this;
 
 			return counter;
-		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12RootLayout::AddRef()
-		{
-			m_References++;
-			return m_References;
 		}
 
 

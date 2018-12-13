@@ -19,10 +19,10 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "../../Include/Utilities/EngineUtilities.h"
-#include "../../Include/OpenGL/GLShader.h"
-#include "../../Include/OpenGL/GLDevice.h"
+#include <RayEngine.h>
+#include <Utilities/EngineUtilities.h>
+#include <OpenGL/GLShader.h>
+#include <OpenGL/GLDevice.h>
 
 namespace RayEngine
 {
@@ -54,13 +54,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLShader::QueryDevice(IDevice** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<GLDevice>();
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void GLShader::GetDesc(ShaderDesc* pDesc) const
 		{
 			*pDesc = m_Desc;
@@ -68,27 +61,20 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLShader::GetReferenceCount() const
+		CounterType GLShader::AddRef()
 		{
-			return m_References;
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLShader::Release()
+		CounterType GLShader::Release()
 		{
-			IObject::CounterType refs = --m_References;
+			CounterType refs = --m_References;
 			if (m_References < 1)
 				delete this;
 
 			return refs;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLShader::AddRef()
-		{
-			return ++m_References;
 		}
 
 

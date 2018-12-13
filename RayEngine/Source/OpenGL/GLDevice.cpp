@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
-#include "OpenGL/GLDevice.h"
-#include "OpenGL/GLDeviceContext.h"
-#include "OpenGL/GLShader.h"
-#include "OpenGL/GLRootLayout.h"
-#include "OpenGL/GLPipelineState.h"
-#include "OpenGL/GLBuffer.h"
+#include <RayEngine.h>
+#include <OpenGL/GLDevice.h>
+#include <OpenGL/GLDeviceContext.h>
+#include <OpenGL/GLShader.h>
+#include <OpenGL/GLRootLayout.h>
+#include <OpenGL/GLPipelineState.h>
+#include <OpenGL/GLBuffer.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "..\Win32\WndclassCache.h"
@@ -187,16 +187,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLDevice::GetReferenceCount() const
+		CounterType GLDevice::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLDevice::Release()
-		{
-			IObject::CounterType counter = --m_References;
+			CounterType counter = --m_References;
 			if (m_References < 1)
 				delete this;
 
@@ -205,7 +198,7 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType GLDevice::AddRef()
+		CounterType GLDevice::AddRef()
 		{
 			m_References++;
 			return m_References;

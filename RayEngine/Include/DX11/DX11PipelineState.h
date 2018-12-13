@@ -20,10 +20,10 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IPipelineState.h"
+#include <Graphics\IPipelineState.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX11\DX11Shader.h"
+#include <DX11\DX11Shader.h>
 
 namespace RayEngine
 {
@@ -137,16 +137,12 @@ namespace RayEngine
 			{
 				return m_CS;
 			}
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(PipelineStateDesc* pDesc) const;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void ReleaseInterfaces();
@@ -187,7 +183,7 @@ namespace RayEngine
 			
 			uint32 m_SampleMask;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

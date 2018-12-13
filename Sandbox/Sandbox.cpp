@@ -1,7 +1,7 @@
 #include "Sandbox.h"
 
 Sandbox::Sandbox()
-	: Application(RayEngine::GRAPHICS_API_D3D11)
+	: Application(RayEngine::GRAPHICS_API_OPENGL)
 {
 }
 
@@ -11,7 +11,6 @@ Sandbox::~Sandbox()
 
 void Sandbox::OnUpdate()
 {
-	LOG_INFO("Update");
 }
 
 void Sandbox::OnRender()

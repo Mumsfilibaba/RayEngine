@@ -19,13 +19,13 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12PipelineState.h"
-#include "DX12/DX12Device.h"
-#include "DX12/DX12Shader.h"
-#include "DX12/DX12RootLayout.h"
+#include <DX12/DX12PipelineState.h>
+#include <DX12/DX12Device.h>
+#include <DX12/DX12Shader.h>
+#include <DX12/DX12RootLayout.h>
 
 namespace RayEngine
 {
@@ -61,13 +61,6 @@ namespace RayEngine
 				}
 			}
 		}
-		
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::QueryDevice(IDevice ** ppDevice) const
-		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,29 +68,19 @@ namespace RayEngine
 		{
 			*pDesc = m_Desc;
 		}
-		
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12PipelineState::GetReferenceCount() const
-		{
-			return m_References;
-		}
 
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12PipelineState::AddRef()
+		CounterType DX12PipelineState::AddRef()
 		{
-			m_References++;
-			return m_References;
+			return ++m_References;
 		}
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12PipelineState::Release()
+		CounterType DX12PipelineState::Release()
 		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

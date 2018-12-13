@@ -20,11 +20,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 #include "IWindow.h"
-#include "Graphics/IDevice.h"
-#include "Graphics/IDeviceContext.h"
-#include "Graphics/ISwapchain.h"
+#include <Graphics/IDevice.h>
+#include <Graphics/IDeviceContext.h>
+#include <Graphics/ISwapchain.h>
 
 namespace RayEngine
 {
@@ -39,6 +39,7 @@ namespace RayEngine
 		int32 Run();
 
 		virtual void OnUpdate();
+
 		virtual void OnRender();
 
 	protected:
@@ -72,9 +73,7 @@ namespace RayEngine
 		Graphics::ISwapchain* m_pSwapChain;
 
 	private:
-		static void InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc,
-			Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
-			Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc,
-			GRAPHICS_API api);
+		static void InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
+			Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc, GRAPHICS_API api);
 	};
 }

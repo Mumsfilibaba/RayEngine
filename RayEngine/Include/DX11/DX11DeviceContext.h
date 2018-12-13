@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IDeviceContext.h"
+#include <Graphics\IDeviceContext.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX11Common.h"
@@ -101,13 +101,9 @@ namespace RayEngine
 			
 			void ExecuteDefferedContext(IDeviceContext* pDefferedContext) const override final;
 			
-			void QueryDevice(IDevice** ppDevice) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType Release() override final;
-			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(bool isDeffered);
@@ -129,7 +125,7 @@ namespace RayEngine
 			bool m_IsDeffered;
 			mutable bool m_UseDefaultFramebuffer;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

@@ -20,7 +20,7 @@ failure and or malfunction of any kind.
 ////////////////////////////////////////////////////////////*/
 
 #pragma once
-#include "Graphics\IBuffer.h"
+#include <Graphics\IBuffer.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
 #include "DX12Resource.h"
@@ -31,6 +31,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class DX12Device;
 
 
@@ -61,16 +62,12 @@ namespace RayEngine
 			void* Map(int32 subresource, RESOURCE_MAP_FLAG flag) override final;
 			
 			void Unmap() override final;
-			
-			void QueryDevice(IDevice** ppDevice) const override final;
 
 			void GetDesc(BufferDesc* pDesc) const override final;
-
-			IObject::CounterType GetReferenceCount() const override final;
 			
-			IObject::CounterType Release() override final;
+			CounterType Release() override final;
 			
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* pInitalData, const BufferDesc* pDesc);
@@ -95,7 +92,7 @@ namespace RayEngine
 
 			int32 m_MappedSubresource;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }

@@ -19,11 +19,11 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "DX12/DX12DynamicUploadHeap.h"
-#include "DX12/DX12Device.h"
+#include <DX12/DX12DynamicUploadHeap.h>
+#include <DX12/DX12Device.h>
 
 namespace RayEngine
 {
@@ -67,33 +67,16 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12DynamicUploadHeap::QueryDevice(IDevice** ppDevice) const
+		CounterType DX12DynamicUploadHeap::AddRef()
 		{
-			(*ppDevice) = m_Device->QueryReference<DX12Device>();
+			return ++m_References;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12DynamicUploadHeap::GetReferenceCount() const
+		CounterType DX12DynamicUploadHeap::Release()
 		{
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12DynamicUploadHeap::AddRef()
-		{
-			m_References++;
-			return m_References;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		IObject::CounterType DX12DynamicUploadHeap::Release()
-		{
-			m_References--;
-			IObject::CounterType counter = m_References;
-
+			CounterType counter = --m_References;
 			if (counter < 1)
 				delete this;
 

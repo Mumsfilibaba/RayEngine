@@ -21,14 +21,15 @@ failure and or malfunction of any kind.
 
 #pragma once
 
-#include "Graphics/IBuffer.h"
-#include "OpenGL/GLCommon.h"
+#include <Graphics/IBuffer.h>
+#include <OpenGL/GLCommon.h>
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		class IDevice;
 		class GLDevice;
 
 
@@ -50,15 +51,11 @@ namespace RayEngine
 			
 			void Unmap() override final;
 
-			void QueryDevice(IDevice** ppDevice) const override final;
-
 			void GetDesc(BufferDesc* pDesc) const override final;
 
-			IObject::CounterType GetReferenceCount() const override final;
+			CounterType Release() override final;
 
-			IObject::CounterType Release() override final;
-
-			IObject::CounterType AddRef() override final;
+			CounterType AddRef() override final;
 
 		private:
 			void Create(const ResourceData* const pInitialData, const BufferDesc* pDesc);
@@ -74,7 +71,7 @@ namespace RayEngine
 			uint32 m_GLBufferType;
 			uint32 m_GLBufferUsage;
 
-			IObject::CounterType m_References;
+			CounterType m_References;
 		};
 	}
 }
