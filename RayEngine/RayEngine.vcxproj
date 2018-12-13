@@ -213,6 +213,7 @@
     <ClInclude Include="Include\DX12\DX12DynamicUploadHeap.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\DX12\DX12PipelineState.h" />
+    <ClInclude Include="Include\DX12\DX12Renderer.h" />
     <ClInclude Include="Include\DX12\DX12RenderTargetView.h" />
     <ClInclude Include="Include\DX12\DX12Resource.h" />
     <ClInclude Include="Include\DX12\DX12RootLayout.h" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Include\Graphics\IDepthStencilView.h" />
     <ClInclude Include="Include\Graphics\IDevice.h" />
     <ClInclude Include="Include\Graphics\IPipelineState.h" />
+    <ClInclude Include="Include\Graphics\IRenderer.h" />
     <ClInclude Include="Include\Graphics\IRenderTargetView.h" />
     <ClInclude Include="Include\Graphics\IResource.h" />
     <ClInclude Include="Include\Graphics\IRootLayout.h" />
@@ -363,6 +365,7 @@
     <ClCompile Include="Source\DX12\DX12DeviceContext.cpp" />
     <ClCompile Include="Source\DX12\DX12DynmicUploadHeap.cpp" />
     <ClCompile Include="Source\DX12\DX12PipelineState.cpp" />
+    <ClCompile Include="Source\DX12\DX12Renderer.cpp" />
     <ClCompile Include="Source\DX12\DX12RenderTargetView.cpp" />
     <ClCompile Include="Source\DX12\DX12RootLayout.cpp" />
     <ClCompile Include="Source\DX12\DX12RootVariableSlot.cpp" />
