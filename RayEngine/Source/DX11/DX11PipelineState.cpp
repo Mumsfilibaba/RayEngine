@@ -61,12 +61,12 @@ namespace RayEngine
 
 			if (m_Desc.Type == PIPELINE_TYPE_GRAPHICS)
 			{
-				if (m_Desc.GraphicsPipeline.InputLayout.pElements != nullptr)
+				if (m_Desc.Graphics.InputLayout.pElements != nullptr)
 				{
-					delete[] m_Desc.GraphicsPipeline.InputLayout.pElements;
-					m_Desc.GraphicsPipeline.InputLayout.pElements = nullptr;
+					delete[] m_Desc.Graphics.InputLayout.pElements;
+					m_Desc.Graphics.InputLayout.pElements = nullptr;
 					
-					m_Desc.GraphicsPipeline.InputLayout.ElementCount = 0;
+					m_Desc.Graphics.InputLayout.ElementCount = 0;
 				}
 			}
 		}
@@ -119,33 +119,26 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::Create(const PipelineStateDesc* pDesc)
 		{
-			CopyPipelineStateDesc(&m_Desc, pDesc);
-
 			if (m_Desc.Type == PIPELINE_TYPE_GRAPHICS)
-			{
 				CreateGraphicsState();
-
-			}
 			else if (m_Desc.Type == PIPELINE_TYPE_COMPUTE)
-			{
 				CreateComputeState();
-			}
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateGraphicsState()
 		{
-			if (m_Desc.GraphicsPipeline.pVertexShader != nullptr)
-				m_VS = m_Desc.GraphicsPipeline.pVertexShader->QueryReference<DX11Shader>();
-			if (m_Desc.GraphicsPipeline.pHullShader != nullptr)
-				m_HS = m_Desc.GraphicsPipeline.pHullShader->QueryReference<DX11Shader>();
-			if (m_Desc.GraphicsPipeline.pDomainShader != nullptr)
-				m_DS = m_Desc.GraphicsPipeline.pDomainShader->QueryReference<DX11Shader>();
-			if (m_Desc.GraphicsPipeline.pGeometryShader != nullptr)
-				m_GS = m_Desc.GraphicsPipeline.pGeometryShader->QueryReference<DX11Shader>();
-			if (m_Desc.GraphicsPipeline.pPixelShader != nullptr)
-				m_PS = m_Desc.GraphicsPipeline.pPixelShader->QueryReference<DX11Shader>();
+			if (m_Desc.Graphics.pVertexShader != nullptr)
+				m_VS = m_Desc.Graphics.pVertexShader->QueryReference<DX11Shader>();
+			if (m_Desc.Graphics.pHullShader != nullptr)
+				m_HS = m_Desc.Graphics.pHullShader->QueryReference<DX11Shader>();
+			if (m_Desc.Graphics.pDomainShader != nullptr)
+				m_DS = m_Desc.Graphics.pDomainShader->QueryReference<DX11Shader>();
+			if (m_Desc.Graphics.pGeometryShader != nullptr)
+				m_GS = m_Desc.Graphics.pGeometryShader->QueryReference<DX11Shader>();
+			if (m_Desc.Graphics.pPixelShader != nullptr)
+				m_PS = m_Desc.Graphics.pPixelShader->QueryReference<DX11Shader>();
 
 
 			CreateInputLayout();
@@ -158,15 +151,15 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateComputeState()
 		{
-			if (m_Desc.ComputePipeline.pComputeShader != nullptr)
-				m_CS = m_Desc.ComputePipeline.pComputeShader->QueryReference<DX11Shader>();
+			if (m_Desc.Compute.pComputeShader != nullptr)
+				m_CS = m_Desc.Compute.pComputeShader->QueryReference<DX11Shader>();
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11PipelineState::CreateInputLayout()
 		{
-			if (m_Desc.GraphicsPipeline.InputLayout.ElementCount < 1)
+			if (m_Desc.Graphics.InputLayout.ElementCount < 1)
 				return;
 
 
@@ -177,10 +170,10 @@ namespace RayEngine
 			}
 
 			std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout;
-			inputLayout.resize(m_Desc.GraphicsPipeline.InputLayout.ElementCount);
+			inputLayout.resize(m_Desc.Graphics.InputLayout.ElementCount);
 
-			for (int32 i = 0; i < m_Desc.GraphicsPipeline.InputLayout.ElementCount; i++)
-				SetInputElementDesc(&inputLayout[i], &m_Desc.GraphicsPipeline.InputLayout.pElements[i]);
+			for (int32 i = 0; i < m_Desc.Graphics.InputLayout.ElementCount; i++)
+				SetInputElementDesc(&inputLayout[i], &m_Desc.Graphics.InputLayout.pElements[i]);
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			ID3DBlob* pD3DBlob = m_VS->GetBlob();
@@ -198,26 +191,26 @@ namespace RayEngine
 		void DX11PipelineState::CreateRasterizerState()
 		{
 			D3D11_RASTERIZER_DESC desc = {};
-			desc.FillMode = (m_Desc.GraphicsPipeline.RasterizerState.FillMode == FILL_MODE_SOLID) 
+			desc.FillMode = (m_Desc.Graphics.RasterizerState.FillMode == FILL_MODE_SOLID) 
 				? D3D11_FILL_SOLID : D3D11_FILL_WIREFRAME;
 
-			if (m_Desc.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_BACK)
+			if (m_Desc.Graphics.RasterizerState.CullMode == CULL_MODE_BACK)
 				desc.CullMode = D3D11_CULL_BACK;
-			else if (m_Desc.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_FRONT)
+			else if (m_Desc.Graphics.RasterizerState.CullMode == CULL_MODE_FRONT)
 				desc.CullMode = D3D11_CULL_FRONT;
-			else if (m_Desc.GraphicsPipeline.RasterizerState.CullMode == CULL_MODE_NONE)
+			else if (m_Desc.Graphics.RasterizerState.CullMode == CULL_MODE_NONE)
 				desc.CullMode = D3D11_CULL_NONE;
 
-			desc.FrontCounterClockwise = m_Desc.GraphicsPipeline.RasterizerState.FrontCounterClockwise;
+			desc.FrontCounterClockwise = m_Desc.Graphics.RasterizerState.FrontCounterClockwise;
 
-			desc.DepthClipEnable = m_Desc.GraphicsPipeline.RasterizerState.DepthClipEnable;
-			desc.DepthBias = m_Desc.GraphicsPipeline.RasterizerState.DepthBias;
-			desc.DepthBiasClamp = m_Desc.GraphicsPipeline.RasterizerState.DepthBiasClamp;
-			desc.SlopeScaledDepthBias = m_Desc.GraphicsPipeline.RasterizerState.SlopeScaleDepthBias;
+			desc.DepthClipEnable = m_Desc.Graphics.RasterizerState.DepthClipEnable;
+			desc.DepthBias = m_Desc.Graphics.RasterizerState.DepthBias;
+			desc.DepthBiasClamp = m_Desc.Graphics.RasterizerState.DepthBiasClamp;
+			desc.SlopeScaledDepthBias = m_Desc.Graphics.RasterizerState.SlopeScaleDepthBias;
 			
-			desc.ScissorEnable = m_Desc.GraphicsPipeline.RasterizerState.ScissorEnable;
-			desc.MultisampleEnable = m_Desc.GraphicsPipeline.RasterizerState.MultisampleEnable;
-			desc.AntialiasedLineEnable = m_Desc.GraphicsPipeline.RasterizerState.AntialiasedLineEnable;
+			desc.ScissorEnable = m_Desc.Graphics.RasterizerState.ScissorEnable;
+			desc.MultisampleEnable = m_Desc.Graphics.RasterizerState.MultisampleEnable;
+			desc.AntialiasedLineEnable = m_Desc.Graphics.RasterizerState.AntialiasedLineEnable;
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
 			HRESULT hr = pD3D11Device->CreateRasterizerState(&desc, &m_RasterizerState);
@@ -232,17 +225,17 @@ namespace RayEngine
 		void DX11PipelineState::CreateDepthStencilState()
 		{
 			D3D11_DEPTH_STENCIL_DESC desc = {};
-			desc.DepthEnable = m_Desc.GraphicsPipeline.DepthStencilState.DepthEnable;
-			desc.DepthFunc = ReToDX11ComparisonFunc(m_Desc.GraphicsPipeline.DepthStencilState.DepthFunc);
-			desc.DepthWriteMask = (m_Desc.GraphicsPipeline.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ALL) 
+			desc.DepthEnable = m_Desc.Graphics.DepthStencilState.DepthEnable;
+			desc.DepthFunc = ReToDX11ComparisonFunc(m_Desc.Graphics.DepthStencilState.DepthFunc);
+			desc.DepthWriteMask = (m_Desc.Graphics.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ALL) 
 				? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
 
-			desc.StencilEnable = m_Desc.GraphicsPipeline.DepthStencilState.StencilEnable;
-			desc.StencilReadMask = m_Desc.GraphicsPipeline.DepthStencilState.StencilReadMask;
-			desc.StencilWriteMask = m_Desc.GraphicsPipeline.DepthStencilState.StencilWriteMask;
+			desc.StencilEnable = m_Desc.Graphics.DepthStencilState.StencilEnable;
+			desc.StencilReadMask = m_Desc.Graphics.DepthStencilState.StencilReadMask;
+			desc.StencilWriteMask = m_Desc.Graphics.DepthStencilState.StencilWriteMask;
 
-			desc.BackFace = ReToDX11StencilOpDesc(m_Desc.GraphicsPipeline.DepthStencilState.BackFace);
-			desc.FrontFace = ReToDX11StencilOpDesc(m_Desc.GraphicsPipeline.DepthStencilState.FrontFace);
+			desc.BackFace = ReToDX11StencilOpDesc(m_Desc.Graphics.DepthStencilState.BackFace);
+			desc.FrontFace = ReToDX11StencilOpDesc(m_Desc.Graphics.DepthStencilState.FrontFace);
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();
@@ -258,46 +251,46 @@ namespace RayEngine
 		void DX11PipelineState::CreateBlendState()
 		{
 			D3D11_BLEND_DESC desc = {};
-			desc.AlphaToCoverageEnable = m_Desc.GraphicsPipeline.BlendState.AlphaToCoverageEnable;
-			desc.IndependentBlendEnable = m_Desc.GraphicsPipeline.BlendState.IndependentBlendEnable;
+			desc.AlphaToCoverageEnable = m_Desc.Graphics.BlendState.AlphaToCoverageEnable;
+			desc.IndependentBlendEnable = m_Desc.Graphics.BlendState.IndependentBlendEnable;
 			
 			for (int32 i = 0; i < 8; i++)
 			{
-				desc.RenderTarget[i].BlendEnable = m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].BlendEnable;
+				desc.RenderTarget[i].BlendEnable = m_Desc.Graphics.BlendState.RenderTargets[i].BlendEnable;
 				
-				desc.RenderTarget[i].SrcBlend = ReToDX11Blend(m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].SrcBlend);
-				desc.RenderTarget[i].DestBlend = ReToDX11Blend(m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].DstBlend);
-				desc.RenderTarget[i].BlendOp = ReToDX11BlendOp(m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].BlendOperation);
+				desc.RenderTarget[i].SrcBlend = ReToDX11Blend(m_Desc.Graphics.BlendState.RenderTargets[i].SrcBlend);
+				desc.RenderTarget[i].DestBlend = ReToDX11Blend(m_Desc.Graphics.BlendState.RenderTargets[i].DstBlend);
+				desc.RenderTarget[i].BlendOp = ReToDX11BlendOp(m_Desc.Graphics.BlendState.RenderTargets[i].BlendOperation);
 				
-				desc.RenderTarget[i].SrcBlendAlpha = ReToDX11Blend(m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].SrcAlphaBlend);
-				desc.RenderTarget[i].DestBlendAlpha = ReToDX11Blend(m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].DstAlphaBlend);
-				desc.RenderTarget[i].BlendOpAlpha = ReToDX11BlendOp(m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].AlphaBlendOperation);
+				desc.RenderTarget[i].SrcBlendAlpha = ReToDX11Blend(m_Desc.Graphics.BlendState.RenderTargets[i].SrcAlphaBlend);
+				desc.RenderTarget[i].DestBlendAlpha = ReToDX11Blend(m_Desc.Graphics.BlendState.RenderTargets[i].DstAlphaBlend);
+				desc.RenderTarget[i].BlendOpAlpha = ReToDX11BlendOp(m_Desc.Graphics.BlendState.RenderTargets[i].AlphaBlendOperation);
 
 				uint8 renderTargetWriteMask = 0;
-				if (m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask == COLOR_WRITE_ENABLE_ALL)
+				if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask == COLOR_WRITE_ENABLE_ALL)
 				{
 					renderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 				}
 				else
 				{
-					if (m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
+					if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_RED;
-					if (m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
+					if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_GREEN;
-					if (m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
+					if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_BLUE;
-					if (m_Desc.GraphicsPipeline.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
+					if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
 						renderTargetWriteMask |= D3D11_COLOR_WRITE_ENABLE_ALPHA;
 				}
 
 				desc.RenderTarget[i].RenderTargetWriteMask = renderTargetWriteMask;
 			}
 
-			m_BlendFactor[0] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[0];
-			m_BlendFactor[1] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[1];
-			m_BlendFactor[2] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[2];
-			m_BlendFactor[3] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[3];
-			m_SampleMask = m_Desc.GraphicsPipeline.SampleMask;
+			m_BlendFactor[0] = m_Desc.Graphics.BlendState.BlendFactor[0];
+			m_BlendFactor[1] = m_Desc.Graphics.BlendState.BlendFactor[1];
+			m_BlendFactor[2] = m_Desc.Graphics.BlendState.BlendFactor[2];
+			m_BlendFactor[3] = m_Desc.Graphics.BlendState.BlendFactor[3];
+			m_SampleMask = m_Desc.Graphics.SampleMask;
 
 
 			ID3D11Device* pD3D11Device = m_Device->GetD3D11Device();

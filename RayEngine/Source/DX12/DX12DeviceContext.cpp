@@ -68,9 +68,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12DeviceContext::~DX12DeviceContext()
 		{
-			D3DRelease_S(m_Queue);
-			D3DRelease_S(m_Fence);
-
 			ReRelease_S(m_CurrentRootLayout);
 			ReRelease_S(m_List);
 			ReRelease_S(m_ComputeList);
@@ -226,8 +223,6 @@ namespace RayEngine
 		{
 			ReRelease_S(m_CurrentSwapchain);
 			m_CurrentSwapchain = pSwapChain->QueryReference<DX12Swapchain>();
-
-			//SetDefaultFramebuffer();
 		}
 
 
@@ -351,6 +346,7 @@ namespace RayEngine
 		void DX12DeviceContext::SetPipelineState(IPipelineState* pPipelineState) const
 		{
 			DX12PipelineState* pDX12PipelineState = reinterpret_cast<DX12PipelineState*>(pPipelineState);
+			m_List->GetD3D12GraphicsCommandList()->SetGraphicsRootSignature(pDX12PipelineState->GetD3D12RootSignature());
 			m_List->GetD3D12GraphicsCommandList()->SetPipelineState(pDX12PipelineState->GetD3D12PipelineState());
 
 			AddCommand();
@@ -433,14 +429,8 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX12DeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
-			CommitDefferedBarriers();
+			SetDefaultFramebuffer();
 			m_List->GetD3D12GraphicsCommandList()->DrawInstanced(vertexCount, 1, startVertex, 0);
-
-			if (!m_IsDeffered)
-			{
-				ExecuteCommandLists();
-				Flush();
-			}
 		}
 
 

@@ -1,7 +1,7 @@
 #include "Sandbox.h"
 
 Sandbox::Sandbox()
-	: Application(RayEngine::GRAPHICS_API_OPENGL)
+	: Application(RayEngine::GRAPHICS_API_D3D12)
 {
 }
 
@@ -11,13 +11,10 @@ Sandbox::~Sandbox()
 
 void Sandbox::OnUpdate()
 {
+	Application::OnUpdate();
 }
 
 void Sandbox::OnRender()
 {
-	float color[] = { 0.392f, 0.584f, 0.929f, 1.0f };
-	GetContext()->ClearRendertargetView(nullptr, color);
-	GetContext()->ClearDepthStencilView(nullptr, 1.0f, 0);
-
-	GetSwapChain()->Present();
+	Application::OnRender();
 }

@@ -387,25 +387,24 @@ namespace RayEngine
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		struct RAYENGINE_API GraphicsPipelineDesc
 		{
-			int32 RenderTargetCount;
-			FORMAT RenderTargetFormats[8];
+			IShader* pVertexShader;
+			IShader* pHullShader;
+			IShader* pDomainShader;
+			IShader* pGeometryShader;
+			IShader* pPixelShader;
+
 			FORMAT DepthStencilFormat;
-			MSAA_SAMPLE_COUNT SampleCount;
+			FORMAT RenderTargetFormats[8];
+			int32 RenderTargetCount;
+			int32 SampleCount;
+			uint32 SampleMask;
 
 			InputLayoutDesc InputLayout;
 			RasterizerStateDesc RasterizerState;
 			DepthStencilStateDesc DepthStencilState;
 			BlendStateDesc BlendState;
 
-			uint32 SampleMask;
-
 			PRIMITIVE_TOPOLOGY Topology;
-
-			IShader* pVertexShader;
-			IShader* pHullShader;
-			IShader* pDomainShader;
-			IShader* pGeometryShader;
-			IShader* pPixelShader;
 		};
 
 
@@ -420,9 +419,9 @@ namespace RayEngine
 			pRootLayout - A valid pointer to a RootLayout to be used
 			with the pipelinestate. 
 
-			GraphicsPipeline - Descibes a graphicspipeline;
+			Graphics - Descibes a graphicspipeline;
 
-			ComputePipeline - Descibes a computepipeline;
+			Compute - Descibes a computepipeline;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 		struct RAYENGINE_API PipelineStateDesc
@@ -432,53 +431,82 @@ namespace RayEngine
 
 			union
 			{
-				GraphicsPipelineDesc GraphicsPipeline;
-				ComputePipelineDesc ComputePipeline;
+				GraphicsPipelineDesc Graphics;
+				ComputePipelineDesc Compute;
 			};
+
+			inline static PipelineStateDesc DefaultGraphicsPipeline()
+			{
+				PipelineStateDesc desc = {};
+				desc.Type = PIPELINE_TYPE_GRAPHICS;
+				desc.pRootLayout = nullptr;
+				
+				desc.Graphics.BlendState.AlphaToCoverageEnable = false;
+				desc.Graphics.BlendState.IndependentBlendEnable = false;
+				desc.Graphics.BlendState.LogicOpEnable = false;
+				
+				desc.Graphics.BlendState.BlendFactor[0] = 0.0f;
+				desc.Graphics.BlendState.BlendFactor[1] = 0.0f;
+				desc.Graphics.BlendState.BlendFactor[2] = 0.0f;
+				desc.Graphics.BlendState.BlendFactor[3] = 0.0f;
+
+				desc.Graphics.BlendState.RenderTargets[0].BlendEnable = false;
+				desc.Graphics.BlendState.RenderTargets[0].SrcBlend = BLEND_TYPE_ONE;
+				desc.Graphics.BlendState.RenderTargets[0].DstBlend = BLEND_TYPE_ZERO;
+				desc.Graphics.BlendState.RenderTargets[0].BlendOperation = BLEND_OPERATION_ADD;
+				desc.Graphics.BlendState.RenderTargets[0].SrcAlphaBlend = BLEND_TYPE_ONE;
+				desc.Graphics.BlendState.RenderTargets[0].DstAlphaBlend = BLEND_TYPE_ZERO;
+				desc.Graphics.BlendState.RenderTargets[0].AlphaBlendOperation = BLEND_OPERATION_ADD;
+				desc.Graphics.BlendState.RenderTargets[0].WriteMask = COLOR_WRITE_ENABLE_ALL;
+				for (int32 i = 1; i < RE_MAX_RENDERTARGETS; i++)
+					desc.Graphics.BlendState.RenderTargets[i] = desc.Graphics.BlendState.RenderTargets[0];
+
+				desc.Graphics.SampleCount = 0;
+				desc.Graphics.RenderTargetCount = 0;
+				for (int32 i = 1; i < RE_MAX_RENDERTARGETS; i++)
+					desc.Graphics.RenderTargetFormats[i] = FORMAT_UNKNOWN;
+				desc.Graphics.DepthStencilFormat = FORMAT_UNKNOWN;
+
+				desc.Graphics.DepthStencilState.DepthEnable = true;
+				desc.Graphics.DepthStencilState.DepthWriteMask = DEPTH_WRITE_MASK_ALL;
+				desc.Graphics.DepthStencilState.DepthFunc = COMPARISON_FUNC_LESS;
+				desc.Graphics.DepthStencilState.StencilEnable = false;
+				desc.Graphics.DepthStencilState.StencilReadMask = 0;
+				desc.Graphics.DepthStencilState.StencilWriteMask = 0;
+				desc.Graphics.DepthStencilState.FrontFace.StencilFunc = COMPARISON_FUNC_ALWAYS;
+				desc.Graphics.DepthStencilState.FrontFace.StencilFailOperation = STENCIL_OPERATION_KEEP;
+				desc.Graphics.DepthStencilState.FrontFace.StencilPassOperation = STENCIL_OPERATION_KEEP;
+				desc.Graphics.DepthStencilState.FrontFace.StencilDepthFailOperation = STENCIL_OPERATION_KEEP;
+				desc.Graphics.DepthStencilState.BackFace = desc.Graphics.DepthStencilState.FrontFace;
+
+				desc.Graphics.InputLayout.ElementCount = 0;
+				desc.Graphics.InputLayout.pElements = nullptr;
+
+				desc.Graphics.RasterizerState.FillMode = FILL_MODE_SOLID;
+				desc.Graphics.RasterizerState.CullMode = CULL_MODE_BACK;
+				desc.Graphics.RasterizerState.FrontCounterClockwise = false;
+				desc.Graphics.RasterizerState.ForcedSampleCount = 0;
+				desc.Graphics.RasterizerState.DepthBias = 0;
+				desc.Graphics.RasterizerState.DepthBiasClamp = 0.0f;
+				desc.Graphics.RasterizerState.SlopeScaleDepthBias = 0.0f;
+				desc.Graphics.RasterizerState.DepthClipEnable = true;
+				desc.Graphics.RasterizerState.ScissorEnable = false;
+				desc.Graphics.RasterizerState.MultisampleEnable = false;
+				desc.Graphics.RasterizerState.AntialiasedLineEnable = false;
+				desc.Graphics.RasterizerState.ConservativeRasterizerEnable = false;
+
+				desc.Graphics.pVertexShader = nullptr;
+				desc.Graphics.pHullShader = nullptr;
+				desc.Graphics.pDomainShader = nullptr;
+				desc.Graphics.pGeometryShader = nullptr;
+				desc.Graphics.pPixelShader = nullptr;
+
+				desc.Graphics.SampleMask = 0xffffffff;
+				desc.Graphics.Topology = PRIMITIVE_TOPOLOGY_UNKNOWN;
+
+				return desc;
+			}
 		};
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		inline void CopyPipelineStateDesc(PipelineStateDesc* pDest, const PipelineStateDesc* pSrc)
-		{
-			pDest->Type = pSrc->Type;
-			pDest->pRootLayout = pSrc->pRootLayout;
-
-			if (pDest->Type == PIPELINE_TYPE_GRAPHICS)
-			{
-				pDest->GraphicsPipeline.BlendState = pSrc->GraphicsPipeline.BlendState;
-				pDest->GraphicsPipeline.DepthStencilState = pSrc->GraphicsPipeline.DepthStencilState;
-				pDest->GraphicsPipeline.RasterizerState = pSrc->GraphicsPipeline.RasterizerState;
-				
-				if (pSrc->GraphicsPipeline.InputLayout.pElements != nullptr)
-				{
-					pDest->GraphicsPipeline.InputLayout.ElementCount = pSrc->GraphicsPipeline.InputLayout.ElementCount;
-					pDest->GraphicsPipeline.InputLayout.pElements = new InputElementDesc[pDest->GraphicsPipeline.InputLayout.ElementCount];
-					
-					for (int32 i = 0; i < pDest->GraphicsPipeline.InputLayout.ElementCount; i++)
-						pDest->GraphicsPipeline.InputLayout.pElements[i] = pSrc->GraphicsPipeline.InputLayout.pElements[i];
-				}
-
-				pDest->GraphicsPipeline.DepthStencilFormat = pSrc->GraphicsPipeline.DepthStencilFormat;
-				pDest->GraphicsPipeline.RenderTargetCount = pSrc->GraphicsPipeline.RenderTargetCount;
-				pDest->GraphicsPipeline.SampleCount = pSrc->GraphicsPipeline.SampleCount;
-				pDest->GraphicsPipeline.SampleMask = pSrc->GraphicsPipeline.SampleMask;
-				pDest->GraphicsPipeline.Topology = pSrc->GraphicsPipeline.Topology;
-				
-				for (uint32 i = 0; i < RE_MAX_RENDERTARGETS; i++)
-					pDest->GraphicsPipeline.RenderTargetFormats[i] = pSrc->GraphicsPipeline.RenderTargetFormats[i];
-
-				pDest->GraphicsPipeline.pVertexShader = pSrc->GraphicsPipeline.pVertexShader;
-				pDest->GraphicsPipeline.pHullShader = pSrc->GraphicsPipeline.pHullShader;
-				pDest->GraphicsPipeline.pDomainShader = pSrc->GraphicsPipeline.pDomainShader;
-				pDest->GraphicsPipeline.pGeometryShader = pSrc->GraphicsPipeline.pGeometryShader;
-				pDest->GraphicsPipeline.pPixelShader = pSrc->GraphicsPipeline.pPixelShader;
-			}
-			else if (pDest->Type == PIPELINE_TYPE_COMPUTE)
-			{
-				pDest->ComputePipeline.pComputeShader = pSrc->ComputePipeline.pComputeShader;
-			}
-		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -489,16 +517,6 @@ namespace RayEngine
 		public:
 			IPipelineState() {}
 			~IPipelineState() {}
-
-			/*////////////////////////////////////////////////////////////
-
-				Retrives the descriptor that was used to create the
-				object.
-
-				pDesc - A valid pointer to a Desc
-
-			////////////////////////////////////////////////////////////*/
-			virtual void GetDesc(PipelineStateDesc* pDesc) const = 0;
 		};
 	}
 }

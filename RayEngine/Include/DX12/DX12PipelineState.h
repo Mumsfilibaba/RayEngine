@@ -30,7 +30,6 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IDevice;
 		class DX12Device;
 		class DX12Shader;
 
@@ -38,29 +37,34 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX12PipelineState final : public IPipelineState
 		{
+			friend class DX12DeviceContext;
+
 			RE_IMPLEMENT_INTERFACE(DX12PipelineState);
 
 		public:
-			DX12PipelineState(IDevice* pdevice, const PipelineStateDesc* pDesc);
+			DX12PipelineState(DX12Device* pdevice, const PipelineStateDesc* pDesc);
 			~DX12PipelineState();
-
-			inline ID3D12PipelineState* GetD3D12PipelineState() const
-			{
-				return m_PipelineState.Get();
-			}
-
-			void GetDesc(PipelineStateDesc* pDesc) const;
 
 			CounterType Release() override final;
 
 			CounterType AddRef() override final;
 
 		private:
-			void Create(const PipelineStateDesc* pDesc);
+			inline ID3D12PipelineState* GetD3D12PipelineState() const
+			{
+				return m_PipelineState.Get();
+			}
 
-			void CreateGraphicsState();
+			inline ID3D12RootSignature* GetD3D12RootSignature() const
+			{
+				return m_RootSignature.Get();
+			}
 
-			void CreateComputeState();
+			void Create(DX12Device* pdevice, const PipelineStateDesc* pDesc);
+
+			void CreateGraphicsState(DX12Device* pDevice, const PipelineStateDesc* pDesc);
+
+			void CreateComputeState(DX12Device* pDevice, const PipelineStateDesc* pDesc);
 			
 		private:
 			static void SetShaderByteCode(D3D12_SHADER_BYTECODE* pByteCode, const DX12Shader* pShader);
@@ -74,11 +78,8 @@ namespace RayEngine
 			static void SetBlendDesc(D3D12_BLEND_DESC* pD3D12Desc, const BlendStateDesc* pDesc);
 
 		private:
-			DX12Device* m_Device;
+			Microsoft::WRL::ComPtr<ID3D12RootSignature> m_RootSignature;
 			Microsoft::WRL::ComPtr<ID3D12PipelineState> m_PipelineState;
-			
-			PipelineStateDesc m_Desc;
-
 			CounterType m_References;
 		};
 	}

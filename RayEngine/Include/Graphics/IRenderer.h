@@ -11,7 +11,7 @@ namespace RayEngine
 			RE_INTERFACE(IRenderer);
 
 		public:
-			IRenderer();
+			IRenderer() {}
 			~IRenderer() {};
 
 			virtual void Clear(float color[4]) const = 0;

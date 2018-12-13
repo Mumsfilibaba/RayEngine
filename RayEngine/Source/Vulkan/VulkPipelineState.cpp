@@ -64,12 +64,12 @@ namespace RayEngine
 
 			if (m_Desc.Type == PIPELINE_TYPE_GRAPHICS)
 			{
-				if (m_Desc.GraphicsPipeline.InputLayout.pElements != nullptr)
+				if (m_Desc.Graphics.InputLayout.pElements != nullptr)
 				{
-					delete[] m_Desc.GraphicsPipeline.InputLayout.pElements;
-					m_Desc.GraphicsPipeline.InputLayout.pElements = nullptr;
+					delete[] m_Desc.Graphics.InputLayout.pElements;
+					m_Desc.Graphics.InputLayout.pElements = nullptr;
 
-					m_Desc.GraphicsPipeline.InputLayout.ElementCount = 0;
+					m_Desc.Graphics.InputLayout.ElementCount = 0;
 				}
 			}
 		}
@@ -103,8 +103,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void VulkPipelineState::Create(const PipelineStateDesc* pDesc)
 		{
-			CopyPipelineStateDesc(&m_Desc, pDesc);
-
 			if (pDesc->Type == PIPELINE_TYPE_GRAPHICS)
 				CreateGraphicsPipeline();
 			else if (pDesc->Type == PIPELINE_TYPE_COMPUTE)
@@ -181,23 +179,23 @@ namespace RayEngine
 		void VulkPipelineState::CreateGraphicsPipeline()
 		{
 			std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
-			if (m_Desc.GraphicsPipeline.pVertexShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.GraphicsPipeline.pVertexShader));
+			if (m_Desc.Graphics.pVertexShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.Graphics.pVertexShader));
 
-			if (m_Desc.GraphicsPipeline.pHullShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.GraphicsPipeline.pHullShader));
+			if (m_Desc.Graphics.pHullShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.Graphics.pHullShader));
 
-			if (m_Desc.GraphicsPipeline.pDomainShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.GraphicsPipeline.pDomainShader));
+			if (m_Desc.Graphics.pDomainShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.Graphics.pDomainShader));
 
-			if (m_Desc.GraphicsPipeline.pGeometryShader != nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.GraphicsPipeline.pGeometryShader));
+			if (m_Desc.Graphics.pGeometryShader != nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.Graphics.pGeometryShader));
 
-			if (m_Desc.GraphicsPipeline.pPixelShader!= nullptr)
-				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.GraphicsPipeline.pPixelShader));
+			if (m_Desc.Graphics.pPixelShader!= nullptr)
+				shaderStages.push_back(CreateVkPipelineShaderStageCreateInfo(m_Desc.Graphics.pPixelShader));
 
 
-			int32 elementCount = m_Desc.GraphicsPipeline.InputLayout.ElementCount;
+			int32 elementCount = m_Desc.Graphics.InputLayout.ElementCount;
 			std::vector<VkVertexInputBindingDescription> vertexBindings;
 			vertexBindings.resize(elementCount);
 			
@@ -206,7 +204,7 @@ namespace RayEngine
 
 			for (int32 i = 0; i < elementCount; i++)
 			{
-				VkInputElement element = CreateVkInputElement(&m_Desc.GraphicsPipeline.InputLayout.pElements[i], i);
+				VkInputElement element = CreateVkInputElement(&m_Desc.Graphics.InputLayout.pElements[i], i);
 
 				vertexAttributes[i] = element.first;
 				vertexBindings[i] = element.second;
@@ -255,30 +253,30 @@ namespace RayEngine
 
 
 			std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments;
-			colorBlendAttachments.resize(m_Desc.GraphicsPipeline.RenderTargetCount);
+			colorBlendAttachments.resize(m_Desc.Graphics.RenderTargetCount);
 
-			for (int32 i = 0; i < m_Desc.GraphicsPipeline.RenderTargetCount; i++)
-				SetColorBlendAttachmentState(&colorBlendAttachments[i], &m_Desc.GraphicsPipeline.BlendState.RenderTargets[i]);
+			for (int32 i = 0; i < m_Desc.Graphics.RenderTargetCount; i++)
+				SetColorBlendAttachmentState(&colorBlendAttachments[i], &m_Desc.Graphics.BlendState.RenderTargets[i]);
 
 			VkPipelineColorBlendStateCreateInfo blendState = {};
 			blendState.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 			blendState.pNext = nullptr;
 			blendState.flags = 0;
 
-			blendState.logicOpEnable = m_Desc.GraphicsPipeline.BlendState.LogicOpEnable ? VK_TRUE : VK_FALSE;
+			blendState.logicOpEnable = m_Desc.Graphics.BlendState.LogicOpEnable ? VK_TRUE : VK_FALSE;
 			blendState.logicOp = VK_LOGIC_OP_NO_OP;
-			blendState.attachmentCount = m_Desc.GraphicsPipeline.RenderTargetCount;
+			blendState.attachmentCount = m_Desc.Graphics.RenderTargetCount;
 			blendState.pAttachments = colorBlendAttachments.data();
 
-			blendState.blendConstants[0] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[0];
-			blendState.blendConstants[1] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[1];
-			blendState.blendConstants[2] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[2];
-			blendState.blendConstants[3] = m_Desc.GraphicsPipeline.BlendState.BlendFactor[3];
+			blendState.blendConstants[0] = m_Desc.Graphics.BlendState.BlendFactor[0];
+			blendState.blendConstants[1] = m_Desc.Graphics.BlendState.BlendFactor[1];
+			blendState.blendConstants[2] = m_Desc.Graphics.BlendState.BlendFactor[2];
+			blendState.blendConstants[3] = m_Desc.Graphics.BlendState.BlendFactor[3];
 
 
 
 			VkPipelineRasterizationStateCreateInfo rasterizerState = {};
-			SetRasterizerState(&rasterizerState, &m_Desc.GraphicsPipeline.RasterizerState);
+			SetRasterizerState(&rasterizerState, &m_Desc.Graphics.RasterizerState);
 
 
 
@@ -297,12 +295,12 @@ namespace RayEngine
 			multisamplingState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 			VkSampleMask sampleMask = 0xFFFFFFFF;
 			multisamplingState.pSampleMask = &sampleMask;
-			//multisamplingState.rasterizationSamples = ReToVkSampleCount(m_Desc.GraphicsPipeline.SampleCount);
+			//multisamplingState.rasterizationSamples = ReToVkSampleCount(m_Desc.Graphics.SampleCount);
 
 
 			
 			VkPipelineDepthStencilStateCreateInfo depthStencilState = {};
-			SetDepthStencilState(&depthStencilState, &m_Desc.GraphicsPipeline.DepthStencilState);
+			SetDepthStencilState(&depthStencilState, &m_Desc.Graphics.DepthStencilState);
 
 
 			if (!CreateRenderPass())
@@ -353,17 +351,17 @@ namespace RayEngine
 		bool VulkPipelineState::CreateRenderPass()
 		{
 			std::vector<VkAttachmentDescription> attachments;
-			attachments.resize(m_Desc.GraphicsPipeline.RenderTargetCount);
+			attachments.resize(m_Desc.Graphics.RenderTargetCount);
 
 			std::vector<VkAttachmentReference> attachmentsRefs;
-			attachmentsRefs.resize(m_Desc.GraphicsPipeline.RenderTargetCount);
+			attachmentsRefs.resize(m_Desc.Graphics.RenderTargetCount);
 
-			for (int32 i = 0; i < m_Desc.GraphicsPipeline.RenderTargetCount; i++)
+			for (int32 i = 0; i < m_Desc.Graphics.RenderTargetCount; i++)
 			{
 				VkAttachmentDescription& desc = attachments[i];
-				desc.format = ReToVkFormat(m_Desc.GraphicsPipeline.RenderTargetFormats[i]);
+				desc.format = ReToVkFormat(m_Desc.Graphics.RenderTargetFormats[i]);
 
-				desc.samples = ReToVkSampleCount(m_Desc.GraphicsPipeline.SampleCount);
+				//desc.samples = ReToVkSampleCount(m_Desc.Graphics.SampleCount);
 
 				//TODO: Fix operation based on if it is a color or depth/stencil attachment
 				desc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -380,12 +378,11 @@ namespace RayEngine
 			}
 
 
-
-			if (m_Desc.GraphicsPipeline.DepthStencilFormat != FORMAT_UNKNOWN)
+			if (m_Desc.Graphics.DepthStencilFormat != FORMAT_UNKNOWN)
 			{
 				VkAttachmentDescription attachment = {};
-				attachment.format = ReToVkFormat(m_Desc.GraphicsPipeline.DepthStencilFormat);
-				attachment.samples = ReToVkSampleCount(m_Desc.GraphicsPipeline.SampleCount);
+				attachment.format = ReToVkFormat(m_Desc.Graphics.DepthStencilFormat);
+				//attachment.samples = ReToVkSampleCount(m_Desc.Graphics.SampleCount);
 
 				//TODO: Fix operation based on if it is a color or depth/stencil attachment
 				attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -507,7 +504,7 @@ namespace RayEngine
 			pInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 			pInfo->pNext = nullptr;
 			pInfo->flags = 0;
-			pInfo->topology = ReToVkPrimitiveTopology(pDesc->GraphicsPipeline.Topology);
+			pInfo->topology = ReToVkPrimitiveTopology(pDesc->Graphics.Topology);
 			pInfo->primitiveRestartEnable = VK_FALSE;
 		}
 

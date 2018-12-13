@@ -33,17 +33,17 @@ namespace RayEngine
 		{
 			RE_UNIQUE_OBJECT(DXShaderBase);
 
-		protected:
-			DXShaderBase();
-			~DXShaderBase();
-
-			bool CompileFromString(const std::string& src, const std::string& entryPoint, SHADER_TYPE type, int32 flags, std::string& errorString);
-
 		public:
 			inline ID3DBlob* GetBlob() const
 			{
 				return m_ShaderBlob.Get();
 			}
+
+		protected:
+			DXShaderBase();
+			~DXShaderBase();
+
+			bool CompileFromString(const std::string& src, const std::string& entryPoint, SHADER_TYPE type, int32 flags, std::string& errorString);
 
 		protected:
 			Microsoft::WRL::ComPtr<ID3DBlob> m_ShaderBlob;

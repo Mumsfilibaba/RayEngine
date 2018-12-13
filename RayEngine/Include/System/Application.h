@@ -38,6 +38,8 @@ namespace RayEngine
 
 		int32 Run();
 
+		virtual void OnCreate();
+
 		virtual void OnUpdate();
 
 		virtual void OnRender();
@@ -64,13 +66,12 @@ namespace RayEngine
 		}
 
 	private:
-		void Initialize(GRAPHICS_API api);
-
-	private:
 		IWindow* m_pWindow;
 		Graphics::IDevice* m_pDevice;
 		Graphics::IDeviceContext* m_pContext;
 		Graphics::ISwapchain* m_pSwapChain;
+		Graphics::IPipelineState* m_pPipeline;
+		GRAPHICS_API m_Api;
 
 	private:
 		static void InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,

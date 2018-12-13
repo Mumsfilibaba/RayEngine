@@ -40,6 +40,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		inline void GetHighestSupportingSamples(ID3D12Device* pD3D12Device, uint32* count, uint32* quality, uint32 requested, DXGI_FORMAT format)
 		{
+			if (requested < 2)
+			{
+				*count = 1;
+				*quality = 0;
+				return;
+			}
+
 			D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msaaQuality = {};
 			msaaQuality.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
 			msaaQuality.Format = format;
@@ -55,8 +62,16 @@ namespace RayEngine
 				msaaQuality.SampleCount /= 2;
 			}
 
-			*count = msaaQuality.SampleCount;
-			*quality = msaaQuality.NumQualityLevels - 1;
+			if (msaaQuality.NumQualityLevels == 0)
+			{
+				*count = 1;
+				*quality = 0;
+			}
+			else
+			{
+				*count = msaaQuality.SampleCount;
+				*quality = msaaQuality.NumQualityLevels - 1;
+			}
 		}
 	}
 }

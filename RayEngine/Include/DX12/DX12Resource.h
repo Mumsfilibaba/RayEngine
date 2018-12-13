@@ -41,13 +41,12 @@ namespace RayEngine
 
 			inline ~DX12Resource()
 			{
-				D3DRelease_S(m_Resource);
 			}
 
 		public:
 			inline ID3D12Resource* GetD3D12Resource() const
 			{
-				return m_Resource;
+				return m_Resource.Get();
 			}
 
 			inline D3D12_RESOURCE_STATES GetD3D12State() const
@@ -61,7 +60,7 @@ namespace RayEngine
 			}
 
 		protected:
-			ID3D12Resource* m_Resource;
+			Microsoft::WRL::ComPtr<ID3D12Resource> m_Resource;
 
 			mutable D3D12_RESOURCE_STATES m_State;
 		};

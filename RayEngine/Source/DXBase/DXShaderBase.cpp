@@ -40,7 +40,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DXShaderBase::~DXShaderBase()
 		{
-			D3DRelease_S(m_ShaderBlob);
 		}
 
 
@@ -50,8 +49,7 @@ namespace RayEngine
 			using namespace Microsoft::WRL;
 
 			ComPtr<ID3DBlob> error;
-			if (FAILED(D3DCompile(src.c_str(), src.size(), 0, nullptr, nullptr, entryPoint.c_str(),
-				GetShaderModel(type).c_str(), flags, 0, &m_ShaderBlob, &error)))
+			if (FAILED(D3DCompile(src.c_str(), src.size(), 0, nullptr, nullptr, entryPoint.c_str(), GetShaderModel(type).c_str(), flags, 0, &m_ShaderBlob, &error)))
 			{
 				errorString = reinterpret_cast<const char*>(error->GetBufferPointer());
 				return false;

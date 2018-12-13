@@ -32,41 +32,19 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12PipelineState::DX12PipelineState(IDevice* pDevice, const PipelineStateDesc* pDesc)
-			: m_Device(nullptr),
+		DX12PipelineState::DX12PipelineState(DX12Device* pDevice, const PipelineStateDesc* pDesc)
+			: m_RootSignature(nullptr),
 			m_PipelineState(nullptr),
-			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<DX12Device*>(pDevice);
-
-			Create(pDesc);
+			Create(pDevice, pDesc);
 		}
 		
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12PipelineState::~DX12PipelineState()
 		{
-			D3DRelease_S(m_PipelineState);
-
-			if (m_Desc.Type == PIPELINE_TYPE_GRAPHICS)
-			{
-				if (m_Desc.GraphicsPipeline.InputLayout.pElements != nullptr)
-				{
-					delete[] m_Desc.GraphicsPipeline.InputLayout.pElements;
-					m_Desc.GraphicsPipeline.InputLayout.pElements = nullptr;
-
-					m_Desc.GraphicsPipeline.InputLayout.ElementCount = 0;
-				}
-			}
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::GetDesc(PipelineStateDesc* pDesc) const
-		{
-			*pDesc = m_Desc;
 		}
 
 		
@@ -89,33 +67,72 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::Create(const PipelineStateDesc* pDesc)
+		void DX12PipelineState::Create(DX12Device* pDevice, const PipelineStateDesc* pDesc)
 		{
-			CopyPipelineStateDesc(&m_Desc, pDesc);
-
-			if (m_Desc.Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsState();
-			else if (m_Desc.Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputeState();
+			if (pDesc->Type == PIPELINE_TYPE_GRAPHICS)
+				CreateGraphicsState(pDevice, pDesc);
+			else if (pDesc->Type == PIPELINE_TYPE_COMPUTE)
+				CreateComputeState(pDevice, pDesc);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateGraphicsState()
+		void DX12PipelineState::CreateGraphicsState(DX12Device* pDevice, const PipelineStateDesc* pDesc)
 		{
-			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
-			inputLayout.resize(m_Desc.GraphicsPipeline.InputLayout.ElementCount);
+			using namespace Microsoft::WRL;
 
-			for (int32 i = 0; i < static_cast<int32>(inputLayout.size()); i++)
+			D3D12_FEATURE_DATA_ROOT_SIGNATURE feature = {};
+			feature.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
+
+			ID3D12Device* pD3D12Device = pDevice->GetD3D12Device();
+			HRESULT hr = pD3D12Device->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &feature, sizeof(D3D12_FEATURE_DATA_ROOT_SIGNATURE));
+			if (FAILED(hr))
 			{
-				SetInputElementDesc(&inputLayout[i], &m_Desc.GraphicsPipeline.InputLayout.pElements[i]);
+				LOG_ERROR("D3D12: Root Signature version not supported by graphics driver. " + DXErrorString(hr));
+				return;
 			}
 
+			D3D12_ROOT_SIGNATURE_DESC1 rsd = {};
+			rsd.NumParameters = 0;
+			rsd.pParameters = nullptr;
+			rsd.NumStaticSamplers = 0;
+			rsd.pStaticSamplers = nullptr;
+			rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(m_Desc.pRootLayout)->GetD3D12RootSignature();
+			D3D12_VERSIONED_ROOT_SIGNATURE_DESC vrsDesc = {};
+			vrsDesc.Version = feature.HighestVersion;
+			vrsDesc.Desc_1_1 = rsd;
+
+			ComPtr<ID3DBlob> error;
+			ComPtr<ID3DBlob> signature;
+			hr = D3D12SerializeVersionedRootSignature(&vrsDesc, &signature, &error);
+			if (FAILED(hr))
+			{
+				std::string err = reinterpret_cast<char*>(error->GetBufferPointer());
+				LOG_ERROR("D3D12: Could not serialize RootSignature. " + err);
+				return;
+			}
+
+			hr = pD3D12Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
+			if (FAILED(hr))
+			{
+				LOG_ERROR("D3D12: Could not create RootSignature" + DXErrorString(hr));
+				return;
+			}
+			else
+			{
+				LOG_INFO("D3D12: Created RootSignature");
+			}
+
+			std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
+			inputLayout.resize(pDesc->Graphics.InputLayout.ElementCount);
+
+			for (int32 i = 0; i < static_cast<int32>(inputLayout.size()); i++)
+				SetInputElementDesc(&inputLayout[i], &pDesc->Graphics.InputLayout.pElements[i]);
+
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
 			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-			desc.pRootSignature = pD3D12RootSignature;
+			desc.pRootSignature = m_RootSignature.Get();
 			desc.NodeMask = 0;
 
 			//TODO: Fill in streamoutput
@@ -125,17 +142,13 @@ namespace RayEngine
 			//desc.StreamOutput.pSODeclaration;
 			//desc.StreamOutput.RasterizedStream;
 
-			//TODO: Fix rendertarget count etc
-			desc.NumRenderTargets = m_Desc.GraphicsPipeline.RenderTargetCount;
+			desc.NumRenderTargets = pDesc->Graphics.RenderTargetCount;
 			for (uint32 i = 0; i < desc.NumRenderTargets; i++)
-				desc.RTVFormats[i] = ReToDXFormat(m_Desc.GraphicsPipeline.RenderTargetFormats[i]);
+				desc.RTVFormats[i] = ReToDXFormat(pDesc->Graphics.RenderTargetFormats[i]);
+			desc.DSVFormat = ReToDXFormat(pDesc->Graphics.DepthStencilFormat);
+			desc.SampleDesc.Count = pDesc->Graphics.SampleCount;
 			
-
-			desc.DSVFormat = ReToDXFormat(m_Desc.GraphicsPipeline.DepthStencilFormat);
-			desc.SampleDesc.Count = m_Desc.GraphicsPipeline.SampleCount;
-
-
-			D3D_PRIMITIVE_TOPOLOGY topology = ReToDXTopology(m_Desc.GraphicsPipeline.Topology);
+			D3D_PRIMITIVE_TOPOLOGY topology = ReToDXTopology(pDesc->Graphics.Topology);
 			if (topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST || topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP)
 				desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 			else if (topology == D3D_PRIMITIVE_TOPOLOGY_LINELIST || topology == D3D_PRIMITIVE_TOPOLOGY_LINESTRIP)
@@ -148,51 +161,48 @@ namespace RayEngine
 			desc.CachedPSO.CachedBlobSizeInBytes = 0;
 			desc.CachedPSO.pCachedBlob = 0;
 
-
 			desc.InputLayout.pInputElementDescs = inputLayout.data();
 			desc.InputLayout.NumElements = static_cast<uint32>(inputLayout.size());
 
-
-			//TODO: Make sure shader is of correct type
-			SetShaderByteCode(&desc.VS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pVertexShader));
-			SetShaderByteCode(&desc.HS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pHullShader));
-			SetShaderByteCode(&desc.DS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pDomainShader));
-			SetShaderByteCode(&desc.GS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pGeometryShader));
-			SetShaderByteCode(&desc.PS, reinterpret_cast<DX12Shader*>(m_Desc.GraphicsPipeline.pPixelShader));
+			SetShaderByteCode(&desc.VS, reinterpret_cast<DX12Shader*>(pDesc->Graphics.pVertexShader));
+			SetShaderByteCode(&desc.HS, reinterpret_cast<DX12Shader*>(pDesc->Graphics.pHullShader));
+			SetShaderByteCode(&desc.DS, reinterpret_cast<DX12Shader*>(pDesc->Graphics.pDomainShader));
+			SetShaderByteCode(&desc.GS, reinterpret_cast<DX12Shader*>(pDesc->Graphics.pGeometryShader));
+			SetShaderByteCode(&desc.PS, reinterpret_cast<DX12Shader*>(pDesc->Graphics.pPixelShader));
 		
+			SetRasterizerDesc(&desc.RasterizerState, &pDesc->Graphics.RasterizerState);
 
-			SetRasterizerDesc(&desc.RasterizerState, &m_Desc.GraphicsPipeline.RasterizerState);
+			SetDepthStencilDesc(&desc.DepthStencilState, &pDesc->Graphics.DepthStencilState);
 
-			SetDepthStencilDesc(&desc.DepthStencilState, &m_Desc.GraphicsPipeline.DepthStencilState);
-
-			SetBlendDesc(&desc.BlendState, &m_Desc.GraphicsPipeline.BlendState);
-			desc.SampleMask = m_Desc.GraphicsPipeline.SampleMask;
+			SetBlendDesc(&desc.BlendState, &pDesc->Graphics.BlendState);
+			desc.SampleMask = pDesc->Graphics.SampleMask;
 	
-
-			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
-			HRESULT hr = pD3D12Device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
+			hr = pD3D12Device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D12: Could not create PipelineState. " + DXErrorString(hr));
+			}
+			else
+			{
+				LOG_INFO("D3D12: Created PipelineState");
 			}
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12PipelineState::CreateComputeState()
+		void DX12PipelineState::CreateComputeState(DX12Device* pDevice, const PipelineStateDesc* pDesc)
 		{
-			ID3D12RootSignature* pD3D12RootSignature = reinterpret_cast<DX12RootLayout*>(m_Desc.pRootLayout)->GetD3D12RootSignature();
 			D3D12_COMPUTE_PIPELINE_STATE_DESC desc = { };
 			desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-			desc.pRootSignature = pD3D12RootSignature;
+			desc.pRootSignature = m_RootSignature.Get();
 			desc.NodeMask = 0;
 
-			SetShaderByteCode(&desc.CS, reinterpret_cast<DX12Shader*>(m_Desc.ComputePipeline.pComputeShader));
+			SetShaderByteCode(&desc.CS, reinterpret_cast<DX12Shader*>(pDesc->Compute.pComputeShader));
 
 			desc.CachedPSO.CachedBlobSizeInBytes = 0;
 			desc.CachedPSO.pCachedBlob = nullptr;
 
-			ID3D12Device* pD3D12Device = m_Device->GetD3D12Device();
+			ID3D12Device* pD3D12Device = pDevice->GetD3D12Device();
 			HRESULT hr = pD3D12Device->CreateComputePipelineState(&desc, IID_PPV_ARGS(&m_PipelineState));
 			if (FAILED(hr))
 			{

@@ -3,8 +3,8 @@
 int main(int argc, char* argv[])
 {
 	Sandbox* pApplication = new Sandbox();
-	pApplication->Run();
+	int result = pApplication->Run();
+	
 	delete pApplication;
-
-	return 0;
+	return result;
 }

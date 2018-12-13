@@ -84,7 +84,7 @@ namespace RayEngine
 			std::string errorString;
 			if (!CompileFromString(pDesc->pSource, pDesc->pEntryPoint, pDesc->Type, flags, errorString))
 			{
-				LOG_ERROR("D3D12: Could not compile shader" + errorString);
+				LOG_ERROR("D3D12: Could not compile shader.\n" + errorString);
 			}
 			else
 			{
