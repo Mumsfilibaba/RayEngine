@@ -46,7 +46,7 @@ namespace RayEngine
 
 			inline ID3D12RootSignature* GetD3D12RootSignature() const
 			{
-				return m_RootSignature;
+				return m_RootSignature.Get();
 			}
 			
 			inline DX12RootVariableSlot* GetDX12RootVariableSlot(int32 index) const
@@ -82,7 +82,7 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-			ID3D12RootSignature* m_RootSignature;
+			Microsoft::WRL::ComPtr<ID3D12RootSignature> m_RootSignature;
 
 			RootLayoutDesc m_Desc;
 

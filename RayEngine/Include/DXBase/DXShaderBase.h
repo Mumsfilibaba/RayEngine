@@ -40,10 +40,13 @@ namespace RayEngine
 			bool CompileFromString(const std::string& src, const std::string& entryPoint, SHADER_TYPE type, int32 flags, std::string& errorString);
 
 		public:
-			ID3DBlob* GetBlob() const;
+			inline ID3DBlob* GetBlob() const
+			{
+				return m_ShaderBlob.Get();
+			}
 
 		protected:
-			ID3DBlob* m_ShaderBlob;
+			Microsoft::WRL::ComPtr<ID3DBlob> m_ShaderBlob;
 			SHADER_TYPE m_Type;
 
 		private:

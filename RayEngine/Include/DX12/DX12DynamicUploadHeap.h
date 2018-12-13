@@ -45,7 +45,7 @@ namespace RayEngine
 
 			inline ID3D12Heap* GetD3D12Heap() const
 			{
-				return m_Heap;
+				return m_Heap.Get();
 			}
 
 			void SetData(const void* pData, int32 size);
@@ -59,7 +59,7 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-			ID3D12Heap* m_Heap;
+			Microsoft::WRL::ComPtr<ID3D12Heap> m_Heap;
 
 			int32 m_SizeInBytes;
 

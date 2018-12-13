@@ -119,7 +119,7 @@ namespace RayEngine
 			rDesc.MipLevels = 1;
 			rDesc.Format = DXGI_FORMAT_UNKNOWN;
 			
-			hr = pD3D12Device->CreatePlacedResource(m_Heap, 0, &rDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_Resource));
+			hr = pD3D12Device->CreatePlacedResource(m_Heap.Get(), 0, &rDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_Resource));
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D12: Could not create Resource." + DXErrorString(hr));

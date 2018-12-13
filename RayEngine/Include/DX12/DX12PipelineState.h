@@ -46,7 +46,7 @@ namespace RayEngine
 
 			inline ID3D12PipelineState* GetD3D12PipelineState() const
 			{
-				return m_PipelineState;
+				return m_PipelineState.Get();
 			}
 
 			void GetDesc(PipelineStateDesc* pDesc) const;
@@ -75,7 +75,7 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-			ID3D12PipelineState* m_PipelineState;
+			Microsoft::WRL::ComPtr<ID3D12PipelineState> m_PipelineState;
 			
 			PipelineStateDesc m_Desc;
 

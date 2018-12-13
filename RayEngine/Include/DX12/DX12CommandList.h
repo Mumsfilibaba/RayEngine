@@ -45,7 +45,7 @@ namespace RayEngine
 
 			inline bool Reset() const
 			{
-				HRESULT hr = m_List->Reset(m_Allocator, nullptr);
+				HRESULT hr = m_List->Reset(m_Allocator.Get(), nullptr);
 				return SUCCEEDED(hr);
 			}
 
@@ -63,17 +63,17 @@ namespace RayEngine
 
 			inline ID3D12CommandList* GetD3D12CommandList() const
 			{
-				return m_List;
+				return m_List.Get();
 			}
 
 			ID3D12CommandAllocator* GetD3D12CommandAllocator() const
 			{
-				return m_Allocator;
+				return m_Allocator.Get();
 			}
 
 			inline ID3D12GraphicsCommandList* GetD3D12GraphicsCommandList() const
 			{
-				return m_List;
+				return m_List.Get();
 			}
 			
 			CounterType Release() override final;
@@ -85,9 +85,8 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-			ID3D12GraphicsCommandList* m_List;
-			ID3D12CommandAllocator* m_Allocator;
-
+			Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_Allocator;
+			Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_List;
 			CounterType m_References;
 		};
 	}

@@ -606,7 +606,7 @@ namespace RayEngine
 				return;
 
 			m_CurrentFence++;
-			HRESULT hr = m_Queue->Signal(m_Fence, m_CurrentFence);
+			HRESULT hr = m_Queue->Signal(m_Fence.Get(), m_CurrentFence);
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D12: Signal fence failed. " + DXErrorString(hr));

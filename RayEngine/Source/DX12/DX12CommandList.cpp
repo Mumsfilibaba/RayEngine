@@ -81,7 +81,7 @@ namespace RayEngine
 				return;
 			}
 
-			hr = pD3D12Device->CreateCommandList(nodeMask, type, m_Allocator, pInitalState, IID_PPV_ARGS(&m_List));
+			hr = pD3D12Device->CreateCommandList(nodeMask, type, m_Allocator.Get(), pInitalState, IID_PPV_ARGS(&m_List));
 			if (FAILED(hr))
 			{
 				LOG_ERROR("D3D12: Could not create CommandList. " + DXErrorString(hr));

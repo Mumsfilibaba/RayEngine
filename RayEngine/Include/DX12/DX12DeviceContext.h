@@ -124,7 +124,7 @@ namespace RayEngine
 
 			inline ID3D12CommandQueue* GetD3D12CommandQueue() const
 			{
-				return m_Queue;
+				return m_Queue.Get();
 			}
 
 			void Create(bool isDeffered);
@@ -145,13 +145,14 @@ namespace RayEngine
 
 		private:
 			DX12Device* m_Device;
-			ID3D12Fence* m_Fence;
-			ID3D12CommandQueue* m_Queue;
 			DX12CommandList* m_List;
 			DX12CommandList* m_ComputeList;
 			mutable DX12Resource* m_CurrentDepthStencil;
 			mutable DX12Swapchain* m_CurrentSwapchain;
 			mutable DX12RootLayout* m_CurrentRootLayout;
+
+			Microsoft::WRL::ComPtr<ID3D12Fence> m_Fence;
+			Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_Queue;
 			
 			bool m_IsDeffered;
 			
