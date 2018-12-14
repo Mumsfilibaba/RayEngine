@@ -113,6 +113,10 @@ namespace RayEngine
 		{
 			if (m_pWindow->PeekEvent(&event))
 			{
+				if (event.Type == EVENT_TYPE_RESIZE)
+				{
+					m_pSwapChain->Resize(event.Resize.Width, event.Resize.Height);
+				}
 			}
 
 			OnUpdate();
@@ -133,8 +137,8 @@ namespace RayEngine
 
 		WindowDesc wnd = {};
 		wnd.Style = WINDOW_STYLE_STANDARD;
-		wnd.Width = 800;
-		wnd.Height = 600;
+		wnd.Width = 1024;
+		wnd.Height = 768;
 		wnd.pTitle = "RayEngine";
 		wnd.BackgroundColor.r = 127;
 		wnd.BackgroundColor.g = 127;
@@ -161,40 +165,68 @@ namespace RayEngine
 
 		InitGraphics(&m_pWindow, wnd, &m_pDevice, dev, &m_pSwapChain, swc, m_Api);
 
-		std::string vs = 
-			"struct VS_OUT\n"
-			"{\n"
-			"	float4 pos : SV_Position;\n"
-			"};\n"
-			"\n"
-			"VS_OUT main(uint id : SV_VertexID)\n"
-			"{\n"
-			"	float2 coords = float2((id << 1) & 2, id & 2);\n"
-			"	VS_OUT output;\n"
-			"	if (id == 0) { output.pos = float4(0.0f, 0.5f, 0.0f, 1.0f); }\n"
-			"	else if (id == 1) { output.pos = float4(0.5f, -0.5f, 0.0f, 1.0f); }\n"
-			"	else if (id == 2) { output.pos = float4(-0.5f, -0.5f, 0.0f, 1.0f); }\n"
-			"	else { output.pos = float4(0.0f, 0.0f, 0.0f, 1.0f); }\n"
-			"	return output;\n"
-			"}\n";
-
-		std::string ps =
-			"struct PS_IN\n"
-			"{\n"
-			"	float4 pos : SV_Position;\n"
-			"};\n"
-			"\n"
-			"float4 main(PS_IN input) : SV_Target0\n"
-			"{\n"
-			"	return float4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-			"}\n";
+		std::string vs;
+		std::string ps;
 
 		ShaderDesc shader = {};
 		shader.Flags = SHADER_FLAGS_DEBUG;
 		shader.pEntryPoint = "main";
-		shader.pSource = vs.c_str();
 		shader.Type = SHADER_TYPE_VERTEX;
-		shader.SrcLang = SHADER_SOURCE_LANG_HLSL;
+		
+		if (m_Api == GRAPHICS_API_OPENGL)
+		{
+			shader.SrcLang = SHADER_SOURCE_LANG_GLSL;
+			vs =
+				"#version 330\n"
+				"\n"
+				"void main()\n"
+				"{\n"
+				"	vec4 pos = vec4(0.0);\n"
+				"	if (gl_VertexID == 0) { pos = vec4(0.0f, 0.5f, 0.0f, 1.0f); }\n"
+				"	else if (gl_VertexID == 1) { pos = vec4(0.5f, -0.5f, 0.0f, 1.0f); }\n"
+				"	else if (gl_VertexID == 2) { pos = vec4(-0.5f, -0.5f, 0.0f, 1.0f); }\n"
+				"	else { pos = vec4(0.0f, 0.0f, 0.0f, 1.0f); }\n"
+				"	gl_Position = pos;\n"
+				"}\n";
+			ps =
+				"#version 330\n"
+				"\n"
+				"void main()\n"
+				"{\n"
+				"	gl_FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+				"}\n";
+		}
+		else
+		{
+			shader.SrcLang = SHADER_SOURCE_LANG_HLSL;
+			vs =
+				"struct VS_OUT\n"
+				"{\n"
+				"	float4 pos : SV_Position;\n"
+				"};\n"
+				"\n"
+				"VS_OUT main(uint id : SV_VertexID)\n"
+				"{\n"
+				"	VS_OUT output;\n"
+				"	if (id == 0) { output.pos = float4(0.0f, 0.5f, 0.0f, 1.0f); }\n"
+				"	else if (id == 1) { output.pos = float4(0.5f, -0.5f, 0.0f, 1.0f); }\n"
+				"	else if (id == 2) { output.pos = float4(-0.5f, -0.5f, 0.0f, 1.0f); }\n"
+				"	else { output.pos = float4(0.0f, 0.0f, 0.0f, 1.0f); }\n"
+				"	return output;\n"
+				"}\n";	
+			ps =
+				"struct PS_IN\n"
+				"{\n"
+				"	float4 pos : SV_Position;\n"
+				"};\n"
+				"\n"
+				"float4 main(PS_IN input) : SV_Target0\n"
+				"{\n"
+				"	return float4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+				"}\n";
+		}
+
+		shader.pSource = vs.c_str();
 		
 		IShader* pVS = nullptr;
 		m_pDevice->CreateShader(&pVS, &shader);

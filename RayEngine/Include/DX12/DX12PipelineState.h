@@ -45,6 +45,8 @@ namespace RayEngine
 			DX12PipelineState(DX12Device* pdevice, const PipelineStateDesc* pDesc);
 			~DX12PipelineState();
 
+			PIPELINE_TYPE GetPipelineType() const override final;
+
 			CounterType Release() override final;
 
 			CounterType AddRef() override final;
@@ -80,6 +82,9 @@ namespace RayEngine
 		private:
 			Microsoft::WRL::ComPtr<ID3D12RootSignature> m_RootSignature;
 			Microsoft::WRL::ComPtr<ID3D12PipelineState> m_PipelineState;
+
+			PIPELINE_TYPE m_Type;
+
 			CounterType m_References;
 		};
 	}

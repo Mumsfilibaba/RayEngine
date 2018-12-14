@@ -517,6 +517,8 @@ namespace RayEngine
 		public:
 			IPipelineState() {}
 			~IPipelineState() {}
+
+			virtual PIPELINE_TYPE GetPipelineType() const = 0;
 		};
 	}
 }

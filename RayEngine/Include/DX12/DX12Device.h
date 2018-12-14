@@ -110,6 +110,8 @@ namespace RayEngine
 
 			void CreateSamplerDescriptorHandle(const D3D12_SAMPLER_DESC& desc, DX12DescriptorHandle& destHandle) const;
 
+			IRenderer* CreateRenderer() override final;
+
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;
@@ -133,10 +135,6 @@ namespace RayEngine
 			bool CreateRootLayout(IRootLayout** ppRootLayout, const RootLayoutDesc* pDesc) override final;
 			
 			bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) override final;
-
-			void GetDesc(DeviceDesc* pDesc) const override final;
-
-			void GetAdapterDesc(AdapterDesc* pDesc) const override final;
 			
 			CounterType Release() override final;
 			
@@ -165,7 +163,6 @@ namespace RayEngine
 			DX12DepthStencilView* m_pEmptyDSV;
 			DX12ShaderResourceView* m_pEmptySRV;
 			DX12UnorderedAccessView* m_pEmptyUAV;
-			DeviceDesc m_Desc;
 			CounterType m_References;
 		};
 	}

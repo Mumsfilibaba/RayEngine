@@ -36,6 +36,7 @@ failure and or malfunction of any kind.
 #include <DX12/DX12DynamicUploadHeap.h>
 #include <DX12/DX12ShaderResourceView.h>
 #include <DX12/DX12UnorderedAccessView.h>
+#include <DX12/DX12Renderer.h>
 
 namespace RayEngine
 {
@@ -54,7 +55,6 @@ namespace RayEngine
 			m_DsvHeap(nullptr),
 			m_RtvHeap(nullptr),
 			m_SamplerHeap(nullptr),
-			m_Desc(),
 			m_References(0)
 		{
 			AddRef();
@@ -155,57 +155,6 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::GetDesc(DeviceDesc* pDesc) const
-		{
-			*pDesc = m_Desc;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::GetAdapterDesc(AdapterDesc* pDesc) const
-		{
-			DXGI_ADAPTER_DESC1 desc = {};
-			m_Adapter->GetDesc1(&desc);
-
-			constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
-			char str[len];
-			wcstombs(str, desc.Description, len);
-
-			strcpy(pDesc->ModelName, str);
-			strcpy(pDesc->VendorName, AdapterDesc::GetVendorString(desc.VendorId));
-
-			pDesc->VendorID = desc.VendorId;
-			pDesc->DeviceID = desc.DeviceId;
-
-			pDesc->Flags |= ADAPTER_FLAGS_SWAPCHAIN;
-			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-				pDesc->Flags |= ADAPTER_FLAGS_SOFTWARE;
-
-
-			//These are constants for D3D_FEATURE_LEVEL_11_0 the lowest level RayEngine supports
-			pDesc->Flags |= ADAPTER_FLAGS_TESSELATIONSHADERS;
-			pDesc->Flags |= ADAPTER_FLAGS_GEOMETRYSHADER;
-			pDesc->Flags |= ADAPTER_FLAGS_COMPUTE;
-			pDesc->Flags |= ADAPTER_FLAGS_GRAPHICS;
-
-
-			pDesc->Limits.RenderTargetCount = 8;
-
-			pDesc->Limits.Texture1D.Width = 16384;
-
-			pDesc->Limits.Texture2D.Width = 16384;
-			pDesc->Limits.Texture2D.Height = 16384;
-
-			pDesc->Limits.Texture3D.Width = 2048;
-			pDesc->Limits.Texture3D.Height = 2048;
-			pDesc->Limits.Texture3D.Depth = 2048;
-
-			pDesc->Limits.TextureCube.Width = 16384;
-			pDesc->Limits.TextureCube.Height = 16384;
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		CounterType DX12Device::AddRef()
 		{
 			return ++m_References;
@@ -228,6 +177,14 @@ namespace RayEngine
 		{
 			destHandle = m_SamplerHeap->GetNext();
 			m_Device->CreateSampler(&desc, destHandle.CpuDescriptor);
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		IRenderer* DX12Device::CreateRenderer()
+		{
+			DX12Swapchain* ptr = nullptr;
+			return new DX12Renderer(this, ptr);
 		}
 
 
@@ -275,6 +232,11 @@ namespace RayEngine
 				return;
 			}
 
+			DXGI_ADAPTER_DESC1 desc = {};
+			m_Adapter->GetDesc1(&desc);
+
+			LOG_INFO("Model: " + CompressString(desc.Description));
+
 			HRESULT hr = D3D12CreateDevice(m_Adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
 			if (SUCCEEDED(hr))
 			{
@@ -296,8 +258,6 @@ namespace RayEngine
 				m_pImmediateContext = new DX12DeviceContext(this, false);
 
 				CreateEmptyDescriptors();
-
-				m_Desc = *pDesc;
 			}
 			else
 			{
@@ -313,27 +273,12 @@ namespace RayEngine
 			int32 adapterCount = 0;
 			int32 bestAdapterIndex = -1;
 			uint32 vendorID = 0;
-			std::string adapterDesc;
 
 			Microsoft::WRL::ComPtr<IDXGIAdapter1> adapter = nullptr;
 			for (int32 i = 0; m_Factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++)
 			{
 				DXGI_ADAPTER_DESC1 desc = {};
 				adapter->GetDesc1(&desc);
-
-#if defined(RE_DEBUG)
-				constexpr int32 len = sizeof(desc.Description) / sizeof(WCHAR);
-				char str[len];
-				wcstombs(str, desc.Description, len);
-				std::string description = str;
-
-				LOG_INFO("D3D12: Adapter(" + std::to_string(i) + ") " + description);
-#endif
-				if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-				{
-					LOG_WARNING("D3D12: Adapter is a software adapter.");
-					continue;
-				}
 
 				if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr)))
 				{
@@ -343,7 +288,6 @@ namespace RayEngine
 					{
 						bestAdapterIndex = i;
 						vendorID = desc.VendorId;
-						adapterDesc = description;
 					}
 
 					adapterCount++;
@@ -365,8 +309,6 @@ namespace RayEngine
 					return false;
 				}
 			}
-
-			LOG_INFO("D3D12: Chosen adapter " + adapterDesc);
 			return true;
 		}
 

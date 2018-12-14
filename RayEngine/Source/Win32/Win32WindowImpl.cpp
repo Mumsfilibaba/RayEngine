@@ -485,12 +485,6 @@ namespace RayEngine
 			event.Type = EVENT_TYPE_RESIZE;
 			event.Resize.Width = LOWORD(lParam);
 			event.Resize.Height = HIWORD(lParam);
-			if (wParam == SIZE_MAXIMIZED)
-				event.Resize.Type = EVENT_RESIZE_MAXIMIZED;
-			else if (wParam == SIZE_MINIMIZED)
-				event.Resize.Type = EVENT_RESIZE_MINIMIZED;
-			else
-				event.Resize.Type = EVENT_RESIZE_NEW_SIZE;
 			break;
 
 		case WM_ACTIVATE:

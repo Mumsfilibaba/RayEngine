@@ -28,23 +28,15 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IDevice;
-		class GLDevice;
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class GLShader final : public IShader
 		{
+			friend class GLPipelineState;
+
 			RE_IMPLEMENT_INTERFACE(GLShader);
 
 		public:
-			GLShader(IDevice* pDevice, const ShaderDesc* pDesc);
+			GLShader(const ShaderDesc* pDesc);
 			~GLShader();
-
-			inline int32 GetGLShaderID() const
-			{
-				return m_Shader;
-			}
 
 			void GetDesc(ShaderDesc* pDesc) const override final;
 
@@ -53,13 +45,25 @@ namespace RayEngine
 			CounterType AddRef() override final;
 
 		private:
+			inline int32 GetGLShaderID() const
+			{
+				return m_Shader;
+			}
+
+			inline void ReleaseShader()
+			{
+				if (glIsShader(m_Shader))
+				{
+					glDeleteShader(m_Shader);
+					m_Shader = 0;
+				}
+			}
+
 			void Create(const ShaderDesc* pDesc);
 
 			void CompileGLSL(const std::string& src);
 
 		private:
-			GLDevice* m_Device;
-			
 			ShaderDesc m_Desc;
 
 			int32 m_Shader;

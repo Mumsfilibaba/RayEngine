@@ -266,29 +266,22 @@ namespace RayEngine
 		private:
 			void Create(const PipelineStateDesc* pDesc);
 
-			void CreateGraphicsPipeline();
+			void CreateGraphicsPipeline(const PipelineStateDesc* pDesc);
 
-			void CreateComputePipeline();
+			void CreateComputePipeline(const PipelineStateDesc* pDesc);
 
 			void LinkShaders();
 
-			void CreateInputLayout();
+			void CreateInputLayout(const PipelineStateDesc* pDesc);
 
-			void CreateDepthState();
+			void CreateDepthState(const PipelineStateDesc* pDesc);
 
-			void CreateRasterizerState();
+			void CreateRasterizerState(const PipelineStateDesc* pDesc);
 
-			void CreateBlendState();
+			void CreateBlendState(const PipelineStateDesc* pDesc);
 
 		private:
 			GLDevice* m_Device;
-			GLShader* m_VS;
-			GLShader* m_HS;
-			GLShader* m_DS;
-			GLShader* m_GS;
-			GLShader* m_PS;
-			GLShader* m_CS;
-
 			GLInputLayout m_InputLayout;
 			GLDepthState m_DepthState;
 			GLRasterizerState m_RasterizerState;

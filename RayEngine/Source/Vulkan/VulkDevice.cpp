@@ -154,6 +154,11 @@ namespace RayEngine
 		}
 
 
+		IRenderer* VulkDevice::CreateRenderer()
+		{
+			return nullptr;
+		}
+
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool VulkDevice::GetImmediateContext(IDeviceContext** ppContext)
 		{

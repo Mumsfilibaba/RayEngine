@@ -29,15 +29,12 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		GLShader::GLShader(IDevice* pDevice, const ShaderDesc* pDesc)
-			: m_Device(nullptr),
-			m_Desc(),
+		GLShader::GLShader(const ShaderDesc* pDesc)
+			: m_Desc(),
 			m_Shader(0),
 			m_References(0)
 		{
 			AddRef();
-			m_Device = reinterpret_cast<GLDevice*>(pDevice);
-
 			Create(pDesc);
 		}
 
@@ -45,11 +42,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLShader::~GLShader()
 		{
-			if (glIsShader(m_Shader))
-			{
-				glDeleteShader(m_Shader);
-				m_Shader = 0;
-			}
+			ReleaseShader();
 		}
 
 
@@ -85,6 +78,8 @@ namespace RayEngine
 
 			if (pDesc->SrcLang == SHADER_SOURCE_LANG_GLSL)
 				CompileGLSL(pDesc->pSource);
+			else
+				LOG_ERROR("OpenGL: HLSL is not supported at this time");
 		}
 
 
@@ -103,20 +98,25 @@ namespace RayEngine
 			glGetShaderiv(m_Shader, GL_COMPILE_STATUS, &result);
 			if (result != GL_TRUE)
 			{
-				int32 len = 0;
 				glGetShaderiv(m_Shader, GL_INFO_LOG_LENGTH, &len);
 
 				std::string message = "OpenGL: Could not compile shader.\n";
 				if (len > 0)
 				{
 					std::vector<char> log;
-					log.resize(result);
+					log.resize(len);
 					glGetShaderInfoLog(m_Shader, len, &len, log.data());
 
 					message += log.data();
 				}
+				else
+				{
+					message += "No log data.";
+				}
 
 				LOG_ERROR(message);
+
+				ReleaseShader();
 			}
 		}
 	}

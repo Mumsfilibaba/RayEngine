@@ -31,12 +31,6 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		GLPipelineState::GLPipelineState(IDevice* pDevice, const PipelineStateDesc* pDesc)
 			: m_Device(nullptr),
-			m_VS(nullptr),
-			m_HS(nullptr),
-			m_DS(nullptr),
-			m_GS(nullptr),
-			m_PS(nullptr),
-			m_CS(nullptr),
 			m_InputLayout(),
 			m_DepthState(),
 			m_RasterizerState(),
@@ -72,16 +66,6 @@ namespace RayEngine
 
 					m_Desc.Graphics.InputLayout.ElementCount = 0;
 				}
-
-				ReRelease_S(m_VS);
-				ReRelease_S(m_HS);
-				ReRelease_S(m_DS);
-				ReRelease_S(m_GS);
-				ReRelease_S(m_PS);
-			}
-			else
-			{
-				ReRelease_S(m_CS);
 			}
 		}
 
@@ -115,59 +99,60 @@ namespace RayEngine
 		void GLPipelineState::Create(const PipelineStateDesc* pDesc)
 		{
 			if (pDesc->Type == PIPELINE_TYPE_GRAPHICS)
-				CreateGraphicsPipeline();
+				CreateGraphicsPipeline(pDesc);
 			else if (pDesc->Type == PIPELINE_TYPE_COMPUTE)
-				CreateComputePipeline();
+				CreateComputePipeline(pDesc);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateGraphicsPipeline()
+		void GLPipelineState::CreateGraphicsPipeline(const PipelineStateDesc* pDesc)
 		{
 			m_Program = glCreateProgram();
 
-			if (m_Desc.Graphics.pVertexShader != nullptr)
+			GLShader* pShader = nullptr;
+			if (pDesc->Graphics.pVertexShader != nullptr)
 			{
-				m_VS = m_Desc.Graphics.pVertexShader->QueryReference<GLShader>();
-				glAttachShader(m_Program, m_VS->GetGLShaderID());
+				pShader = reinterpret_cast<GLShader*>(pDesc->Graphics.pVertexShader);
+				glAttachShader(m_Program, pShader->GetGLShaderID());
 			}
-			if (m_Desc.Graphics.pHullShader != nullptr)
+			if (pDesc->Graphics.pHullShader != nullptr)
 			{
-				m_HS = m_Desc.Graphics.pHullShader->QueryReference<GLShader>();
-				glAttachShader(m_Program, m_HS->GetGLShaderID());
+				pShader = reinterpret_cast<GLShader*>(pDesc->Graphics.pHullShader);
+				glAttachShader(m_Program, pShader->GetGLShaderID());
 			}
-			if (m_Desc.Graphics.pDomainShader != nullptr)
+			if (pDesc->Graphics.pDomainShader != nullptr)
 			{
-				m_DS = m_Desc.Graphics.pDomainShader->QueryReference<GLShader>();
-				glAttachShader(m_Program, m_DS->GetGLShaderID());
+				pShader = reinterpret_cast<GLShader*>(pDesc->Graphics.pDomainShader);
+				glAttachShader(m_Program, pShader->GetGLShaderID());
 			}
-			if (m_Desc.Graphics.pGeometryShader != nullptr)
+			if (pDesc->Graphics.pGeometryShader != nullptr)
 			{
-				m_GS = m_Desc.Graphics.pGeometryShader->QueryReference<GLShader>();
-				glAttachShader(m_Program, m_GS->GetGLShaderID());
+				pShader = reinterpret_cast<GLShader*>(pDesc->Graphics.pGeometryShader);
+				glAttachShader(m_Program, pShader->GetGLShaderID());
 			}
-			if (m_Desc.Graphics.pPixelShader != nullptr)
+			if (pDesc->Graphics.pPixelShader != nullptr)
 			{
-				m_PS = m_Desc.Graphics.pPixelShader->QueryReference<GLShader>();
-				glAttachShader(m_Program, m_PS->GetGLShaderID());
+				pShader = reinterpret_cast<GLShader*>(pDesc->Graphics.pPixelShader);
+				glAttachShader(m_Program, pShader->GetGLShaderID());
 			}
 
 			LinkShaders();
-			CreateInputLayout();
-			CreateDepthState();
-			CreateRasterizerState();
-			CreateBlendState();
+			CreateInputLayout(pDesc);
+			CreateDepthState(pDesc);
+			CreateRasterizerState(pDesc);
+			CreateBlendState(pDesc);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateComputePipeline()
+		void GLPipelineState::CreateComputePipeline(const PipelineStateDesc* pDesc)
 		{
 			m_Program = glCreateProgram();
-			if (m_Desc.Graphics.pGeometryShader != nullptr)
+			if (pDesc->Graphics.pGeometryShader != nullptr)
 			{
-				m_GS = m_Desc.Graphics.pGeometryShader->QueryReference<GLShader>();
-				glAttachShader(m_Program, m_GS->GetGLShaderID());
+				GLShader* pShader = reinterpret_cast<GLShader*>(pDesc->Graphics.pGeometryShader);
+				glAttachShader(m_Program, pShader->GetGLShaderID());
 			}
 
 			LinkShaders();
@@ -187,7 +172,7 @@ namespace RayEngine
 				glGetProgramiv(m_Program, GL_INFO_LOG_LENGTH, &len);
 
 				std::string message = "OpenGL: Could not link program.\n";
-				if (len != 0)
+				if (len > 0)
 				{
 					std::vector<char> log;
 					log.resize(len);
@@ -202,12 +187,12 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateInputLayout()
+		void GLPipelineState::CreateInputLayout(const PipelineStateDesc* pDesc)
 		{
-			m_InputLayout.ElementCount = m_Desc.Graphics.InputLayout.ElementCount;
+			m_InputLayout.ElementCount = pDesc->Graphics.InputLayout.ElementCount;
 			m_InputLayout.pElements = new GLInputLayoutElement[m_InputLayout.ElementCount];
 
-			InputElementDesc* pElements = m_Desc.Graphics.InputLayout.pElements;
+			InputElementDesc* pElements = pDesc->Graphics.InputLayout.pElements;
 			for (uint32 i = 0; i < m_InputLayout.ElementCount; i++)
 			{
 				m_InputLayout.pElements[i].Stride = pElements[i].StrideBytes;
@@ -221,105 +206,105 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateDepthState()
+		void GLPipelineState::CreateDepthState(const PipelineStateDesc* pDesc)
 		{
-			m_DepthState.DepthEnable = m_Desc.Graphics.DepthStencilState.DepthEnable;
-			m_DepthState.DepthFunc = ComparisonFuncToGL(m_Desc.Graphics.DepthStencilState.DepthFunc);
+			m_DepthState.DepthEnable = pDesc->Graphics.DepthStencilState.DepthEnable;
+			m_DepthState.DepthFunc = ComparisonFuncToGL(pDesc->Graphics.DepthStencilState.DepthFunc);
 			
-			if (m_Desc.Graphics.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ALL)
+			if (pDesc->Graphics.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ALL)
 				m_DepthState.DepthMask = GL_TRUE;
-			else if (m_Desc.Graphics.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ZERO)
+			else if (pDesc->Graphics.DepthStencilState.DepthWriteMask == DEPTH_WRITE_MASK_ZERO)
 				m_DepthState.DepthMask = GL_FALSE;
 			else
 				m_DepthState.DepthMask = 0;
 
-			m_DepthState.StencilEnable = m_Desc.Graphics.DepthStencilState.StencilEnable;
-			m_DepthState.WriteMask = m_Desc.Graphics.DepthStencilState.StencilWriteMask;
+			m_DepthState.StencilEnable = pDesc->Graphics.DepthStencilState.StencilEnable;
+			m_DepthState.WriteMask = pDesc->Graphics.DepthStencilState.StencilWriteMask;
 
-			m_DepthState.FrontFace.StencilFunc = ComparisonFuncToGL(m_Desc.Graphics.DepthStencilState.FrontFace.StencilFunc);
-			m_DepthState.FrontFace.ReadMask = m_Desc.Graphics.DepthStencilState.StencilReadMask;
-			m_DepthState.FrontFace.StencilFailOp = StencilOpToGL(m_Desc.Graphics.DepthStencilState.FrontFace.StencilFailOperation);
-			m_DepthState.FrontFace.DepthFailOp = StencilOpToGL(m_Desc.Graphics.DepthStencilState.FrontFace.StencilDepthFailOperation);
-			m_DepthState.FrontFace.PassOp = StencilOpToGL(m_Desc.Graphics.DepthStencilState.FrontFace.StencilPassOperation);
+			m_DepthState.FrontFace.StencilFunc = ComparisonFuncToGL(pDesc->Graphics.DepthStencilState.FrontFace.StencilFunc);
+			m_DepthState.FrontFace.ReadMask = pDesc->Graphics.DepthStencilState.StencilReadMask;
+			m_DepthState.FrontFace.StencilFailOp = StencilOpToGL(pDesc->Graphics.DepthStencilState.FrontFace.StencilFailOperation);
+			m_DepthState.FrontFace.DepthFailOp = StencilOpToGL(pDesc->Graphics.DepthStencilState.FrontFace.StencilDepthFailOperation);
+			m_DepthState.FrontFace.PassOp = StencilOpToGL(pDesc->Graphics.DepthStencilState.FrontFace.StencilPassOperation);
 
-			m_DepthState.BackFace.StencilFunc = ComparisonFuncToGL(m_Desc.Graphics.DepthStencilState.BackFace.StencilFunc);
-			m_DepthState.BackFace.ReadMask = m_Desc.Graphics.DepthStencilState.StencilReadMask;
-			m_DepthState.BackFace.StencilFailOp = StencilOpToGL(m_Desc.Graphics.DepthStencilState.BackFace.StencilFailOperation);
-			m_DepthState.BackFace.DepthFailOp = StencilOpToGL(m_Desc.Graphics.DepthStencilState.BackFace.StencilDepthFailOperation);
-			m_DepthState.BackFace.PassOp = StencilOpToGL(m_Desc.Graphics.DepthStencilState.BackFace.StencilPassOperation);
+			m_DepthState.BackFace.StencilFunc = ComparisonFuncToGL(pDesc->Graphics.DepthStencilState.BackFace.StencilFunc);
+			m_DepthState.BackFace.ReadMask = pDesc->Graphics.DepthStencilState.StencilReadMask;
+			m_DepthState.BackFace.StencilFailOp = StencilOpToGL(pDesc->Graphics.DepthStencilState.BackFace.StencilFailOperation);
+			m_DepthState.BackFace.DepthFailOp = StencilOpToGL(pDesc->Graphics.DepthStencilState.BackFace.StencilDepthFailOperation);
+			m_DepthState.BackFace.PassOp = StencilOpToGL(pDesc->Graphics.DepthStencilState.BackFace.StencilPassOperation);
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateRasterizerState()
+		void GLPipelineState::CreateRasterizerState(const PipelineStateDesc* pDesc)
 		{
-			m_RasterizerState.ConservativeRasterizerEnable = m_Desc.Graphics.RasterizerState.ConservativeRasterizerEnable;
+			m_RasterizerState.ConservativeRasterizerEnable = pDesc->Graphics.RasterizerState.ConservativeRasterizerEnable;
 			
-			if (m_Desc.Graphics.RasterizerState.FillMode == FILL_MODE_SOLID)
+			if (pDesc->Graphics.RasterizerState.FillMode == FILL_MODE_SOLID)
 				m_RasterizerState.PolygonMode = GL_FILL;
-			else if (m_Desc.Graphics.RasterizerState.FillMode == FILL_MODE_WIREFRAME)
+			else if (pDesc->Graphics.RasterizerState.FillMode == FILL_MODE_WIREFRAME)
 				m_RasterizerState.PolygonMode = GL_LINE;
 			
-			if (m_Desc.Graphics.RasterizerState.CullMode == CULL_MODE_BACK)
+			if (pDesc->Graphics.RasterizerState.CullMode == CULL_MODE_BACK)
 				m_RasterizerState.CullMode = GL_BACK;
-			else if (m_Desc.Graphics.RasterizerState.CullMode == CULL_MODE_FRONT)
+			else if (pDesc->Graphics.RasterizerState.CullMode == CULL_MODE_FRONT)
 				m_RasterizerState.CullMode = GL_FRONT;
 
-			if (m_Desc.Graphics.RasterizerState.FrontCounterClockwise)
+			if (pDesc->Graphics.RasterizerState.FrontCounterClockwise)
 				m_RasterizerState.FrontFace = GL_CCW;
 			else
 				m_RasterizerState.FrontFace = GL_CW;
 
-			m_RasterizerState.DepthClipEnable = m_Desc.Graphics.RasterizerState.DepthClipEnable;
-			m_RasterizerState.DepthBias = (float)m_Desc.Graphics.RasterizerState.DepthBias;
-			m_RasterizerState.DepthBiasClamp = m_Desc.Graphics.RasterizerState.DepthBiasClamp;
-			m_RasterizerState.SlopeScaleDepthBias = m_Desc.Graphics.RasterizerState.SlopeScaleDepthBias;
+			m_RasterizerState.DepthClipEnable = pDesc->Graphics.RasterizerState.DepthClipEnable;
+			m_RasterizerState.DepthBias = (float)pDesc->Graphics.RasterizerState.DepthBias;
+			m_RasterizerState.DepthBiasClamp = pDesc->Graphics.RasterizerState.DepthBiasClamp;
+			m_RasterizerState.SlopeScaleDepthBias = pDesc->Graphics.RasterizerState.SlopeScaleDepthBias;
 
-			m_RasterizerState.AntialiasedLineEnable = m_Desc.Graphics.RasterizerState.AntialiasedLineEnable;
-			m_RasterizerState.MultisampleEnable = m_Desc.Graphics.RasterizerState.MultisampleEnable;
-			m_RasterizerState.ScissorEnable = m_Desc.Graphics.RasterizerState.ScissorEnable;
+			m_RasterizerState.AntialiasedLineEnable = pDesc->Graphics.RasterizerState.AntialiasedLineEnable;
+			m_RasterizerState.MultisampleEnable = pDesc->Graphics.RasterizerState.MultisampleEnable;
+			m_RasterizerState.ScissorEnable = pDesc->Graphics.RasterizerState.ScissorEnable;
 		}
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void GLPipelineState::CreateBlendState()
+		void GLPipelineState::CreateBlendState(const PipelineStateDesc* pDesc)
 		{
-			m_BlendState.AlphaToCoverageEnable = m_Desc.Graphics.BlendState.AlphaToCoverageEnable;
-			m_BlendState.IndependentBlendEnable = m_Desc.Graphics.BlendState.IndependentBlendEnable;
-			m_BlendState.LogicOpEnable = m_Desc.Graphics.BlendState.LogicOpEnable;
+			m_BlendState.AlphaToCoverageEnable = pDesc->Graphics.BlendState.AlphaToCoverageEnable;
+			m_BlendState.IndependentBlendEnable = pDesc->Graphics.BlendState.IndependentBlendEnable;
+			m_BlendState.LogicOpEnable = pDesc->Graphics.BlendState.LogicOpEnable;
 			
 			for (uint32 i = 0; i < 4; i++)
-				m_BlendState.BlendFactor[i] = m_Desc.Graphics.BlendState.BlendFactor[i];
+				m_BlendState.BlendFactor[i] = pDesc->Graphics.BlendState.BlendFactor[i];
 
 			for (uint32 i = 0; i < RE_MAX_RENDERTARGETS; i++)
 			{
-				m_BlendState.RenderTargets[i].blendEnable = m_Desc.Graphics.BlendState.RenderTargets[i].BlendEnable;
+				m_BlendState.RenderTargets[i].blendEnable = pDesc->Graphics.BlendState.RenderTargets[i].BlendEnable;
 
-				m_BlendState.RenderTargets[i].SrcBlend = BlendTypeToGL(m_Desc.Graphics.BlendState.RenderTargets[i].SrcBlend);
-				m_BlendState.RenderTargets[i].DstBlend = BlendTypeToGL(m_Desc.Graphics.BlendState.RenderTargets[i].DstBlend);
-				m_BlendState.RenderTargets[i].SrcAlphaBlend = BlendTypeToGL(m_Desc.Graphics.BlendState.RenderTargets[i].SrcAlphaBlend);
-				m_BlendState.RenderTargets[i].DstAlphaBlend = BlendTypeToGL(m_Desc.Graphics.BlendState.RenderTargets[i].DstAlphaBlend);
+				m_BlendState.RenderTargets[i].SrcBlend = BlendTypeToGL(pDesc->Graphics.BlendState.RenderTargets[i].SrcBlend);
+				m_BlendState.RenderTargets[i].DstBlend = BlendTypeToGL(pDesc->Graphics.BlendState.RenderTargets[i].DstBlend);
+				m_BlendState.RenderTargets[i].SrcAlphaBlend = BlendTypeToGL(pDesc->Graphics.BlendState.RenderTargets[i].SrcAlphaBlend);
+				m_BlendState.RenderTargets[i].DstAlphaBlend = BlendTypeToGL(pDesc->Graphics.BlendState.RenderTargets[i].DstAlphaBlend);
 
-				m_BlendState.RenderTargets[i].BlendOperation = BlendOperationToGL(m_Desc.Graphics.BlendState.RenderTargets[i].BlendOperation);
-				m_BlendState.RenderTargets[i].AlphaBlendOperation = BlendOperationToGL(m_Desc.Graphics.BlendState.RenderTargets[i].AlphaBlendOperation);
+				m_BlendState.RenderTargets[i].BlendOperation = BlendOperationToGL(pDesc->Graphics.BlendState.RenderTargets[i].BlendOperation);
+				m_BlendState.RenderTargets[i].AlphaBlendOperation = BlendOperationToGL(pDesc->Graphics.BlendState.RenderTargets[i].AlphaBlendOperation);
 
 
-				if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
+				if (pDesc->Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_RED)
 					m_BlendState.RenderTargets[i].WriteMask[0] = GL_TRUE;
 				else
 					m_BlendState.RenderTargets[i].WriteMask[0] = GL_FALSE;
 
-				if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
+				if (pDesc->Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_GREEN)
 					m_BlendState.RenderTargets[i].WriteMask[1] = GL_TRUE;
 				else
 					m_BlendState.RenderTargets[i].WriteMask[1] = GL_FALSE;
 
-				if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
+				if (pDesc->Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_BLUE)
 					m_BlendState.RenderTargets[i].WriteMask[2] = GL_TRUE;
 				else
 					m_BlendState.RenderTargets[i].WriteMask[2] = GL_FALSE;
 
-				if (m_Desc.Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
+				if (pDesc->Graphics.BlendState.RenderTargets[i].WriteMask & COLOR_WRITE_ENABLE_ALPHA)
 					m_BlendState.RenderTargets[i].WriteMask[3] = GL_TRUE;
 				else
 					m_BlendState.RenderTargets[i].WriteMask[3] = GL_FALSE;

@@ -54,18 +54,22 @@ namespace RayEngine
 				glGenVertexArrays(1, &vao);
 				glBindVertexArray(vao);
 
-				uint32 vbo = ppVertexBuffers[0]->GetGLBuffer();
-				glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-				const GLInputLayout* pInputLayout = &pPipelineState->GetGLInputLayout();
-				for (uint32 i = 0; i < pInputLayout->ElementCount; i++)
+				if (ppVertexBuffers[0] != nullptr)
 				{
-					glVertexAttribPointer(i, pInputLayout->pElements[i].Size, pInputLayout->pElements[i].Type, pInputLayout->pElements[i].Normalized,
-						pInputLayout->pElements[i].Stride, GL_ATTRIB_POINTER(pInputLayout->pElements[i].Offset));
-					glEnableVertexAttribArray(i);
+					uint32 vbo = ppVertexBuffers[0]->GetGLBuffer();
+					glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+					const GLInputLayout* pInputLayout = &pPipelineState->GetGLInputLayout();
+					for (uint32 i = 0; i < pInputLayout->ElementCount; i++)
+					{
+						glVertexAttribPointer(i, pInputLayout->pElements[i].Size, pInputLayout->pElements[i].Type, pInputLayout->pElements[i].Normalized,
+							pInputLayout->pElements[i].Stride, GL_ATTRIB_POINTER(pInputLayout->pElements[i].Offset));
+						glEnableVertexAttribArray(i);
+					}
+
+					glBindBuffer(GL_ARRAY_BUFFER, 0);
 				}
 
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
 				glBindVertexArray(0);
 
 				m_VAO = vao;

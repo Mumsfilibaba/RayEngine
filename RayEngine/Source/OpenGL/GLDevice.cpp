@@ -57,6 +57,11 @@ namespace RayEngine
 		}
 
 
+		IRenderer * GLDevice::CreateRenderer()
+		{
+			return nullptr;
+		}
+
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool GLDevice::GetImmediateContext(IDeviceContext** ppContext)
 		{
@@ -74,7 +79,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		bool GLDevice::CreateShader(IShader** ppShader, const ShaderDesc* pDesc)
 		{
-			return (*ppShader = new GLShader(this, pDesc));
+			return (*ppShader = new GLShader(pDesc));
 		}
 
 

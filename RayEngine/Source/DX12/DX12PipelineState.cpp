@@ -35,6 +35,7 @@ namespace RayEngine
 		DX12PipelineState::DX12PipelineState(DX12Device* pDevice, const PipelineStateDesc* pDesc)
 			: m_RootSignature(nullptr),
 			m_PipelineState(nullptr),
+			m_Type(PIPELINE_TYPE_UNKNOWN),
 			m_References(0)
 		{
 			AddRef();
@@ -45,6 +46,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DX12PipelineState::~DX12PipelineState()
 		{
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		PIPELINE_TYPE DX12PipelineState::GetPipelineType() const
+		{
+			return m_Type;
 		}
 
 		

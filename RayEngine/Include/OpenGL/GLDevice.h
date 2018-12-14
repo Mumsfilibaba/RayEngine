@@ -57,6 +57,8 @@ namespace RayEngine
 				return false;
 			}
 
+			IRenderer* CreateRenderer() override final;
+
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;

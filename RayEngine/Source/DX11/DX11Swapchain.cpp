@@ -19,15 +19,15 @@ failure and or malfunction of any kind.
 
 ////////////////////////////////////////////////////////////*/
 
-#include "RayEngine.h"
+#include <RayEngine.h>
 
 #if defined(RE_PLATFORM_WINDOWS)
-#include "Win32/Win32WindowImpl.h"
-#include "DX11/DX11Swapchain.h"
-#include "DX11/DX11Device.h"
-#include "DX11/DX11Texture.h"
-#include "DX11/DX11DepthStencilView.h"
-#include "DX11/DX11RenderTargetView.h"
+#include <Win32/Win32WindowImpl.h>
+#include <DX11/DX11Swapchain.h>
+#include <DX11/DX11Device.h>
+#include <DX11/DX11Texture.h>
+#include <DX11/DX11DepthStencilView.h>
+#include <DX11/DX11RenderTargetView.h>
 
 namespace RayEngine
 {
@@ -70,10 +70,13 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11Swapchain::Resize(int32 width, int32 height)
 		{
-			if (width < 1 || height < 1)
+			if (width < 1 || height < 1 || (m_Desc.Width == width && m_Desc.Height == height))
 				return;
 
 			ReleaseResources();
+
+			m_Desc.Width = width;
+			m_Desc.Height = height;
 
 			m_Swapchain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, m_Flags);
 

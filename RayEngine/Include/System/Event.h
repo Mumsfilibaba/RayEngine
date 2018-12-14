@@ -52,16 +52,6 @@ namespace RayEngine
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	enum EVENT_RESIZE : int32
-	{
-		EVENT_RESIZE_UNKNOWN = 0,
-		EVENT_RESIZE_NEW_SIZE = 1,
-		EVENT_RESIZE_MAXIMIZED = 2,
-		EVENT_RESIZE_MINIMIZED = 3,
-	};
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	struct RAYENGINE_API Event
 	{
 	public:
@@ -89,7 +79,6 @@ namespace RayEngine
 			{
 				int32 Width;
 				int32 Height;
-				EVENT_RESIZE Type;
 			} Resize;
 
 			struct

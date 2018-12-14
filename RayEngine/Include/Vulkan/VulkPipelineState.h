@@ -53,7 +53,7 @@ namespace RayEngine
 				return m_RenderPass;
 			}
 
-			void GetDesc(PipelineStateDesc* pDesc) const;
+			PIPELINE_TYPE GetPipelineType() const override final;
 			
 			CounterType Release() override final;
 			

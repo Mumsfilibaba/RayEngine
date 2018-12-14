@@ -37,147 +37,113 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class DX11PipelineState final : public IPipelineState
 		{
+			friend class DX11DeviceContext;
+
 			RE_IMPLEMENT_INTERFACE(DX11PipelineState);
 
 		public:
-			DX11PipelineState(IDevice* pdevice, const PipelineStateDesc* pDesc);
+			DX11PipelineState(DX11Device* pdevice, const PipelineStateDesc* pDesc);
 			~DX11PipelineState();
 
-			inline ID3D11InputLayout* GetD3D11InputLayout() const
-			{
-				return m_InputLayout;
-			}
-			
-			inline ID3D11RasterizerState* GetD3D11RasterizerState() const
-			{
-				return m_RasterizerState;
-			}
-			
-			inline ID3D11DepthStencilState* GetD3D11DepthStencilState() const
-			{
-				return m_DepthStencilState;
-			}
-			
-			inline ID3D11BlendState* GetD3D11BlendState() const
-			{
-				return m_BlendState;
-			}
-			
-			inline const float* GetBlendFactor() const
-			{
-				return m_BlendFactor;
-			}
-			
-			inline uint8 GetSampleMask() const
-			{
-				return m_SampleMask;
-			}
-
-			inline PIPELINE_TYPE GetPipelineType() const
-			{
-				return m_Desc.Type;
-			}
-			
-			inline ID3D11VertexShader* GetD3D11VertexShader() const
-			{
-				return (m_VS == nullptr) ? nullptr : m_VS->GetD3D11Shader<ID3D11VertexShader>();
-			}
-			
-			inline ID3D11HullShader* GetD3D11HullShader() const
-			{
-				return (m_HS == nullptr) ? nullptr : m_HS->GetD3D11Shader<ID3D11HullShader>();
-			}
-			
-			inline ID3D11DomainShader* GetD3D11DomainShader() const
-			{
-				return (m_DS == nullptr) ? nullptr : m_DS->GetD3D11Shader<ID3D11DomainShader>();
-			}
-			
-			inline ID3D11GeometryShader* GetD3D11GeometryShader() const
-			{
-				return (m_GS == nullptr) ? nullptr : m_GS->GetD3D11Shader<ID3D11GeometryShader>();
-			}
-			
-			inline ID3D11PixelShader* GetD3D11PixelShader() const
-			{
-				return (m_PS == nullptr) ? nullptr : m_PS->GetD3D11Shader<ID3D11PixelShader>();
-			}
-			
-			inline ID3D11ComputeShader* GetD3D11ComputeShader() const
-			{
-				return (m_CS == nullptr) ? nullptr : m_CS->GetD3D11Shader<ID3D11ComputeShader>();
-			}
-			
-			inline DX11Shader* GetDX11VertexShader() const
-			{
-				return m_VS;
-			}
-			
-			inline DX11Shader* GetDX11HullShader() const
-			{
-				return m_HS;
-			}
-			
-			inline DX11Shader* GetDX11DomainShader() const
-			{
-				return m_DS;
-			}
-			
-			inline DX11Shader* GetDX11GeometryShader() const
-			{
-				return m_GS;
-			}
-			
-			inline DX11Shader* GetDX11PixelShader() const
-			{
-				return m_PS;
-			}
-
-			inline DX11Shader* GetDX11ComputeShader() const
-			{
-				return m_CS;
-			}
-
-			void GetDesc(PipelineStateDesc* pDesc) const;
+			PIPELINE_TYPE GetPipelineType() const override final;
 			
 			CounterType Release() override final;
 			
 			CounterType AddRef() override final;
 
 		private:
+			inline ID3D11InputLayout* GetD3D11InputLayout() const
+			{
+				return m_InputLayout.Get();
+			}
+
+			inline ID3D11RasterizerState* GetD3D11RasterizerState() const
+			{
+				return m_RasterizerState.Get();
+			}
+
+			inline ID3D11DepthStencilState* GetD3D11DepthStencilState() const
+			{
+				return m_DepthStencilState.Get();
+			}
+
+			inline ID3D11BlendState* GetD3D11BlendState() const
+			{
+				return m_BlendState.Get();
+			}
+
+			inline const float* GetBlendFactor() const
+			{
+				return m_BlendFactor;
+			}
+
+			inline uint8 GetSampleMask() const
+			{
+				return m_SampleMask;
+			}
+
+			inline ID3D11VertexShader* GetD3D11VertexShader() const
+			{
+				return m_VS.Get();
+			}
+
+			inline ID3D11HullShader* GetD3D11HullShader() const
+			{
+				return m_HS.Get();
+			}
+
+			inline ID3D11DomainShader* GetD3D11DomainShader() const
+			{
+				return m_DS.Get();
+			}
+
+			inline ID3D11GeometryShader* GetD3D11GeometryShader() const
+			{
+				return m_GS.Get();
+			}
+
+			inline ID3D11PixelShader* GetD3D11PixelShader() const
+			{
+				return m_PS.Get();
+			}
+
+			inline ID3D11ComputeShader* GetD3D11ComputeShader() const
+			{
+				return m_CS.Get();
+			}
+
 			void ReleaseInterfaces();
 			
-			void Create(const PipelineStateDesc* pDesc);
+			void Create(DX11Device* pDevice, const PipelineStateDesc* pDesc);
 			
-			void CreateGraphicsState();
+			void CreateGraphicsState(DX11Device* pDevice, const PipelineStateDesc* pDesc);
 			
-			void CreateComputeState();
+			void CreateComputeState(const PipelineStateDesc* pDesc);
 			
-			void CreateInputLayout();
+			void CreateInputLayout(DX11Device* pDevice, const PipelineStateDesc* pDesc);
 			
-			void CreateRasterizerState();
+			void CreateRasterizerState(DX11Device* pDevice, const PipelineStateDesc* pDesc);
 			
-			void CreateDepthStencilState();
+			void CreateDepthStencilState(DX11Device* pDevice, const PipelineStateDesc* pDesc);
 			
-			void CreateBlendState();
+			void CreateBlendState(DX11Device* pDevice, const PipelineStateDesc* pDesc);
 
 		private:
 			static void SetInputElementDesc(D3D11_INPUT_ELEMENT_DESC* pD3D11Desc, const InputElementDesc* pDesc);
 
 		private:
-			DX11Device* m_Device;
-			ID3D11InputLayout* m_InputLayout;
-			ID3D11BlendState* m_BlendState;
-			ID3D11RasterizerState* m_RasterizerState;
-			ID3D11DepthStencilState* m_DepthStencilState;
-			DX11Shader* m_VS;
-			DX11Shader* m_HS;
-			DX11Shader* m_DS;
-			DX11Shader* m_GS;
-			DX11Shader* m_PS;
-			DX11Shader* m_CS;
-			
-			PipelineStateDesc m_Desc;
+			Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
+			Microsoft::WRL::ComPtr<ID3D11BlendState> m_BlendState;
+			Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_RasterizerState;
+			Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_DepthStencilState;
+			Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VS;
+			Microsoft::WRL::ComPtr<ID3D11HullShader> m_HS;
+			Microsoft::WRL::ComPtr<ID3D11DomainShader> m_DS;
+			Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_GS;
+			Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PS;
+			Microsoft::WRL::ComPtr<ID3D11ComputeShader> m_CS;
+
+			PIPELINE_TYPE m_Type;
 
 			float m_BlendFactor[4];
 			

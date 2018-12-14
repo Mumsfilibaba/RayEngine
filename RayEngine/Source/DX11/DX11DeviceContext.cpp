@@ -245,6 +245,7 @@ namespace RayEngine
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void DX11DeviceContext::Draw(int32 startVertex, int32 vertexCount) const
 		{
+			SetDefaultFramebuffer();
 			m_Context->Draw(vertexCount, startVertex);
 		}
 

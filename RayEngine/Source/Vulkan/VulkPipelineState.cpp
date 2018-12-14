@@ -76,9 +76,9 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void VulkPipelineState::GetDesc(PipelineStateDesc* pDesc) const
+		PIPELINE_TYPE VulkPipelineState::GetPipelineType() const
 		{
-			*pDesc = m_Desc;
+			return PIPELINE_TYPE();
 		}
 
 

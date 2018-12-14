@@ -57,6 +57,8 @@ namespace RayEngine
 				return m_Adapter;
 			}
 
+			IRenderer* CreateRenderer() override final;
+
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
 			
 			bool CreateDefferedContext(IDeviceContext** ppContext) override final;

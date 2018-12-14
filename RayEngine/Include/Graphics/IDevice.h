@@ -28,7 +28,7 @@ namespace RayEngine
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		class IFactory;
+		class IRenderer;
 		class IDeviceContext;
 		class IShader;
 		struct ShaderDesc;
@@ -106,6 +106,19 @@ namespace RayEngine
 			int32 RendertargetDescriptorCount;
 			int32 ResourceDescriptorCount;
 			int32 SamplerDescriptorCount;
+			int32 Width;
+			int32 Height;
+			int32 SampleCount;
+			struct
+			{
+				FORMAT Format;
+				int32 Count;
+			} BackBuffer;
+
+			struct
+			{
+				FORMAT Format;
+			} DepthStencil;
 		};
 
 
@@ -117,6 +130,11 @@ namespace RayEngine
 		public:
 			IDevice() {}
 			~IDevice() {}
+
+			/*////////////////////////////////////////////////////////////
+				Returns a new Renderer
+			////////////////////////////////////////////////////////////*/
+			virtual IRenderer* CreateRenderer() = 0;
 
 			/*////////////////////////////////////////////////////////////
 				
@@ -313,26 +331,6 @@ namespace RayEngine
 
 			////////////////////////////////////////////////////////////*/
 			virtual bool CreatePipelineState(IPipelineState** ppPipelineState, const PipelineStateDesc* pDesc) = 0;
-
-			/*////////////////////////////////////////////////////////////
-
-				Retrives the descriptor that was used to create the
-				object.
-
-				pDesc - A valid pointer to a Desc
-
-			////////////////////////////////////////////////////////////*/
-			virtual void GetDesc(DeviceDesc* pDesc) const = 0;
-
-			/*////////////////////////////////////////////////////////////
-
-				Retrives the descriptor that describes the physical 
-				device being represented by the device object.
-
-				pDesc - A valid pointer to a Desc
-
-			////////////////////////////////////////////////////////////*/
-			virtual void GetAdapterDesc(AdapterDesc* pDesc) const = 0;
 		};
 	}
 }
