@@ -23,6 +23,7 @@ failure and or malfunction of any kind.
 #include <System/Application.h>
 #include <Graphics/IShader.h>
 #include <Graphics/IPipelineState.h>
+#include <Graphics/IRenderer.h>
 #include <Graphics/Viewport.h>
 
 namespace RayEngine
@@ -31,7 +32,7 @@ namespace RayEngine
 	Application::Application(GRAPHICS_API api)
 		: m_pWindow(nullptr),
 		m_pDevice(nullptr),
-		m_pSwapChain(nullptr),
+		m_pRenderer(nullptr),
 		m_pPipeline(nullptr),
 		m_Api(api)
 	{
@@ -42,8 +43,7 @@ namespace RayEngine
 	Application::~Application()
 	{
 		ReRelease_S(m_pPipeline);
-		ReRelease_S(m_pContext);
-		ReRelease_S(m_pSwapChain);
+		ReRelease_S(m_pRenderer);
 		ReRelease_S(m_pDevice);
 
 		if (m_pWindow != nullptr)
@@ -67,33 +67,15 @@ namespace RayEngine
 	{
 		using namespace Graphics;
 
+		m_pRenderer->Begin();
+
 		float color[] = { 0.392f, 0.584f, 0.929f, 1.0f };
-		GetContext()->ClearRendertargetView(nullptr, color);
-		GetContext()->ClearDepthStencilView(nullptr, 1.0f, 0);
+		m_pRenderer->Clear(color);
+		m_pRenderer->Draw();
 
-		Viewport viewport = {};
-		viewport.Width = static_cast<float>(m_pWindow->GetWidth());
-		viewport.Height = static_cast<float>(m_pWindow->GetHeight());
-		viewport.TopLeftX = 0.0f;
-		viewport.TopLeftY = 0.0f;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
+		m_pRenderer->End();
 
-		Rect rect = {};
-		rect.Top = 0;
-		rect.Bottom = m_pWindow->GetHeight();
-		rect.Left = 0;
-		rect.Right = m_pWindow->GetWidth();
-
-		GetContext()->SetScissorRects(&rect);
-		GetContext()->SetViewports(&viewport);
-
-		GetContext()->SetPrimitiveTopology(PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		GetContext()->SetPipelineState(m_pPipeline);
-
-		GetContext()->Draw(0, 3);
-
-		GetSwapChain()->Present();
+		m_pRenderer->Present();
 	}
 
 
@@ -104,9 +86,6 @@ namespace RayEngine
 
 		LOG_INFO("Starting RayEngine");
 
-		m_pDevice->GetImmediateContext(&m_pContext);
-		m_pContext->SetSwapChain(m_pSwapChain);
-
 		m_pWindow->Show();
 		Event event = {};
 		while (event.Type != EVENT_TYPE_CLOSE)
@@ -115,7 +94,6 @@ namespace RayEngine
 			{
 				if (event.Type == EVENT_TYPE_RESIZE)
 				{
-					m_pSwapChain->Resize(event.Resize.Width, event.Resize.Height);
 				}
 			}
 
@@ -154,16 +132,15 @@ namespace RayEngine
 		dev.ResourceDescriptorCount = 8;
 		dev.RendertargetDescriptorCount = 4;
 		dev.DepthStencilDescriptorCount = 4;
+		dev.SampleCount = 1;
+		dev.BackBuffer.Count = 2;
+		dev.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM;
+		dev.DepthStencil.Format = FORMAT_D24_UNORM_S8_UINT;
+		dev.Width = wnd.Width;
+		dev.Height = wnd.Height;
 
-		SwapchainDesc swc = {};
-		swc.Width = wnd.Width;
-		swc.Height = wnd.Height;
-		swc.SampleCount = 1;
-		swc.BackBuffer.Count = 2;
-		swc.BackBuffer.Format = FORMAT_R8G8B8A8_UNORM;
-		swc.DepthStencil.Format = FORMAT_D24_UNORM_S8_UINT;
-
-		InitGraphics(&m_pWindow, wnd, &m_pDevice, dev, &m_pSwapChain, swc, m_Api);
+		InitGraphics(&m_pWindow, wnd, &m_pDevice, dev, m_Api);
+		m_pRenderer = m_pDevice->CreateRenderer();
 
 		std::string vs;
 		std::string ps;
@@ -243,9 +220,9 @@ namespace RayEngine
 		pipeline.Graphics.pPixelShader = pPS;
 
 		pipeline.Graphics.RenderTargetCount = 1;
-		pipeline.Graphics.RenderTargetFormats[0] = swc.BackBuffer.Format;
-		pipeline.Graphics.DepthStencilFormat = swc.DepthStencil.Format;
-		pipeline.Graphics.SampleCount = swc.SampleCount;
+		pipeline.Graphics.RenderTargetFormats[0] = dev.BackBuffer.Format;
+		pipeline.Graphics.DepthStencilFormat = dev.DepthStencil.Format;
+		pipeline.Graphics.SampleCount = dev.SampleCount;
 		
 		pipeline.Graphics.Topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		pipeline.Graphics.InputLayout.ElementCount = 0;

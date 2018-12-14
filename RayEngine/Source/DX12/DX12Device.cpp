@@ -27,6 +27,8 @@ failure and or malfunction of any kind.
 #include <DX12/DX12Shader.h>
 #include <DX12/DX12Texture.h>
 #include <DX12/DX12Sampler.h>
+#include <DX12/DX12Renderer.h>
+#include <DX12/DX12Swapchain.h>
 #include <DX12/DX12RootLayout.h>
 #include <DX12/DX12DeviceContext.h>
 #include <DX12/DX12PipelineState.h>
@@ -36,14 +38,13 @@ failure and or malfunction of any kind.
 #include <DX12/DX12DynamicUploadHeap.h>
 #include <DX12/DX12ShaderResourceView.h>
 #include <DX12/DX12UnorderedAccessView.h>
-#include <DX12/DX12Renderer.h>
 
 namespace RayEngine
 {
 	namespace Graphics
 	{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		DX12Device::DX12Device(const DeviceDesc* pDesc)
+		DX12Device::DX12Device(const DeviceDesc* pDesc, HWND hwnd)
 			: m_Factory(nullptr),
 			m_Adapter(nullptr),
 			m_Device(nullptr),
@@ -58,7 +59,7 @@ namespace RayEngine
 			m_References(0)
 		{
 			AddRef();
-			Create(pDesc);
+			Create(pDesc, hwnd);
 		}
 
 
@@ -181,10 +182,40 @@ namespace RayEngine
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		DX12CommandQueue * DX12Device::CreateCommandQueue() const
+		{
+			Microsoft::WRL::ComPtr<ID3D12Fence> fence;
+			Microsoft::WRL::ComPtr<ID3D12CommandQueue> queue;
+
+			D3D12_COMMAND_QUEUE_DESC qDesc = {};
+			qDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+			qDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+			qDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+			qDesc.NodeMask = 0;
+
+			HRESULT hr = m_Device->CreateCommandQueue(&qDesc, IID_PPV_ARGS(&queue));
+			if (FAILED(hr))
+			{
+				LOG_ERROR("D3D12: Could not create CommandQueue. " + DXErrorString(hr));
+				return nullptr;
+			}
+
+			hr = m_Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+			if (FAILED(hr))
+			{
+				LOG_ERROR("D3D12: Could not create Fence. " + DXErrorString(hr));
+				return nullptr;
+			}
+
+			return new DX12CommandQueue(queue.Get(), fence.Get());
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		IRenderer* DX12Device::CreateRenderer()
 		{
 			DX12Swapchain* ptr = nullptr;
-			return new DX12Renderer(this, ptr);
+			return new DX12Renderer(this, ptr, );
 		}
 
 
@@ -203,28 +234,10 @@ namespace RayEngine
 	
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void DX12Device::Create(const DeviceDesc* pDesc)
+		void DX12Device::Create(const DeviceDesc* pDesc, HWND hwnd)
 		{
-			int32 factoryFlags = 0;
-			if (pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)
-			{
-				factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
-				if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&m_DebugController))))
-				{
-					LOG_ERROR("D3D12: Could not retrive the Debug interface");
-					return;
-				}
-				else
-				{
-					m_DebugController->EnableDebugLayer();
-				}
-			}
-
-			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
-			{
-				LOG_ERROR("D3D12: Could not create factory");
+			if (!CreateFactory((pDesc->DeviceFlags & DEVICE_FLAG_DEBUG)))
 				return;
-			}
 
 			if (!QueryAdapter())
 			{
@@ -234,7 +247,6 @@ namespace RayEngine
 
 			DXGI_ADAPTER_DESC1 desc = {};
 			m_Adapter->GetDesc1(&desc);
-
 			LOG_INFO("Model: " + CompressString(desc.Description));
 
 			HRESULT hr = D3D12CreateDevice(m_Adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
@@ -257,12 +269,47 @@ namespace RayEngine
 				m_SamplerHeap = new DX12DescriptorHeap(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, pDesc->SamplerDescriptorCount);
 				m_pImmediateContext = new DX12DeviceContext(this, false);
 
+				SwapchainDesc sc = {};
+				sc.Width = pDesc->Width;
+				sc.Height = pDesc->Height;
+				sc.SampleCount = pDesc->SampleCount;
+				sc.BackBuffer.Format = pDesc->BackBuffer.Format;
+				sc.BackBuffer.Count = pDesc->BackBuffer.Count;
+				sc.DepthStencil.Format = pDesc->DepthStencil.Format;
+				m_SwapChain = new DX12Swapchain(this, &sc, hwnd);
+
 				CreateEmptyDescriptors();
 			}
 			else
 			{
 				LOG_ERROR("D3D12: Could not create Device. " + DXErrorString(hr));
 			}
+		}
+
+		bool DX12Device::CreateFactory(bool enableDebug)
+		{
+			int32 factoryFlags = 0;
+			if (enableDebug)
+			{
+				factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+				if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&m_DebugController))))
+				{
+					LOG_ERROR("D3D12: Could not retrive the Debug interface");
+					return false;
+				}
+				else
+				{
+					m_DebugController->EnableDebugLayer();
+				}
+			}
+
+			if (FAILED(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_Factory))))
+			{
+				LOG_ERROR("D3D12: Could not create factory");
+				return false;
+			}
+
+			return true;
 		}
 
 

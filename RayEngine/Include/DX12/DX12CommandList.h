@@ -40,7 +40,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12CommandList);
 
 		public:
-			DX12CommandList(DX12Device* pDevice, ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);
+			DX12CommandList(DX12Device* pDevice, ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type);
 			~DX12CommandList();
 
 			inline bool Reset() const
@@ -61,17 +61,7 @@ namespace RayEngine
 				return SUCCEEDED(hr);
 			}
 
-			inline ID3D12CommandList* GetD3D12CommandList() const
-			{
-				return m_List.Get();
-			}
-
-			ID3D12CommandAllocator* GetD3D12CommandAllocator() const
-			{
-				return m_Allocator.Get();
-			}
-
-			inline ID3D12GraphicsCommandList* GetD3D12GraphicsCommandList() const
+			inline ID3D12GraphicsCommandList* GetGraphicsList() const
 			{
 				return m_List.Get();
 			}
@@ -81,10 +71,9 @@ namespace RayEngine
 			CounterType AddRef() override final;
 
 		private:
-			void Create(ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type, int32 nodeMask);
+			void Create(ID3D12PipelineState* pInitalState, D3D12_COMMAND_LIST_TYPE type);
 
 		private:
-			DX12Device* m_Device;
 			Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_Allocator;
 			Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_List;
 			CounterType m_References;

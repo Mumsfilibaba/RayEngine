@@ -29,6 +29,7 @@ failure and or malfunction of any kind.
 #include "DX12RenderTargetView.h"
 #include "DX12ShaderResourceView.h"
 #include "DX12UnorderedAccessView.h"
+#include "DX12CommandQueue.h"
 
 namespace RayEngine
 {
@@ -45,7 +46,7 @@ namespace RayEngine
 			RE_IMPLEMENT_INTERFACE(DX12Device);
 
 		public:
-			DX12Device(const DeviceDesc* pDesc);
+			DX12Device(const DeviceDesc* pDesc, HWND hwnd);
 			~DX12Device();
 
 			inline ID3D12Device* GetD3D12Device() const
@@ -110,6 +111,8 @@ namespace RayEngine
 
 			void CreateSamplerDescriptorHandle(const D3D12_SAMPLER_DESC& desc, DX12DescriptorHandle& destHandle) const;
 
+			DX12CommandQueue* CreateCommandQueue() const;
+
 			IRenderer* CreateRenderer() override final;
 
 			bool GetImmediateContext(IDeviceContext** ppContext) override final;
@@ -141,7 +144,9 @@ namespace RayEngine
 			CounterType AddRef() override final;
 
 		private:
-			void Create(const DeviceDesc* pDesc);
+			void Create(const DeviceDesc* pDesc, HWND hwnd);
+
+			bool CreateFactory(bool enableDebug);
 
 			bool QueryAdapter();
 
@@ -159,6 +164,8 @@ namespace RayEngine
 			DX12DescriptorHeap* m_DsvHeap;
 			DX12DescriptorHeap* m_RtvHeap;
 			DX12DescriptorHeap* m_SamplerHeap;
+			DX12Swapchain* m_SwapChain;
+
 			DX12RenderTargetView* m_pEmptyRTV;
 			DX12DepthStencilView* m_pEmptyDSV;
 			DX12ShaderResourceView* m_pEmptySRV;

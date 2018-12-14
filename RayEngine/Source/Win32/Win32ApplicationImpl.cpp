@@ -34,58 +34,12 @@ failure and or malfunction of any kind.
 namespace RayEngine
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void InitD3D12(HWND hwnd, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
-		Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc)
-	{
-		using namespace Graphics;
-
-		DX12Device* pDevice = new DX12Device(&deviceDesc);
-		*ppDevice = pDevice;
-
-		DX12Swapchain* pSwapChain = new DX12Swapchain(pDevice, &swapChainDesc, hwnd);
-		*ppSwapChain = pSwapChain;
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void InitD3D11(HWND hwnd, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
-		Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc)
-	{
-		using namespace Graphics;
-
-		DX11Device* pDevice = new DX11Device(&deviceDesc);
-		*ppDevice = pDevice;
-
-		DX11Swapchain* pSwapChain = new DX11Swapchain(pDevice, &swapChainDesc, hwnd);
-		*ppSwapChain = pSwapChain;
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void InitOpenGL(HWND hwnd, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
-		Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc)
-	{
-		using namespace Graphics;
-
-		GLDeviceWin32* pDevice = new GLDeviceWin32(&deviceDesc, &swapChainDesc, hwnd);
-		*ppDevice = pDevice;
-
-		GLSwapchainWin32* pSwapchain = new GLSwapchainWin32(&swapChainDesc, pDevice);
-		*ppSwapChain = pSwapchain;
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void Application::InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
-		Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc, GRAPHICS_API api)
+	void Application::InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc, Graphics::IDevice** ppDevice,
+		Graphics::DeviceDesc& deviceDesc, GRAPHICS_API api)
 	{
 		Win32WindowImpl* pWindow = new Win32WindowImpl(&windowDesc);
 		if (api == GRAPHICS_API_D3D12)
-			InitD3D12(pWindow->GetHWND(),  ppDevice, deviceDesc, ppSwapChain, swapChainDesc);
-		else if (api == GRAPHICS_API_D3D11)
-			InitD3D11(pWindow->GetHWND(), ppDevice, deviceDesc, ppSwapChain, swapChainDesc);
-		else if (api == GRAPHICS_API_OPENGL)
-			InitOpenGL(pWindow->GetHWND(), ppDevice, deviceDesc, ppSwapChain, swapChainDesc);
+			*ppDevice = new Graphics::DX12Device(&deviceDesc, pWindow->GetHWND());
 		else
 			LOG_ERROR("Api not suppported.");
 

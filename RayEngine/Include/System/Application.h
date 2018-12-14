@@ -50,9 +50,9 @@ namespace RayEngine
 			return m_pWindow;
 		}
 
-		inline Graphics::ISwapchain* GetSwapChain() const
+		inline Graphics::IRenderer* GetRenderer() const
 		{
-			return m_pSwapChain;
+			return m_pRenderer;
 		}
 
 		inline Graphics::IDevice* GetDevice() const
@@ -60,21 +60,16 @@ namespace RayEngine
 			return m_pDevice;
 		}
 
-		inline Graphics::IDeviceContext* GetContext() const
-		{
-			return m_pContext;
-		}
-
 	private:
 		IWindow* m_pWindow;
 		Graphics::IDevice* m_pDevice;
-		Graphics::IDeviceContext* m_pContext;
-		Graphics::ISwapchain* m_pSwapChain;
+		Graphics::IRenderer* m_pRenderer;
 		Graphics::IPipelineState* m_pPipeline;
+
 		GRAPHICS_API m_Api;
 
 	private:
-		static void InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc, Graphics::IDevice** ppDevice, Graphics::DeviceDesc& deviceDesc,
-			Graphics::ISwapchain** ppSwapChain, Graphics::SwapchainDesc& swapChainDesc, GRAPHICS_API api);
+		static void InitGraphics(IWindow** ppWindow, WindowDesc& windowDesc, Graphics::IDevice** ppDevice,
+			Graphics::DeviceDesc& deviceDesc, GRAPHICS_API api);
 	};
 }

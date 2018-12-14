@@ -14,9 +14,13 @@ namespace RayEngine
 			IRenderer() {}
 			~IRenderer() {};
 
+			virtual void Begin() const = 0;
+
 			virtual void Clear(float color[4]) const = 0;
 
 			virtual void Draw() const = 0;
+
+			virtual void End() const = 0;
 			
 			virtual void Present() const = 0;
 		};
